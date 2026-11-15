@@ -153,6 +153,10 @@ var _camera_fpv_osd_boxes := {}
 var _camera_fpv_link_picker: OptionButton
 ## FC-1: the flight-mode switch positions (low, middle, high).
 var _camera_fc_switch_pickers: Array[OptionButton] = []
+## FC-2: failsafe: the modelled radio link and the optional returns home.
+var _camera_fc_rc_link_picker: OptionButton
+var _camera_fc_video_rth_toggle: CheckButton
+var _camera_fc_battery_rth_toggle: CheckButton
 var _camera_fpv_vtx_picker: OptionButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
@@ -624,6 +628,13 @@ func _build() -> void:
 		_camera_fc_switch_pickers.append(picker)
 		_add_row(fc_part, ["Switch low", "Switch middle", "Switch high"][index], picker)
 		_set_localized_tooltip(picker, "Manual: sticks straight to the surfaces. Acro: the gyro holds the attitude. Angle and Horizon level the wings. Altitude hold, Cruise, Loiter and Return to home fly by GPS and barometer. A two-position switch uses low and high.")
+	_camera_fc_rc_link_picker = _camera_picker("CameraFcRcLink", "camera_fc_rc_link", CameraSettings.FC_RC_LINKS)
+	_add_row(fc_part, "Radio link range", _camera_fc_rc_link_picker)
+	_set_localized_tooltip(_camera_fc_rc_link_picker, "Off: the radio always reaches the airplane. 2.4 GHz fades beyond about 6 km, 900 MHz beyond about 30 km, both sooner behind hills. When the signal is lost the flight controller returns home; move a stick or the mode switch to take over when it is back.")
+	_camera_fc_video_rth_toggle = _camera_toggle("CameraFcVideoRth", "camera_fc_video_rth", "Returns home when the FPV picture is lost for 1.5 s, as if you flipped your return-to-home switch.")
+	_add_row(fc_part, "Return home on video loss", _camera_fc_video_rth_toggle)
+	_camera_fc_battery_rth_toggle = _camera_toggle("CameraFcBatteryRth", "camera_fc_battery_rth", "Returns home once at the first low-battery warning of an electric airplane, like ArduPilot's battery failsafe.")
+	_add_row(fc_part, "Return home on low battery", _camera_fc_battery_rth_toggle)
 	_set_localized_tooltip(_camera_fpv_smoothing_picker, "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe.")
 
 	_opaque_toggle = CheckButton.new()
@@ -999,6 +1010,8 @@ func _choice_caption(key: String, value: Variant) -> String:
 			high = tr("High")}.get(value, str(value))
 		"camera_fpv_quality": return {low = tr("Low"), medium = tr("Medium"), high = tr("%s (default)") % tr("High")}.get(value, str(value))
 		"camera_fpv_link": return {off = tr("Off (perfect picture)"), analog = tr("%s (default)") % tr("Analog")}.get(value, str(value))
+		"camera_fc_rc_link": return {off = tr("%s (default)") % tr("Off"), elrs_2g4 = tr("2.4 GHz (ExpressLRS)"),
+			lr_900 = tr("900 MHz (long range)")}.get(value, str(value))
 		"camera_fc_switch_low", "camera_fc_switch_mid", "camera_fc_switch_high":
 			var mode_name := tr(str(FixedWingFC.NAMES.get(value, value)))
 			return tr("%s (default)") % mode_name if str(value) == str(CameraSettings.DEFAULTS[key]) else mode_name
@@ -1558,6 +1571,9 @@ func _sync_controls() -> void:
 	_camera_fpv_gimbal_invert_tilt_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_tilt", false)))
 	_select_metadata(_camera_fpv_osd_picker, str(_draft.get("camera_fpv_osd", CameraSettings.DEFAULTS.camera_fpv_osd)))
 	_select_metadata(_camera_fpv_link_picker, str(_draft.get("camera_fpv_link", CameraSettings.DEFAULTS.camera_fpv_link)))
+	_select_metadata(_camera_fc_rc_link_picker, str(_draft.get("camera_fc_rc_link", CameraSettings.DEFAULTS.camera_fc_rc_link)))
+	_camera_fc_video_rth_toggle.set_pressed_no_signal(bool(_draft.get("camera_fc_video_rth", false)))
+	_camera_fc_battery_rth_toggle.set_pressed_no_signal(bool(_draft.get("camera_fc_battery_rth", false)))
 	for index: int in _camera_fc_switch_pickers.size():
 		var fc_key: String = CameraSettings.FC_SWITCH_KEYS[index]
 		_select_metadata(_camera_fc_switch_pickers[index], str(_draft.get(fc_key, CameraSettings.DEFAULTS[fc_key])))
@@ -1843,7 +1859,7 @@ func _refresh_translated_text() -> void:
 			[_camera_fpv_gimbal_speed_picker, "camera_fpv_gimbal_speed"], [_camera_fpv_osd_picker, "camera_fpv_osd"],
 			[_camera_fpv_link_picker, "camera_fpv_link"], [_camera_fpv_vtx_picker, "camera_fpv_vtx_power"],
 			[_camera_fc_switch_pickers[0], "camera_fc_switch_low"], [_camera_fc_switch_pickers[1], "camera_fc_switch_mid"],
-			[_camera_fc_switch_pickers[2], "camera_fc_switch_high"]]:
+			[_camera_fc_switch_pickers[2], "camera_fc_switch_high"], [_camera_fc_rc_link_picker, "camera_fc_rc_link"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

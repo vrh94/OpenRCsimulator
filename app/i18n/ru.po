@@ -13658,3 +13658,42 @@ msgstr "Ручной: стики напрямую на рули. Acro: гиро�
 
 msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
 msgstr "Режим полёта: следующий (Shift+M — назад): Ручной, Acro, Angle, Horizon, Удержание высоты, Круиз, Loiter, Возврат домой"
+
+msgid "Radio link range"
+msgstr "Дальность радиоканала"
+
+msgid "Return home on video loss"
+msgstr "Возврат домой при потере видео"
+
+msgid "Return home on low battery"
+msgstr "Возврат домой при низком заряде"
+
+msgid "2.4 GHz (ExpressLRS)"
+msgstr "2,4 ГГц (ExpressLRS)"
+
+msgid "900 MHz (long range)"
+msgstr "900 МГц (дальний)"
+
+msgid "Off: the radio always reaches the airplane. 2.4 GHz fades beyond about 6 km, 900 MHz beyond about 30 km, both sooner behind hills. When the signal is lost the flight controller returns home; move a stick or the mode switch to take over when it is back."
+msgstr "Выкл.: пульт всегда достаёт до самолёта. 2,4 ГГц слабеет дальше примерно 6 км, 900 МГц — дальше примерно 30 км, за холмами оба раньше. При потере сигнала полётный контроллер возвращается домой; когда сигнал вернётся, двиньте стик или переключатель режима, чтобы взять управление."
+
+msgid "Returns home when the FPV picture is lost for 1.5 s, as if you flipped your return-to-home switch."
+msgstr "Возвращается домой, когда FPV-картинка пропадает на 1,5 с, как будто вы щёлкнули переключателем возврата."
+
+msgid "Returns home once at the first low-battery warning of an electric airplane, like ArduPilot's battery failsafe."
+msgstr "Один раз возвращается домой при первом предупреждении о низком заряде электросамолёта, как батарейный failsafe ArduPilot."
+
+msgid "Radio signal lost: failsafe, returning home."
+msgstr "Сигнал пульта потерян: failsafe, возврат домой."
+
+msgid "Radio signal back. Move a stick or the mode switch to take over."
+msgstr "Сигнал пульта вернулся. Двиньте стик или переключатель режима, чтобы взять управление."
+
+msgid "Video lost: returning home. Move a stick or the mode switch to take over."
+msgstr "Видео потеряно: возврат домой. Двиньте стик или переключатель режима, чтобы взять управление."
+
+msgid "Low battery: returning home. Move a stick or the mode switch to take over."
+msgstr "Низкий заряд: возврат домой. Двиньте стик или переключатель режима, чтобы взять управление."
+
+msgid "Radio signal lost: the flight mode cannot change."
+msgstr "Сигнал пульта потерян: режим полёта сменить нельзя."

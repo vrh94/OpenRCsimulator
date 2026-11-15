@@ -3760,6 +3760,8 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 func reset(preserve_radio_readiness := false) -> void:
 	if _reject_reset_publication_reentry(): return
 	var result := _reset_impl(preserve_radio_readiness)
+	if result.get("committed", false):
+		flight_controller.reset() # FC-1/2: a new start: new home, no failsafe
 	if not result.get("committed", false):
 		if not result.get("ok", false) and calibration == null:
 			start_error = str(result.get("message", "reset refused"))

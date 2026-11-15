@@ -8,6 +8,7 @@ const OnboardView := preload("res://render/camera/onboard_view.gd")
 const FpvHead := preload("res://render/camera/fpv_head.gd")
 const FpvOsdModel := preload("res://render/overlays/fpv_osd_model.gd")
 const FixedWingFC := preload("res://sim/fixed_wing_fc.gd")
+const RcLink := preload("res://sim/rc_link.gd")
 const VideoLink := preload("res://render/camera/video_link.gd")
 
 ## The view a Home flight starts in (D1: the pilot view stays the default). "onboard" falls back to the pilot view on
@@ -39,6 +40,8 @@ const FPV_LINKS: Array[String] = VideoLink.MODES
 ## FC-1: the flight-controller modes a flight-mode switch position may select.
 const FC_MODES: Array[String] = ["manual", "acro", "angle", "horizon", "alt_hold", "cruise", "loiter", "rth"]
 const FC_SWITCH_KEYS: Array[String] = ["camera_fc_switch_low", "camera_fc_switch_mid", "camera_fc_switch_high"]
+## FC-2: the modelled radio link (off = perfect).
+const FC_RC_LINKS: Array[String] = RcLink.MODES
 const FPV_VTX_POWERS: Array[int] = VideoLink.POWERS_MW
 ## The pilot view's widest vertical FOV (deg), which the auto-zoom narrows from. 50° stays the default until CAM-22;
 ## about 31° is orthoscopic on a 27-inch 16:9 screen seen from 60 cm (CAM-AUD-2026-10-24).
@@ -87,6 +90,11 @@ const DEFAULTS := {
 	"camera_fc_switch_low": FixedWingFC.DEFAULT_SWITCH_MODES[0],
 	"camera_fc_switch_mid": FixedWingFC.DEFAULT_SWITCH_MODES[1],
 	"camera_fc_switch_high": FixedWingFC.DEFAULT_SWITCH_MODES[2],
+	# FC-2: failsafe. The radio link is perfect unless a long-range link is chosen; losing it returns home.
+	# Returning home on video loss or low battery is the pilot's choice (off by default).
+	"camera_fc_rc_link": RcLink.DEFAULT_MODE,
+	"camera_fc_video_rth": false,
+	"camera_fc_battery_rth": false,
 }
 
 
@@ -117,7 +125,7 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 		out.append("camera_fpv_osd_elements must list OSD elements (%s)" % ", ".join(FPV_OSD_ELEMENTS))
 	for pair: Array in [["camera_fpv_head_tracking", FPV_HEAD_TRACKING], ["camera_fpv_gimbal_speed", FPV_GIMBAL_SPEEDS],
 			["camera_fpv_osd", FPV_OSD_STYLES], ["camera_fpv_link", FPV_LINKS], ["camera_fc_switch_low", FC_MODES],
-			["camera_fc_switch_mid", FC_MODES], ["camera_fc_switch_high", FC_MODES]]:
+			["camera_fc_switch_mid", FC_MODES], ["camera_fc_switch_high", FC_MODES], ["camera_fc_rc_link", FC_RC_LINKS]]:
 		var choice: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(choice) != TYPE_STRING or choice not in (pair[1] as Array):
 			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
@@ -127,7 +135,7 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 		var number: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(number) != TYPE_INT or number not in (pair[1] as Array):
 			out.append("%s must be one of the offered values" % pair[0])
-	for key: String in ["camera_fpv_gimbal_invert_pan", "camera_fpv_gimbal_invert_tilt"]:
+	for key: String in ["camera_fpv_gimbal_invert_pan", "camera_fpv_gimbal_invert_tilt", "camera_fc_video_rth", "camera_fc_battery_rth"]:
 		if typeof(raw.get(key, DEFAULTS[key])) != TYPE_BOOL:
 			out.append("%s must be a boolean" % key)
 	if typeof(raw.get("camera_fov", DEFAULTS.camera_fov)) != TYPE_INT or raw.get("camera_fov", DEFAULTS.camera_fov) not in FOVS:
@@ -185,6 +193,9 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fc_switch_low": str(raw.get("camera_fc_switch_low", DEFAULTS.camera_fc_switch_low)),
 		"camera_fc_switch_mid": str(raw.get("camera_fc_switch_mid", DEFAULTS.camera_fc_switch_mid)),
 		"camera_fc_switch_high": str(raw.get("camera_fc_switch_high", DEFAULTS.camera_fc_switch_high)),
+		"camera_fc_rc_link": str(raw.get("camera_fc_rc_link", DEFAULTS.camera_fc_rc_link)),
+		"camera_fc_video_rth": bool(raw.get("camera_fc_video_rth", DEFAULTS.camera_fc_video_rth)),
+		"camera_fc_battery_rth": bool(raw.get("camera_fc_battery_rth", DEFAULTS.camera_fc_battery_rth)),
 	}
 
 
@@ -241,3 +252,5 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 	rig.onboard_osd = {style = str(config.camera_fpv_osd), elements = (config.camera_fpv_osd_elements as Array).duplicate()}
 	rig.fc_switch_modes = PackedStringArray([str(config.camera_fc_switch_low), str(config.camera_fc_switch_mid),
 		str(config.camera_fc_switch_high)])
+	rig.fc_failsafe = {rc_link = str(config.camera_fc_rc_link), video_rth = bool(config.camera_fc_video_rth),
+		battery_rth = bool(config.camera_fc_battery_rth)}

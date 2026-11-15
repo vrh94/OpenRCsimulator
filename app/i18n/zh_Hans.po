@@ -12857,3 +12857,42 @@ msgstr "手动：摇杆直接控制舵面。Acro：陀螺仪保持姿态。自�
 
 msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
 msgstr "飞行模式：下一个（Shift+M 上一个）：手动、Acro、自稳、半自稳、定高、巡航、盘旋、返航"
+
+msgid "Radio link range"
+msgstr "遥控链路距离"
+
+msgid "Return home on video loss"
+msgstr "图传丢失时返航"
+
+msgid "Return home on low battery"
+msgstr "低电量时返航"
+
+msgid "2.4 GHz (ExpressLRS)"
+msgstr "2.4 GHz（ExpressLRS）"
+
+msgid "900 MHz (long range)"
+msgstr "900 MHz（远距离）"
+
+msgid "Off: the radio always reaches the airplane. 2.4 GHz fades beyond about 6 km, 900 MHz beyond about 30 km, both sooner behind hills. When the signal is lost the flight controller returns home; move a stick or the mode switch to take over when it is back."
+msgstr "关闭：遥控器始终能连到飞机。2.4 GHz 在约 6 km 外衰减，900 MHz 在约 30 km 外衰减，被山丘遮挡时更早。信号丢失时飞控会返航；信号恢复后，推动摇杆或模式开关即可接管。"
+
+msgid "Returns home when the FPV picture is lost for 1.5 s, as if you flipped your return-to-home switch."
+msgstr "FPV 画面丢失 1.5 秒后返航，就像你拨动了返航开关。"
+
+msgid "Returns home once at the first low-battery warning of an electric airplane, like ArduPilot's battery failsafe."
+msgstr "电动飞机首次出现低电量警告时返航一次，类似 ArduPilot 的电池失控保护。"
+
+msgid "Radio signal lost: failsafe, returning home."
+msgstr "遥控信号丢失：失控保护，正在返航。"
+
+msgid "Radio signal back. Move a stick or the mode switch to take over."
+msgstr "遥控信号已恢复。推动摇杆或模式开关即可接管。"
+
+msgid "Video lost: returning home. Move a stick or the mode switch to take over."
+msgstr "图传丢失：正在返航。推动摇杆或模式开关即可接管。"
+
+msgid "Low battery: returning home. Move a stick or the mode switch to take over."
+msgstr "电量低：正在返航。推动摇杆或模式开关即可接管。"
+
+msgid "Radio signal lost: the flight mode cannot change."
+msgstr "遥控信号丢失：无法切换飞行模式。"

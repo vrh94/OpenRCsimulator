@@ -263,6 +263,13 @@ when the model gets small). [Camera plan](plans/camera-views.md).
   speed. **Return to home (RTL)**: climbs to at least 40 m above the launch point, flies home and circles there.
   The OSD shows the mode as the firmware prints it (INAV ANGL/CRUZ/LOTR/RTH, ArduPilot FBWA/FBWB/CRUS/LOIT/RTL).
   The controller moves the same surfaces the pilot moves; the flight physics are unchanged.
+  **Failsafe** (FC-2): **Radio link range** is Off by default (the radio always reaches the airplane); choose
+  **2.4 GHz (ExpressLRS)** (fades beyond about 6 km) or **900 MHz (long range)** (about 30 km), both shorter behind
+  hills. When the signal is lost for a second the airplane returns home by itself and ignores the sticks (OSD
+  "RX LOSS - RTH", LQ shows the radio link); when the signal is back, move a stick past half or the mode switch to
+  take over. **Return home on video loss** and **Return home on low battery** (electric models) are optional. The OSD
+  also warns "BATT LOW FOR HOME" when the charge left, at this flight's average current, would not bring it home with
+  a 30 % reserve.
 
 The cockpit view sits a quarter of the length behind the nose, just above the fuselage, with a generic canopy frame;
 no aircraft defines a real cockpit yet.

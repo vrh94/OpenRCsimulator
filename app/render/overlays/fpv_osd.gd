@@ -25,6 +25,8 @@ var style := Model.DEFAULT_STYLE
 var elements: Array = Model.DEFAULT_ELEMENTS.duplicate()
 var units := "metric"
 var sensors = BatterySensors.new()
+## FC-2: the last battery sensor reading (the low-battery failsafe reads its alarms).
+var last_reading := {}
 var values := {}
 var items: Array[Dictionary] = []
 var _pitch := 0.0
@@ -63,16 +65,20 @@ func enabled() -> bool:
 
 ## One telemetry snapshot (OverlayManager.snapshot): numbers, battery sensors, warnings. home_up_m: the pilot
 ## station's ground height above the datum; link: {quality_pct} or {}.
-func feed(snapshot: Dictionary, home_up_m: float, link: Dictionary = {}, flight_mode := "manual") -> void:
+## FC-1/2: flight_mode and fc ({failsafe, awaiting_pilot}) are the flight controller's state.
+func feed(snapshot: Dictionary, home_up_m: float, link: Dictionary = {}, flight_mode := "manual", fc: Dictionary = {}) -> void:
 	var t: Dictionary = snapshot.get("telemetry", {}).duplicate()
 	if t.is_empty():
 		return
 	t.home_up_m = home_up_m
 	t.flight_mode = flight_mode
+	t.failsafe = str(fc.get("failsafe", ""))
+	t.fc_awaiting_pilot = bool(fc.get("awaiting_pilot", false))
 	var battery: Dictionary = snapshot.get("battery", {})
 	var reading: Dictionary = {}
 	if battery.get("ok", false):
 		reading = sensors.update(float(battery.get("time_s", t.get("time_s", 0.0))), battery, false)
+	last_reading = reading
 	values = Model.values(t, reading, link)
 	_rebuild()
 
@@ -92,6 +98,7 @@ func set_attitude(pitch_deg: float, bank_deg: float, px_per_deg: float, uptilt_d
 ## A new flight: fresh battery sensors and numbers.
 func reset() -> void:
 	sensors.reset()
+	last_reading = {}
 	values = {}
 	items.clear()
 

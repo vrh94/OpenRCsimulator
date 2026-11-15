@@ -28,6 +28,11 @@ const COLS := 50
 const ROWS := 18
 ## Severities (painter colours on HD; analog stays white): normal, info, warning, critical.
 const NORMAL := 0
+## FC-2: the home-reserve estimate: after this much flight, beyond this distance, with this margin over the need.
+const HOME_RESERVE_AFTER_S := 30.0
+const HOME_RESERVE_MIN_M := 200.0
+const HOME_RESERVE_FACTOR := 1.3
+const HOME_SPEED_MIN := 5.0
 const INFO := 1
 const WARNING := 2
 const CRITICAL := 3
@@ -76,6 +81,7 @@ static func values(t: Dictionary, battery: Dictionary, link: Dictionary = {}) ->
 	if is_finite(north) and is_finite(east) and is_finite(heading):
 		home = OsdModel.home_vector(north, east, heading, Vector2.ZERO)
 	var has_battery := bool(battery.get("valid", false))
+	var reserve := _home_reserve(t, battery if has_battery else {}, float(home.distance_m))
 	return {
 		speed_mps = _speed_3d(t),
 		airspeed_mps = float(t.get("airspeed", NAN)),
@@ -90,9 +96,29 @@ static func values(t: Dictionary, battery: Dictionary, link: Dictionary = {}) ->
 		current_a = float(battery.get("current_a", NAN)) if has_battery else NAN,
 		used_mah = float(battery.get("used_mah", NAN)) if has_battery else NAN,
 		link_pct = float(link.get("quality_pct", NAN)),
-		warning = _warning(battery if has_battery else {}),
+		warning = _warning(battery if has_battery else {}, str(t.get("failsafe", "")), bool(t.get("fc_awaiting_pilot", false)),
+			reserve),
 		flight_mode = str(t.get("flight_mode", "manual")),
+		failsafe = str(t.get("failsafe", "")),
+		home_mah = float(reserve.get("needed_mah", NAN)),
 	}
+
+
+## FC-2: the charge (mAh) the flight home needs at this flight's average current, from existing sensor figures only:
+## average current = used mAh ÷ flight time, time home = distance ÷ ground speed (at least HOME_SPEED_MIN). {} until
+## the flight has run HOME_RESERVE_AFTER_S on a pack with a known capacity.
+static func _home_reserve(t: Dictionary, battery: Dictionary, distance_m: float) -> Dictionary:
+	var used := float(battery.get("used_mah_raw", NAN))
+	var capacity := float(battery.get("capacity_mah", NAN))
+	var time_s := float(t.get("time_s", NAN))
+	var speed := float(t.get("ground_speed", NAN))
+	if not (is_finite(used) and is_finite(capacity) and capacity > 0.0 and is_finite(time_s) and time_s >= HOME_RESERVE_AFTER_S
+			and is_finite(distance_m) and is_finite(speed)):
+		return {}
+	var hours := distance_m / maxf(speed, HOME_SPEED_MIN) / 3600.0
+	var needed := used / (time_s / 3600.0) * hours
+	return {needed_mah = needed, remaining_mah = capacity - used, short = distance_m > HOME_RESERVE_MIN_M
+		and capacity - used < needed * HOME_RESERVE_FACTOR}
 
 
 ## The text items of one OSD frame: [{id, cell: Vector2i, align, text, severity, icon}]. icon: "" or "battery",
@@ -242,19 +268,37 @@ static func _link_severity(q: float) -> int:
 
 
 ## One warning slot from the battery sensors' alarms (most urgent first), like a flight controller's.
-static func _warning(battery: Dictionary) -> Dictionary:
+## FC-2: failsafe and home-reserve warnings rank with the battery's: a lost radio link first, then the critical
+## battery alarms, the other automatic returns, too little charge to get home, then the battery warnings.
+static func _warning(battery: Dictionary, failsafe := "", awaiting_pilot := false, reserve: Dictionary = {}) -> Dictionary:
 	var alarms: Array = battery.get("alarms", [])
-	for alarm: String in ["exhausted", "cell_critical", "lvc", "cell_warning", "used_capacity", "hot"]:
+	if failsafe == "rx_loss":
+		return {text = "RX LOSS - RTH", severity = CRITICAL}
+	for alarm: String in ["exhausted", "cell_critical", "lvc"]:
 		if alarm in alarms:
-			return {
-				exhausted = {text = "BATT EMPTY", severity = CRITICAL},
-				cell_critical = {text = "LAND NOW", severity = CRITICAL},
-				lvc = {text = "LOW VOLTAGE CUT", severity = CRITICAL},
-				cell_warning = {text = "LOW BATTERY", severity = WARNING},
-				used_capacity = {text = "BATT 80% USED", severity = WARNING},
-				hot = {text = "BATT HOT", severity = WARNING},
-			}[alarm]
+			return _battery_warning(alarm)
+	match failsafe:
+		"video": return {text = "VIDEO LOSS - RTH", severity = WARNING}
+		"battery": return {text = "LOW BATT - RTH", severity = WARNING}
+	if awaiting_pilot:
+		return {text = "RTH - MOVE STICKS", severity = WARNING}
+	if bool(reserve.get("short", false)):
+		return {text = "BATT LOW FOR HOME", severity = WARNING}
+	for alarm: String in ["cell_warning", "used_capacity", "hot"]:
+		if alarm in alarms:
+			return _battery_warning(alarm)
 	return {}
+
+
+static func _battery_warning(alarm: String) -> Dictionary:
+	return {
+		exhausted = {text = "BATT EMPTY", severity = CRITICAL},
+		cell_critical = {text = "LAND NOW", severity = CRITICAL},
+		lvc = {text = "LOW VOLTAGE CUT", severity = CRITICAL},
+		cell_warning = {text = "LOW BATTERY", severity = WARNING},
+		used_capacity = {text = "BATT 80% USED", severity = WARNING},
+		hot = {text = "BATT HOT", severity = WARNING},
+	}.get(alarm, {})
 
 
 ## The horizon line for attitude (deg) on a picture: its centre offset from the picture centre and its direction,

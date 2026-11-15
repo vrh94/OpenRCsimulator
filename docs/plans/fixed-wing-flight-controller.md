@@ -42,7 +42,30 @@ loiter stays within 10 % of its radius (56 m / 268 m) and 2 m of height with the
 returns from 320 m / 699 m and circles over home. During tuning the Turbo Lumber and the P-51D flew the same
 modes (bank and height held, loiter within 2 % of the radius).
 
+## FC-2 (done): failsafe
+
+- **Radio link** (`app/sim/rc_link.gd`): Off (perfect, default) / 2.4 GHz ExpressLRS-like (50 % quality at 6 km) /
+  900 MHz long range (30 km). Same margin law as the video link (20·log10(R½/d) − blockage), on the same
+  line-of-sight scan from the pilot station; terrain costs 22 dB at 2.4 GHz and 12 dB at 900 MHz. Ranges are
+  presentation choices in the range pilots report for stock antennas, not measurements. Failsafe after 1 s below
+  15 % quality; recovery after 1 s above 50 %. With a modelled radio link the OSD's LQ/RSSI is the radio link (as
+  on a real FC); otherwise it stays the video link's.
+- **Failsafe RTH** (`FixedWingFC.trigger_rth`): a lost radio link always returns home, flies with centred sticks
+  (idle on the ground) and refuses mode changes. When the link is back the airplane keeps returning until the pilot
+  moves a roll/pitch stick past half or picks a mode (INAV-style takeover); the mode before the failsafe returns.
+  Optional: **return on video loss** (picture below 15 % for 1.5 s; re-arms when the picture is back) and **return
+  on low battery** (first battery warning of the flight, like ArduPilot's battery failsafe). Both off by default.
+- **OSD**: "RX LOSS - RTH" (critical) outranks everything; critical battery alarms outrank "VIDEO LOSS - RTH" /
+  "LOW BATT - RTH"; then "RTH - MOVE STICKS"; then **"BATT LOW FOR HOME"**: charge left < 1.3 × charge needed to
+  fly home at this flight's average current (used mAh ÷ flight time) and current ground speed, after 30 s and
+  beyond 200 m. All from existing sensor figures; nothing invented.
+- Fixed with it: home was taken from the previous flight's state on a restart (tick 0). Home is now the first flown
+  tick and the session resets the controller on every committed restart. RTH climbs to ≥ 40 m above home.
+
+Evidence: `tests/test_fc_failsafe.gd` 33/33 (link ranges, delays, terrain, takeover rules, OSD ranking, home
+reserve arithmetic, preferences, and a closed-loop Stik flight: radio lost 342 m out with full roll held, it comes
+home and circles 40 m above home; a roll stick then gives Angle back). `tests/test_fixed_wing_fc.gd` 49/49.
+
 ## Next
 
-- FC-2: failsafe → RTH on video or radio link loss; OSD home distance and battery-reserve warnings.
 - FC-3: long-range experience on the 40 km ground.

@@ -129,7 +129,9 @@ func _manual_pass_through() -> void:
 		session.sim.inputs = inputs
 		session.sim.step()
 	_check("manual: the servos get exactly the flown commands (flight unchanged)", same)
-	_check("home is the launch point", session.flight_controller.home.size() == 3)
+	var home: PackedFloat64Array = session.flight_controller.home
+	_check("home is the launch point (the 200 m start, not the previous flight's)", home.size() == 3 and absf(-home[2] - 200.0) < 1.0,
+		str(home))
 	session.free()
 
 
@@ -181,6 +183,6 @@ func _flights(id: String, speed: float) -> void:
 	s.flight_controller.set_mode("rth")
 	rows = _fly(s, 120.0, func(_t: float) -> Dictionary: return {throttle = 0.0}, 5.0)
 	var home_distance := Vector2(rows[-1].n - fc.home[0], rows[-1].e - fc.home[1]).length()
-	_check("%s RTH: back from %.0f m, circling over home" % [id, away], fc.rth_phase == "orbit"
-		and home_distance < 1.2 * fc.loiter_radius and absf(rows[-1].h - 200.0) < 3.0, "%s %.0f m h %.1f" % [fc.rth_phase, home_distance, rows[-1].h])
+	_check("%s RTH: back from %.0f m, circling over home 40 m above it" % [id, away], fc.rth_phase == "orbit"
+		and home_distance < 1.2 * fc.loiter_radius and absf(rows[-1].h - (-fc.home[2] + FC.RTH_MIN_HEIGHT)) < 3.0, "%s %.0f m h %.1f" % [fc.rth_phase, home_distance, rows[-1].h])
 	s.free()

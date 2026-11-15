@@ -13802,3 +13802,42 @@ msgstr "Manuell: Knüppel direkt auf die Ruder. Acro: der Kreisel hält die Lage
 
 msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
 msgstr "Flugmodus: nächster (Shift+M zurück): Manuell, Acro, Angle, Horizon, Höhe halten, Reiseflug, Kreisen, Rückkehr nach Hause"
+
+msgid "Radio link range"
+msgstr "Reichweite der Funkverbindung"
+
+msgid "Return home on video loss"
+msgstr "Bei Videoverlust nach Hause"
+
+msgid "Return home on low battery"
+msgstr "Bei schwachem Akku nach Hause"
+
+msgid "2.4 GHz (ExpressLRS)"
+msgstr "2,4 GHz (ExpressLRS)"
+
+msgid "900 MHz (long range)"
+msgstr "900 MHz (große Reichweite)"
+
+msgid "Off: the radio always reaches the airplane. 2.4 GHz fades beyond about 6 km, 900 MHz beyond about 30 km, both sooner behind hills. When the signal is lost the flight controller returns home; move a stick or the mode switch to take over when it is back."
+msgstr "Aus: Der Sender erreicht das Flugzeug immer. 2,4 GHz wird ab etwa 6 km schwächer, 900 MHz ab etwa 30 km, hinter Hügeln beide früher. Bei Signalverlust fliegt der Flugcontroller nach Hause; bewege einen Knüppel oder den Modusschalter, um wieder zu übernehmen, sobald das Signal zurück ist."
+
+msgid "Returns home when the FPV picture is lost for 1.5 s, as if you flipped your return-to-home switch."
+msgstr "Fliegt nach Hause, wenn das FPV-Bild 1,5 s weg ist, als hättest du deinen Rückkehrschalter umgelegt."
+
+msgid "Returns home once at the first low-battery warning of an electric airplane, like ArduPilot's battery failsafe."
+msgstr "Fliegt bei der ersten Akkuwarnung eines Elektroflugzeugs einmal nach Hause, wie der Akku-Failsafe von ArduPilot."
+
+msgid "Radio signal lost: failsafe, returning home."
+msgstr "Funksignal verloren: Failsafe, Rückflug nach Hause."
+
+msgid "Radio signal back. Move a stick or the mode switch to take over."
+msgstr "Funksignal wieder da. Bewege einen Knüppel oder den Modusschalter, um zu übernehmen."
+
+msgid "Video lost: returning home. Move a stick or the mode switch to take over."
+msgstr "Video verloren: Rückflug nach Hause. Bewege einen Knüppel oder den Modusschalter, um zu übernehmen."
+
+msgid "Low battery: returning home. Move a stick or the mode switch to take over."
+msgstr "Akku schwach: Rückflug nach Hause. Bewege einen Knüppel oder den Modusschalter, um zu übernehmen."
+
+msgid "Radio signal lost: the flight mode cannot change."
+msgstr "Funksignal verloren: Der Flugmodus kann nicht wechseln."

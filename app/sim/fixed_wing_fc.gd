@@ -80,7 +80,7 @@ const MIN_ACTIVE_SPEED := 4.0
 const STICK_DEADBAND := 0.05
 
 var mode := "manual"
-## Home: the launch point (north, east, down), set on the first tick after a start.
+## Home: the launch point (north, east, down), set on the first flown tick after a start (empty before).
 var home := PackedFloat64Array()
 ## Navigation targets (diagnostics and OSD): altitude above datum (m, up), course (rad), loiter centre (n, e), radius.
 var target_height := NAN
@@ -91,6 +91,15 @@ var loiter_radius := NAN
 ## "home" while RTH is still on its way, "orbit" once it circles over home.
 var rth_phase := ""
 
+## FC-2: an automatic return home and why: "" (none), "rx_loss" (radio link lost: the sticks and the mode switch
+## are ignored, as the receiver has nothing to pass on), "video" (video lost), "battery" (low battery).
+var failsafe := ""
+## After an automatic return the pilot takes over by moving a roll or pitch stick past TAKEOVER_STICK or by choosing a
+## mode (switch, M), as on INAV after the signal returns. Until then the airplane keeps flying home.
+var awaiting_pilot := false
+const TAKEOVER_STICK := 0.5
+
+var _mode_before_failsafe := "manual"
 var _rate_i := Vector2.ZERO
 var _pitch_trim := 0.0
 var _throttle_i := 0.0
@@ -116,16 +125,44 @@ static func switch_mode(amount: float, switch_modes: PackedStringArray) -> Strin
 
 
 func set_mode(id: String) -> bool:
-	if not is_mode(id):
+	if not is_mode(id) or failsafe == "rx_loss":
 		return false
+	failsafe = ""
+	awaiting_pilot = false
 	if id != mode:
 		mode = id
 		_engaged = false # targets and integrators start from the aircraft's state at the next tick
 	return true
 
 
-## A new start (restart, new airplane): home is set again at the next tick; the mode stays.
+## FC-2: start an automatic return home for `reason` ("rx_loss", "video", "battery"). Returns whether it is new.
+## A radio-link loss outranks the others (it also ignores the sticks); the mode before the first one is kept for the
+## pilot's takeover.
+func trigger_rth(reason: String) -> bool:
+	if reason.is_empty() or failsafe == reason or (failsafe == "rx_loss" and reason != "rx_loss"):
+		return false
+	if failsafe.is_empty() and not awaiting_pilot:
+		_mode_before_failsafe = mode
+	failsafe = reason
+	awaiting_pilot = true
+	if mode != "rth":
+		mode = "rth"
+		_engaged = false
+	return true
+
+
+## FC-2: the radio link is back. The airplane keeps returning until the pilot takes over (stick or mode).
+func link_recovered() -> void:
+	if failsafe == "rx_loss":
+		failsafe = ""
+
+
+## A new start (restart, new airplane): home is set again at the next tick; the mode stays, a failsafe ends.
 func reset() -> void:
+	if failsafe != "" or awaiting_pilot:
+		mode = _mode_before_failsafe
+	failsafe = ""
+	awaiting_pilot = false
 	home = PackedFloat64Array()
 	_engaged = false
 	_last_tick = -1
@@ -142,8 +179,17 @@ func step(pilot: Dictionary, s: PackedFloat64Array, airspeed: float, dt: float, 
 		reset()
 	if s.size() < RB.SIZE:
 		return pilot
-	if home.is_empty():
+	# Tick 0 is the start being prepared (the state may still be the previous flight's): home is the first flown tick.
+	if home.is_empty() and tick > 0:
 		home = PackedFloat64Array([s[RB.POS], s[RB.POS + 1], s[RB.POS + 2]])
+	if failsafe == "rx_loss":
+		# No packets: the receiver passes nothing; the controller flies with centred sticks.
+		pilot = {roll = float(trim.get("roll", 0.0)), pitch = float(trim.get("pitch", 0.0)), yaw = 0.0, throttle = 0.0}
+	elif awaiting_pilot:
+		var roll_stick := float(pilot.get("roll", 0.0)) - float(trim.get("roll", 0.0))
+		var pitch_stick := float(pilot.get("pitch", 0.0)) - float(trim.get("pitch", 0.0))
+		if maxf(absf(roll_stick), absf(pitch_stick)) > TAKEOVER_STICK:
+			set_mode(_mode_before_failsafe)
 	if mode == "manual" or not is_finite(airspeed) or airspeed < MIN_ACTIVE_SPEED or not (dt > 0.0):
 		_engaged = false
 		_last_tick = tick
@@ -218,7 +264,7 @@ func step(pilot: Dictionary, s: PackedFloat64Array, airspeed: float, dt: float, 
 
 ## What the OSD and the HUD show: the mode and its navigation targets.
 func status() -> Dictionary:
-	return {mode = mode, home = home, target_height = target_height, target_course = target_course,
+	return {mode = mode, failsafe = failsafe, awaiting_pilot = awaiting_pilot, home = home, target_height = target_height, target_course = target_course,
 		target_speed = target_speed, loiter_radius = loiter_radius, rth_phase = rth_phase, engaged = _engaged}
 
 
@@ -238,6 +284,8 @@ func _engage(pilot: Dictionary, nav: Dictionary) -> void:
 		# Circle the point where loiter was engaged: start on the circle, the centre to the right of the course.
 		loiter_centre = PackedFloat64Array([nav.north - sin(nav.course) * loiter_radius, nav.east + cos(nav.course) * loiter_radius])
 	elif mode == "rth":
+		if home.is_empty():
+			home = PackedFloat64Array([nav.north, nav.east, -nav.height])
 		rth_phase = "home"
 		target_height = maxf(nav.height, -home[2] + RTH_MIN_HEIGHT)
 

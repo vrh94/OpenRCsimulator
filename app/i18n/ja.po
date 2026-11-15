@@ -12908,3 +12908,42 @@ msgstr "マニュアル: スティックが直接舵面を動かします。ア�
 
 msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
 msgstr "フライトモード: 次へ（Shift+M で戻る）: マニュアル、アクロ、アングル、ホライズン、高度維持、クルーズ、ロイター、リターン・トゥ・ホーム"
+
+msgid "Radio link range"
+msgstr "送信機リンクの到達距離"
+
+msgid "Return home on video loss"
+msgstr "映像ロスト時に帰還"
+
+msgid "Return home on low battery"
+msgstr "バッテリー低下時に帰還"
+
+msgid "2.4 GHz (ExpressLRS)"
+msgstr "2.4 GHz（ExpressLRS）"
+
+msgid "900 MHz (long range)"
+msgstr "900 MHz（長距離）"
+
+msgid "Off: the radio always reaches the airplane. 2.4 GHz fades beyond about 6 km, 900 MHz beyond about 30 km, both sooner behind hills. When the signal is lost the flight controller returns home; move a stick or the mode switch to take over when it is back."
+msgstr "オフ: 送信機は常に機体に届きます。2.4 GHz は約 6 km、900 MHz は約 30 km を超えると弱まり、丘の陰ではどちらもより早く弱まります。信号を失うとフライトコントローラーが帰還します。信号が戻ったら、スティックかモードスイッチを動かして操縦を取り戻します。"
+
+msgid "Returns home when the FPV picture is lost for 1.5 s, as if you flipped your return-to-home switch."
+msgstr "FPV 映像が 1.5 秒途切れると帰還します。帰還スイッチを入れたのと同じです。"
+
+msgid "Returns home once at the first low-battery warning of an electric airplane, like ArduPilot's battery failsafe."
+msgstr "電動機で最初のバッテリー低下警告が出たときに一度帰還します。ArduPilot のバッテリーフェイルセーフと同じです。"
+
+msgid "Radio signal lost: failsafe, returning home."
+msgstr "送信機の信号ロスト: フェイルセーフで帰還中。"
+
+msgid "Radio signal back. Move a stick or the mode switch to take over."
+msgstr "送信機の信号が復帰しました。スティックかモードスイッチを動かして操縦を取り戻してください。"
+
+msgid "Video lost: returning home. Move a stick or the mode switch to take over."
+msgstr "映像ロスト: 帰還中。スティックかモードスイッチを動かして操縦を取り戻してください。"
+
+msgid "Low battery: returning home. Move a stick or the mode switch to take over."
+msgstr "バッテリー低下: 帰還中。スティックかモードスイッチを動かして操縦を取り戻してください。"
+
+msgid "Radio signal lost: the flight mode cannot change."
+msgstr "送信機の信号ロスト: フライトモードを変更できません。"

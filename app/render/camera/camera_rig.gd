@@ -104,6 +104,8 @@ var onboard_osd := {style = "betaflight", elements = ["horizon", "crosshair", "v
 ## FC-1: the airplane flight controller's modes on the flight-mode switch (low, middle, high), from the FPV settings;
 ## the route reads them here with the other onboard preferences.
 var fc_switch_modes := PackedStringArray(["manual", "angle", "cruise"])
+## FC-2: the failsafe preferences: the modelled radio link and the optional returns on video loss / low battery.
+var fc_failsafe := {rc_link = "off", video_rth = false, battery_rth = false}
 var _last_dt := 0.0
 ## Direction toward the sun (render), set by the route each frame; the fly-by stands with the sun behind it.
 var light_direction := Vector3.ZERO

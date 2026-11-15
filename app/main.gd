@@ -31,6 +31,7 @@ const FpvHead := preload("res://render/camera/fpv_head.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const FpvOsd := preload("res://render/overlays/fpv_osd.gd")
 const FixedWingFC := preload("res://sim/fixed_wing_fc.gd")
+const RcLink := preload("res://sim/rc_link.gd")
 const CanopyFrame := preload("res://render/overlays/canopy_frame.gd")
 const VideoLink := preload("res://render/camera/video_link.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
@@ -422,6 +423,17 @@ var _video_link := VideoLink.new()
 var _link_scan_since := INF
 var _link_scan := {distance_m = 0.0, terrain = false, scenery = 0.0}
 var _link_quality_arg := NAN
+## FC-2: the modelled radio link (sharing the video link's line-of-sight scan) and the optional failsafe returns.
+var _rc_link := RcLink.new()
+## Video loss: seconds below the lost threshold; the return re-arms once the picture is good again.
+var _video_lost_s := 0.0
+var _video_rth_armed := true
+## Low battery returns home once per flight.
+var _battery_rth_done := false
+const VIDEO_LOST_QUALITY := 0.15
+const VIDEO_BACK_QUALITY := 0.6
+const VIDEO_LOST_S := 1.5
+const BATTERY_RTH_ALARMS := ["exhausted", "cell_critical", "lvc", "cell_warning", "used_capacity"]
 ## CAM-09: the scenery collision world the cameras keep clear of (a reference, built once with the session's).
 var _camera_obstacles: Dictionary = {}
 ## RC-TRACK: this flight's RC car circuit, decided once; it feeds the field build, the wheels and the obstacles.
@@ -1655,6 +1667,7 @@ func _process(delta: float) -> void:
 		_rig.commit_history_reset()
 	_update_flight_mode()
 	_update_video_link(dt)
+	_update_failsafe(dt)
 	_update_fpv_lens()
 	_update_fpv_osd(dt)
 	_update_canopy_frame()
@@ -1701,9 +1714,23 @@ func _update_video_link(dt: float, force := false) -> void:
 	if _rig == null or _fpv_lens == null:
 		return
 	_video_link.configure(str(_rig.onboard_link.mode), int(_rig.onboard_link.power_mw))
-	if not _video_link.enabled() or not _rig.onboard.configured or _last_render_pose.is_empty():
+	_rc_link.configure(str(_rig.fc_failsafe.get("rc_link", "off")))
+	var video_on: bool = _video_link.enabled() and _rig.onboard.configured
+	if not _last_render_pose.is_empty() and (video_on or _rc_link.enabled()):
+		_scan_link(dt, force)
+		# FC-2: the radio link from the transmitter at the pilot station, on the same line of sight.
+		_rc_link.update(float(_link_scan.distance_m), bool(_link_scan.terrain), float(_link_scan.scenery), dt)
+	if not video_on or _last_render_pose.is_empty():
 		_fpv_lens.breakup = 0.0
 		return
+	_video_link.update(float(_link_scan.distance_m), bool(_link_scan.terrain), float(_link_scan.scenery), _presentation_clock_s(), dt)
+	if is_finite(_link_quality_arg):
+		_video_link.quality = _link_quality_arg
+	_fpv_lens.breakup = _video_link.breakup()
+
+
+## The line of sight from the pilot's eye to the aircraft, scanned at LINK_SCAN_S (both links share it).
+func _scan_link(dt: float, force: bool) -> void:
 	_link_scan_since += dt
 	if force or _link_scan_since >= LINK_SCAN_S:
 		_link_scan_since = 0.0
@@ -1720,10 +1747,39 @@ func _update_video_link(dt: float, force := false) -> void:
 				break
 		_link_scan = {distance_m = receiver.distance_to(aircraft), terrain = terrain,
 			scenery = 1.0 - clampf(_camera_clearance(receiver, aircraft), 0.0, 1.0)}
-	_video_link.update(float(_link_scan.distance_m), bool(_link_scan.terrain), float(_link_scan.scenery), _presentation_clock_s(), dt)
-	if is_finite(_link_quality_arg):
-		_video_link.quality = _link_quality_arg
-	_fpv_lens.breakup = _video_link.breakup()
+
+
+## FC-2: failsafe. A lost radio link always returns home (the receiver has nothing to pass on); video loss and low
+## battery return home when the pilot chose so (Settings › Camera › Flight controller). The pilot takes over again
+## with a stick or the mode switch once the link is back (sim/fixed_wing_fc.gd).
+func _update_failsafe(dt: float) -> void:
+	if session == null or session.get("flight_controller") == null or _scripted or session.sim.paused \
+			or not session.crash.is_empty():
+		return
+	var fc: RefCounted = session.flight_controller
+	if _rc_link.enabled() and _rc_link.lost:
+		if fc.trigger_rth("rx_loss"):
+			_note = tr("Radio signal lost: failsafe, returning home.")
+	elif fc.failsafe == "rx_loss":
+		fc.link_recovered()
+		_note = tr("Radio signal back. Move a stick or the mode switch to take over.")
+	var prefs: Dictionary = _rig.fc_failsafe
+	if bool(prefs.get("video_rth", false)) and _video_link.enabled() and _rig.onboard.configured:
+		if _video_link.quality < VIDEO_LOST_QUALITY:
+			_video_lost_s += dt
+		elif _video_link.quality > VIDEO_BACK_QUALITY:
+			_video_lost_s = 0.0
+			_video_rth_armed = true
+		if _video_rth_armed and _video_lost_s >= VIDEO_LOST_S:
+			_video_rth_armed = false
+			if fc.trigger_rth("video"):
+				_note = tr("Video lost: returning home. Move a stick or the mode switch to take over.")
+	if bool(prefs.get("battery_rth", false)) and not _battery_rth_done and _fpv_osd != null:
+		var alarms: Array = _fpv_osd.last_reading.get("alarms", [])
+		if BATTERY_RTH_ALARMS.any(func(alarm: String) -> bool: return alarm in alarms):
+			_battery_rth_done = true
+			if fc.trigger_rth("battery"):
+				_note = tr("Low battery: returning home. Move a stick or the mode switch to take over.")
 
 
 func _update_fpv_lens() -> void:
@@ -1777,7 +1833,9 @@ func _update_fpv_osd(dt: float, force := false) -> void:
 	if config != _fpv_osd_config:
 		_fpv_osd_config = config.duplicate(true)
 		_fpv_osd.configure(config.style, config.elements, config.units)
-	if not _fpv_osd.enabled() or not _rig.onboard.configured:
+	# FC-2: the low-battery return reads the OSD's battery sensor, so it keeps sampling with the OSD turned off.
+	var battery_watch: bool = bool(_rig.fc_failsafe.get("battery_rth", false))
+	if not (_fpv_osd.enabled() or battery_watch) or not _rig.onboard.configured:
 		_fpv_osd.visible = false
 		return
 	_fpv_osd_since += dt
@@ -1785,8 +1843,10 @@ func _update_fpv_osd(dt: float, force := false) -> void:
 		_fpv_osd_since = 0.0
 		var snap := _overlay_snapshot()
 		if not snap.is_empty():
-			_fpv_osd.feed(snap, -float(field.pilot.get("down", 0.0)), _video_link.osd_link(), _flight_mode())
-	var shown: bool = _rig.showing_onboard_lens() and not _fpv_osd.values.is_empty()
+			# FC-2: the OSD's link figure is the radio link when one is modelled (as on a real FC), else the video's.
+			var link: Dictionary = _rc_link.osd_link() if _rc_link.enabled() else _video_link.osd_link()
+			_fpv_osd.feed(snap, -float(field.pilot.get("down", 0.0)), link, _flight_mode(), _fc_osd_status())
+	var shown: bool = _fpv_osd.enabled() and _rig.showing_onboard_lens() and not _fpv_osd.values.is_empty()
 	_fpv_osd.visible = shown
 	if not shown or _last_render_pose.is_empty():
 		return
@@ -1799,6 +1859,13 @@ func _update_fpv_osd(dt: float, force := false) -> void:
 	var geo := FpvLens.geometry(_rig.onboard_lens, _rig.onboard.hfov_deg, aspect)
 	var px_per_deg := float(geo.focal) * size.y * 0.5 * PI / 180.0
 	_fpv_osd.set_attitude(pitch, bank, px_per_deg, _rig.onboard.tilt_deg, _presentation_clock_s())
+
+
+## FC-2: the controller's failsafe state for the OSD.
+func _fc_osd_status() -> Dictionary:
+	if session == null or session.get("flight_controller") == null:
+		return {}
+	return {failsafe = str(session.flight_controller.failsafe), awaiting_pilot = bool(session.flight_controller.awaiting_pilot)}
 
 
 ## FC-1: the flight controller's mode now ("manual" without a session).
@@ -1819,9 +1886,8 @@ func _update_flight_mode() -> void:
 		_fc_switch_mode = ""
 		return
 	var selected := FixedWingFC.switch_mode(radio.auxiliary_amount("flight_mode"), _rig.fc_switch_modes)
-	if selected != _fc_switch_mode:
+	if selected != _fc_switch_mode and _set_flight_mode(selected):
 		_fc_switch_mode = selected
-		_set_flight_mode(selected)
 
 
 ## [M] / [Shift+M]: the next or previous flight-controller mode.
@@ -1829,13 +1895,19 @@ func _cycle_flight_mode(direction: int) -> void:
 	if session == null or session.get("flight_controller") == null:
 		return
 	var index := FixedWingFC.MODES.find(_flight_mode())
-	_set_flight_mode(FixedWingFC.MODES[posmod(index + direction, FixedWingFC.MODES.size())])
+	if not _set_flight_mode(FixedWingFC.MODES[posmod(index + direction, FixedWingFC.MODES.size())]):
+		_note = tr("Radio signal lost: the flight mode cannot change.")
 
 
-func _set_flight_mode(mode: String) -> void:
-	if session.flight_controller.mode == mode or not session.flight_controller.set_mode(mode):
-		return
+## Returns whether the controller flies `mode` now (a radio-link failsafe refuses every change).
+func _set_flight_mode(mode: String) -> bool:
+	var fc: RefCounted = session.flight_controller
+	if fc.mode == mode and not fc.awaiting_pilot:
+		return true
+	if not fc.set_mode(mode):
+		return false
 	_note = tr("Flight mode: %s") % tr(str(FixedWingFC.NAMES.get(mode, mode)))
+	return true
 
 
 ## FPV-5: the onboard lens's head-look sources for this frame: opentrack datagrams and the gimbal's radio channels.
@@ -3421,6 +3493,10 @@ func _on_resetting() -> void:
 		_fpv_osd.reset()
 		_fpv_osd_since = INF
 	_video_link.reset()
+	_rc_link.reset()
+	_video_lost_s = 0.0
+	_video_rth_armed = true
+	_battery_rth_done = false
 	_link_scan_since = INF
 	_queue_companion_transition()
 	_aircraft_lights.reset()

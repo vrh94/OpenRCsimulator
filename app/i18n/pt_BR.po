@@ -13696,3 +13696,42 @@ msgstr "Manual: os sticks vão direto às superfícies. Acro: o giroscópio mant
 
 msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
 msgstr "Modo de voo: próximo (Shift+M anterior): Manual, Acro, Ângulo, Horizon, Manter altitude, Cruzeiro, Loiter, Retornar para casa"
+
+msgid "Radio link range"
+msgstr "Alcance do link de rádio"
+
+msgid "Return home on video loss"
+msgstr "Retornar para casa ao perder o vídeo"
+
+msgid "Return home on low battery"
+msgstr "Retornar para casa com bateria baixa"
+
+msgid "2.4 GHz (ExpressLRS)"
+msgstr "2,4 GHz (ExpressLRS)"
+
+msgid "900 MHz (long range)"
+msgstr "900 MHz (longo alcance)"
+
+msgid "Off: the radio always reaches the airplane. 2.4 GHz fades beyond about 6 km, 900 MHz beyond about 30 km, both sooner behind hills. When the signal is lost the flight controller returns home; move a stick or the mode switch to take over when it is back."
+msgstr "Desligado: o rádio sempre alcança o avião. 2,4 GHz enfraquece além de uns 6 km e 900 MHz além de uns 30 km, ambos antes atrás de morros. Se o sinal cair, a controladora de voo retorna para casa; mova um stick ou a chave de modo para retomar quando ele voltar."
+
+msgid "Returns home when the FPV picture is lost for 1.5 s, as if you flipped your return-to-home switch."
+msgstr "Retorna para casa quando a imagem FPV some por 1,5 s, como se você acionasse a chave de retorno."
+
+msgid "Returns home once at the first low-battery warning of an electric airplane, like ArduPilot's battery failsafe."
+msgstr "Retorna para casa uma vez no primeiro aviso de bateria baixa de um avião elétrico, como o failsafe de bateria do ArduPilot."
+
+msgid "Radio signal lost: failsafe, returning home."
+msgstr "Sinal de rádio perdido: failsafe, retornando para casa."
+
+msgid "Radio signal back. Move a stick or the mode switch to take over."
+msgstr "Sinal de rádio de volta. Mova um stick ou a chave de modo para retomar."
+
+msgid "Video lost: returning home. Move a stick or the mode switch to take over."
+msgstr "Vídeo perdido: retornando para casa. Mova um stick ou a chave de modo para retomar."
+
+msgid "Low battery: returning home. Move a stick or the mode switch to take over."
+msgstr "Bateria baixa: retornando para casa. Mova um stick ou a chave de modo para retomar."
+
+msgid "Radio signal lost: the flight mode cannot change."
+msgstr "Sinal de rádio perdido: o modo de voo não pode mudar."
