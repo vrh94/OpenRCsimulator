@@ -322,7 +322,8 @@ func _cycle() -> void:
 	var cam := _camera()
 	var rig := CameraRig.new(cam, SPAN)
 	var seen := []
-	for i in CameraRig.VIEWS.size():
+	# CAM-11: without a mount the onboard view is unavailable and skipped (tests/test_onboard_view.gd covers it).
+	for i in CameraRig.VIEWS.filter(func(id: String) -> bool: return rig.available(id)).size():
 		seen.append(rig.view)
 		rig.cycle(1)
 	_check("C cycles pilot → chase → fly-by → orbit → close-up → pilot", seen == ["pilot", "chase", "flyby", "orbit", "closeup"] and rig.view == "pilot", str(seen))

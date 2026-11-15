@@ -1577,7 +1577,22 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
 	if force_refresh or not is_equal_approx(float(_rig.get("_span")), _extent.x):
 		_rig.set_span(_extent.x)
+	_configure_onboard_mount()
 	return true
+
+
+## CAM-11/FPV-1: the onboard view's lens. No aircraft declares a mount yet (CAM-13), so every fixed-wing model gets
+## the nose estimate from its built meshes; the helicopter route never calls this and keeps no onboard view.
+func _configure_onboard_mount() -> void:
+	if _rig == null or _airplane.is_empty() or _airplane.get("root") == null:
+		return
+	var estimate := CameraRig.OnboardView.derive_mount(_airplane.root)
+	if estimate.ok:
+		_rig.onboard.configure(estimate.position, estimate.source)
+	else:
+		_rig.onboard.clear()
+		if _rig.view == "onboard":
+			_rig.set_view("pilot")
 
 
 func _update_cg_model() -> void:
@@ -1836,6 +1851,7 @@ func _status() -> String:
 	else:
 		line += "\n[T] record trace"
 	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _rig.auto_zoom else "off", _shadow_mode]
+	line += "\n[1] pilot [2] chase [3] onboard FPV [4] fly-by [5] orbit  [C] cycle"
 	line += "\n[L] " + _aircraft_lights_text()
 	if _note != "":
 		line += "\n" + _note
@@ -2255,6 +2271,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_rig.set_view("pilot")
 			KEY_2:
 				_rig.select_view("chase") # again: 3D follow (CAM-09)
+			KEY_3:
+				_rig.set_view("onboard") # CAM-11/FPV-1
 			KEY_4:
 				_rig.set_view("flyby")
 			KEY_5:
@@ -3444,6 +3462,7 @@ func _build_world() -> bool:
 	var storm_args: Dictionary = _user_args()
 	_storm_fx.set_audio_enabled(not _scripted and not storm_args.has("capture") and str(storm_args.get("soundscape", "on")) != "off")
 	_rig = CameraRig.new(_camera, _extent.x)
+	_configure_onboard_mount()
 	_magnifier = Magnifier.new()
 	_magnifier.name = "MagnifierLayer"
 	add_child(_magnifier)

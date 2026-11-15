@@ -1,6 +1,7 @@
 # CAM-02: the flight's camera rig (docs/plans/camera-views.md §4). One Camera3D, one active view:
 #   pilot    the RC pilot's eyes at the field's station (render/pilot_camera.gd), auto-zoom (Z) and manual zoom;
 #   chase    horizon-locked follow behind the flight path (chase_view.gd);
+#   onboard  CAM-11/FPV-1: a rigid FPV camera on the airframe (onboard_view.gd), only when a mount is configured;
 #   orbit    a sphere around the airplane, right mouse drag and wheel (orbit_view.gd);
 #   closeup  the rigid inspection offset (Spec.INSPECT_OFFSET), unchanged.
 # Presentation only: it reads the interpolated render pose main.gd draws the airplane with and never writes the
@@ -13,13 +14,14 @@ const CameraMath := preload("res://render/camera/camera_math.gd")
 const ChaseView := preload("res://render/camera/chase_view.gd")
 const OrbitView := preload("res://render/camera/orbit_view.gd")
 const FlybyView := preload("res://render/camera/flyby_view.gd")
+const OnboardView := preload("res://render/camera/onboard_view.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 
-## The C cycle, in order. Number keys select pilot (1), chase (2), fly-by (4) and orbit (5); 3, 6, 7 are reserved
-## (plan §4.4).
-const VIEWS := ["pilot", "chase", "flyby", "orbit", "closeup"]
+## The C cycle, in order. Number keys select pilot (1), chase (2), onboard (3), fly-by (4) and orbit (5); 6 and 7 are
+## reserved (plan §4.4). The cycle skips the onboard view while no mount is configured (helicopter, automation).
+const VIEWS := ["pilot", "chase", "onboard", "flyby", "orbit", "closeup"]
 ## Names the input panel, captures and evidence show (the historical "pilot" and "close-up" are kept).
-const NAMES := { pilot = "pilot", chase = "chase", flyby = "fly-by", orbit = "orbit", closeup = "close-up" }
+const NAMES := { pilot = "pilot", chase = "chase", onboard = "onboard FPV", flyby = "fly-by", orbit = "orbit", closeup = "close-up" }
 ## One +/− step or wheel notch: a quarter of a doubling.
 const ZOOM_STEP := 1.189207115002721 # 2^(1/4)
 ## Pilot manual zoom limits (multiplies tan(fov/2): < 1 narrows) and chase boom limits.
@@ -35,7 +37,8 @@ const PILOT_FOV_MAX := 120.0
 ## so each view takes the largest near plane its closest geometry allows. Pilot: the nearest surface is the station
 ## barrier, 1.11 m from the eye (CAM-02b probe), still 0.52 m deep at the widest manual zoom. Chase and close-up stay
 ## ≥ 1 m from the airframe. The orbit can come within centimetres of a wing tip, so its near plane shrinks with distance.
-const NEAR_M := { pilot = 0.5, chase = 0.25, flyby = 0.5, closeup = 0.25 }
+## Onboard: the lens sits centimetres from the fuselage and the propeller disc (plan §5.3 table: 0.03 m).
+const NEAR_M := { pilot = 0.5, chase = 0.25, onboard = 0.03, flyby = 0.5, closeup = 0.25 }
 const ORBIT_NEAR_MIN := 0.05
 const ORBIT_NEAR_MAX := 0.25
 ## CAM-06b: the horizon tilt keeps the aircraft within this share of the half-frame from the centre and lifts the
@@ -79,6 +82,8 @@ var look_height := 1.7
 var chase := ChaseView.new()
 var orbit := OrbitView.new()
 var flyby := FlybyView.new()
+var onboard := OnboardView.new()
+var _last_dt := 0.0
 ## Direction toward the sun (render), set by the route each frame; the fly-by stands with the sun behind it.
 var light_direction := Vector3.ZERO
 var _span := 1.5
@@ -114,7 +119,7 @@ func view_name() -> String:
 
 ## Selects a view. Chase restarts settled behind the airplane; orbit starts from the camera's current position.
 func set_view(id: String) -> bool:
-	if not is_view(id):
+	if not is_view(id) or not available(id):
 		return false
 	if id == view:
 		return true
@@ -126,8 +131,8 @@ func set_view(id: String) -> bool:
 		chase.reset()
 	elif id == "flyby":
 		flyby.reset()
-	elif id == "orbit":
-		_orbit_primed = false
+	elif id == "orbit" or id == "onboard":
+		_orbit_primed = false # onboard: a crash aftermath orbits the wreck from the lens (focus())
 	_fov_offset = 0.0
 	_absorb_from = NAN
 	return true
@@ -146,7 +151,17 @@ func select_view(id: String) -> bool:
 
 
 func cycle(step: int) -> void:
-	set_view(VIEWS[posmod(VIEWS.find(view) + step, VIEWS.size())])
+	var at := VIEWS.find(view)
+	for i in VIEWS.size():
+		at = posmod(at + step, VIEWS.size())
+		if available(VIEWS[at]):
+			set_view(VIEWS[at])
+			return
+
+
+## Whether a view can be shown: the onboard view needs a configured mount.
+func available(id: String) -> bool:
+	return id != "onboard" or onboard.configured
 
 
 ## CAM-06: another auto-zoom law, reached smoothly like a zoom change.
@@ -235,6 +250,8 @@ func reset() -> void:
 	_screen_up = Vector3.ZERO
 	_fov_offset = 0.0
 	_absorb_from = NAN
+	if view == "onboard":
+		_orbit_primed = false # a restarted flight returns to the lens, not the last wreck orbit
 
 
 ## Places the camera for this frame. target: the airplane's CG (render); airplane: its root transform (close-up
@@ -249,6 +266,7 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
 	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
 	_orbit_entry_eye = Vector3.INF
+	_last_dt = dt
 	var near_value := PilotCamera.projection_value(near_plane())
 	if camera.near != near_value:
 		camera.near = near_value
@@ -301,6 +319,9 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 					orbit.start_behind(body)
 				_orbit_primed = true
 			_apply(orbit.update(target, ground_y, dt, obstacles))
+		"onboard":
+			# Rigid on the drawn pose: no smoothing, so the picture never lags the aircraft (FPV-2 adds an option).
+			_apply(onboard.placement(airplane, body, _aspect()))
 	_placed = true
 	if not defer_history_reset and not pending_history_reset.is_empty():
 		commit_history_reset()
@@ -339,6 +360,16 @@ func focus(point: Vector3, ground_y: Callable, obstacles := Callable()) -> void:
 			if _orbit_entry_eye.is_finite():
 				orbit.start_from(_orbit_entry_eye, point) # entered this frame: start where the last view was, around the wreck
 			_apply(orbit.update(point, ground_y, 0.0, obstacles)) # eased once this frame already, in update()
+		"onboard":
+			# Plan §8: a lens on a wreck shows nothing useful, so the aftermath orbits the wreck, starting at the lens.
+			if not _orbit_primed:
+				orbit.start_from(camera.position, point)
+				_orbit_primed = true
+			_apply(orbit.update(point, ground_y, _last_dt, obstacles))
+			var near_value := PilotCamera.projection_value(clampf(0.5 * (orbit.shown_distance() - 0.7 * _span),
+				ORBIT_NEAR_MIN, ORBIT_NEAR_MAX))
+			if camera.near != near_value:
+				camera.near = near_value
 		"chase", "flyby":
 			camera.basis = CameraMath.look_basis(camera.position, point)
 			var away := maxf(camera.position.distance_to(point), 0.1)
@@ -364,7 +395,17 @@ func near_plane() -> float:
 
 func evidence() -> Dictionary:
 	return { view = view, auto_zoom = auto_zoom, pilot_zoom = pilot_zoom, chase_zoom = chase.zoom,
-		orbit = [orbit.azimuth_deg, orbit.elevation_deg, orbit.distance] }
+		orbit = [orbit.azimuth_deg, orbit.elevation_deg, orbit.distance],
+		onboard = { configured = onboard.configured, source = onboard.mount_source, mount = onboard.mount,
+			hfov_deg = onboard.hfov_deg, tilt_deg = onboard.tilt_deg } }
+
+
+## Width / height of the picture the camera renders into.
+func _aspect() -> float:
+	if camera == null or not camera.is_inside_tree():
+		return 16.0 / 9.0
+	var size := camera.get_viewport().get_visible_rect().size
+	return size.x / size.y if size.y > 0.0 else 16.0 / 9.0
 
 
 func _apply(placed: Dictionary) -> void:
