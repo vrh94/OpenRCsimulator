@@ -6,6 +6,7 @@ extends RefCounted
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const OnboardView := preload("res://render/camera/onboard_view.gd")
 const FpvHead := preload("res://render/camera/fpv_head.gd")
+const FpvOsdModel := preload("res://render/overlays/fpv_osd_model.gd")
 
 ## The view a Home flight starts in (D1: the pilot view stays the default). "onboard" falls back to the pilot view on
 ## routes without an onboard mount (the helicopter).
@@ -28,6 +29,9 @@ const FPV_GIMBAL_AXES: Array[int] = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 const FPV_GIMBAL_PAN_TRAVELS: Array[int] = FpvHead.PAN_TRAVELS
 const FPV_GIMBAL_TILT_TRAVELS: Array[int] = FpvHead.TILT_TRAVELS
 const FPV_GIMBAL_SPEEDS: Array[String] = FpvHead.SERVO_SPEED_NAMES
+## FPV-6: the fixed-wing OSD style and its elements (render/overlays/fpv_osd_model.gd).
+const FPV_OSD_STYLES: Array[String] = FpvOsdModel.STYLES
+const FPV_OSD_ELEMENTS: Array[String] = FpvOsdModel.ELEMENTS
 ## The pilot view's widest vertical FOV (deg), which the auto-zoom narrows from. 50° stays the default until CAM-22;
 ## about 31° is orthoscopic on a 27-inch 16:9 screen seen from 60 cm (CAM-AUD-2026-10-24).
 const FOVS: Array[int] = [30, 35, 40, 45, 50, 55, 60, 70]
@@ -65,6 +69,8 @@ const DEFAULTS := {
 	"camera_fpv_gimbal_speed": "medium",
 	"camera_fpv_gimbal_invert_pan": false,
 	"camera_fpv_gimbal_invert_tilt": false,
+	"camera_fpv_osd": FpvOsdModel.DEFAULT_STYLE,
+	"camera_fpv_osd_elements": FpvOsdModel.DEFAULT_ELEMENTS,
 }
 
 
@@ -89,7 +95,10 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
 	if typeof(raw.get("camera_fpv_motion_blur", DEFAULTS.camera_fpv_motion_blur)) != TYPE_BOOL:
 		out.append("camera_fpv_motion_blur must be a boolean")
-	for pair: Array in [["camera_fpv_head_tracking", FPV_HEAD_TRACKING], ["camera_fpv_gimbal_speed", FPV_GIMBAL_SPEEDS]]:
+	if not FpvOsdModel.valid_elements(raw.get("camera_fpv_osd_elements", DEFAULTS.camera_fpv_osd_elements)):
+		out.append("camera_fpv_osd_elements must list OSD elements (%s)" % ", ".join(FPV_OSD_ELEMENTS))
+	for pair: Array in [["camera_fpv_head_tracking", FPV_HEAD_TRACKING], ["camera_fpv_gimbal_speed", FPV_GIMBAL_SPEEDS],
+			["camera_fpv_osd", FPV_OSD_STYLES]]:
 		var choice: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(choice) != TYPE_STRING or choice not in (pair[1] as Array):
 			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
@@ -148,7 +157,18 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fpv_gimbal_speed": str(raw.get("camera_fpv_gimbal_speed", DEFAULTS.camera_fpv_gimbal_speed)),
 		"camera_fpv_gimbal_invert_pan": bool(raw.get("camera_fpv_gimbal_invert_pan", DEFAULTS.camera_fpv_gimbal_invert_pan)),
 		"camera_fpv_gimbal_invert_tilt": bool(raw.get("camera_fpv_gimbal_invert_tilt", DEFAULTS.camera_fpv_gimbal_invert_tilt)),
+		"camera_fpv_osd": str(raw.get("camera_fpv_osd", DEFAULTS.camera_fpv_osd)),
+		"camera_fpv_osd_elements": _osd_elements(raw.get("camera_fpv_osd_elements", DEFAULTS.camera_fpv_osd_elements)),
 	}
+
+
+## The OSD elements as a plain Array of ids in the model's order (the file may hold a PackedStringArray).
+static func _osd_elements(value: Variant) -> Array:
+	var out: Array = []
+	for id: String in FPV_OSD_ELEMENTS:
+		if id in value:
+			out.append(id)
+	return out
 
 
 ## A flight's start: every preference, including the first view and the chase boom.
@@ -190,3 +210,4 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 	rig.onboard_video = {quality = str(config.camera_fpv_quality), noise = str(config.camera_fpv_noise),
 		motion_blur = bool(config.camera_fpv_motion_blur)}
 	rig.fpv_head.configure(config)
+	rig.onboard_osd = {style = str(config.camera_fpv_osd), elements = (config.camera_fpv_osd_elements as Array).duplicate()}

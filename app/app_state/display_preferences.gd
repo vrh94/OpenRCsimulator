@@ -98,6 +98,9 @@ const DEFAULTS := {
 	"camera_fpv_gimbal_speed": CameraSettings.DEFAULTS.camera_fpv_gimbal_speed,
 	"camera_fpv_gimbal_invert_pan": CameraSettings.DEFAULTS.camera_fpv_gimbal_invert_pan,
 	"camera_fpv_gimbal_invert_tilt": CameraSettings.DEFAULTS.camera_fpv_gimbal_invert_tilt,
+	# FPV-6: the fixed-wing OSD.
+	"camera_fpv_osd": CameraSettings.DEFAULTS.camera_fpv_osd,
+	"camera_fpv_osd_elements": CameraSettings.DEFAULTS.camera_fpv_osd_elements,
 	# LENS-01: lens and screen effects ([lens] section), validated by render/lens/lens_settings.gd.
 	"lens_effects": LensSettings.DEFAULTS.lens_effects,
 	"impact_effects": LensSettings.DEFAULTS.impact_effects,
@@ -118,6 +121,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"camera_fpv_fov", "camera_fpv_tilt", "camera_fpv_smoothing", "camera_fpv_lens",
 	"camera_fpv_shake", "camera_fpv_noise", "camera_fpv_motion_blur", "camera_fpv_quality",
 	"camera_fpv_head_tracking", "camera_fpv_head_sensitivity", "camera_fpv_gimbal_pan_axis", "camera_fpv_gimbal_tilt_axis", "camera_fpv_gimbal_pan_travel", "camera_fpv_gimbal_tilt_travel", "camera_fpv_gimbal_speed", "camera_fpv_gimbal_invert_pan", "camera_fpv_gimbal_invert_tilt",
+	"camera_fpv_osd", "camera_fpv_osd_elements",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
 const CAMERA_FILE_KEYS := {
@@ -138,6 +142,7 @@ const CAMERA_FILE_KEYS := {
 	"camera_fpv_gimbal_speed": "fpv_gimbal_speed",
 	"camera_fpv_gimbal_invert_pan": "fpv_gimbal_invert_pan",
 	"camera_fpv_gimbal_invert_tilt": "fpv_gimbal_invert_tilt",
+	"camera_fpv_osd": "fpv_osd", "camera_fpv_osd_elements": "fpv_osd_elements",
 }
 ## FW-RGB-13: display.cfg [aircraft_lighting] key for each global aircraft-lighting preference.
 const AIRCRAFT_LIGHTING_FILE_KEYS := {

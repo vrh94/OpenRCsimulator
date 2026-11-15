@@ -7,6 +7,7 @@ const Widgets := preload("res://ui/widgets.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
+const FpvOsdModel := preload("res://render/overlays/fpv_osd_model.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 ## CAM-06b/28 pilot-view aid combinations offered by one picker.
 const CAMERA_AIDS: Array[String] = ["off", "horizon", "overhead", "both"]
@@ -141,6 +142,9 @@ var _camera_fpv_gimbal_tilt_travel_picker: OptionButton
 var _camera_fpv_gimbal_speed_picker: OptionButton
 var _camera_fpv_gimbal_invert_pan_toggle: CheckButton
 var _camera_fpv_gimbal_invert_tilt_toggle: CheckButton
+## FPV-6: the fixed-wing OSD style and one check box per element.
+var _camera_fpv_osd_picker: OptionButton
+var _camera_fpv_osd_boxes := {}
 var _graphics_info: Label
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
@@ -556,6 +560,26 @@ func _build() -> void:
 	_add_row(camera_page, "FPV gimbal reverse pan", _camera_fpv_gimbal_invert_pan_toggle)
 	_camera_fpv_gimbal_invert_tilt_toggle = _camera_toggle("CameraFpvGimbalInvertTilt", "camera_fpv_gimbal_invert_tilt", "Reverses the tilt servo.")
 	_add_row(camera_page, "FPV gimbal reverse tilt", _camera_fpv_gimbal_invert_tilt_toggle)
+	_camera_fpv_osd_picker = _camera_picker("CameraFpvOsd", "camera_fpv_osd", CameraSettings.FPV_OSD_STYLES)
+	_add_row(camera_page, "FPV OSD", _camera_fpv_osd_picker)
+	_set_localized_tooltip(_camera_fpv_osd_picker, "The on-screen display over the onboard picture, laid out like a Betaflight, INAV or ArduPilot flight controller's OSD. It shows only what the simulator measures: no battery figures on a glow or gas engine.")
+	var osd_flow := HFlowContainer.new()
+	osd_flow.name = "CameraFpvOsdElements"
+	osd_flow.custom_minimum_size.x = 420
+	for id: String in CameraSettings.FPV_OSD_ELEMENTS:
+		var box := CheckBox.new()
+		box.name = "Osd_" + id
+		box.text = str(FpvOsdModel.ELEMENT_NAMES.get(id, id))
+		box.toggled.connect(func(_on: bool) -> void:
+			var chosen: Array = []
+			for element: String in CameraSettings.FPV_OSD_ELEMENTS:
+				if (_camera_fpv_osd_boxes[element] as CheckBox).button_pressed:
+					chosen.append(element)
+			_draft["camera_fpv_osd_elements"] = chosen
+			_on_presentation_option_changed())
+		_camera_fpv_osd_boxes[id] = box
+		osd_flow.add_child(box)
+	_add_row(camera_page, "FPV OSD elements", osd_flow)
 	_set_localized_tooltip(_camera_fpv_smoothing_picker, "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe.")
 
 	_opaque_toggle = CheckButton.new()
@@ -882,6 +906,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"camera_fpv_shake", "camera_fpv_noise": return {off = tr("%s (default)") % tr("Off"), low = tr("Low"), medium = tr("Medium"),
 			high = tr("High")}.get(value, str(value))
 		"camera_fpv_quality": return {low = tr("Low"), medium = tr("Medium"), high = tr("%s (default)") % tr("High")}.get(value, str(value))
+		"camera_fpv_osd": return {off = tr("Off"), betaflight = tr("%s (default)") % "Betaflight", inav = "INAV", ardupilot = "ArduPilot"}.get(value, str(value))
 		"camera_fpv_head_tracking": return {off = tr("%s (default)") % tr("Off"), opentrack = tr("opentrack (UDP)")}.get(value, str(value))
 		"camera_fpv_gimbal_pan_axis", "camera_fpv_gimbal_tilt_axis":
 			return tr("%s (default)") % tr("Off") if int(value) < 0 else tr("Axis %d") % int(value)
@@ -1431,6 +1456,10 @@ func _sync_controls() -> void:
 	_select_metadata(_camera_fpv_gimbal_speed_picker, str(_draft.get("camera_fpv_gimbal_speed", CameraSettings.DEFAULTS.camera_fpv_gimbal_speed)))
 	_camera_fpv_gimbal_invert_pan_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_pan", false)))
 	_camera_fpv_gimbal_invert_tilt_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_tilt", false)))
+	_select_metadata(_camera_fpv_osd_picker, str(_draft.get("camera_fpv_osd", CameraSettings.DEFAULTS.camera_fpv_osd)))
+	var osd_elements: Variant = _draft.get("camera_fpv_osd_elements", CameraSettings.DEFAULTS.camera_fpv_osd_elements)
+	for id: String in _camera_fpv_osd_boxes:
+		(_camera_fpv_osd_boxes[id] as CheckBox).set_pressed_no_signal(id in osd_elements)
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
@@ -1700,7 +1729,7 @@ func _refresh_translated_text() -> void:
 			[_camera_fpv_head_sensitivity_picker, "camera_fpv_head_sensitivity"], [_camera_fpv_head_tracking_picker, "camera_fpv_head_tracking"],
 			[_camera_fpv_gimbal_pan_axis_picker, "camera_fpv_gimbal_pan_axis"], [_camera_fpv_gimbal_tilt_axis_picker, "camera_fpv_gimbal_tilt_axis"],
 			[_camera_fpv_gimbal_pan_travel_picker, "camera_fpv_gimbal_pan_travel"], [_camera_fpv_gimbal_tilt_travel_picker, "camera_fpv_gimbal_tilt_travel"],
-			[_camera_fpv_gimbal_speed_picker, "camera_fpv_gimbal_speed"]]:
+			[_camera_fpv_gimbal_speed_picker, "camera_fpv_gimbal_speed"], [_camera_fpv_osd_picker, "camera_fpv_osd"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

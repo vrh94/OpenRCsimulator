@@ -29,6 +29,7 @@ const CameraRig := preload("res://render/camera/camera_rig.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const FpvHead := preload("res://render/camera/fpv_head.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
+const FpvOsd := preload("res://render/overlays/fpv_osd.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
 const FpvLens := preload("res://render/camera/fpv_lens.gd")
 const CameraCollision := preload("res://render/camera/camera_collision.gd")
@@ -401,6 +402,10 @@ var _fpv_lens: FpvLens
 var _fpv_lens_arg := ""
 ## FPV-4: --fpv-shake=, --fpv-noise=, --fpv-quality=, --fpv-blur for direct routes and captures.
 var _fpv_video_args := {}
+## FPV-6: the fixed-wing OSD over the onboard picture, and the time since its numbers were last refreshed.
+var _fpv_osd: CanvasLayer
+var _fpv_osd_since := INF
+var _fpv_osd_config := {}
 ## CAM-09: the scenery collision world the cameras keep clear of (a reference, built once with the session's).
 var _camera_obstacles: Dictionary = {}
 ## RC-TRACK: this flight's RC car circuit, decided once; it feeds the field build, the wheels and the obstacles.
@@ -825,6 +830,14 @@ func _prepare_flight() -> void:
 			_fpv_video_args[pair[0]] = str(args[pair[0]])
 	if args.has("fpv-blur"):
 		_fpv_video_args["fpv-blur"] = true
+	if args.has("fpv-osd"):
+		if str(args["fpv-osd"]) not in CameraSettings.FPV_OSD_STYLES:
+			push_error("--fpv-osd must be one of %s (got \"%s\")" % [", ".join(CameraSettings.FPV_OSD_STYLES), str(args["fpv-osd"])])
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_fpv_video_args["fpv-osd"] = str(args["fpv-osd"])
 	if args.has("fpv-look"):
 		# FPV-5: a fixed head-look (yaw right, pitch up; deg) for captures of the onboard view.
 		var parts := str(args["fpv-look"]).split(",")
@@ -1587,6 +1600,7 @@ func _process(delta: float) -> void:
 	if not _rig.pending_history_reset.is_empty():
 		_rig.commit_history_reset()
 	_update_fpv_lens()
+	_update_fpv_osd(dt)
 	if _lens != null:
 		_lens.advance(delta, visual_clock_s, not session.holds.is_empty())
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
@@ -1628,6 +1642,41 @@ func _update_fpv_lens() -> void:
 	_fpv_lens.set_video(str(_rig.onboard_video.quality), str(_rig.onboard_video.noise), bool(_rig.onboard_video.motion_blur))
 	_fpv_lens.update(_camera, _rig.showing_onboard_lens() and _airplane.root.visible, _rig.onboard.hfov_deg,
 		_presentation_clock_s())
+
+
+## FPV-6: the fixed-wing OSD. Its numbers (and battery sensors) refresh at the OSD rate in every view while it is
+## on, so the used mAh stays right across view changes; it is drawn only over the onboard lens picture, with the
+## drawn attitude every frame. force: refresh the numbers now (captures).
+func _update_fpv_osd(dt: float, force := false) -> void:
+	if _fpv_osd == null or _rig == null:
+		return
+	var config := {style = str(_rig.onboard_osd.style), elements = _rig.onboard_osd.elements,
+		units = _overlays.unit_system() if _overlays != null else "metric"}
+	if config != _fpv_osd_config:
+		_fpv_osd_config = config.duplicate(true)
+		_fpv_osd.configure(config.style, config.elements, config.units)
+	if not _fpv_osd.enabled() or not _rig.onboard.configured:
+		_fpv_osd.visible = false
+		return
+	_fpv_osd_since += dt
+	if force or _fpv_osd_since >= FpvOsd.Model.REFRESH_S:
+		_fpv_osd_since = 0.0
+		var snap := _overlay_snapshot()
+		if not snap.is_empty():
+			_fpv_osd.feed(snap, -float(field.pilot.get("down", 0.0)))
+	var shown: bool = _rig.showing_onboard_lens() and not _fpv_osd.values.is_empty()
+	_fpv_osd.visible = shown
+	if not shown or _last_render_pose.is_empty():
+		return
+	var body: Basis = (_last_render_pose.basis as Basis).orthonormalized()
+	var forward := -body.z
+	var pitch := rad_to_deg(asin(clampf(forward.y, -1.0, 1.0)))
+	var bank := rad_to_deg(atan2(-body.x.y, body.y.y))
+	var size := get_viewport().get_visible_rect().size
+	var aspect := size.x / size.y if size.y > 0.0 else 16.0 / 9.0
+	var geo := FpvLens.geometry(_rig.onboard_lens, _rig.onboard.hfov_deg, aspect)
+	var px_per_deg := float(geo.focal) * size.y * 0.5 * PI / 180.0
+	_fpv_osd.set_attitude(pitch, bank, px_per_deg, _rig.onboard.tilt_deg, _presentation_clock_s())
 
 
 ## FPV-5: the onboard lens's head-look sources for this frame: opentrack datagrams and the gimbal's radio channels.
@@ -3196,6 +3245,9 @@ func _on_resetting() -> void:
 		_lens.reset()
 	if _overlays != null:
 		_overlays.reset_flight()
+	if _fpv_osd != null:
+		_fpv_osd.reset()
+		_fpv_osd_since = INF
 	_queue_companion_transition()
 	_aircraft_lights.reset()
 	if is_instance_valid(_rgb_lighting):
@@ -3576,6 +3628,10 @@ func _build_world() -> bool:
 			_rig.onboard_video[pair[1]] = str(_fpv_video_args[pair[0]])
 	if _fpv_video_args.has("fpv-blur"):
 		_rig.onboard_video.motion_blur = true
+	_fpv_osd = FpvOsd.new()
+	add_child(_fpv_osd)
+	if _fpv_video_args.has("fpv-osd"):
+		_rig.onboard_osd.style = str(_fpv_video_args["fpv-osd"])
 	if _fpv_video_args.has("fpv-look"):
 		var fixed_look: Vector2 = _fpv_video_args["fpv-look"]
 		_rig.fpv_head.mouse = Vector2(clampf(fixed_look.x, -FpvHead.YAW_LIMIT_DEG, FpvHead.YAW_LIMIT_DEG),
@@ -3742,6 +3798,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
 	_update_fpv_lens() # _process does not run while capturing
+	_update_fpv_osd(0.0, true)
 	var clock_s: float = t if _scripted else sim.time()
 	World.update(_env, clock_s, _render_wind(clock_s), pose.pos, _camera)
 	_update_aircraft_lights(clock_s)

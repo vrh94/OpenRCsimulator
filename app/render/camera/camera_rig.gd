@@ -91,6 +91,9 @@ var fpv_head := FpvHead.new()
 var onboard_lens := "barrel"
 ## FPV-4: the onboard video settings the route's FpvLens applies (quality, noise, motion_blur).
 var onboard_video := {quality = "high", noise = "off", motion_blur = false}
+## FPV-6: the OSD the route's FpvOsd draws over the onboard picture (style, elements).
+var onboard_osd := {style = "betaflight", elements = ["horizon", "crosshair", "voltage", "battery_pct", "current", "timer",
+	"speed", "altitude", "home", "link", "heading", "mode", "warnings"]}
 var _last_dt := 0.0
 ## Direction toward the sun (render), set by the route each frame; the fly-by stands with the sun behind it.
 var light_direction := Vector3.ZERO
