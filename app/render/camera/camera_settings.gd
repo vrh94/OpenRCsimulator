@@ -63,6 +63,8 @@ const DEFAULTS := {
 	"camera_fpv_shake": "off",
 	"camera_fpv_noise": "off",
 	"camera_fpv_motion_blur": false,
+	# FPV-9: hide the flight overlays while the onboard picture or the cockpit is shown (the OSD replaces them).
+	"camera_fpv_clean_screen": true,
 	"camera_fpv_quality": "high",
 	"camera_fpv_head_tracking": "off",
 	"camera_fpv_head_sensitivity": 1.0,
@@ -101,6 +103,8 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
 	if typeof(raw.get("camera_fpv_motion_blur", DEFAULTS.camera_fpv_motion_blur)) != TYPE_BOOL:
 		out.append("camera_fpv_motion_blur must be a boolean")
+	if typeof(raw.get("camera_fpv_clean_screen", DEFAULTS.camera_fpv_clean_screen)) != TYPE_BOOL:
+		out.append("camera_fpv_clean_screen must be a boolean")
 	if not FpvOsdModel.valid_elements(raw.get("camera_fpv_osd_elements", DEFAULTS.camera_fpv_osd_elements)):
 		out.append("camera_fpv_osd_elements must list OSD elements (%s)" % ", ".join(FPV_OSD_ELEMENTS))
 	for pair: Array in [["camera_fpv_head_tracking", FPV_HEAD_TRACKING], ["camera_fpv_gimbal_speed", FPV_GIMBAL_SPEEDS],
@@ -154,6 +158,7 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fpv_shake": str(raw.get("camera_fpv_shake", DEFAULTS.camera_fpv_shake)),
 		"camera_fpv_noise": str(raw.get("camera_fpv_noise", DEFAULTS.camera_fpv_noise)),
 		"camera_fpv_motion_blur": bool(raw.get("camera_fpv_motion_blur", DEFAULTS.camera_fpv_motion_blur)),
+		"camera_fpv_clean_screen": bool(raw.get("camera_fpv_clean_screen", DEFAULTS.camera_fpv_clean_screen)),
 		"camera_fpv_quality": str(raw.get("camera_fpv_quality", DEFAULTS.camera_fpv_quality)),
 		"camera_fpv_head_tracking": str(raw.get("camera_fpv_head_tracking", DEFAULTS.camera_fpv_head_tracking)),
 		"camera_fpv_head_sensitivity": float(raw.get("camera_fpv_head_sensitivity", DEFAULTS.camera_fpv_head_sensitivity)),
@@ -219,5 +224,6 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 	rig.onboard_video = {quality = str(config.camera_fpv_quality), noise = str(config.camera_fpv_noise),
 		motion_blur = bool(config.camera_fpv_motion_blur)}
 	rig.fpv_head.configure(config)
+	rig.onboard_clean_screen = bool(config.camera_fpv_clean_screen)
 	rig.onboard_link = {mode = str(config.camera_fpv_link), power_mw = int(config.camera_fpv_vtx_power)}
 	rig.onboard_osd = {style = str(config.camera_fpv_osd), elements = (config.camera_fpv_osd_elements as Array).duplicate()}

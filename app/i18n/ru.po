@@ -13414,3 +13414,208 @@ msgstr "Не удалось начать калибровку. Выберите 
 
 msgid "All vehicles"
 msgstr "Все машины"
+
+# FPV fixed-wing mode (FPV-1…FPV-9, RADIO-DJI-1): onboard camera, cockpit, OSD, video link, gimbal, DJI remote.
+msgid "FPV camera tilt: %d°"
+msgstr "Наклон FPV-камеры: %d°"
+
+msgid "FPV field of view: %d°"
+msgstr "Поле зрения FPV: %d°"
+
+msgid "In flight: 3 onboard FPV camera, Shift+3 cockpit view."
+msgstr "В полёте: 3 — бортовая FPV-камера, Shift+3 — вид из кабины."
+
+msgid "FPV field of view"
+msgstr "Поле зрения FPV"
+
+msgid "The onboard camera's horizontal angle. Fixed-wing FPV cameras are usually 100–130°. −/= change it in flight; Backspace returns to this setting."
+msgstr "Горизонтальный угол бортовой камеры. У FPV-камер самолётов обычно 100–130°. −/= меняют его в полёте; Backspace возвращает эту настройку."
+
+msgid "FPV camera tilt"
+msgstr "Наклон FPV-камеры"
+
+msgid "How far the onboard camera points up from the fuselage line. A slight uptilt keeps the horizon centred in cruise. Shift+[ and Shift+] change it in flight."
+msgstr "Насколько бортовая камера поднята относительно оси фюзеляжа. Небольшой наклон вверх держит горизонт по центру в крейсерском полёте. Shift+[ и Shift+] меняют его в полёте."
+
+msgid "FPV camera mount"
+msgstr "Крепление FPV-камеры"
+
+msgid "FPV lens"
+msgstr "Объектив FPV"
+
+msgid "Wide-angle bends straight lines near the edges like a real FPV camera lens, keeping the centre natural. Fisheye bends more. Flat is a plain camera with straight lines and the lowest cost."
+msgstr "Широкоугольный изгибает прямые линии у краёв, как настоящий FPV-объектив, сохраняя центр естественным. «Рыбий глаз» изгибает сильнее. Плоский — обычная камера с прямыми линиями и наименьшей нагрузкой."
+
+msgid "FPV video quality"
+msgstr "Качество FPV-видео"
+
+msgid "How sharply the onboard picture is rendered before the lens bends it. High is sharpest; Low is softer, like an analog camera, and costs the least."
+msgstr "Насколько чётко рисуется бортовая картинка до искажения объективом. Высокое — самое чёткое; низкое — мягче, как аналоговая камера, и требует меньше всего ресурсов."
+
+msgid "FPV camera shake"
+msgstr "Тряска FPV-камеры"
+
+msgid "Motor buzz grows with throttle and airflow buffeting with speed. A soft camera mount absorbs part of the motor buzz. It moves only the picture, never the airplane."
+msgstr "Вибрация мотора растёт с газом, а тряска от потока — со скоростью. Мягкое крепление гасит часть вибрации мотора. Двигается только картинка, но не самолёт."
+
+msgid "FPV video noise"
+msgstr "Шум FPV-видео"
+
+msgid "Analog-style grain on the onboard picture."
+msgstr "Аналоговое зерно на бортовой картинке."
+
+msgid "FPV motion blur"
+msgstr "Размытие движения FPV"
+
+msgid "Smears the onboard picture while the airplane turns, like a camera shutter open for half a frame."
+msgstr "Смазывает бортовую картинку при поворотах самолёта, как затвор, открытый на полкадра."
+
+msgid "Hides the flight panels while you fly the onboard FPV camera or the cockpit view, so the OSD and the picture stay clear. Other views keep them."
+msgstr "Скрывает полётные панели, пока вы летите с бортовой FPV-камерой или видом из кабины, чтобы OSD и картинка оставались чистыми. Другие виды их сохраняют."
+
+msgid "FPV clean screen"
+msgstr "Чистый экран в FPV"
+
+msgid "FPV head-look sensitivity"
+msgstr "Чувствительность обзора FPV"
+
+msgid "How far the onboard camera turns for a right-button mouse drag, and how far it follows your head with head tracking. Backspace looks straight ahead again."
+msgstr "Насколько поворачивается бортовая камера при перетаскивании правой кнопкой мыши и насколько она следует за головой при трекинге. Backspace снова смотрит прямо."
+
+msgid "FPV head tracking"
+msgstr "Трекинг головы FPV"
+
+msgid "Turns the onboard camera with your head. Run opentrack on this computer with the output \"UDP over network\" to 127.0.0.1, port 4242. Backspace takes your present head position as straight ahead."
+msgstr "Поворачивает бортовую камеру вслед за головой. Запустите opentrack на этом компьютере с выводом \"UDP over network\" на 127.0.0.1, порт 4242. Backspace принимает текущее положение головы за направление прямо."
+
+msgid "FPV gimbal pan channel"
+msgstr "Канал панорамирования подвеса FPV"
+
+msgid "A radio channel that turns the onboard camera left and right like a pan servo, numbered as in the controller setup. Use a knob or slider; the flight sticks are never used."
+msgstr "Канал передатчика, который поворачивает бортовую камеру влево и вправо, как серво панорамирования; номер как в настройке контроллера. Используйте крутилку или ползунок; полётные стики не используются."
+
+msgid "FPV gimbal tilt channel"
+msgstr "Канал наклона подвеса FPV"
+
+msgid "A radio channel that tilts the onboard camera up and down like a tilt servo, numbered as in the controller setup."
+msgstr "Канал передатчика, который наклоняет бортовую камеру вверх и вниз, как серво наклона; номер как в настройке контроллера."
+
+msgid "FPV gimbal pan travel"
+msgstr "Ход панорамирования подвеса FPV"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel."
+msgstr "Насколько серво панорамирования поворачивается в каждую сторону в конце хода канала."
+
+msgid "FPV gimbal tilt travel"
+msgstr "Ход наклона подвеса FPV"
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel."
+msgstr "Насколько серво наклона поворачивается в каждую сторону в конце хода канала."
+
+msgid "FPV gimbal servo speed"
+msgstr "Скорость серво подвеса FPV"
+
+msgid "How fast the gimbal servos follow the channels. If the radio or a channel is lost, the camera returns to the centre at this speed."
+msgstr "Как быстро серво подвеса следуют за каналами. При потере передатчика или канала камера возвращается в центр с этой скоростью."
+
+msgid "Reverses the pan servo."
+msgstr "Реверсирует серво панорамирования."
+
+msgid "FPV gimbal reverse pan"
+msgstr "Реверс панорамирования подвеса FPV"
+
+msgid "Reverses the tilt servo."
+msgstr "Реверсирует серво наклона."
+
+msgid "FPV gimbal reverse tilt"
+msgstr "Реверс наклона подвеса FPV"
+
+msgid "FPV OSD"
+msgstr "FPV OSD"
+
+msgid "The on-screen display over the onboard picture, laid out like a Betaflight, INAV or ArduPilot flight controller's OSD. It shows only what the simulator measures: no battery figures on a glow or gas engine."
+msgstr "Экранная информация поверх бортовой картинки, расположенная как OSD полётного контроллера Betaflight, INAV или ArduPilot. Показывает только то, что измеряет симулятор: без данных батареи у калильного или бензинового двигателя."
+
+msgid "FPV OSD elements"
+msgstr "Элементы FPV OSD"
+
+msgid "FPV video link"
+msgstr "FPV-видеоканал"
+
+msgid "Analog: the onboard picture breaks up with distance and when hills, buildings or trees block the path to your receiver at the pilot station, and the OSD shows the signal. It never changes how the airplane flies."
+msgstr "Аналоговый: бортовая картинка рассыпается с расстоянием и когда холмы, здания или деревья закрывают путь к приёмнику на месте пилота; OSD показывает сигнал. Это никогда не меняет полёт самолёта."
+
+msgid "FPV transmitter power"
+msgstr "Мощность FPV-передатчика"
+
+msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open."
+msgstr "Больше мощность — дальше связь: на открытой местности картинка наполовину разрушена примерно на 600 м при 25 мВт, 1,7 км при 200 мВт, 2,9 км при 600 мВт и 3,8 км при 1000 мВт."
+
+msgid "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe."
+msgstr "Жёсткое точно следует за планером. Мягкие крепления дают картинке слегка отставать при резких рывках, как демпфированное крепление; камера никогда не покидает планер."
+
+msgid "Onboard FPV"
+msgstr "Бортовая FPV"
+
+msgid "Cockpit"
+msgstr "Кабина"
+
+msgid "Rigid"
+msgstr "Жёсткое"
+
+msgid "Softer"
+msgstr "Мягче"
+
+msgid "Flat"
+msgstr "Плоский"
+
+msgid "Wide-angle"
+msgstr "Широкоугольный"
+
+msgid "Fisheye"
+msgstr "«Рыбий глаз»"
+
+msgid "Off (perfect picture)"
+msgstr "Выкл. (идеальная картинка)"
+
+msgid "opentrack (UDP)"
+msgstr "opentrack (UDP)"
+
+msgid "Slow (90°/s)"
+msgstr "Медленно (90°/с)"
+
+msgid "Medium (180°/s)"
+msgstr "Средне (180°/с)"
+
+msgid "Fast (360°/s)"
+msgstr "Быстро (360°/с)"
+
+msgid "Instant"
+msgstr "Мгновенно"
+
+msgid "Battery %"
+msgstr "Батарея %"
+
+msgid "GPS speed"
+msgstr "Скорость GPS"
+
+msgid "Signal strength"
+msgstr "Уровень сигнала"
+
+msgid "General"
+msgstr "Общие"
+
+msgid "FPV camera"
+msgstr "FPV-камера"
+
+msgid "Look & gimbal"
+msgstr "Обзор и подвес"
+
+msgid "OSD & video link"
+msgstr "OSD и видеоканал"
+
+msgid "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"
+msgstr "Бортовая FPV-камера (Shift+3: кабина). В ней: −/= угол объектива, Shift+[ ] наклон, перетаскивание правой кнопкой — обзор, Backspace — центр"
+
+msgid "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
+msgstr "Пульт DJI FPV: его стик газа возвращается в центр. Держите ГАЗ полностью ВНИЗУ на каждом шаге калибровки, даже когда двигаете другие стики. В полёте центр — половина газа, если не настроить стик оставаться там, где его отпустили (см. руководство DJI). Колесо подвеса может наклонять FPV-камеру: Настройки › Камера › Обзор и подвес › Канал наклона подвеса FPV."

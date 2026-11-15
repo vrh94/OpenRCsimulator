@@ -13,6 +13,8 @@ const PilotCamera := preload("res://render/pilot_camera.gd")
 const CAMERA_AIDS: Array[String] = ["off", "horizon", "overhead", "both"]
 ## Settings pages, in tab order. CAM-17 added Camera.
 const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera", "Lighting"]
+## FPV-9: the Camera page's parts, one shown at a time so each fits without scrolling.
+const CAMERA_PARTS: Array[String] = ["General", "FPV camera", "Look & gimbal", "OSD & video link"]
 const LensSettings := preload("res://render/lens/lens_settings.gd")
 ## LENS-01 rows at the end of the Lighting page: node name, preference key, choices, caption. "Glasses in pilot
 ## view" (lens_glasses) stays a display.cfg / --lens-glasses preference: the page has no room for a seventh row at 1080p.
@@ -132,6 +134,7 @@ var _camera_fpv_shake_picker: OptionButton
 var _camera_fpv_noise_picker: OptionButton
 var _camera_fpv_quality_picker: OptionButton
 var _camera_fpv_blur_toggle: CheckButton
+var _camera_fpv_clean_toggle: CheckButton
 ## FPV-5: head-look, head tracking and the servo gimbal.
 var _camera_fpv_head_sensitivity_picker: OptionButton
 var _camera_fpv_head_tracking_picker: OptionButton
@@ -158,6 +161,10 @@ var _category_buttons: Array[Button] = []
 var _categories: GridContainer
 var _category_picker: OptionButton
 var _pages: Array[VBoxContainer] = []
+var _camera_part_buttons: Array[Button] = []
+var _camera_parts_grid: GridContainer
+var _camera_part_picker: OptionButton
+var _camera_part_boxes: Array[VBoxContainer] = []
 var _volume_slider: HSlider
 var _volume_value: Label
 var _master_slider: HSlider
@@ -471,11 +478,17 @@ func _build() -> void:
 	graphics_page.add_child(_shadow_group)
 
 	# CAM-17: camera preferences; presentation only, applied to a Home flight at once.
+	# FPV-9: General, FPV camera, Look & gimbal, OSD & video link.
+	var camera_parts := _build_camera_parts(camera_page)
+	var camera_views: VBoxContainer = camera_parts[0]
+	var fpv_camera: VBoxContainer = camera_parts[1]
+	var fpv_look: VBoxContainer = camera_parts[2]
+	var fpv_osd: VBoxContainer = camera_parts[3]
 	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
-	_add_row(camera_page, "First view", _camera_view_picker)
+	_add_row(camera_views, "First view", _camera_view_picker)
 	_set_localized_tooltip(_camera_view_picker, "The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms.")
 	_camera_fov_picker = _camera_picker("CameraFov", "camera_fov", CameraSettings.FOVS)
-	_add_row(camera_page, "Pilot field of view", _camera_fov_picker)
+	_add_row(camera_views, "Pilot field of view", _camera_fov_picker)
 	_set_localized_tooltip(_camera_fov_picker, "The pilot view's widest angle; auto zoom narrows it for a distant airplane. About 30° shows the airplane at its real size on a 24–27-inch screen at arm's length.")
 	# CAM-06: one picker for auto zoom on/off (Z in flight) and its law.
 	_camera_zoom_picker = OptionButton.new()
@@ -490,7 +503,7 @@ func _build() -> void:
 			_draft.camera_zoom_law = value
 		_on_presentation_option_changed())
 	_set_localized_tooltip(_camera_zoom_picker, "Constant size keeps a distant airplane the same size on screen. Keeps looming lets it shrink slowly, so you still see it come and go. Gentle zooms least. Z turns auto zoom off and on in flight.")
-	_add_row(camera_page, "Auto zoom (Z)", _camera_zoom_picker)
+	_add_row(camera_views, "Auto zoom (Z)", _camera_zoom_picker)
 	# CAM-06b/28: one picker for the two pilot-view aids keeps the page within 1080p without scrolling.
 	_camera_aids_picker = OptionButton.new()
 	_camera_aids_picker.name = "CameraPilotAids"
@@ -503,68 +516,71 @@ func _build() -> void:
 		_draft.camera_overhead_smoothing = value in ["overhead", "both"]
 		_on_presentation_option_changed())
 	_set_localized_tooltip(_camera_aids_picker, "Keep the horizon in view: the view tilts down so the ground shows under a high airplane. Smooth overhead passes: the picture turns gradually instead of flipping when the airplane passes overhead.")
-	_add_row(camera_page, "Pilot view aids", _camera_aids_picker)
+	_add_row(camera_views, "Pilot view aids", _camera_aids_picker)
 	_camera_magnifier_picker = _camera_picker("CameraMagnifier", "camera_magnifier", CameraSettings.MAGNIFIER_MODES)
 	_set_localized_tooltip(_camera_magnifier_picker, "Pilot view: a small window at the top shows the airplane up close, so its attitude reads while the main view keeps the real distance. Automatic shows it when the airplane gets small.")
-	_add_row(camera_page, "Magnifier", _camera_magnifier_picker)
+	_add_row(camera_views, "Magnifier", _camera_magnifier_picker)
 	_camera_chase_picker = _camera_picker("CameraChaseDistance", "camera_chase_distance", CameraSettings.CHASE_DISTANCES)
-	_add_row(camera_page, "Chase distance", _camera_chase_picker)
+	_add_row(camera_views, "Chase distance", _camera_chase_picker)
 	_camera_sensitivity_picker = _camera_picker("CameraSensitivity", "camera_sensitivity", CameraSettings.SENSITIVITIES)
-	_add_row(camera_page, "Orbit sensitivity", _camera_sensitivity_picker)
+	_add_row(camera_views, "Orbit sensitivity", _camera_sensitivity_picker)
 	_camera_invert_toggle = _camera_toggle("CameraInvertY", "camera_invert_y", "Invert orbit up/down")
-	_add_row(camera_page, "Invert orbit up/down", _camera_invert_toggle)
+	_add_row(camera_views, "Invert orbit up/down", _camera_invert_toggle)
 	# FPV-2: the onboard (FPV) lens, key 3 in flight.
+	fpv_camera.add_child(_label("In flight: 3 onboard FPV camera, Shift+3 cockpit view.", "SecondaryLabel", true))
 	_camera_fpv_fov_picker = _camera_picker("CameraFpvFov", "camera_fpv_fov", CameraSettings.FPV_FOVS)
-	_add_row(camera_page, "FPV field of view", _camera_fpv_fov_picker)
+	_add_row(fpv_camera, "FPV field of view", _camera_fpv_fov_picker)
 	_set_localized_tooltip(_camera_fpv_fov_picker, "The onboard camera's horizontal angle. Fixed-wing FPV cameras are usually 100–130°. −/= change it in flight; Backspace returns to this setting.")
 	_camera_fpv_tilt_picker = _camera_picker("CameraFpvTilt", "camera_fpv_tilt", CameraSettings.FPV_TILTS)
-	_add_row(camera_page, "FPV camera tilt", _camera_fpv_tilt_picker)
+	_add_row(fpv_camera, "FPV camera tilt", _camera_fpv_tilt_picker)
 	_set_localized_tooltip(_camera_fpv_tilt_picker, "How far the onboard camera points up from the fuselage line. A slight uptilt keeps the horizon centred in cruise. Shift+[ and Shift+] change it in flight.")
 	_camera_fpv_smoothing_picker = _camera_picker("CameraFpvSmoothing", "camera_fpv_smoothing", CameraSettings.FPV_SMOOTHING)
-	_add_row(camera_page, "FPV camera mount", _camera_fpv_smoothing_picker)
+	_add_row(fpv_camera, "FPV camera mount", _camera_fpv_smoothing_picker)
 	_camera_fpv_lens_picker = _camera_picker("CameraFpvLens", "camera_fpv_lens", CameraSettings.FPV_LENSES)
-	_add_row(camera_page, "FPV lens", _camera_fpv_lens_picker)
+	_add_row(fpv_camera, "FPV lens", _camera_fpv_lens_picker)
 	_set_localized_tooltip(_camera_fpv_lens_picker, "Wide-angle bends straight lines near the edges like a real FPV camera lens, keeping the centre natural. Fisheye bends more. Flat is a plain camera with straight lines and the lowest cost.")
 	# FPV-4: onboard video; presentation only, never fed back to the flight.
 	_camera_fpv_quality_picker = _camera_picker("CameraFpvQuality", "camera_fpv_quality", CameraSettings.FPV_QUALITIES)
-	_add_row(camera_page, "FPV video quality", _camera_fpv_quality_picker)
+	_add_row(fpv_camera, "FPV video quality", _camera_fpv_quality_picker)
 	_set_localized_tooltip(_camera_fpv_quality_picker, "How sharply the onboard picture is rendered before the lens bends it. High is sharpest; Low is softer, like an analog camera, and costs the least.")
 	_camera_fpv_shake_picker = _camera_picker("CameraFpvShake", "camera_fpv_shake", CameraSettings.FPV_SHAKES)
-	_add_row(camera_page, "FPV camera shake", _camera_fpv_shake_picker)
+	_add_row(fpv_camera, "FPV camera shake", _camera_fpv_shake_picker)
 	_set_localized_tooltip(_camera_fpv_shake_picker, "Motor buzz grows with throttle and airflow buffeting with speed. A soft camera mount absorbs part of the motor buzz. It moves only the picture, never the airplane.")
 	_camera_fpv_noise_picker = _camera_picker("CameraFpvNoise", "camera_fpv_noise", CameraSettings.FPV_NOISES)
-	_add_row(camera_page, "FPV video noise", _camera_fpv_noise_picker)
+	_add_row(fpv_camera, "FPV video noise", _camera_fpv_noise_picker)
 	_set_localized_tooltip(_camera_fpv_noise_picker, "Analog-style grain on the onboard picture.")
 	_camera_fpv_blur_toggle = _camera_toggle("CameraFpvMotionBlur", "camera_fpv_motion_blur", "FPV motion blur")
-	_add_row(camera_page, "FPV motion blur", _camera_fpv_blur_toggle)
+	_add_row(fpv_camera, "FPV motion blur", _camera_fpv_blur_toggle)
 	_set_localized_tooltip(_camera_fpv_blur_toggle, "Smears the onboard picture while the airplane turns, like a camera shutter open for half a frame.")
+	_camera_fpv_clean_toggle = _camera_toggle("CameraFpvCleanScreen", "camera_fpv_clean_screen", "Hides the flight panels while you fly the onboard FPV camera or the cockpit view, so the OSD and the picture stay clear. Other views keep them.")
+	_add_row(fpv_camera, "FPV clean screen", _camera_fpv_clean_toggle)
 	_camera_fpv_head_sensitivity_picker = _camera_picker("CameraFpvHeadSensitivity", "camera_fpv_head_sensitivity", CameraSettings.FPV_HEAD_SENSITIVITIES)
-	_add_row(camera_page, "FPV head-look sensitivity", _camera_fpv_head_sensitivity_picker)
+	_add_row(fpv_look, "FPV head-look sensitivity", _camera_fpv_head_sensitivity_picker)
 	_set_localized_tooltip(_camera_fpv_head_sensitivity_picker, "How far the onboard camera turns for a right-button mouse drag, and how far it follows your head with head tracking. Backspace looks straight ahead again.")
 	_camera_fpv_head_tracking_picker = _camera_picker("CameraFpvHeadTracking", "camera_fpv_head_tracking", CameraSettings.FPV_HEAD_TRACKING)
-	_add_row(camera_page, "FPV head tracking", _camera_fpv_head_tracking_picker)
+	_add_row(fpv_look, "FPV head tracking", _camera_fpv_head_tracking_picker)
 	_set_localized_tooltip(_camera_fpv_head_tracking_picker, "Turns the onboard camera with your head. Run opentrack on this computer with the output \"UDP over network\" to 127.0.0.1, port 4242. Backspace takes your present head position as straight ahead.")
 	_camera_fpv_gimbal_pan_axis_picker = _camera_picker("CameraFpvGimbalPanAxis", "camera_fpv_gimbal_pan_axis", CameraSettings.FPV_GIMBAL_AXES)
-	_add_row(camera_page, "FPV gimbal pan channel", _camera_fpv_gimbal_pan_axis_picker)
+	_add_row(fpv_look, "FPV gimbal pan channel", _camera_fpv_gimbal_pan_axis_picker)
 	_set_localized_tooltip(_camera_fpv_gimbal_pan_axis_picker, "A radio channel that turns the onboard camera left and right like a pan servo, numbered as in the controller setup. Use a knob or slider; the flight sticks are never used.")
 	_camera_fpv_gimbal_tilt_axis_picker = _camera_picker("CameraFpvGimbalTiltAxis", "camera_fpv_gimbal_tilt_axis", CameraSettings.FPV_GIMBAL_AXES)
-	_add_row(camera_page, "FPV gimbal tilt channel", _camera_fpv_gimbal_tilt_axis_picker)
+	_add_row(fpv_look, "FPV gimbal tilt channel", _camera_fpv_gimbal_tilt_axis_picker)
 	_set_localized_tooltip(_camera_fpv_gimbal_tilt_axis_picker, "A radio channel that tilts the onboard camera up and down like a tilt servo, numbered as in the controller setup.")
 	_camera_fpv_gimbal_pan_travel_picker = _camera_picker("CameraFpvGimbalPanTravel", "camera_fpv_gimbal_pan_travel", CameraSettings.FPV_GIMBAL_PAN_TRAVELS)
-	_add_row(camera_page, "FPV gimbal pan travel", _camera_fpv_gimbal_pan_travel_picker)
+	_add_row(fpv_look, "FPV gimbal pan travel", _camera_fpv_gimbal_pan_travel_picker)
 	_set_localized_tooltip(_camera_fpv_gimbal_pan_travel_picker, "How far the pan servo turns each way at the end of the channel's travel.")
 	_camera_fpv_gimbal_tilt_travel_picker = _camera_picker("CameraFpvGimbalTiltTravel", "camera_fpv_gimbal_tilt_travel", CameraSettings.FPV_GIMBAL_TILT_TRAVELS)
-	_add_row(camera_page, "FPV gimbal tilt travel", _camera_fpv_gimbal_tilt_travel_picker)
+	_add_row(fpv_look, "FPV gimbal tilt travel", _camera_fpv_gimbal_tilt_travel_picker)
 	_set_localized_tooltip(_camera_fpv_gimbal_tilt_travel_picker, "How far the tilt servo turns each way at the end of the channel's travel.")
 	_camera_fpv_gimbal_speed_picker = _camera_picker("CameraFpvGimbalSpeed", "camera_fpv_gimbal_speed", CameraSettings.FPV_GIMBAL_SPEEDS)
-	_add_row(camera_page, "FPV gimbal servo speed", _camera_fpv_gimbal_speed_picker)
+	_add_row(fpv_look, "FPV gimbal servo speed", _camera_fpv_gimbal_speed_picker)
 	_set_localized_tooltip(_camera_fpv_gimbal_speed_picker, "How fast the gimbal servos follow the channels. If the radio or a channel is lost, the camera returns to the centre at this speed.")
 	_camera_fpv_gimbal_invert_pan_toggle = _camera_toggle("CameraFpvGimbalInvertPan", "camera_fpv_gimbal_invert_pan", "Reverses the pan servo.")
-	_add_row(camera_page, "FPV gimbal reverse pan", _camera_fpv_gimbal_invert_pan_toggle)
+	_add_row(fpv_look, "FPV gimbal reverse pan", _camera_fpv_gimbal_invert_pan_toggle)
 	_camera_fpv_gimbal_invert_tilt_toggle = _camera_toggle("CameraFpvGimbalInvertTilt", "camera_fpv_gimbal_invert_tilt", "Reverses the tilt servo.")
-	_add_row(camera_page, "FPV gimbal reverse tilt", _camera_fpv_gimbal_invert_tilt_toggle)
+	_add_row(fpv_look, "FPV gimbal reverse tilt", _camera_fpv_gimbal_invert_tilt_toggle)
 	_camera_fpv_osd_picker = _camera_picker("CameraFpvOsd", "camera_fpv_osd", CameraSettings.FPV_OSD_STYLES)
-	_add_row(camera_page, "FPV OSD", _camera_fpv_osd_picker)
+	_add_row(fpv_osd, "FPV OSD", _camera_fpv_osd_picker)
 	_set_localized_tooltip(_camera_fpv_osd_picker, "The on-screen display over the onboard picture, laid out like a Betaflight, INAV or ArduPilot flight controller's OSD. It shows only what the simulator measures: no battery figures on a glow or gas engine.")
 	var osd_flow := HFlowContainer.new()
 	osd_flow.name = "CameraFpvOsdElements"
@@ -572,7 +588,9 @@ func _build() -> void:
 	for id: String in CameraSettings.FPV_OSD_ELEMENTS:
 		var box := CheckBox.new()
 		box.name = "Osd_" + id
-		box.text = str(FpvOsdModel.ELEMENT_NAMES.get(id, id))
+		box.text = tr(str(FpvOsdModel.ELEMENT_NAMES.get(id, id)))
+		box.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+		_localized_controls.append({"control": box, "source": str(FpvOsdModel.ELEMENT_NAMES.get(id, id))})
 		box.toggled.connect(func(_on: bool) -> void:
 			var chosen: Array = []
 			for element: String in CameraSettings.FPV_OSD_ELEMENTS:
@@ -582,12 +600,17 @@ func _build() -> void:
 			_on_presentation_option_changed())
 		_camera_fpv_osd_boxes[id] = box
 		osd_flow.add_child(box)
-	_add_row(camera_page, "FPV OSD elements", osd_flow)
+	# The element boxes take the page's full width under their caption, so the part fits without scrolling.
+	fpv_osd.add_child(_label("FPV OSD elements", ""))
+	osd_flow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	osd_flow.custom_minimum_size.x = 0
+	osd_flow.add_theme_constant_override("h_separation", 16)
+	fpv_osd.add_child(osd_flow)
 	_camera_fpv_link_picker = _camera_picker("CameraFpvLink", "camera_fpv_link", CameraSettings.FPV_LINKS)
-	_add_row(camera_page, "FPV video link", _camera_fpv_link_picker)
+	_add_row(fpv_osd, "FPV video link", _camera_fpv_link_picker)
 	_set_localized_tooltip(_camera_fpv_link_picker, "Analog: the onboard picture breaks up with distance and when hills, buildings or trees block the path to your receiver at the pilot station, and the OSD shows the signal. It never changes how the airplane flies.")
 	_camera_fpv_vtx_picker = _camera_picker("CameraFpvVtx", "camera_fpv_vtx_power", CameraSettings.FPV_VTX_POWERS)
-	_add_row(camera_page, "FPV transmitter power", _camera_fpv_vtx_picker)
+	_add_row(fpv_osd, "FPV transmitter power", _camera_fpv_vtx_picker)
 	_set_localized_tooltip(_camera_fpv_vtx_picker, "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open.")
 	_set_localized_tooltip(_camera_fpv_smoothing_picker, "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe.")
 
@@ -845,6 +868,54 @@ func _shadow_picker(node_name: String, key: String, values: Array) -> OptionButt
 		_draft[key] = picker.get_item_metadata(index)
 		_on_presentation_option_changed())
 	return picker
+
+
+## FPV-9: the Camera page's part switcher and one box per part (CAMERA_PARTS); the first part shows.
+func _build_camera_parts(page: VBoxContainer) -> Array[VBoxContainer]:
+	var switcher := GridContainer.new()
+	switcher.name = "CameraParts"
+	switcher.columns = CAMERA_PARTS.size()
+	_camera_parts_grid = switcher
+	switcher.add_theme_constant_override("h_separation", 8)
+	switcher.add_theme_constant_override("v_separation", 8)
+	page.add_child(switcher)
+	# Stacked (narrow or large-text) layouts choose the part from a list instead: two columns of tabs are too wide.
+	_camera_part_picker = OptionButton.new()
+	_camera_part_picker.name = "CameraPartPicker"
+	for caption: String in CAMERA_PARTS:
+		_camera_part_picker.add_item(tr(caption))
+	_camera_part_picker.item_selected.connect(_show_camera_part)
+	_camera_part_picker.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
+	_camera_part_picker.hide()
+	page.add_child(_camera_part_picker)
+	var group := ButtonGroup.new()
+	var boxes: Array[VBoxContainer] = []
+	for index: int in CAMERA_PARTS.size():
+		var tab := _button(CAMERA_PARTS[index], "HomeTab", "CameraPart%d" % index)
+		tab.toggle_mode = true
+		tab.button_group = group
+		tab.button_pressed = index == 0
+		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tab.pressed.connect(_show_camera_part.bind(index))
+		switcher.add_child(tab)
+		_camera_part_buttons.append(tab)
+		var box := VBoxContainer.new()
+		box.name = "CameraPartBox%d" % index
+		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		box.add_theme_constant_override("separation", 16)
+		box.visible = index == 0
+		page.add_child(box)
+		boxes.append(box)
+	_camera_part_boxes = boxes
+	return boxes
+
+
+func _show_camera_part(index: int) -> void:
+	for i: int in _camera_part_boxes.size():
+		_camera_part_boxes[i].visible = i == index
+		_camera_part_buttons[i].set_pressed_no_signal(i == index)
+	if _camera_part_picker != null and _camera_part_picker.selected != index:
+		_camera_part_picker.select(index)
 
 
 func _camera_toggle(node_name: String, key: String, tooltip: String) -> CheckButton:
@@ -1461,6 +1532,7 @@ func _sync_controls() -> void:
 	_select_metadata(_camera_fpv_shake_picker, str(_draft.get("camera_fpv_shake", CameraSettings.DEFAULTS.camera_fpv_shake)))
 	_select_metadata(_camera_fpv_noise_picker, str(_draft.get("camera_fpv_noise", CameraSettings.DEFAULTS.camera_fpv_noise)))
 	_camera_fpv_blur_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_motion_blur", CameraSettings.DEFAULTS.camera_fpv_motion_blur)))
+	_camera_fpv_clean_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_clean_screen", CameraSettings.DEFAULTS.camera_fpv_clean_screen)))
 	_select_metadata(_camera_fpv_head_sensitivity_picker, _draft.get("camera_fpv_head_sensitivity", CameraSettings.DEFAULTS.camera_fpv_head_sensitivity))
 	_select_metadata(_camera_fpv_head_tracking_picker, str(_draft.get("camera_fpv_head_tracking", CameraSettings.DEFAULTS.camera_fpv_head_tracking)))
 	for entry: Array in [[_camera_fpv_gimbal_pan_axis_picker, "camera_fpv_gimbal_pan_axis"], [_camera_fpv_gimbal_tilt_axis_picker, "camera_fpv_gimbal_tilt_axis"],
@@ -1700,6 +1772,9 @@ func _update_layout() -> void:
 	var stack_rows := _should_stack_rows()
 	# Two rows of tabs when stacked, as with four categories: a third row would leave the page no room at 200 % text.
 	_categories.columns = ceili(CATEGORIES.size() / 2.0) if stack_rows else CATEGORIES.size()
+	if _camera_parts_grid != null:
+		_camera_parts_grid.visible = not stack_rows
+		_camera_part_picker.visible = stack_rows
 	_categories.visible = not compact_height
 	_category_picker.visible = compact_height
 	if transfer_category_focus:
@@ -1725,6 +1800,9 @@ func _refresh_shared_theme() -> void:
 func _refresh_translated_text() -> void:
 	for index: int in CATEGORIES.size():
 		_category_picker.set_item_text(index, tr(CATEGORIES[index]))
+	if _camera_part_picker != null:
+		for index: int in CAMERA_PARTS.size():
+			_camera_part_picker.set_item_text(index, tr(CAMERA_PARTS[index]))
 	for entry: Dictionary in _localized_controls:
 		var control: Control = entry.control
 		if entry.has("property"):

@@ -12664,3 +12664,208 @@ msgstr "校正を開始できませんでした。送信機プロファイルの
 
 msgid "All vehicles"
 msgstr "すべての機体"
+
+# FPV fixed-wing mode (FPV-1…FPV-9, RADIO-DJI-1): onboard camera, cockpit, OSD, video link, gimbal, DJI remote.
+msgid "FPV camera tilt: %d°"
+msgstr "FPVカメラの傾き: %d°"
+
+msgid "FPV field of view: %d°"
+msgstr "FPV視野角: %d°"
+
+msgid "In flight: 3 onboard FPV camera, Shift+3 cockpit view."
+msgstr "飛行中: 3 で機載FPVカメラ、Shift+3 でコックピット視点。"
+
+msgid "FPV field of view"
+msgstr "FPV視野角"
+
+msgid "The onboard camera's horizontal angle. Fixed-wing FPV cameras are usually 100–130°. −/= change it in flight; Backspace returns to this setting."
+msgstr "機載カメラの水平画角です。固定翼のFPVカメラは通常100〜130°です。飛行中は −/= で変更し、Backspace でこの設定に戻ります。"
+
+msgid "FPV camera tilt"
+msgstr "FPVカメラの傾き"
+
+msgid "How far the onboard camera points up from the fuselage line. A slight uptilt keeps the horizon centred in cruise. Shift+[ and Shift+] change it in flight."
+msgstr "機載カメラが胴体の線から上を向く角度です。少し上向きにすると巡航中に水平線が中央に来ます。飛行中は Shift+[ と Shift+] で変更します。"
+
+msgid "FPV camera mount"
+msgstr "FPVカメラマウント"
+
+msgid "FPV lens"
+msgstr "FPVレンズ"
+
+msgid "Wide-angle bends straight lines near the edges like a real FPV camera lens, keeping the centre natural. Fisheye bends more. Flat is a plain camera with straight lines and the lowest cost."
+msgstr "広角は実際のFPVレンズのように端付近の直線を曲げ、中央は自然なままです。魚眼はさらに曲げます。フラットは直線がまっすぐな通常のカメラで、負荷が最も小さくなります。"
+
+msgid "FPV video quality"
+msgstr "FPV映像品質"
+
+msgid "How sharply the onboard picture is rendered before the lens bends it. High is sharpest; Low is softer, like an analog camera, and costs the least."
+msgstr "レンズで曲げる前の機載映像の描画の鮮明さです。高は最も鮮明、低はアナログカメラのように柔らかく、負荷が最も小さくなります。"
+
+msgid "FPV camera shake"
+msgstr "FPVカメラの揺れ"
+
+msgid "Motor buzz grows with throttle and airflow buffeting with speed. A soft camera mount absorbs part of the motor buzz. It moves only the picture, never the airplane."
+msgstr "モーターの振動はスロットルとともに、気流による揺れは速度とともに大きくなります。柔らかいマウントはモーター振動の一部を吸収します。動くのは映像だけで、機体は動きません。"
+
+msgid "FPV video noise"
+msgstr "FPV映像ノイズ"
+
+msgid "Analog-style grain on the onboard picture."
+msgstr "機載映像のアナログ風ノイズ。"
+
+msgid "FPV motion blur"
+msgstr "FPVモーションブラー"
+
+msgid "Smears the onboard picture while the airplane turns, like a camera shutter open for half a frame."
+msgstr "機体が旋回する間、シャッターを半フレーム開いたように機載映像をぶれさせます。"
+
+msgid "Hides the flight panels while you fly the onboard FPV camera or the cockpit view, so the OSD and the picture stay clear. Other views keep them."
+msgstr "機載FPVカメラまたはコックピット視点で飛行している間、飛行パネルを隠してOSDと映像を見やすくします。他の視点ではパネルが残ります。"
+
+msgid "FPV clean screen"
+msgstr "FPVクリーン画面"
+
+msgid "FPV head-look sensitivity"
+msgstr "FPV視線移動の感度"
+
+msgid "How far the onboard camera turns for a right-button mouse drag, and how far it follows your head with head tracking. Backspace looks straight ahead again."
+msgstr "右ボタンでマウスをドラッグしたときに機載カメラが回る量と、ヘッドトラッキングで頭を追う量です。Backspace で正面に戻ります。"
+
+msgid "FPV head tracking"
+msgstr "FPVヘッドトラッキング"
+
+msgid "Turns the onboard camera with your head. Run opentrack on this computer with the output \"UDP over network\" to 127.0.0.1, port 4242. Backspace takes your present head position as straight ahead."
+msgstr "頭の動きで機載カメラを回します。このコンピューターで opentrack を起動し、出力を \"UDP over network\"、127.0.0.1、ポート 4242 に設定してください。Backspace で現在の頭の位置を正面にします。"
+
+msgid "FPV gimbal pan channel"
+msgstr "FPVジンバルのパンチャンネル"
+
+msgid "A radio channel that turns the onboard camera left and right like a pan servo, numbered as in the controller setup. Use a knob or slider; the flight sticks are never used."
+msgstr "機載カメラをパンサーボのように左右に回す送信機のチャンネルです。番号はコントローラー設定と同じです。ノブかスライダーを使ってください。飛行用スティックは使われません。"
+
+msgid "FPV gimbal tilt channel"
+msgstr "FPVジンバルのチルトチャンネル"
+
+msgid "A radio channel that tilts the onboard camera up and down like a tilt servo, numbered as in the controller setup."
+msgstr "機載カメラをチルトサーボのように上下に傾ける送信機のチャンネルです。番号はコントローラー設定と同じです。"
+
+msgid "FPV gimbal pan travel"
+msgstr "FPVジンバルのパン量"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel."
+msgstr "チャンネルの端で、パンサーボが左右それぞれに回る量です。"
+
+msgid "FPV gimbal tilt travel"
+msgstr "FPVジンバルのチルト量"
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel."
+msgstr "チャンネルの端で、チルトサーボが上下それぞれに回る量です。"
+
+msgid "FPV gimbal servo speed"
+msgstr "FPVジンバルのサーボ速度"
+
+msgid "How fast the gimbal servos follow the channels. If the radio or a channel is lost, the camera returns to the centre at this speed."
+msgstr "ジンバルサーボがチャンネルに追従する速さです。送信機やチャンネルが失われると、カメラはこの速さで中央に戻ります。"
+
+msgid "Reverses the pan servo."
+msgstr "パンサーボを逆転します。"
+
+msgid "FPV gimbal reverse pan"
+msgstr "FPVジンバルのパン逆転"
+
+msgid "Reverses the tilt servo."
+msgstr "チルトサーボを逆転します。"
+
+msgid "FPV gimbal reverse tilt"
+msgstr "FPVジンバルのチルト逆転"
+
+msgid "FPV OSD"
+msgstr "FPV OSD"
+
+msgid "The on-screen display over the onboard picture, laid out like a Betaflight, INAV or ArduPilot flight controller's OSD. It shows only what the simulator measures: no battery figures on a glow or gas engine."
+msgstr "機載映像に重ねる画面表示で、Betaflight、INAV、ArduPilot のフライトコントローラーのOSDのように配置されます。シミュレーターが測定する値だけを表示し、グローやガソリンエンジンではバッテリー値は出ません。"
+
+msgid "FPV OSD elements"
+msgstr "FPV OSDの項目"
+
+msgid "FPV video link"
+msgstr "FPV映像伝送"
+
+msgid "Analog: the onboard picture breaks up with distance and when hills, buildings or trees block the path to your receiver at the pilot station, and the OSD shows the signal. It never changes how the airplane flies."
+msgstr "アナログ: 距離が離れたり、丘や建物、木がパイロット位置の受信機への経路を遮ったりすると機載映像が乱れ、OSDに信号強度が表示されます。機体の飛び方は変わりません。"
+
+msgid "FPV transmitter power"
+msgstr "FPV送信出力"
+
+msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open."
+msgstr "出力が高いほど遠くまで届きます。開けた場所では、25 mWで約600 m、200 mWで1.7 km、600 mWで2.9 km、1000 mWで3.8 kmで映像が半分乱れます。"
+
+msgid "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe."
+msgstr "固定は機体に正確に追従します。柔らかいマウントは防振マウントのように素早い動きに少し遅れて映像が追従しますが、カメラが機体から離れることはありません。"
+
+msgid "Onboard FPV"
+msgstr "機載FPV"
+
+msgid "Cockpit"
+msgstr "コックピット"
+
+msgid "Rigid"
+msgstr "固定"
+
+msgid "Softer"
+msgstr "より柔らかい"
+
+msgid "Flat"
+msgstr "フラット"
+
+msgid "Wide-angle"
+msgstr "広角"
+
+msgid "Fisheye"
+msgstr "魚眼"
+
+msgid "Off (perfect picture)"
+msgstr "オフ（完全な映像）"
+
+msgid "opentrack (UDP)"
+msgstr "opentrack (UDP)"
+
+msgid "Slow (90°/s)"
+msgstr "遅い（90°/s）"
+
+msgid "Medium (180°/s)"
+msgstr "中（180°/s）"
+
+msgid "Fast (360°/s)"
+msgstr "速い（360°/s）"
+
+msgid "Instant"
+msgstr "即時"
+
+msgid "Battery %"
+msgstr "バッテリー %"
+
+msgid "GPS speed"
+msgstr "GPS速度"
+
+msgid "Signal strength"
+msgstr "信号強度"
+
+msgid "General"
+msgstr "一般"
+
+msgid "FPV camera"
+msgstr "FPVカメラ"
+
+msgid "Look & gimbal"
+msgstr "視線とジンバル"
+
+msgid "OSD & video link"
+msgstr "OSDと映像伝送"
+
+msgid "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"
+msgstr "機載FPVカメラ（Shift+3: コックピット）。その中で: −/= レンズ角、Shift+[ ] 傾き、右ドラッグで見回し、Backspace で中央へ"
+
+msgid "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
+msgstr "DJI FPV送信機: スロットルスティックは中央に戻ります。キャリブレーションの各ステップでは、他のスティックを動かす間もスロットルを一番下に保ってください。飛行中は中央がスロットル半分になります。スティックを離した位置に留める設定にすれば別です（DJIのマニュアル参照）。ジンバルダイヤルでFPVカメラを傾けられます: 設定 › カメラ › 視線とジンバル › FPVジンバルのチルトチャンネル。"

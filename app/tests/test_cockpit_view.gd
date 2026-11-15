@@ -6,7 +6,9 @@
 #     the canopy frame shows only over the eye, not over a crash orbit;
 #   - the canopy frame: centred with the head forward, slides opposite a head turn and stops at its limit, covers
 #     the corners and the coaming but not the middle of the picture;
-#   - settings: cockpit is a first view, refused never, falls back to the pilot view without an eye.
+#   - settings: cockpit is a first view, refused never, falls back to the pilot view without an eye;
+#   - FPV-9 clean screen: the flight overlays step aside over the onboard picture and the cockpit, not in other views
+#     or a crash orbit, nor with the setting off; the setting validates and reaches the rig.
 # Run: godot --headless --path . --script res://tests/test_cockpit_view.gd
 extends SceneTree
 
@@ -44,6 +46,7 @@ func _run() -> void:
 	_wreck()
 	_canopy()
 	_settings()
+	_clean_screen()
 	print("all %d cockpit view checks passed" % _count if _failures == 0 else "%d of %d failed" % [_failures, _count])
 	quit(1 if _failures > 0 else 0)
 
@@ -219,4 +222,33 @@ func _settings() -> void:
 	rig = pair[1]
 	CameraSettings.apply_at_start(rig, {camera_view = "cockpit"})
 	_check("settings: with one it starts in the cockpit", rig.view == "cockpit")
+	cam.free()
+
+
+func _clean_screen() -> void:
+	var pair := _rig_with_eye()
+	var cam: Camera3D = pair[0]
+	var rig: RefCounted = pair[1]
+	_check("clean: on by default", rig.onboard_clean_screen and CameraSettings.DEFAULTS.camera_fpv_clean_screen)
+	_check("clean: not in the pilot view", not rig.wants_clean_screen())
+	rig.set_view("onboard")
+	_check("clean: over the onboard picture", rig.wants_clean_screen())
+	rig.set_view("cockpit")
+	_check("clean: over the cockpit", rig.wants_clean_screen())
+	rig.set_view("chase")
+	_check("clean: not in chase", not rig.wants_clean_screen())
+	rig.set_view("onboard")
+	var at := Vector3(0, 0.2, -30)
+	rig.update(at, Transform3D(Basis.IDENTITY, at), Basis.IDENTITY, 1.0 / 30.0, false, _flat)
+	rig.focus(at, _flat)
+	_check("clean: not over a crash orbit", not rig.wants_clean_screen())
+	rig.reset()
+	rig.onboard_clean_screen = false
+	_check("clean: off keeps the overlays", not rig.wants_clean_screen())
+	for bad: Dictionary in [{camera_fpv_clean_screen = "yes"}, {camera_fpv_clean_screen = 1}]:
+		_check("clean: settings refuse %s" % str(bad), not CameraSettings.errors(bad).is_empty())
+	CameraSettings.apply_at_start(rig, {camera_fpv_clean_screen = false})
+	_check("clean: the setting reaches the rig", not rig.onboard_clean_screen)
+	CameraSettings.apply_at_start(rig, {})
+	_check("clean: the default turns it back on", rig.onboard_clean_screen)
 	cam.free()

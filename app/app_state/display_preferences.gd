@@ -87,6 +87,7 @@ const DEFAULTS := {
 	"camera_fpv_shake": CameraSettings.DEFAULTS.camera_fpv_shake,
 	"camera_fpv_noise": CameraSettings.DEFAULTS.camera_fpv_noise,
 	"camera_fpv_motion_blur": CameraSettings.DEFAULTS.camera_fpv_motion_blur,
+	"camera_fpv_clean_screen": CameraSettings.DEFAULTS.camera_fpv_clean_screen,
 	"camera_fpv_quality": CameraSettings.DEFAULTS.camera_fpv_quality,
 	# FPV-5: head-look, head tracking and the servo gimbal.
 	"camera_fpv_head_tracking": CameraSettings.DEFAULTS.camera_fpv_head_tracking,
@@ -122,7 +123,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness",
 	"lens_effects", "impact_effects", "impact_colour", "lens_rain", "lens_glasses", "lens_grime", "lens_clear_centre",
 	"camera_fpv_fov", "camera_fpv_tilt", "camera_fpv_smoothing", "camera_fpv_lens",
-	"camera_fpv_shake", "camera_fpv_noise", "camera_fpv_motion_blur", "camera_fpv_quality",
+	"camera_fpv_shake", "camera_fpv_noise", "camera_fpv_motion_blur", "camera_fpv_clean_screen", "camera_fpv_quality",
 	"camera_fpv_head_tracking", "camera_fpv_head_sensitivity", "camera_fpv_gimbal_pan_axis", "camera_fpv_gimbal_tilt_axis", "camera_fpv_gimbal_pan_travel", "camera_fpv_gimbal_tilt_travel", "camera_fpv_gimbal_speed", "camera_fpv_gimbal_invert_pan", "camera_fpv_gimbal_invert_tilt",
 	"camera_fpv_osd", "camera_fpv_osd_elements", "camera_fpv_link", "camera_fpv_vtx_power",
 ] # schema-1 extensions; older files and callers keep defaults
@@ -134,7 +135,7 @@ const CAMERA_FILE_KEYS := {
 	"camera_magnifier": "magnifier",
 	"camera_fpv_fov": "fpv_fov", "camera_fpv_tilt": "fpv_tilt", "camera_fpv_smoothing": "fpv_smoothing",
 	"camera_fpv_lens": "fpv_lens",
-	"camera_fpv_shake": "fpv_shake", "camera_fpv_noise": "fpv_noise", "camera_fpv_motion_blur": "fpv_motion_blur",
+	"camera_fpv_shake": "fpv_shake", "camera_fpv_noise": "fpv_noise", "camera_fpv_motion_blur": "fpv_motion_blur", "camera_fpv_clean_screen": "fpv_clean_screen",
 	"camera_fpv_quality": "fpv_quality",
 	"camera_fpv_head_tracking": "fpv_head_tracking",
 	"camera_fpv_head_sensitivity": "fpv_head_sensitivity",

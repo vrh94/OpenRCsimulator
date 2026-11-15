@@ -13,7 +13,7 @@ const VENDOR_ID := 0x2CA3
 const NAME_TOKEN := "dji"
 ## The motion controllers' names, when one of them presents itself; they keep the generic joystick handling.
 const MOTION_TOKENS := ["motion"]
-const CALIBRATION_NOTE := "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › FPV gimbal tilt channel."
+const CALIBRATION_NOTE := "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
 
 
 ## True for a DJI FPV remote: DJI's USB vendor ID, or "DJI" in the reported name, and not a motion controller.

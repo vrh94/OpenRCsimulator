@@ -12613,3 +12613,208 @@ msgstr "无法开始校准。请选择已连接且使用遥控器配置的遥控
 
 msgid "All vehicles"
 msgstr "所有载具"
+
+# FPV fixed-wing mode (FPV-1…FPV-9, RADIO-DJI-1): onboard camera, cockpit, OSD, video link, gimbal, DJI remote.
+msgid "FPV camera tilt: %d°"
+msgstr "FPV 摄像头仰角：%d°"
+
+msgid "FPV field of view: %d°"
+msgstr "FPV 视场角：%d°"
+
+msgid "In flight: 3 onboard FPV camera, Shift+3 cockpit view."
+msgstr "飞行中：3 机载 FPV 摄像头，Shift+3 座舱视角。"
+
+msgid "FPV field of view"
+msgstr "FPV 视场角"
+
+msgid "The onboard camera's horizontal angle. Fixed-wing FPV cameras are usually 100–130°. −/= change it in flight; Backspace returns to this setting."
+msgstr "机载摄像头的水平视角。固定翼 FPV 摄像头通常为 100–130°。飞行中用 −/= 调整；Backspace 恢复此设置。"
+
+msgid "FPV camera tilt"
+msgstr "FPV 摄像头仰角"
+
+msgid "How far the onboard camera points up from the fuselage line. A slight uptilt keeps the horizon centred in cruise. Shift+[ and Shift+] change it in flight."
+msgstr "机载摄像头相对机身轴线向上抬起的角度。略微上仰可让巡航时地平线保持居中。飞行中用 Shift+[ 和 Shift+] 调整。"
+
+msgid "FPV camera mount"
+msgstr "FPV 摄像头安装"
+
+msgid "FPV lens"
+msgstr "FPV 镜头"
+
+msgid "Wide-angle bends straight lines near the edges like a real FPV camera lens, keeping the centre natural. Fisheye bends more. Flat is a plain camera with straight lines and the lowest cost."
+msgstr "广角会像真实 FPV 镜头一样让边缘附近的直线弯曲，中心保持自然。鱼眼弯曲更明显。平面是普通摄像头，直线保持笔直，开销最低。"
+
+msgid "FPV video quality"
+msgstr "FPV 视频画质"
+
+msgid "How sharply the onboard picture is rendered before the lens bends it. High is sharpest; Low is softer, like an analog camera, and costs the least."
+msgstr "镜头弯曲画面之前机载画面的渲染清晰度。高最清晰；低更柔和，类似模拟摄像头，开销最低。"
+
+msgid "FPV camera shake"
+msgstr "FPV 摄像头抖动"
+
+msgid "Motor buzz grows with throttle and airflow buffeting with speed. A soft camera mount absorbs part of the motor buzz. It moves only the picture, never the airplane."
+msgstr "电机振动随油门增大，气流抖动随速度增大。柔性摄像头安装会吸收部分电机振动。它只影响画面，不影响飞机。"
+
+msgid "FPV video noise"
+msgstr "FPV 视频噪点"
+
+msgid "Analog-style grain on the onboard picture."
+msgstr "机载画面上的模拟风格颗粒。"
+
+msgid "FPV motion blur"
+msgstr "FPV 运动模糊"
+
+msgid "Smears the onboard picture while the airplane turns, like a camera shutter open for half a frame."
+msgstr "飞机转向时让机载画面拖影，就像快门开启半帧。"
+
+msgid "Hides the flight panels while you fly the onboard FPV camera or the cockpit view, so the OSD and the picture stay clear. Other views keep them."
+msgstr "使用机载 FPV 摄像头或座舱视角飞行时隐藏飞行面板，让 OSD 和画面保持清爽。其他视角保留面板。"
+
+msgid "FPV clean screen"
+msgstr "FPV 纯净画面"
+
+msgid "FPV head-look sensitivity"
+msgstr "FPV 转头灵敏度"
+
+msgid "How far the onboard camera turns for a right-button mouse drag, and how far it follows your head with head tracking. Backspace looks straight ahead again."
+msgstr "按住鼠标右键拖动时机载摄像头转动的幅度，以及头部追踪时跟随头部的幅度。Backspace 重新看向正前方。"
+
+msgid "FPV head tracking"
+msgstr "FPV 头部追踪"
+
+msgid "Turns the onboard camera with your head. Run opentrack on this computer with the output \"UDP over network\" to 127.0.0.1, port 4242. Backspace takes your present head position as straight ahead."
+msgstr "让机载摄像头随头部转动。在本机运行 opentrack，输出选择 \"UDP over network\"，地址 127.0.0.1，端口 4242。Backspace 将当前头部位置设为正前方。"
+
+msgid "FPV gimbal pan channel"
+msgstr "FPV 云台水平通道"
+
+msgid "A radio channel that turns the onboard camera left and right like a pan servo, numbered as in the controller setup. Use a knob or slider; the flight sticks are never used."
+msgstr "让机载摄像头像水平舵机一样左右转动的遥控器通道，编号与控制器设置中一致。请使用旋钮或拨杆；飞行摇杆不会被使用。"
+
+msgid "FPV gimbal tilt channel"
+msgstr "FPV 云台俯仰通道"
+
+msgid "A radio channel that tilts the onboard camera up and down like a tilt servo, numbered as in the controller setup."
+msgstr "让机载摄像头像俯仰舵机一样上下转动的遥控器通道，编号与控制器设置中一致。"
+
+msgid "FPV gimbal pan travel"
+msgstr "FPV 云台水平行程"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel."
+msgstr "通道行程到底时水平舵机向每侧转动的角度。"
+
+msgid "FPV gimbal tilt travel"
+msgstr "FPV 云台俯仰行程"
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel."
+msgstr "通道行程到底时俯仰舵机向每侧转动的角度。"
+
+msgid "FPV gimbal servo speed"
+msgstr "FPV 云台舵机速度"
+
+msgid "How fast the gimbal servos follow the channels. If the radio or a channel is lost, the camera returns to the centre at this speed."
+msgstr "云台舵机跟随通道的速度。遥控器或某个通道丢失时，摄像头以此速度回中。"
+
+msgid "Reverses the pan servo."
+msgstr "反转水平舵机。"
+
+msgid "FPV gimbal reverse pan"
+msgstr "FPV 云台水平反向"
+
+msgid "Reverses the tilt servo."
+msgstr "反转俯仰舵机。"
+
+msgid "FPV gimbal reverse tilt"
+msgstr "FPV 云台俯仰反向"
+
+msgid "FPV OSD"
+msgstr "FPV OSD"
+
+msgid "The on-screen display over the onboard picture, laid out like a Betaflight, INAV or ArduPilot flight controller's OSD. It shows only what the simulator measures: no battery figures on a glow or gas engine."
+msgstr "叠加在机载画面上的屏显，布局仿照 Betaflight、INAV 或 ArduPilot 飞控的 OSD。只显示模拟器测得的数据：甲醇或汽油发动机不显示电池数据。"
+
+msgid "FPV OSD elements"
+msgstr "FPV OSD 元素"
+
+msgid "FPV video link"
+msgstr "FPV 图传链路"
+
+msgid "Analog: the onboard picture breaks up with distance and when hills, buildings or trees block the path to your receiver at the pilot station, and the OSD shows the signal. It never changes how the airplane flies."
+msgstr "模拟：距离变远，或山丘、建筑、树木挡住到飞手位置接收机的路径时，机载画面会出现干扰，OSD 显示信号强度。它不会改变飞机的飞行方式。"
+
+msgid "FPV transmitter power"
+msgstr "FPV 图传发射功率"
+
+msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open."
+msgstr "功率越大距离越远：开阔地带下，25 mW 约 600 m、200 mW 约 1.7 km、600 mW 约 2.9 km、1000 mW 约 3.8 km 时画面受干扰一半。"
+
+msgid "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe."
+msgstr "刚性完全跟随机身。柔性安装让画面在快速抖动时略微滞后，就像减振摄像头支架；摄像头不会离开机身。"
+
+msgid "Onboard FPV"
+msgstr "机载 FPV"
+
+msgid "Cockpit"
+msgstr "座舱"
+
+msgid "Rigid"
+msgstr "刚性"
+
+msgid "Softer"
+msgstr "更柔"
+
+msgid "Flat"
+msgstr "平面"
+
+msgid "Wide-angle"
+msgstr "广角"
+
+msgid "Fisheye"
+msgstr "鱼眼"
+
+msgid "Off (perfect picture)"
+msgstr "关闭（完美画面）"
+
+msgid "opentrack (UDP)"
+msgstr "opentrack (UDP)"
+
+msgid "Slow (90°/s)"
+msgstr "慢（90°/s）"
+
+msgid "Medium (180°/s)"
+msgstr "中（180°/s）"
+
+msgid "Fast (360°/s)"
+msgstr "快（360°/s）"
+
+msgid "Instant"
+msgstr "即时"
+
+msgid "Battery %"
+msgstr "电池 %"
+
+msgid "GPS speed"
+msgstr "GPS 速度"
+
+msgid "Signal strength"
+msgstr "信号强度"
+
+msgid "General"
+msgstr "常规"
+
+msgid "FPV camera"
+msgstr "FPV 摄像头"
+
+msgid "Look & gimbal"
+msgstr "视线与云台"
+
+msgid "OSD & video link"
+msgstr "OSD 与图传"
+
+msgid "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"
+msgstr "机载 FPV 摄像头（Shift+3：座舱）。其中：−/= 镜头角度，Shift+[ ] 仰角，右键拖动转头，Backspace 回中"
+
+msgid "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
+msgstr "DJI FPV 遥控器：它的油门摇杆会自动回中。在每个校准步骤中都要把油门完全推到最低，移动其他摇杆时也一样。飞行中中位为半油门，除非你把摇杆设置为停留在松手位置（见 DJI 说明书）。云台拨轮可以调整 FPV 摄像头仰角：设置 › 摄像机 › 视线与云台 › FPV 云台俯仰通道。"

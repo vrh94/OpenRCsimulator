@@ -188,6 +188,17 @@ func _settings_page() -> void:
 	await process_frame
 	screen._show_category(SettingsScreen.CATEGORIES.find("Camera"))
 	await process_frame
+	# FPV-9: each part of the Camera page fits without scrolling at 1080p, and only one shows at a time.
+	for part: int in SettingsScreen.CAMERA_PARTS.size():
+		screen._show_camera_part(part)
+		await process_frame
+		await process_frame
+		var shown := screen._camera_part_boxes.filter(func(box: Control) -> bool: return box.visible).size()
+		_check("Camera part %s fits without scrolling" % SettingsScreen.CAMERA_PARTS[part],
+			not screen._scroll.get_v_scroll_bar().visible and shown == 1 and screen._camera_part_boxes[part].visible,
+			"page=%s" % str(screen._scroll.get_child(0).size))
+	screen._show_camera_part(0)
+	await process_frame
 	var pickers := {"camera_view": screen._camera_view_picker, "camera_fov": screen._camera_fov_picker,
 		"camera_chase_distance": screen._camera_chase_picker, "camera_sensitivity": screen._camera_sensitivity_picker}
 	var complete := true

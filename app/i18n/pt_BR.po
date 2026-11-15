@@ -13452,3 +13452,208 @@ msgstr "Não foi possível iniciar a calibração. Selecione um rádio conectado
 
 msgid "All vehicles"
 msgstr "Todos os veículos"
+
+# FPV fixed-wing mode (FPV-1…FPV-9, RADIO-DJI-1): onboard camera, cockpit, OSD, video link, gimbal, DJI remote.
+msgid "FPV camera tilt: %d°"
+msgstr "Inclinação da câmera FPV: %d°"
+
+msgid "FPV field of view: %d°"
+msgstr "Campo de visão FPV: %d°"
+
+msgid "In flight: 3 onboard FPV camera, Shift+3 cockpit view."
+msgstr "Em voo: 3 câmera FPV a bordo, Shift+3 visão do cockpit."
+
+msgid "FPV field of view"
+msgstr "Campo de visão FPV"
+
+msgid "The onboard camera's horizontal angle. Fixed-wing FPV cameras are usually 100–130°. −/= change it in flight; Backspace returns to this setting."
+msgstr "O ângulo horizontal da câmera a bordo. Câmeras FPV de asa fixa costumam ter 100–130°. −/= mudam em voo; Backspace volta a esta configuração."
+
+msgid "FPV camera tilt"
+msgstr "Inclinação da câmera FPV"
+
+msgid "How far the onboard camera points up from the fuselage line. A slight uptilt keeps the horizon centred in cruise. Shift+[ and Shift+] change it in flight."
+msgstr "Quanto a câmera a bordo aponta para cima em relação à fuselagem. Uma leve inclinação mantém o horizonte centralizado em cruzeiro. Shift+[ e Shift+] mudam em voo."
+
+msgid "FPV camera mount"
+msgstr "Suporte da câmera FPV"
+
+msgid "FPV lens"
+msgstr "Lente FPV"
+
+msgid "Wide-angle bends straight lines near the edges like a real FPV camera lens, keeping the centre natural. Fisheye bends more. Flat is a plain camera with straight lines and the lowest cost."
+msgstr "Grande-angular curva as linhas retas perto das bordas como uma lente FPV real, mantendo o centro natural. Olho de peixe curva mais. Plana é uma câmera comum com linhas retas e o menor custo."
+
+msgid "FPV video quality"
+msgstr "Qualidade de vídeo FPV"
+
+msgid "How sharply the onboard picture is rendered before the lens bends it. High is sharpest; Low is softer, like an analog camera, and costs the least."
+msgstr "Com que nitidez a imagem a bordo é renderizada antes de a lente curvá-la. Alta é a mais nítida; Baixa é mais suave, como uma câmera analógica, e custa menos."
+
+msgid "FPV camera shake"
+msgstr "Vibração da câmera FPV"
+
+msgid "Motor buzz grows with throttle and airflow buffeting with speed. A soft camera mount absorbs part of the motor buzz. It moves only the picture, never the airplane."
+msgstr "A vibração do motor cresce com o acelerador e a turbulência do ar com a velocidade. Um suporte macio absorve parte da vibração do motor. Move só a imagem, nunca o avião."
+
+msgid "FPV video noise"
+msgstr "Ruído de vídeo FPV"
+
+msgid "Analog-style grain on the onboard picture."
+msgstr "Granulado de estilo analógico na imagem a bordo."
+
+msgid "FPV motion blur"
+msgstr "Desfoque de movimento FPV"
+
+msgid "Smears the onboard picture while the airplane turns, like a camera shutter open for half a frame."
+msgstr "Borra a imagem a bordo enquanto o avião gira, como um obturador aberto por meio quadro."
+
+msgid "Hides the flight panels while you fly the onboard FPV camera or the cockpit view, so the OSD and the picture stay clear. Other views keep them."
+msgstr "Oculta os painéis de voo enquanto você voa com a câmera FPV a bordo ou a visão do cockpit, para o OSD e a imagem ficarem livres. As outras visões os mantêm."
+
+msgid "FPV clean screen"
+msgstr "Tela limpa no FPV"
+
+msgid "FPV head-look sensitivity"
+msgstr "Sensibilidade do olhar FPV"
+
+msgid "How far the onboard camera turns for a right-button mouse drag, and how far it follows your head with head tracking. Backspace looks straight ahead again."
+msgstr "Quanto a câmera a bordo gira ao arrastar com o botão direito do mouse e quanto segue sua cabeça com o rastreamento de cabeça. Backspace volta a olhar para a frente."
+
+msgid "FPV head tracking"
+msgstr "Rastreamento de cabeça FPV"
+
+msgid "Turns the onboard camera with your head. Run opentrack on this computer with the output \"UDP over network\" to 127.0.0.1, port 4242. Backspace takes your present head position as straight ahead."
+msgstr "Gira a câmera a bordo com sua cabeça. Execute o opentrack neste computador com a saída \"UDP over network\" para 127.0.0.1, porta 4242. Backspace define a posição atual da cabeça como frente."
+
+msgid "FPV gimbal pan channel"
+msgstr "Canal de giro do gimbal FPV"
+
+msgid "A radio channel that turns the onboard camera left and right like a pan servo, numbered as in the controller setup. Use a knob or slider; the flight sticks are never used."
+msgstr "Um canal do rádio que gira a câmera a bordo para a esquerda e a direita como um servo de giro, numerado como na configuração do controle. Use um potenciômetro ou deslizante; os sticks de voo nunca são usados."
+
+msgid "FPV gimbal tilt channel"
+msgstr "Canal de inclinação do gimbal FPV"
+
+msgid "A radio channel that tilts the onboard camera up and down like a tilt servo, numbered as in the controller setup."
+msgstr "Um canal do rádio que inclina a câmera a bordo para cima e para baixo como um servo de inclinação, numerado como na configuração do controle."
+
+msgid "FPV gimbal pan travel"
+msgstr "Curso de giro do gimbal FPV"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel."
+msgstr "Quanto o servo de giro vira para cada lado no fim do curso do canal."
+
+msgid "FPV gimbal tilt travel"
+msgstr "Curso de inclinação do gimbal FPV"
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel."
+msgstr "Quanto o servo de inclinação vira para cada lado no fim do curso do canal."
+
+msgid "FPV gimbal servo speed"
+msgstr "Velocidade dos servos do gimbal FPV"
+
+msgid "How fast the gimbal servos follow the channels. If the radio or a channel is lost, the camera returns to the centre at this speed."
+msgstr "Com que rapidez os servos do gimbal seguem os canais. Se o rádio ou um canal for perdido, a câmera volta ao centro nessa velocidade."
+
+msgid "Reverses the pan servo."
+msgstr "Inverte o servo de giro."
+
+msgid "FPV gimbal reverse pan"
+msgstr "Inverter giro do gimbal FPV"
+
+msgid "Reverses the tilt servo."
+msgstr "Inverte o servo de inclinação."
+
+msgid "FPV gimbal reverse tilt"
+msgstr "Inverter inclinação do gimbal FPV"
+
+msgid "FPV OSD"
+msgstr "OSD FPV"
+
+msgid "The on-screen display over the onboard picture, laid out like a Betaflight, INAV or ArduPilot flight controller's OSD. It shows only what the simulator measures: no battery figures on a glow or gas engine."
+msgstr "A informação na tela sobre a imagem a bordo, organizada como o OSD de uma controladora Betaflight, INAV ou ArduPilot. Mostra só o que o simulador mede: sem dados de bateria em motor glow ou a gasolina."
+
+msgid "FPV OSD elements"
+msgstr "Elementos do OSD FPV"
+
+msgid "FPV video link"
+msgstr "Link de vídeo FPV"
+
+msgid "Analog: the onboard picture breaks up with distance and when hills, buildings or trees block the path to your receiver at the pilot station, and the OSD shows the signal. It never changes how the airplane flies."
+msgstr "Analógico: a imagem a bordo se degrada com a distância e quando morros, prédios ou árvores bloqueiam o caminho até seu receptor no posto do piloto, e o OSD mostra o sinal. Nunca muda como o avião voa."
+
+msgid "FPV transmitter power"
+msgstr "Potência do transmissor FPV"
+
+msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open."
+msgstr "Mais potência alcança mais longe: em campo aberto a imagem fica meio quebrada a cerca de 600 m com 25 mW, 1,7 km com 200 mW, 2,9 km com 600 mW e 3,8 km com 1000 mW."
+
+msgid "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe."
+msgstr "Rígido segue a fuselagem exatamente. Suportes macios deixam a imagem atrasar um pouco em trancos rápidos, como um suporte com amortecimento; a câmera nunca sai da fuselagem."
+
+msgid "Onboard FPV"
+msgstr "FPV a bordo"
+
+msgid "Cockpit"
+msgstr "Cockpit"
+
+msgid "Rigid"
+msgstr "Rígido"
+
+msgid "Softer"
+msgstr "Mais macio"
+
+msgid "Flat"
+msgstr "Plana"
+
+msgid "Wide-angle"
+msgstr "Grande-angular"
+
+msgid "Fisheye"
+msgstr "Olho de peixe"
+
+msgid "Off (perfect picture)"
+msgstr "Desligado (imagem perfeita)"
+
+msgid "opentrack (UDP)"
+msgstr "opentrack (UDP)"
+
+msgid "Slow (90°/s)"
+msgstr "Lenta (90°/s)"
+
+msgid "Medium (180°/s)"
+msgstr "Média (180°/s)"
+
+msgid "Fast (360°/s)"
+msgstr "Rápida (360°/s)"
+
+msgid "Instant"
+msgstr "Instantânea"
+
+msgid "Battery %"
+msgstr "Bateria %"
+
+msgid "GPS speed"
+msgstr "Velocidade GPS"
+
+msgid "Signal strength"
+msgstr "Intensidade do sinal"
+
+msgid "General"
+msgstr "Geral"
+
+msgid "FPV camera"
+msgstr "Câmera FPV"
+
+msgid "Look & gimbal"
+msgstr "Olhar e gimbal"
+
+msgid "OSD & video link"
+msgstr "OSD e link de vídeo"
+
+msgid "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"
+msgstr "Câmera FPV a bordo (Shift+3: cockpit). Nela: −/= ângulo da lente, Shift+[ ] inclinação, arrastar com o direito olhar, Backspace recentralizar"
+
+msgid "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
+msgstr "Controle DJI FPV: o stick do acelerador volta ao centro. Mantenha o ACELERADOR totalmente EMBAIXO em cada etapa da calibração, também enquanto move os outros sticks. Em voo o centro é meio acelerador, a menos que você ajuste o stick para ficar onde for deixado (veja o manual da DJI). O dial do gimbal pode inclinar a câmera FPV: Configurações › Câmera › Olhar e gimbal › Canal de inclinação do gimbal FPV."

@@ -57,7 +57,8 @@ Current source records local fixed-wing flight statistics. Open **Home → Stati
 | Esc | Pause; cancel radio calibration |
 | R | Restart flight |
 | P | Resume after a radio failsafe |
-| C · Shift+C | Next / previous view: pilot, chase, fly-by, orbit, close-up |
+| C · Shift+C | Next / previous view: pilot, chase, onboard FPV, cockpit, fly-by, orbit, close-up |
+| 3 · Shift+3 | Onboard FPV camera · cockpit view (airplanes). In them: − / = lens angle, Shift+[ / Shift+] FPV camera tilt, drag with the right mouse button to look around, Backspace looks ahead again |
 | 1 · 2 · 4 · 5 | Pilot · chase · fly-by · orbit view (2 again: 3D chase that leans with the model, for aerobatics; fly-by: a spectator ahead of the model, sun behind; orbit: drag with the right mouse button) |
 | = · − · Backspace | Zoom in · out · reset (also the mouse wheel); in chase and orbit it moves the camera |
 | Z | Toggle auto-zoom |
@@ -120,7 +121,7 @@ Choose automatic, Xbox, PlayStation, Nintendo or generic button prompts in the p
 
 **JETI USB radios:** the app recognizes the DC/DS family from its complete USB identity plus a JETI name/descriptor, and offers a **JETI USB Mode 2** profile with absolute throttle. This starter uses the four axes supplied by JETI and leaves radio buttons unassigned. Existing saved profiles keep their calibration and assignments. In Profile, explicitly choose the **JETI Mode 2** preset or use **Use safe radio actions in draft** to remove inherited gamepad assignments from the draft, then Save. Cancel keeps the previous setup. A short family name identifies the radio; details/tooltips retain the backend name. Missing or contradictory identity data requires explicit configuration. Software support does not establish full model/firmware compatibility; see the [JETI evidence and remaining qualification](plans/jeti-support.md).
 
-**DJI FPV Remote Controller 3 (Avata 2):** connect the controller straight to the computer with a USB-C data cable. It reports a joystick named *DJI Virtual Joystick* (USB vendor `2ca3`), which the app treats as a radio transmitter: run **Set up this device…** and its radio calibration once; no axis layout is assumed. Its throttle stick springs back to the middle, so hold the throttle fully down through every calibration step, including while moving the other sticks. In flight the middle is then half throttle; DJI's manual describes making the throttle stay where it is left. The gimbal dial can tilt the FPV camera (Settings → Camera → FPV gimbal tilt channel, using the axis number calibration shows). DJI's motion controllers (RC Motion 2/3) are not supported: no simulator documents them as USB joysticks, and the older Motion Controller reports a heading rather than stick positions. Software recognition is tested without the hardware; live qualification with the controller is open. [Identity source](https://steamcommunity.com/app/410340/discussions/1/640179666902122415).
+**DJI FPV Remote Controller 3 (Avata 2):** connect the controller straight to the computer with a USB-C data cable. It reports a joystick named *DJI Virtual Joystick* (USB vendor `2ca3`), which the app treats as a radio transmitter: run **Set up this device…** and its radio calibration once; no axis layout is assumed. Its throttle stick springs back to the middle, so hold the throttle fully down through every calibration step, including while moving the other sticks. In flight the middle is then half throttle; DJI's manual describes making the throttle stay where it is left. The gimbal dial can tilt the FPV camera (Settings → Camera → Look & gimbal → FPV gimbal tilt channel, using the axis number calibration shows). DJI's motion controllers (RC Motion 2/3) are not supported: no simulator documents them as USB joysticks, and the older Motion Controller reports a heading rather than stick positions. Software recognition is tested without the hardware; live qualification with the controller is open. [Identity source](https://steamcommunity.com/app/410340/discussions/1/640179666902122415).
 
 In Extra channels, choose **Switch positions** and two or three positions. Capture the actual Up, Middle (when installed) and Down buttons from the selected radio, or enter their observed indices. Add an optional physical name such as `Sa`; those configured positions then appear by name instead of gamepad glyphs. Changing a position to another button in the same group swaps them. Separate channels cannot share any group member. No Sa–Sj button map is assumed automatically.
 
@@ -233,6 +234,25 @@ default *Constant size*; **Keep the horizon in view** tilts the view down so the
 model; **Smooth overhead passes** stops the picture flipping when the model passes overhead (both share the **Pilot view
 aids** picker); **Magnifier** adds a small window at the top that shows the model up close in the pilot view (Auto shows it
 when the model gets small). [Camera plan](plans/camera-views.md).
+
+**Settings → Camera** has three more parts for the airplanes' **onboard FPV camera** (key 3) and **cockpit view**
+(Shift+3); they never change how the airplane flies:
+
+- **FPV camera:** field of view (70–150°, default 110°), uptilt (−10…+30°, default 5°), rigid or soft mount, lens
+  (flat, wide-angle by default, fisheye), video quality, camera shake, analog noise, motion blur, and **FPV clean
+  screen** (on by default), which hides the flight panels while the onboard picture or the cockpit is shown.
+- **Look & gimbal:** head-look sensitivity for the right-mouse drag; **head tracking** with
+  [opentrack](https://github.com/opentrack/opentrack) (output *UDP over network* to 127.0.0.1, port 4242); and a
+  **camera gimbal on the radio**: choose a knob or slider channel for pan and/or tilt, its travel, servo speed and
+  direction. The flight sticks are never used; a lost channel brings the camera back to the centre.
+- **OSD & video link:** an on-screen display over the onboard picture in **Betaflight**, **INAV** or **ArduPilot**
+  style (battery voltage, %, current and mAh, flight timer, GPS speed, altitude and distance above/from the pilot
+  station, home arrow, signal strength, heading, artificial horizon, flight mode, warnings; each element can be turned
+  off; battery figures appear only on electric models), and an **analog video link** whose picture breaks up with
+  distance and behind hills, buildings and trees, with the transmitter power (25–1000 mW, default 600 mW).
+
+The cockpit view sits a quarter of the length behind the nose, just above the fuselage, with a generic canopy frame;
+no aircraft defines a real cockpit yet.
 
 From Home, **Graphics → Try High (restart)** starts a temporary experimental
 Forward+ mode with ambient occlusion, soft sun shadows and sky reflections. Keep

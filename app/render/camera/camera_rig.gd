@@ -95,6 +95,8 @@ var onboard_lens := "barrel"
 ## FPV-4: the onboard video settings the route's FpvLens applies (quality, noise, motion_blur).
 var onboard_video := {quality = "high", noise = "off", motion_blur = false}
 ## FPV-7: the analog video link the route's VideoLink models (mode, transmitter power in mW).
+## FPV-9: hide the flight overlays while the onboard picture or the cockpit is shown.
+var onboard_clean_screen := true
 var onboard_link := {mode = "analog", power_mw = 600}
 ## FPV-6: the OSD the route's FpvOsd draws over the onboard picture (style, elements).
 var onboard_osd := {style = "betaflight", elements = ["horizon", "crosshair", "voltage", "battery_pct", "current", "timer",
@@ -195,6 +197,11 @@ func available(id: String) -> bool:
 ## so the lens warp applies. Valid after update() and any focus() of this frame.
 func showing_onboard_lens() -> bool:
 	return view == "onboard" and is_nan(look.x) and not _orbit_primed
+
+
+## FPV-9: whether the flight overlays step aside (the onboard picture or the cockpit eye, with the setting on).
+func wants_clean_screen() -> bool:
+	return onboard_clean_screen and (showing_onboard_lens() or showing_cockpit())
 
 
 ## FPV-8: whether the picture is the cockpit eye (the canopy frame shows), not a crash orbit or a fixed look.

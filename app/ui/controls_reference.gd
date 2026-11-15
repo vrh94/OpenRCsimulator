@@ -24,6 +24,7 @@ const SHORTCUTS := [
 	[[KEY_ESCAPE], "Pause menu (in the radio calibration: cancel it)"],
 	[[KEY_R, KEY_P], "Restart / resume after radio failsafe"],
 	[[KEY_C, KEY_1, KEY_2, KEY_4, KEY_5], "Views: next (Shift+C back), pilot, chase (again: 3D), fly-by, orbit"],
+	[[KEY_3], "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"],
 	[[KEY_Z, KEY_EQUAL, KEY_MINUS, KEY_BACKSPACE], "Zoom: auto on/off, in, out, reset"],
 	[[KEY_V, KEY_L], "Ground shadow · night lights"],
 	[[KEY_T], "Record a flight trace (press again to save it)"],

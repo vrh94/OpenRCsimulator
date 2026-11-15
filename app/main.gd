@@ -408,6 +408,8 @@ var _fpv_video_args := {}
 var _fpv_osd: CanvasLayer
 ## FPV-8: the cockpit view's canopy frame.
 var _canopy_frame: CanvasLayer
+## FPV-9: the flight overlays are stepped aside for the onboard picture or the cockpit (camera_fpv_clean_screen).
+var _fpv_clean := false
 var _fpv_osd_since := INF
 var _fpv_osd_config := {}
 ## FPV-7: the analog video link, its last line-of-sight scan (refreshed at LINK_SCAN_S) and a capture override.
@@ -841,6 +843,8 @@ func _prepare_flight() -> void:
 			_fpv_video_args[pair[0]] = str(args[pair[0]])
 	if args.has("fpv-blur"):
 		_fpv_video_args["fpv-blur"] = true
+	if args.has("fpv-clean"): # FPV-9: --fpv-clean=0 keeps the flight overlays over the onboard picture
+		_fpv_video_args["fpv-clean"] = str(args["fpv-clean"]) != "0"
 	if args.has("fpv-osd"):
 		if str(args["fpv-osd"]) not in CameraSettings.FPV_OSD_STYLES:
 			push_error("--fpv-osd must be one of %s (got \"%s\")" % [", ".join(CameraSettings.FPV_OSD_STYLES), str(args["fpv-osd"])])
@@ -1640,6 +1644,7 @@ func _process(delta: float) -> void:
 	_update_fpv_lens()
 	_update_fpv_osd(dt)
 	_update_canopy_frame()
+	_update_clean_screen()
 	if _lens != null:
 		_lens.advance(delta, visual_clock_s, not session.holds.is_empty())
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
@@ -1725,6 +1730,26 @@ func _update_canopy_frame() -> void:
 	if shown:
 		var head: Vector3 = _rig.fpv_head.head_offset()
 		_canopy_frame.set_head(Vector2(head.x, head.y), _rig.cockpit.hfov_deg)
+
+
+## FPV-9: hides the flight overlays (panels, instruments, the text panel and HUD) while the onboard picture or the
+## cockpit is shown and the setting is on; another view, a crash orbit or the setting off brings them back. Menus
+## still hide and restore them through set_overlays_visible(), which keeps them hidden while this holds.
+func _update_clean_screen() -> void:
+	var want: bool = _rig != null and _rig.wants_clean_screen() and _airplane.root.visible
+	if want == _fpv_clean:
+		return
+	_fpv_clean = want
+	_show_flight_overlay_layers(_failure_overlays_visible)
+
+
+func _show_flight_overlay_layers(on: bool) -> void:
+	for label in [_panel, _hud]:
+		var n: Node = label
+		while n != null and not n is CanvasLayer:
+			n = n.get_parent()
+		if n != null:
+			n.visible = on and not _fpv_clean
 
 
 ## FPV-6: the fixed-wing OSD. Its numbers (and battery sensors) refresh at the OSD rate in every view while it is
@@ -2697,12 +2722,7 @@ func set_overlays_visible(on: bool) -> void:
 	_failure_overlays_visible = on
 	if _failure_notice != null:
 		_failure_notice.visible = on and failure_notifications and bool(session.failure_status().get("active", false))
-	for label in [_panel, _hud]:
-		var n: Node = label
-		while n != null and not n is CanvasLayer:
-			n = n.get_parent()
-		if n != null:
-			n.visible = on
+	_show_flight_overlay_layers(on)
 	var latency_marker := get_node_or_null("LatencyPatch") as CanvasLayer
 	if latency_marker != null:
 		latency_marker.visible = on and latency_marker_enabled
@@ -3732,6 +3752,8 @@ func _build_world() -> bool:
 	add_child(_canopy_frame)
 	if _fpv_video_args.has("fpv-osd"):
 		_rig.onboard_osd.style = str(_fpv_video_args["fpv-osd"])
+	if _fpv_video_args.has("fpv-clean"):
+		_rig.onboard_clean_screen = bool(_fpv_video_args["fpv-clean"])
 	if _fpv_video_args.has("fpv-link"):
 		_rig.onboard_link.mode = str(_fpv_video_args["fpv-link"])
 	if _fpv_video_args.has("fpv-vtx"):
@@ -3905,6 +3927,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	_update_fpv_lens() # _process does not run while capturing
 	_update_fpv_osd(0.0, true)
 	_update_canopy_frame()
+	_update_clean_screen()
 	var clock_s: float = t if _scripted else sim.time()
 	World.update(_env, clock_s, _render_wind(clock_s), pose.pos, _camera)
 	_update_aircraft_lights(clock_s)
