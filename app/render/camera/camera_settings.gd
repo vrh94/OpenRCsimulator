@@ -15,6 +15,10 @@ const FPV_TILTS: Array[int] = OnboardView.TILTS
 const FPV_SMOOTHING: Array[String] = ["off", "light", "medium"]
 ## FPV-3: the onboard lens projection (render/camera/fpv_lens.gd MODELS).
 const FPV_LENSES: Array[String] = ["rectilinear", "barrel", "fisheye"]
+## FPV-4: camera vibration, video noise and quality (render/camera/onboard_view.gd SHAKE, fpv_lens.gd NOISE/QUALITY).
+const FPV_SHAKES: Array[String] = ["off", "low", "medium", "high"]
+const FPV_NOISES: Array[String] = ["off", "low", "medium", "high"]
+const FPV_QUALITIES: Array[String] = ["low", "medium", "high"]
 ## The pilot view's widest vertical FOV (deg), which the auto-zoom narrows from. 50° stays the default until CAM-22;
 ## about 31° is orthoscopic on a 27-inch 16:9 screen seen from 60 cm (CAM-AUD-2026-10-24).
 const FOVS: Array[int] = [30, 35, 40, 45, 50, 55, 60, 70]
@@ -39,6 +43,10 @@ const DEFAULTS := {
 	"camera_fpv_tilt": int(OnboardView.DEFAULT_TILT_DEG),
 	"camera_fpv_smoothing": OnboardView.DEFAULT_SMOOTHING,
 	"camera_fpv_lens": "barrel",
+	"camera_fpv_shake": "off",
+	"camera_fpv_noise": "off",
+	"camera_fpv_motion_blur": false,
+	"camera_fpv_quality": "high",
 }
 
 
@@ -57,6 +65,12 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 	var lens: Variant = raw.get("camera_fpv_lens", DEFAULTS.camera_fpv_lens)
 	if typeof(lens) != TYPE_STRING or lens not in FPV_LENSES:
 		out.append("camera_fpv_lens must be rectilinear, barrel or fisheye")
+	for pair: Array in [["camera_fpv_shake", FPV_SHAKES], ["camera_fpv_noise", FPV_NOISES], ["camera_fpv_quality", FPV_QUALITIES]]:
+		var choice: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
+		if typeof(choice) != TYPE_STRING or choice not in (pair[1] as Array):
+			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
+	if typeof(raw.get("camera_fpv_motion_blur", DEFAULTS.camera_fpv_motion_blur)) != TYPE_BOOL:
+		out.append("camera_fpv_motion_blur must be a boolean")
 	if typeof(raw.get("camera_fov", DEFAULTS.camera_fov)) != TYPE_INT or raw.get("camera_fov", DEFAULTS.camera_fov) not in FOVS:
 		out.append("camera_fov must be one of the offered fields of view")
 	if typeof(raw.get("camera_magnifier", DEFAULTS.camera_magnifier)) != TYPE_STRING or raw.get("camera_magnifier", DEFAULTS.camera_magnifier) not in MAGNIFIER_MODES:
@@ -90,6 +104,10 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fpv_tilt": int(raw.get("camera_fpv_tilt", DEFAULTS.camera_fpv_tilt)),
 		"camera_fpv_smoothing": str(raw.get("camera_fpv_smoothing", DEFAULTS.camera_fpv_smoothing)),
 		"camera_fpv_lens": str(raw.get("camera_fpv_lens", DEFAULTS.camera_fpv_lens)),
+		"camera_fpv_shake": str(raw.get("camera_fpv_shake", DEFAULTS.camera_fpv_shake)),
+		"camera_fpv_noise": str(raw.get("camera_fpv_noise", DEFAULTS.camera_fpv_noise)),
+		"camera_fpv_motion_blur": bool(raw.get("camera_fpv_motion_blur", DEFAULTS.camera_fpv_motion_blur)),
+		"camera_fpv_quality": str(raw.get("camera_fpv_quality", DEFAULTS.camera_fpv_quality)),
 	}
 
 
@@ -128,3 +146,6 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 	rig.orbit.invert_y = bool(config.camera_invert_y)
 	rig.onboard.set_smoothing(str(config.camera_fpv_smoothing))
 	rig.onboard_lens = str(config.camera_fpv_lens)
+	rig.onboard.set_shake(str(config.camera_fpv_shake))
+	rig.onboard_video = {quality = str(config.camera_fpv_quality), noise = str(config.camera_fpv_noise),
+		motion_blur = bool(config.camera_fpv_motion_blur)}

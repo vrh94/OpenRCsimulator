@@ -85,6 +85,8 @@ var flyby := FlybyView.new()
 var onboard := OnboardView.new()
 ## FPV-3: the onboard lens projection the route's FpvLens applies ("rectilinear", "barrel", "fisheye").
 var onboard_lens := "barrel"
+## FPV-4: the onboard video settings the route's FpvLens applies (quality, noise, motion_blur).
+var onboard_video := {quality = "high", noise = "off", motion_blur = false}
 var _last_dt := 0.0
 ## Direction toward the sun (render), set by the route each frame; the fly-by stands with the sun behind it.
 var light_direction := Vector3.ZERO

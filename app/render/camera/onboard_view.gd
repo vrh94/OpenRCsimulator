@@ -33,6 +33,20 @@ const TILT_STEP_DEG := 5.0
 ## (s); "off" is the rigid mount. Position always stays on the mount, so the lens never leaves the airframe.
 const SMOOTHING := { off = 0.0, light = 0.03, medium = 0.08 }
 const DEFAULT_SMOOTHING := "off"
+## FPV-4 camera vibration (presentation only, never fed back): a deterministic function of the presentation clock,
+## the commanded throttle and the airspeed. Motor/propeller buzz: MOTOR_DEG per axis at full throttle, value noise at
+## MOTOR_HZ; a soft mount passes only MOUNT_PASS of it. Airflow buffeting: AIR_DEG per axis at AIR_REF_MPS, growing
+## with dynamic pressure (V²) up to AIR_CAP times, value noise at AIR_HZ. Amplitudes are presentation choices, not
+## measurements. SHAKE scales both by the pilot's setting.
+const MOTOR_DEG := Vector3(0.12, 0.08, 0.12) # pitch, yaw, roll
+const MOTOR_HZ := 23.0
+const AIR_DEG := Vector3(0.35, 0.2, 0.35)
+const AIR_HZ := 2.7
+const AIR_REF_MPS := 30.0
+const AIR_CAP := 4.0
+const MOUNT_PASS := { off = 1.0, light = 0.5, medium = 0.3 }
+const SHAKE := { off = 0.0, low = 0.5, medium = 1.0, high = 2.0 }
+const DEFAULT_SHAKE := "off"
 
 ## Mount in the model frame (root's local axes: −z nose, +y up, +x right); valid only when `configured`.
 var mount := Vector3.ZERO
@@ -44,6 +58,11 @@ var tilt_deg := DEFAULT_TILT_DEG
 var preferred_hfov_deg := DEFAULT_HFOV_DEG
 var preferred_tilt_deg := DEFAULT_TILT_DEG
 var smoothing := DEFAULT_SMOOTHING
+## FPV-4: vibration setting and this frame's inputs (set by the route before the rig's update).
+var shake := DEFAULT_SHAKE
+var vibration_clock_s := 0.0
+var vibration_throttle := 0.0
+var vibration_airspeed := 0.0
 var _attitude := Quaternion.IDENTITY # the smoothed lens attitude
 var _primed := false
 
@@ -69,6 +88,18 @@ func set_preferences(hfov: float, tilt: float, smoothing_mode: String) -> void:
 	hfov_deg = preferred_hfov_deg
 	tilt_deg = preferred_tilt_deg
 	set_smoothing(smoothing_mode)
+
+
+func set_shake(mode: String) -> void:
+	if SHAKE.has(mode):
+		shake = mode
+
+
+## FPV-4: this frame's vibration inputs: presentation clock (s), commanded throttle (0…1), airspeed (m/s).
+func set_vibration_inputs(clock_s: float, throttle: float, airspeed: float) -> void:
+	vibration_clock_s = clock_s
+	vibration_throttle = throttle
+	vibration_airspeed = airspeed
 
 
 func set_smoothing(mode: String) -> void:
@@ -198,12 +229,48 @@ func update(airplane: Transform3D, body: Basis, aspect: float, dt: float, paused
 	if half_life <= 0.0 or not _primed:
 		_attitude = rigid
 		_primed = true
-		return placed
-	if not paused and dt > 0.0:
+	elif not paused and dt > 0.0:
 		var k := 1.0 - pow(2.0, -dt / half_life)
 		_attitude = _attitude.slerp(rigid, k).normalized()
-	placed.basis = Basis(_attitude)
+	if half_life > 0.0:
+		placed.basis = Basis(_attitude)
+	var jitter := vibration_deg(vibration_clock_s, vibration_throttle, vibration_airspeed, shake, smoothing)
+	if jitter != Vector3.ZERO:
+		# Lens-local pitch (about x), yaw (about y) and roll (about the view axis z).
+		placed.basis = (placed.basis as Basis) * Basis.from_euler(Vector3(deg_to_rad(jitter.x), deg_to_rad(jitter.y),
+			deg_to_rad(jitter.z)))
 	return placed
+
+
+## FPV-4: the lens jitter (deg: pitch, yaw, roll) at presentation time `clock_s`. Pure and deterministic.
+static func vibration_deg(clock_s: float, throttle: float, airspeed: float, shake_mode: String, mount_mode: String) -> Vector3:
+	var gain: float = SHAKE.get(shake_mode, 0.0)
+	if gain <= 0.0 or not is_finite(clock_s):
+		return Vector3.ZERO
+	var motor := clampf(throttle, 0.0, 1.0) * float(MOUNT_PASS.get(mount_mode, 1.0))
+	var q := airspeed / AIR_REF_MPS if is_finite(airspeed) else 0.0
+	var air := minf(q * q, AIR_CAP)
+	var out := Vector3.ZERO
+	for axis in 3:
+		var buzz := value_noise(clock_s * MOTOR_HZ, 11 + axis) * MOTOR_DEG[axis] * motor
+		var gust := value_noise(clock_s * AIR_HZ, 23 + axis) * AIR_DEG[axis] * air
+		out[axis] = gain * (buzz + gust)
+	return out
+
+
+## Smooth 1-D value noise in [−1, 1]: hashed lattice values, smoothstep-blended. Deterministic in (x, seed).
+static func value_noise(x: float, seed: int) -> float:
+	var i := floorf(x)
+	var f := x - i
+	var a := _hash(i, seed)
+	var b := _hash(i + 1.0, seed)
+	var t := f * f * (3.0 - 2.0 * f)
+	return lerpf(a, b, t)
+
+
+static func _hash(i: float, seed: int) -> float:
+	var h := sin(i * 12.9898 + float(seed) * 78.233) * 43758.5453
+	return (h - floorf(h)) * 2.0 - 1.0
 
 
 ## Vertical FOV (deg) giving `hfov` horizontally at `aspect`.

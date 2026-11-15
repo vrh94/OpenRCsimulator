@@ -126,6 +126,11 @@ var _camera_fpv_fov_picker: OptionButton
 var _camera_fpv_tilt_picker: OptionButton
 var _camera_fpv_smoothing_picker: OptionButton
 var _camera_fpv_lens_picker: OptionButton
+## FPV-4: onboard video.
+var _camera_fpv_shake_picker: OptionButton
+var _camera_fpv_noise_picker: OptionButton
+var _camera_fpv_quality_picker: OptionButton
+var _camera_fpv_blur_toggle: CheckButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
@@ -503,6 +508,19 @@ func _build() -> void:
 	_camera_fpv_lens_picker = _camera_picker("CameraFpvLens", "camera_fpv_lens", CameraSettings.FPV_LENSES)
 	_add_row(camera_page, "FPV lens", _camera_fpv_lens_picker)
 	_set_localized_tooltip(_camera_fpv_lens_picker, "Wide-angle bends straight lines near the edges like a real FPV camera lens, keeping the centre natural. Fisheye bends more. Flat is a plain camera with straight lines and the lowest cost.")
+	# FPV-4: onboard video; presentation only, never fed back to the flight.
+	_camera_fpv_quality_picker = _camera_picker("CameraFpvQuality", "camera_fpv_quality", CameraSettings.FPV_QUALITIES)
+	_add_row(camera_page, "FPV video quality", _camera_fpv_quality_picker)
+	_set_localized_tooltip(_camera_fpv_quality_picker, "How sharply the onboard picture is rendered before the lens bends it. High is sharpest; Low is softer, like an analog camera, and costs the least.")
+	_camera_fpv_shake_picker = _camera_picker("CameraFpvShake", "camera_fpv_shake", CameraSettings.FPV_SHAKES)
+	_add_row(camera_page, "FPV camera shake", _camera_fpv_shake_picker)
+	_set_localized_tooltip(_camera_fpv_shake_picker, "Motor buzz grows with throttle and airflow buffeting with speed. A soft camera mount absorbs part of the motor buzz. It moves only the picture, never the airplane.")
+	_camera_fpv_noise_picker = _camera_picker("CameraFpvNoise", "camera_fpv_noise", CameraSettings.FPV_NOISES)
+	_add_row(camera_page, "FPV video noise", _camera_fpv_noise_picker)
+	_set_localized_tooltip(_camera_fpv_noise_picker, "Analog-style grain on the onboard picture.")
+	_camera_fpv_blur_toggle = _camera_toggle("CameraFpvMotionBlur", "camera_fpv_motion_blur", "FPV motion blur")
+	_add_row(camera_page, "FPV motion blur", _camera_fpv_blur_toggle)
+	_set_localized_tooltip(_camera_fpv_blur_toggle, "Smears the onboard picture while the airplane turns, like a camera shutter open for half a frame.")
 	_set_localized_tooltip(_camera_fpv_smoothing_picker, "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe.")
 
 	_opaque_toggle = CheckButton.new()
@@ -826,6 +844,9 @@ func _choice_caption(key: String, value: Variant) -> String:
 			return tr("%s (default)") % lens_degrees if int(value) == int(CameraSettings.DEFAULTS[key]) else lens_degrees
 		"camera_fpv_smoothing": return {off = tr("%s (default)") % tr("Rigid"), light = tr("Soft"), medium = tr("Softer")}.get(value, str(value))
 		"camera_fpv_lens": return {rectilinear = tr("Flat"), barrel = tr("%s (default)") % tr("Wide-angle"), fisheye = tr("Fisheye")}.get(value, str(value))
+		"camera_fpv_shake", "camera_fpv_noise": return {off = tr("%s (default)") % tr("Off"), low = tr("Low"), medium = tr("Medium"),
+			high = tr("High")}.get(value, str(value))
+		"camera_fpv_quality": return {low = tr("Low"), medium = tr("Medium"), high = tr("%s (default)") % tr("High")}.get(value, str(value))
 		"camera_zoom": return {off = tr("Off"), constant = tr("%s (default)") % tr("Constant size"), partial = tr("Keeps looming"),
 			gentle = tr("Gentle")}.get(value, str(value))
 		"camera_fov":
@@ -1355,6 +1376,10 @@ func _sync_controls() -> void:
 	_select_metadata(_camera_fpv_tilt_picker, _draft.get("camera_fpv_tilt", CameraSettings.DEFAULTS.camera_fpv_tilt))
 	_select_metadata(_camera_fpv_smoothing_picker, str(_draft.get("camera_fpv_smoothing", CameraSettings.DEFAULTS.camera_fpv_smoothing)))
 	_select_metadata(_camera_fpv_lens_picker, str(_draft.get("camera_fpv_lens", CameraSettings.DEFAULTS.camera_fpv_lens)))
+	_select_metadata(_camera_fpv_quality_picker, str(_draft.get("camera_fpv_quality", CameraSettings.DEFAULTS.camera_fpv_quality)))
+	_select_metadata(_camera_fpv_shake_picker, str(_draft.get("camera_fpv_shake", CameraSettings.DEFAULTS.camera_fpv_shake)))
+	_select_metadata(_camera_fpv_noise_picker, str(_draft.get("camera_fpv_noise", CameraSettings.DEFAULTS.camera_fpv_noise)))
+	_camera_fpv_blur_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_motion_blur", CameraSettings.DEFAULTS.camera_fpv_motion_blur)))
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
@@ -1619,7 +1644,8 @@ func _refresh_translated_text() -> void:
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"],
-			[_camera_fpv_fov_picker, "camera_fpv_fov"], [_camera_fpv_tilt_picker, "camera_fpv_tilt"], [_camera_fpv_smoothing_picker, "camera_fpv_smoothing"], [_camera_fpv_lens_picker, "camera_fpv_lens"]]:
+			[_camera_fpv_fov_picker, "camera_fpv_fov"], [_camera_fpv_tilt_picker, "camera_fpv_tilt"], [_camera_fpv_smoothing_picker, "camera_fpv_smoothing"], [_camera_fpv_lens_picker, "camera_fpv_lens"],
+			[_camera_fpv_quality_picker, "camera_fpv_quality"], [_camera_fpv_shake_picker, "camera_fpv_shake"], [_camera_fpv_noise_picker, "camera_fpv_noise"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

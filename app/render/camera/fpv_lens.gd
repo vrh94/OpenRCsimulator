@@ -9,16 +9,26 @@ extends Node
 
 const SHADER := preload("res://render/camera/fpv_lens.gdshader")
 
-## "rectilinear" is the plain camera (no warp, no extra viewport); the others are radial lens projections.
+## "rectilinear" is the plain camera: no warp, and no extra viewport unless a video effect needs the pass. The others
+## are radial lens projections.
 const MODELS: Array[String] = ["rectilinear", "barrel", "fisheye"]
 const DEFAULT_MODEL := "barrel"
 ## Rectilinear source limits: its half-height in tan units is capped at tan(60°) (120° vertical); rays beyond fall
 ## into the rim, as a real FPV lens's image circle leaves the sensor corners dark at its widest settings.
 const SOURCE_TAN_CAP := 1.7320508075688772
-## Supersampling bounds: enough for the source to keep the centre at the output's own pixel density, within the
-## plan's 1.2–1.5× budget; wider lenses beyond 1.5× trade a little centre sharpness.
+## Supersampling: enough for the source to keep the centre at the output's own pixel density, within the plan's
+## 1.2–1.5× budget; wider lenses beyond the cap trade a little centre sharpness. FPV-4 video quality sets the cap
+## (per axis; the pixel budget is its square); "low" renders below the picture size, like a soft analog camera.
 const SUPERSAMPLE_MIN := 1.0
 const SUPERSAMPLE_MAX := 1.5
+const QUALITY := { low = 0.75, medium = 1.25, high = 1.5 }
+const DEFAULT_QUALITY := "high"
+## FPV-4 video noise: grain amplitude (share of the signal) per setting.
+const NOISE := { off = 0.0, low = 0.04, medium = 0.08, high = 0.16 }
+const DEFAULT_NOISE := "off"
+## FPV-4 motion blur: the share of a frame the virtual shutter stays open; larger turns between frames are cuts.
+const SHUTTER := 0.5
+const BLUR_CUT_DEG := 30.0
 const THETA_LIMIT := deg_to_rad(89.0)
 const VIGNETTE := 0.25
 ## Below every overlay and lens-stack layer, above the (disabled) 3D picture.
@@ -26,7 +36,12 @@ const LAYER := -100
 
 var model := DEFAULT_MODEL
 var supersample_max := SUPERSAMPLE_MAX
+var quality := DEFAULT_QUALITY
+var noise := DEFAULT_NOISE
+var motion_blur := false
 var active := false
+var _previous_basis := Basis()
+var _has_previous := false
 var _viewport: SubViewport
 var _camera: Camera3D
 var _layer: CanvasLayer
@@ -46,7 +61,7 @@ var _last := {}
 static func geometry(lens: String, hfov_deg: float, aspect: float, supersample_cap := SUPERSAMPLE_MAX) -> Dictionary:
 	var a := aspect if aspect > 0.0 else 16.0 / 9.0
 	var half := deg_to_rad(clampf(hfov_deg, 1.0, 170.0)) * 0.5
-	var focal := a / (2.0 * tan(half * 0.5)) if lens == "barrel" else a / half
+	var focal := a / radius_at(lens, half, 1.0)
 	var r_corner := sqrt(a * a + 1.0)
 	var theta_corner := minf(theta_at(lens, r_corner, focal), THETA_LIMIT)
 	var corner_tan := tan(theta_corner) / r_corner # per half-height of the picture, along each axis
@@ -54,11 +69,12 @@ static func geometry(lens: String, hfov_deg: float, aspect: float, supersample_c
 	var tx := minf(a * corner_tan, maxf(a * ty, tan(half)))
 	var source_aspect := tx / ty
 	# Centre density: one picture half-height spans 1/focal tan units near the axis; the source's spans ty / scale.
-	var cap := maxf(supersample_cap, SUPERSAMPLE_MIN)
-	var supersample := clampf(focal * ty, SUPERSAMPLE_MIN, cap)
+	var cap := maxf(supersample_cap, 0.25)
+	var lowest := minf(SUPERSAMPLE_MIN, cap)
+	var supersample := clampf(focal * ty, lowest, cap)
 	var width_scale := supersample * source_aspect / a
 	if supersample * width_scale > cap * cap:
-		supersample = maxf(SUPERSAMPLE_MIN * a / source_aspect, cap / sqrt(source_aspect / a))
+		supersample = maxf(lowest * a / source_aspect, cap / sqrt(source_aspect / a))
 		width_scale = supersample * source_aspect / a
 	return { focal = focal, theta_corner = theta_corner, tan_extent = Vector2(tx, ty),
 		source_vfov_deg = rad_to_deg(2.0 * atan(ty)), supersample = supersample,
@@ -67,12 +83,18 @@ static func geometry(lens: String, hfov_deg: float, aspect: float, supersample_c
 
 ## Ray angle from the axis (rad) for an output radius r (half-height units).
 static func theta_at(lens: String, r: float, focal: float) -> float:
-	return 2.0 * atan(r / (2.0 * focal)) if lens == "barrel" else r / focal
+	match lens:
+		"barrel": return 2.0 * atan(r / (2.0 * focal))
+		"fisheye": return r / focal
+	return atan(r / focal)
 
 
 ## Output radius for a ray angle θ: the lens model itself (used by tests to check the warp).
 static func radius_at(lens: String, theta: float, focal: float) -> float:
-	return 2.0 * focal * tan(theta * 0.5) if lens == "barrel" else focal * theta
+	match lens:
+		"barrel": return 2.0 * focal * tan(theta * 0.5)
+		"fisheye": return focal * theta
+	return focal * tan(theta)
 
 
 ## Where an output point p (half-height units, y up) samples the rectilinear source, in tan units; the mirror of
@@ -82,7 +104,7 @@ static func source_point(lens: String, p: Vector2, geo: Dictionary) -> Dictionar
 	var theta := theta_at(lens, r, float(geo.focal))
 	if theta >= THETA_LIMIT:
 		return { inside = false, s = Vector2.INF, theta = theta }
-	var s := tan(theta) * p / r if r > 1e-6 else p / float(geo.focal)
+	var s := tan(theta) * p / r if r > 1e-6 and lens != "rectilinear" else p / float(geo.focal)
 	var extent: Vector2 = geo.tan_extent
 	return { inside = absf(s.x) <= extent.x and absf(s.y) <= extent.y, s = s, theta = theta }
 
@@ -118,10 +140,34 @@ func build(parent: Node) -> void:
 	parent.add_child(self)
 
 
+## Whether the lens pass is needed at all: a warp, or a video effect that only the pass can draw.
+func needs_pass() -> bool:
+	return model != "rectilinear" or float(NOISE.get(noise, 0.0)) > 0.0 or motion_blur
+
+
+## FPV-4 video settings; unknown values are ignored.
+func set_video(quality_mode: String, noise_mode: String, blur: bool) -> void:
+	if QUALITY.has(quality_mode):
+		quality = quality_mode
+		supersample_max = float(QUALITY[quality_mode])
+	if NOISE.has(noise_mode):
+		noise = noise_mode
+	motion_blur = blur
+
+
+## FPV-4: the camera-space rotation from a ray's direction now to its direction SHUTTER of a frame earlier, given the
+## camera basis now and one frame earlier; identity for a cut (a turn over BLUR_CUT_DEG between frames).
+static func blur_rotation(now: Basis, before: Basis) -> Basis:
+	var relative := Quaternion((before.orthonormalized().inverse() * now.orthonormalized()).orthonormalized())
+	if rad_to_deg(relative.get_angle()) > BLUR_CUT_DEG:
+		return Basis.IDENTITY
+	return Basis(Quaternion.IDENTITY.slerp(relative, SHUTTER))
+
+
 ## Per frame, after the rig (and any crash focus) placed `flight_camera`. on: the onboard lens picture is showing.
-## hfov_deg: the onboard horizontal FOV.
-func update(flight_camera: Camera3D, on: bool, hfov_deg: float) -> void:
-	var want := on and model != "rectilinear" and is_instance_valid(flight_camera) and flight_camera.is_inside_tree()
+## hfov_deg: the onboard horizontal FOV; clock_s: the presentation clock that drives the grain (deterministic).
+func update(flight_camera: Camera3D, on: bool, hfov_deg: float, clock_s := 0.0) -> void:
+	var want := on and needs_pass() and is_instance_valid(flight_camera) and flight_camera.is_inside_tree()
 	if want != active:
 		_set_active(want, flight_camera)
 	if not active:
@@ -145,11 +191,20 @@ func update(flight_camera: Camera3D, on: bool, hfov_deg: float) -> void:
 	_camera.environment = flight_camera.environment
 	_camera.attributes = flight_camera.attributes
 	_camera.compositor = flight_camera.compositor
+	var now := flight_camera.global_transform.basis
+	var rotation := blur_rotation(now, _previous_basis) if motion_blur and _has_previous else Basis.IDENTITY
+	_previous_basis = now
+	_has_previous = true
+	_material.set_shader_parameter("blur_on", motion_blur and not rotation.is_equal_approx(Basis.IDENTITY))
+	_material.set_shader_parameter("blur_rotation", rotation)
+	_material.set_shader_parameter("noise_amount", float(NOISE.get(noise, 0.0)))
+	_material.set_shader_parameter("noise_time", clock_s)
+	_material.set_shader_parameter("picture_size", size)
 	var key := [model, geo.focal, aspect]
 	if key != _last.get("key", []):
 		_material.set_shader_parameter("aspect", aspect)
 		_material.set_shader_parameter("focal", float(geo.focal))
-		_material.set_shader_parameter("model", 0 if model == "barrel" else 1)
+		_material.set_shader_parameter("model", {barrel = 0, fisheye = 1}.get(model, 2))
 		_material.set_shader_parameter("tan_extent", geo.tan_extent)
 		_material.set_shader_parameter("theta_corner", float(geo.theta_corner))
 		_material.set_shader_parameter("vignette", VIGNETTE)
@@ -164,7 +219,7 @@ func set_model(lens: String) -> void:
 ## Evidence for captures and tests.
 func evidence() -> Dictionary:
 	return { active = active, model = model, viewport_size = _viewport.size if _viewport != null else Vector2i.ZERO,
-		geometry = _last.get("geometry", {}) }
+		geometry = _last.get("geometry", {}), quality = quality, noise = noise, motion_blur = motion_blur }
 
 
 func _set_active(on: bool, flight_camera: Camera3D) -> void:
@@ -179,6 +234,7 @@ func _set_active(on: bool, flight_camera: Camera3D) -> void:
 		_main_viewport.disable_3d = _main_3d_was_disabled
 		_main_viewport = null
 		_last = {}
+	_has_previous = false # entering or leaving is a cut: no blur across it
 
 
 ## The lens viewport renders like the main one: the same anti-aliasing and filtering. Temporal upscalers keep their

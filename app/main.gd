@@ -397,6 +397,8 @@ var _magnifier: Magnifier
 var _fpv_lens: FpvLens
 ## --fpv-lens=<rectilinear|barrel|fisheye> for direct routes and captures; empty keeps the rig's (settings) lens.
 var _fpv_lens_arg := ""
+## FPV-4: --fpv-shake=, --fpv-noise=, --fpv-quality=, --fpv-blur for direct routes and captures.
+var _fpv_video_args := {}
 ## CAM-09: the scenery collision world the cameras keep clear of (a reference, built once with the session's).
 var _camera_obstacles: Dictionary = {}
 ## RC-TRACK: this flight's RC car circuit, decided once; it feeds the field build, the wheels and the obstacles.
@@ -810,6 +812,17 @@ func _prepare_flight() -> void:
 			set_process_unhandled_input(false)
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
+	for pair: Array in [["fpv-shake", CameraSettings.FPV_SHAKES], ["fpv-noise", CameraSettings.FPV_NOISES], ["fpv-quality", CameraSettings.FPV_QUALITIES]]:
+		if args.has(pair[0]):
+			if str(args[pair[0]]) not in (pair[1] as Array):
+				push_error("--%s must be one of %s" % [pair[0], ", ".join(pair[1])])
+				set_process(false)
+				set_process_unhandled_input(false)
+				get_tree().quit(ERR_INVALID_PARAMETER)
+				return
+			_fpv_video_args[pair[0]] = str(args[pair[0]])
+	if args.has("fpv-blur"):
+		_fpv_video_args["fpv-blur"] = true
 	if args.has("view"):
 		_initial_view = str(args.view)
 		if not CameraRig.is_view(_initial_view) or (args.has("visual_pose") and _initial_view != "pilot"):
@@ -1600,7 +1613,20 @@ func _update_fpv_lens() -> void:
 	if _fpv_lens == null or _rig == null:
 		return
 	_fpv_lens.set_model(_fpv_lens_arg if not _fpv_lens_arg.is_empty() else _rig.onboard_lens)
-	_fpv_lens.update(_camera, _rig.showing_onboard_lens() and _airplane.root.visible, _rig.onboard.hfov_deg)
+	_fpv_lens.set_video(str(_rig.onboard_video.quality), str(_rig.onboard_video.noise), bool(_rig.onboard_video.motion_blur))
+	_fpv_lens.update(_camera, _rig.showing_onboard_lens() and _airplane.root.visible, _rig.onboard.hfov_deg,
+		_presentation_clock_s())
+
+
+## FPV-4: the displayed pose's time (s): the simulation clock interpolated like the drawn pose, so grain and
+## vibration are deterministic for a capture and hold while paused.
+func _presentation_clock_s() -> float:
+	if session == null:
+		return 0.0
+	var sim = session.sim
+	if _scripted or sim.paused or sim.tick <= 0 or not _visual_pose.is_empty():
+		return sim.time()
+	return maxf(0.0, sim.time() - sim.dt() + Engine.get_physics_interpolation_fraction() * sim.dt())
 
 
 ## CAM-11/FPV-1: the onboard view's lens. No aircraft declares a mount yet (CAM-13), so every fixed-wing model gets
@@ -3499,6 +3525,13 @@ func _build_world() -> bool:
 	_configure_onboard_mount()
 	_fpv_lens = FpvLens.new()
 	_fpv_lens.build(self)
+	if _fpv_video_args.has("fpv-shake"):
+		_rig.onboard.set_shake(str(_fpv_video_args["fpv-shake"]))
+	for pair: Array in [["fpv-noise", "noise"], ["fpv-quality", "quality"]]:
+		if _fpv_video_args.has(pair[0]):
+			_rig.onboard_video[pair[1]] = str(_fpv_video_args[pair[0]])
+	if _fpv_video_args.has("fpv-blur"):
+		_rig.onboard_video.motion_blur = true
 	_magnifier = Magnifier.new()
 	_magnifier.name = "MagnifierLayer"
 	add_child(_magnifier)
@@ -3608,6 +3641,10 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_came
 	var direction := _update_aircraft_shadow(pose, snapshot_lighting)
 	var paused: bool = session != null and session.sim.paused and not _scripted
 	_rig.light_direction = direction # CAM-14: the fly-by stands with the sun behind it
+	if _rig.view == "onboard" and _rig.onboard.shake != "off" and session != null:
+		# FPV-4: vibration inputs read the commanded throttle and the observed airspeed; nothing is written back.
+		var airspeed := float(_observer_air(session.sim.state, session.sim.time()).get("V", 0.0))
+		_rig.onboard.set_vibration_inputs(_presentation_clock_s(), session.propulsion_throttle(), airspeed)
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
 		_camera_clearance, defer_camera_cut)
 	if _magnifier != null:
