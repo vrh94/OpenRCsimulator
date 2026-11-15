@@ -83,6 +83,7 @@ const DEFAULTS := {
 	"camera_fpv_fov": CameraSettings.DEFAULTS.camera_fpv_fov,
 	"camera_fpv_tilt": CameraSettings.DEFAULTS.camera_fpv_tilt,
 	"camera_fpv_smoothing": CameraSettings.DEFAULTS.camera_fpv_smoothing,
+	"camera_fpv_lens": CameraSettings.DEFAULTS.camera_fpv_lens,
 	# LENS-01: lens and screen effects ([lens] section), validated by render/lens/lens_settings.gd.
 	"lens_effects": LensSettings.DEFAULTS.lens_effects,
 	"impact_effects": LensSettings.DEFAULTS.impact_effects,
@@ -100,7 +101,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"aircraft_lighting_quality", "aircraft_lighting_reduced_flashes", "aircraft_lighting_show_vfx",
 	"shadow_quality", "shadow_technique", "shadow_aircraft_cue", "shadow_distance", "shadow_softness",
 	"lens_effects", "impact_effects", "impact_colour", "lens_rain", "lens_glasses", "lens_grime", "lens_clear_centre",
-	"camera_fpv_fov", "camera_fpv_tilt", "camera_fpv_smoothing",
+	"camera_fpv_fov", "camera_fpv_tilt", "camera_fpv_smoothing", "camera_fpv_lens",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
 const CAMERA_FILE_KEYS := {
@@ -109,6 +110,7 @@ const CAMERA_FILE_KEYS := {
 	"camera_zoom_law": "zoom_law", "camera_horizon_bias": "horizon_bias", "camera_overhead_smoothing": "overhead_smoothing",
 	"camera_magnifier": "magnifier",
 	"camera_fpv_fov": "fpv_fov", "camera_fpv_tilt": "fpv_tilt", "camera_fpv_smoothing": "fpv_smoothing",
+	"camera_fpv_lens": "fpv_lens",
 }
 ## FW-RGB-13: display.cfg [aircraft_lighting] key for each global aircraft-lighting preference.
 const AIRCRAFT_LIGHTING_FILE_KEYS := {

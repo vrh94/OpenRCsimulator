@@ -13,6 +13,8 @@ const VIEWS: Array[String] = ["pilot", "chase", "onboard", "flyby", "orbit"]
 const FPV_FOVS: Array[int] = OnboardView.FOVS
 const FPV_TILTS: Array[int] = OnboardView.TILTS
 const FPV_SMOOTHING: Array[String] = ["off", "light", "medium"]
+## FPV-3: the onboard lens projection (render/camera/fpv_lens.gd MODELS).
+const FPV_LENSES: Array[String] = ["rectilinear", "barrel", "fisheye"]
 ## The pilot view's widest vertical FOV (deg), which the auto-zoom narrows from. 50° stays the default until CAM-22;
 ## about 31° is orthoscopic on a 27-inch 16:9 screen seen from 60 cm (CAM-AUD-2026-10-24).
 const FOVS: Array[int] = [30, 35, 40, 45, 50, 55, 60, 70]
@@ -36,6 +38,7 @@ const DEFAULTS := {
 	"camera_fpv_fov": int(OnboardView.DEFAULT_HFOV_DEG),
 	"camera_fpv_tilt": int(OnboardView.DEFAULT_TILT_DEG),
 	"camera_fpv_smoothing": OnboardView.DEFAULT_SMOOTHING,
+	"camera_fpv_lens": "barrel",
 }
 
 
@@ -51,6 +54,9 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 	var smoothing: Variant = raw.get("camera_fpv_smoothing", DEFAULTS.camera_fpv_smoothing)
 	if typeof(smoothing) != TYPE_STRING or smoothing not in FPV_SMOOTHING:
 		out.append("camera_fpv_smoothing must be off, light or medium")
+	var lens: Variant = raw.get("camera_fpv_lens", DEFAULTS.camera_fpv_lens)
+	if typeof(lens) != TYPE_STRING or lens not in FPV_LENSES:
+		out.append("camera_fpv_lens must be rectilinear, barrel or fisheye")
 	if typeof(raw.get("camera_fov", DEFAULTS.camera_fov)) != TYPE_INT or raw.get("camera_fov", DEFAULTS.camera_fov) not in FOVS:
 		out.append("camera_fov must be one of the offered fields of view")
 	if typeof(raw.get("camera_magnifier", DEFAULTS.camera_magnifier)) != TYPE_STRING or raw.get("camera_magnifier", DEFAULTS.camera_magnifier) not in MAGNIFIER_MODES:
@@ -83,6 +89,7 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fpv_fov": int(raw.get("camera_fpv_fov", DEFAULTS.camera_fpv_fov)),
 		"camera_fpv_tilt": int(raw.get("camera_fpv_tilt", DEFAULTS.camera_fpv_tilt)),
 		"camera_fpv_smoothing": str(raw.get("camera_fpv_smoothing", DEFAULTS.camera_fpv_smoothing)),
+		"camera_fpv_lens": str(raw.get("camera_fpv_lens", DEFAULTS.camera_fpv_lens)),
 	}
 
 
@@ -120,3 +127,4 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 	rig.orbit.sensitivity = float(config.camera_sensitivity)
 	rig.orbit.invert_y = bool(config.camera_invert_y)
 	rig.onboard.set_smoothing(str(config.camera_fpv_smoothing))
+	rig.onboard_lens = str(config.camera_fpv_lens)

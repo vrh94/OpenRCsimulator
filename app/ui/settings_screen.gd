@@ -125,6 +125,7 @@ var _camera_invert_toggle: CheckButton
 var _camera_fpv_fov_picker: OptionButton
 var _camera_fpv_tilt_picker: OptionButton
 var _camera_fpv_smoothing_picker: OptionButton
+var _camera_fpv_lens_picker: OptionButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
@@ -499,6 +500,9 @@ func _build() -> void:
 	_set_localized_tooltip(_camera_fpv_tilt_picker, "How far the onboard camera points up from the fuselage line. A slight uptilt keeps the horizon centred in cruise. Shift+[ and Shift+] change it in flight.")
 	_camera_fpv_smoothing_picker = _camera_picker("CameraFpvSmoothing", "camera_fpv_smoothing", CameraSettings.FPV_SMOOTHING)
 	_add_row(camera_page, "FPV camera mount", _camera_fpv_smoothing_picker)
+	_camera_fpv_lens_picker = _camera_picker("CameraFpvLens", "camera_fpv_lens", CameraSettings.FPV_LENSES)
+	_add_row(camera_page, "FPV lens", _camera_fpv_lens_picker)
+	_set_localized_tooltip(_camera_fpv_lens_picker, "Wide-angle bends straight lines near the edges like a real FPV camera lens, keeping the centre natural. Fisheye bends more. Flat is a plain camera with straight lines and the lowest cost.")
 	_set_localized_tooltip(_camera_fpv_smoothing_picker, "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe.")
 
 	_opaque_toggle = CheckButton.new()
@@ -821,6 +825,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 			var lens_degrees := "%d°" % int(value)
 			return tr("%s (default)") % lens_degrees if int(value) == int(CameraSettings.DEFAULTS[key]) else lens_degrees
 		"camera_fpv_smoothing": return {off = tr("%s (default)") % tr("Rigid"), light = tr("Soft"), medium = tr("Softer")}.get(value, str(value))
+		"camera_fpv_lens": return {rectilinear = tr("Flat"), barrel = tr("%s (default)") % tr("Wide-angle"), fisheye = tr("Fisheye")}.get(value, str(value))
 		"camera_zoom": return {off = tr("Off"), constant = tr("%s (default)") % tr("Constant size"), partial = tr("Keeps looming"),
 			gentle = tr("Gentle")}.get(value, str(value))
 		"camera_fov":
@@ -1349,6 +1354,7 @@ func _sync_controls() -> void:
 	_select_metadata(_camera_fpv_fov_picker, _draft.get("camera_fpv_fov", CameraSettings.DEFAULTS.camera_fpv_fov))
 	_select_metadata(_camera_fpv_tilt_picker, _draft.get("camera_fpv_tilt", CameraSettings.DEFAULTS.camera_fpv_tilt))
 	_select_metadata(_camera_fpv_smoothing_picker, str(_draft.get("camera_fpv_smoothing", CameraSettings.DEFAULTS.camera_fpv_smoothing)))
+	_select_metadata(_camera_fpv_lens_picker, str(_draft.get("camera_fpv_lens", CameraSettings.DEFAULTS.camera_fpv_lens)))
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
@@ -1613,7 +1619,7 @@ func _refresh_translated_text() -> void:
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"],
-			[_camera_fpv_fov_picker, "camera_fpv_fov"], [_camera_fpv_tilt_picker, "camera_fpv_tilt"], [_camera_fpv_smoothing_picker, "camera_fpv_smoothing"]]:
+			[_camera_fpv_fov_picker, "camera_fpv_fov"], [_camera_fpv_tilt_picker, "camera_fpv_tilt"], [_camera_fpv_smoothing_picker, "camera_fpv_smoothing"], [_camera_fpv_lens_picker, "camera_fpv_lens"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

@@ -28,6 +28,7 @@ const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
+const FpvLens := preload("res://render/camera/fpv_lens.gd")
 const CameraCollision := preload("res://render/camera/camera_collision.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Commands := preload("res://input/commands.gd")
@@ -392,6 +393,10 @@ var _camera: Camera3D
 var _rig: CameraRig
 ## CAM-18: the magnifier inset (off unless the player chose it).
 var _magnifier: Magnifier
+## CAM-12/FPV-3: the onboard lens warp (inactive outside the onboard view or with the flat lens).
+var _fpv_lens: FpvLens
+## --fpv-lens=<rectilinear|barrel|fisheye> for direct routes and captures; empty keeps the rig's (settings) lens.
+var _fpv_lens_arg := ""
 ## CAM-09: the scenery collision world the cameras keep clear of (a reference, built once with the session's).
 var _camera_obstacles: Dictionary = {}
 ## RC-TRACK: this flight's RC car circuit, decided once; it feeds the field build, the wheels and the obstacles.
@@ -797,6 +802,14 @@ func _prepare_flight() -> void:
 	# Deliver input events at once: with accumulation, joypad events reach the game a frame late on Linux/macOS.
 	Input.use_accumulated_input = false
 	_inspect = args.has("inspect")
+	if args.has("fpv-lens"):
+		_fpv_lens_arg = str(args["fpv-lens"])
+		if _fpv_lens_arg not in FpvLens.MODELS:
+			push_error("--fpv-lens must be one of %s (got \"%s\")" % [", ".join(FpvLens.MODELS), _fpv_lens_arg])
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 	if args.has("view"):
 		_initial_view = str(args.view)
 		if not CameraRig.is_view(_initial_view) or (args.has("visual_pose") and _initial_view != "pilot"):
@@ -1548,6 +1561,7 @@ func _process(delta: float) -> void:
 	# after its final pose, before this frame is drawn.
 	if not _rig.pending_history_reset.is_empty():
 		_rig.commit_history_reset()
+	_update_fpv_lens()
 	if _lens != null:
 		_lens.advance(delta, visual_clock_s, not session.holds.is_empty())
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
@@ -1579,6 +1593,14 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 		_rig.set_span(_extent.x)
 	_configure_onboard_mount()
 	return true
+
+
+## CAM-12/FPV-3: after the rig and any crash focus placed the camera this frame.
+func _update_fpv_lens() -> void:
+	if _fpv_lens == null or _rig == null:
+		return
+	_fpv_lens.set_model(_fpv_lens_arg if not _fpv_lens_arg.is_empty() else _rig.onboard_lens)
+	_fpv_lens.update(_camera, _rig.showing_onboard_lens() and _airplane.root.visible, _rig.onboard.hfov_deg)
 
 
 ## CAM-11/FPV-1: the onboard view's lens. No aircraft declares a mount yet (CAM-13), so every fixed-wing model gets
@@ -3475,6 +3497,8 @@ func _build_world() -> bool:
 	_storm_fx.set_audio_enabled(not _scripted and not storm_args.has("capture") and str(storm_args.get("soundscape", "on")) != "off")
 	_rig = CameraRig.new(_camera, _extent.x)
 	_configure_onboard_mount()
+	_fpv_lens = FpvLens.new()
+	_fpv_lens.build(self)
 	_magnifier = Magnifier.new()
 	_magnifier.name = "MagnifierLayer"
 	add_child(_magnifier)
@@ -3630,6 +3654,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), surfaces, session.throws_deg())
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
+	_update_fpv_lens() # _process does not run while capturing
 	var clock_s: float = t if _scripted else sim.time()
 	World.update(_env, clock_s, _render_wind(clock_s), pose.pos, _camera)
 	_update_aircraft_lights(clock_s)

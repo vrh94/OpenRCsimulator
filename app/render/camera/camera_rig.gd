@@ -83,6 +83,8 @@ var chase := ChaseView.new()
 var orbit := OrbitView.new()
 var flyby := FlybyView.new()
 var onboard := OnboardView.new()
+## FPV-3: the onboard lens projection the route's FpvLens applies ("rectilinear", "barrel", "fisheye").
+var onboard_lens := "barrel"
 var _last_dt := 0.0
 ## Direction toward the sun (render), set by the route each frame; the fly-by stands with the sun behind it.
 var light_direction := Vector3.ZERO
@@ -164,6 +166,12 @@ func cycle(step: int) -> void:
 ## Whether a view can be shown: the onboard view needs a configured mount.
 func available(id: String) -> bool:
 	return id != "onboard" or onboard.configured
+
+
+## FPV-3: the picture on screen is the onboard lens itself (not a landscape look or the crash orbit of the wreck),
+## so the lens warp applies. Valid after update() and any focus() of this frame.
+func showing_onboard_lens() -> bool:
+	return view == "onboard" and is_nan(look.x) and not _orbit_primed
 
 
 ## CAM-06: another auto-zoom law, reached smoothly like a zoom change.
@@ -404,7 +412,7 @@ func evidence() -> Dictionary:
 	return { view = view, auto_zoom = auto_zoom, pilot_zoom = pilot_zoom, chase_zoom = chase.zoom,
 		orbit = [orbit.azimuth_deg, orbit.elevation_deg, orbit.distance],
 		onboard = { configured = onboard.configured, source = onboard.mount_source, mount = onboard.mount,
-			hfov_deg = onboard.hfov_deg, tilt_deg = onboard.tilt_deg, smoothing = onboard.smoothing } }
+			hfov_deg = onboard.hfov_deg, tilt_deg = onboard.tilt_deg, smoothing = onboard.smoothing, lens = onboard_lens } }
 
 
 ## Width / height of the picture the camera renders into.
