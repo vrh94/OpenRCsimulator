@@ -15,6 +15,7 @@ const ChaseView := preload("res://render/camera/chase_view.gd")
 const OrbitView := preload("res://render/camera/orbit_view.gd")
 const FlybyView := preload("res://render/camera/flyby_view.gd")
 const OnboardView := preload("res://render/camera/onboard_view.gd")
+const FpvHead := preload("res://render/camera/fpv_head.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 
 ## The C cycle, in order. Number keys select pilot (1), chase (2), onboard (3), fly-by (4) and orbit (5); 6 and 7 are
@@ -83,6 +84,9 @@ var chase := ChaseView.new()
 var orbit := OrbitView.new()
 var flyby := FlybyView.new()
 var onboard := OnboardView.new()
+## FPV-5: mouse head-look, head tracking and the servo gimbal of the onboard lens; the route feeds the tracker and the
+## radio channels each frame (main.gd), and the rig hands the combined look to the onboard view.
+var fpv_head := FpvHead.new()
 ## FPV-3: the onboard lens projection the route's FpvLens applies ("rectilinear", "barrel", "fisheye").
 var onboard_lens := "barrel"
 ## FPV-4: the onboard video settings the route's FpvLens applies (quality, noise, motion_blur).
@@ -139,6 +143,7 @@ func set_view(id: String) -> bool:
 		_orbit_primed = false # onboard: a crash aftermath orbits the wreck from the lens (focus())
 		if id == "onboard":
 			onboard.snap() # a cut: a smoothed mount starts settled
+			fpv_head.snap_gimbal()
 	_fov_offset = 0.0
 	_absorb_from = NAN
 	return true
@@ -222,6 +227,7 @@ func reset_view() -> void:
 	match view:
 		"onboard":
 			onboard.reset_lens()
+			fpv_head.recentre()
 		"pilot":
 			if pilot_zoom != default_pilot_zoom:
 				_mark_fov_jump()
@@ -251,10 +257,18 @@ static func release_cursor_if_up() -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 
-## Right-button drag (relative pixels). Only the orbit view turns today.
+## Right-button drag (relative pixels): the orbit turns, and the onboard lens looks around (FPV-5) unless a crash
+## aftermath is orbiting the wreck.
 func drag(relative: Vector2) -> void:
-	if view == "orbit":
+	if view == "orbit" or (view == "onboard" and _orbit_primed):
 		orbit.rotate(relative)
+	elif view == "onboard" and is_nan(look.x):
+		fpv_head.mouse_drag(relative)
+
+
+## Whether a right-button drag in the current view holds the cursor (CAM-29).
+func drag_holds_cursor() -> bool:
+	return view == "orbit" or view == "onboard"
 
 
 ## A restarted flight: views with memory start settled again.
@@ -267,6 +281,7 @@ func reset() -> void:
 	_fov_offset = 0.0
 	_absorb_from = NAN
 	onboard.snap()
+	fpv_head.snap_gimbal()
 	if view == "onboard":
 		_orbit_primed = false # a restarted flight returns to the lens, not the last wreck orbit
 
@@ -338,6 +353,7 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 			_apply(orbit.update(target, ground_y, dt, obstacles))
 		"onboard":
 			# Rigid on the drawn pose by default; FPV-2's optional soft mount smooths only the attitude.
+			onboard.look = fpv_head.offset()
 			_apply(onboard.update(airplane, body, _aspect(), dt, paused))
 	_placed = true
 	if not defer_history_reset and not pending_history_reset.is_empty():
@@ -414,7 +430,8 @@ func evidence() -> Dictionary:
 	return { view = view, auto_zoom = auto_zoom, pilot_zoom = pilot_zoom, chase_zoom = chase.zoom,
 		orbit = [orbit.azimuth_deg, orbit.elevation_deg, orbit.distance],
 		onboard = { configured = onboard.configured, source = onboard.mount_source, mount = onboard.mount,
-			hfov_deg = onboard.hfov_deg, tilt_deg = onboard.tilt_deg, smoothing = onboard.smoothing, lens = onboard_lens } }
+			hfov_deg = onboard.hfov_deg, tilt_deg = onboard.tilt_deg, smoothing = onboard.smoothing, lens = onboard_lens,
+			head = fpv_head.evidence() } }
 
 
 ## Width / height of the picture the camera renders into.

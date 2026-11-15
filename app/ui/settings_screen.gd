@@ -131,6 +131,16 @@ var _camera_fpv_shake_picker: OptionButton
 var _camera_fpv_noise_picker: OptionButton
 var _camera_fpv_quality_picker: OptionButton
 var _camera_fpv_blur_toggle: CheckButton
+## FPV-5: head-look, head tracking and the servo gimbal.
+var _camera_fpv_head_sensitivity_picker: OptionButton
+var _camera_fpv_head_tracking_picker: OptionButton
+var _camera_fpv_gimbal_pan_axis_picker: OptionButton
+var _camera_fpv_gimbal_tilt_axis_picker: OptionButton
+var _camera_fpv_gimbal_pan_travel_picker: OptionButton
+var _camera_fpv_gimbal_tilt_travel_picker: OptionButton
+var _camera_fpv_gimbal_speed_picker: OptionButton
+var _camera_fpv_gimbal_invert_pan_toggle: CheckButton
+var _camera_fpv_gimbal_invert_tilt_toggle: CheckButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
@@ -521,6 +531,31 @@ func _build() -> void:
 	_camera_fpv_blur_toggle = _camera_toggle("CameraFpvMotionBlur", "camera_fpv_motion_blur", "FPV motion blur")
 	_add_row(camera_page, "FPV motion blur", _camera_fpv_blur_toggle)
 	_set_localized_tooltip(_camera_fpv_blur_toggle, "Smears the onboard picture while the airplane turns, like a camera shutter open for half a frame.")
+	_camera_fpv_head_sensitivity_picker = _camera_picker("CameraFpvHeadSensitivity", "camera_fpv_head_sensitivity", CameraSettings.FPV_HEAD_SENSITIVITIES)
+	_add_row(camera_page, "FPV head-look sensitivity", _camera_fpv_head_sensitivity_picker)
+	_set_localized_tooltip(_camera_fpv_head_sensitivity_picker, "How far the onboard camera turns for a right-button mouse drag, and how far it follows your head with head tracking. Backspace looks straight ahead again.")
+	_camera_fpv_head_tracking_picker = _camera_picker("CameraFpvHeadTracking", "camera_fpv_head_tracking", CameraSettings.FPV_HEAD_TRACKING)
+	_add_row(camera_page, "FPV head tracking", _camera_fpv_head_tracking_picker)
+	_set_localized_tooltip(_camera_fpv_head_tracking_picker, "Turns the onboard camera with your head. Run opentrack on this computer with the output \"UDP over network\" to 127.0.0.1, port 4242. Backspace takes your present head position as straight ahead.")
+	_camera_fpv_gimbal_pan_axis_picker = _camera_picker("CameraFpvGimbalPanAxis", "camera_fpv_gimbal_pan_axis", CameraSettings.FPV_GIMBAL_AXES)
+	_add_row(camera_page, "FPV gimbal pan channel", _camera_fpv_gimbal_pan_axis_picker)
+	_set_localized_tooltip(_camera_fpv_gimbal_pan_axis_picker, "A radio channel that turns the onboard camera left and right like a pan servo, numbered as in the controller setup. Use a knob or slider; the flight sticks are never used.")
+	_camera_fpv_gimbal_tilt_axis_picker = _camera_picker("CameraFpvGimbalTiltAxis", "camera_fpv_gimbal_tilt_axis", CameraSettings.FPV_GIMBAL_AXES)
+	_add_row(camera_page, "FPV gimbal tilt channel", _camera_fpv_gimbal_tilt_axis_picker)
+	_set_localized_tooltip(_camera_fpv_gimbal_tilt_axis_picker, "A radio channel that tilts the onboard camera up and down like a tilt servo, numbered as in the controller setup.")
+	_camera_fpv_gimbal_pan_travel_picker = _camera_picker("CameraFpvGimbalPanTravel", "camera_fpv_gimbal_pan_travel", CameraSettings.FPV_GIMBAL_PAN_TRAVELS)
+	_add_row(camera_page, "FPV gimbal pan travel", _camera_fpv_gimbal_pan_travel_picker)
+	_set_localized_tooltip(_camera_fpv_gimbal_pan_travel_picker, "How far the pan servo turns each way at the end of the channel's travel.")
+	_camera_fpv_gimbal_tilt_travel_picker = _camera_picker("CameraFpvGimbalTiltTravel", "camera_fpv_gimbal_tilt_travel", CameraSettings.FPV_GIMBAL_TILT_TRAVELS)
+	_add_row(camera_page, "FPV gimbal tilt travel", _camera_fpv_gimbal_tilt_travel_picker)
+	_set_localized_tooltip(_camera_fpv_gimbal_tilt_travel_picker, "How far the tilt servo turns each way at the end of the channel's travel.")
+	_camera_fpv_gimbal_speed_picker = _camera_picker("CameraFpvGimbalSpeed", "camera_fpv_gimbal_speed", CameraSettings.FPV_GIMBAL_SPEEDS)
+	_add_row(camera_page, "FPV gimbal servo speed", _camera_fpv_gimbal_speed_picker)
+	_set_localized_tooltip(_camera_fpv_gimbal_speed_picker, "How fast the gimbal servos follow the channels. If the radio or a channel is lost, the camera returns to the centre at this speed.")
+	_camera_fpv_gimbal_invert_pan_toggle = _camera_toggle("CameraFpvGimbalInvertPan", "camera_fpv_gimbal_invert_pan", "Reverses the pan servo.")
+	_add_row(camera_page, "FPV gimbal reverse pan", _camera_fpv_gimbal_invert_pan_toggle)
+	_camera_fpv_gimbal_invert_tilt_toggle = _camera_toggle("CameraFpvGimbalInvertTilt", "camera_fpv_gimbal_invert_tilt", "Reverses the tilt servo.")
+	_add_row(camera_page, "FPV gimbal reverse tilt", _camera_fpv_gimbal_invert_tilt_toggle)
 	_set_localized_tooltip(_camera_fpv_smoothing_picker, "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe.")
 
 	_opaque_toggle = CheckButton.new()
@@ -847,12 +882,20 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"camera_fpv_shake", "camera_fpv_noise": return {off = tr("%s (default)") % tr("Off"), low = tr("Low"), medium = tr("Medium"),
 			high = tr("High")}.get(value, str(value))
 		"camera_fpv_quality": return {low = tr("Low"), medium = tr("Medium"), high = tr("%s (default)") % tr("High")}.get(value, str(value))
+		"camera_fpv_head_tracking": return {off = tr("%s (default)") % tr("Off"), opentrack = tr("opentrack (UDP)")}.get(value, str(value))
+		"camera_fpv_gimbal_pan_axis", "camera_fpv_gimbal_tilt_axis":
+			return tr("%s (default)") % tr("Off") if int(value) < 0 else tr("Axis %d") % int(value)
+		"camera_fpv_gimbal_pan_travel", "camera_fpv_gimbal_tilt_travel":
+			var travel := "±%d°" % int(value)
+			return tr("%s (default)") % travel if int(value) == int(CameraSettings.DEFAULTS[key]) else travel
+		"camera_fpv_gimbal_speed": return {slow = tr("Slow (90°/s)"), medium = tr("%s (default)") % tr("Medium (180°/s)"),
+			fast = tr("Fast (360°/s)"), instant = tr("Instant")}.get(value, str(value))
 		"camera_zoom": return {off = tr("Off"), constant = tr("%s (default)") % tr("Constant size"), partial = tr("Keeps looming"),
 			gentle = tr("Gentle")}.get(value, str(value))
 		"camera_fov":
 			var degrees := "%d°" % int(value)
 			return tr("%s (default)") % degrees if int(value) == int(CameraSettings.DEFAULTS.camera_fov) else degrees
-		"camera_chase_distance", "camera_sensitivity":
+		"camera_chase_distance", "camera_sensitivity", "camera_fpv_head_sensitivity":
 			var percent := "%d %%" % roundi(float(value) * 100.0)
 			return tr("%s (default)") % percent if is_equal_approx(float(value), 1.0) else percent
 	return str(value)
@@ -1380,6 +1423,14 @@ func _sync_controls() -> void:
 	_select_metadata(_camera_fpv_shake_picker, str(_draft.get("camera_fpv_shake", CameraSettings.DEFAULTS.camera_fpv_shake)))
 	_select_metadata(_camera_fpv_noise_picker, str(_draft.get("camera_fpv_noise", CameraSettings.DEFAULTS.camera_fpv_noise)))
 	_camera_fpv_blur_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_motion_blur", CameraSettings.DEFAULTS.camera_fpv_motion_blur)))
+	_select_metadata(_camera_fpv_head_sensitivity_picker, _draft.get("camera_fpv_head_sensitivity", CameraSettings.DEFAULTS.camera_fpv_head_sensitivity))
+	_select_metadata(_camera_fpv_head_tracking_picker, str(_draft.get("camera_fpv_head_tracking", CameraSettings.DEFAULTS.camera_fpv_head_tracking)))
+	for entry: Array in [[_camera_fpv_gimbal_pan_axis_picker, "camera_fpv_gimbal_pan_axis"], [_camera_fpv_gimbal_tilt_axis_picker, "camera_fpv_gimbal_tilt_axis"],
+			[_camera_fpv_gimbal_pan_travel_picker, "camera_fpv_gimbal_pan_travel"], [_camera_fpv_gimbal_tilt_travel_picker, "camera_fpv_gimbal_tilt_travel"]]:
+		_select_metadata(entry[0], int(_draft.get(entry[1], CameraSettings.DEFAULTS[entry[1]])))
+	_select_metadata(_camera_fpv_gimbal_speed_picker, str(_draft.get("camera_fpv_gimbal_speed", CameraSettings.DEFAULTS.camera_fpv_gimbal_speed)))
+	_camera_fpv_gimbal_invert_pan_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_pan", false)))
+	_camera_fpv_gimbal_invert_tilt_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_tilt", false)))
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
@@ -1645,7 +1696,11 @@ func _refresh_translated_text() -> void:
 			[_lighting_quality_picker, "aircraft_lighting_quality"],
 			[_camera_view_picker, "camera_view"], [_camera_fov_picker, "camera_fov"], [_camera_zoom_picker, "camera_zoom"], [_camera_magnifier_picker, "camera_magnifier"], [_camera_aids_picker, "camera_aids"], [_camera_chase_picker, "camera_chase_distance"], [_camera_sensitivity_picker, "camera_sensitivity"],
 			[_camera_fpv_fov_picker, "camera_fpv_fov"], [_camera_fpv_tilt_picker, "camera_fpv_tilt"], [_camera_fpv_smoothing_picker, "camera_fpv_smoothing"], [_camera_fpv_lens_picker, "camera_fpv_lens"],
-			[_camera_fpv_quality_picker, "camera_fpv_quality"], [_camera_fpv_shake_picker, "camera_fpv_shake"], [_camera_fpv_noise_picker, "camera_fpv_noise"]]:
+			[_camera_fpv_quality_picker, "camera_fpv_quality"], [_camera_fpv_shake_picker, "camera_fpv_shake"], [_camera_fpv_noise_picker, "camera_fpv_noise"],
+			[_camera_fpv_head_sensitivity_picker, "camera_fpv_head_sensitivity"], [_camera_fpv_head_tracking_picker, "camera_fpv_head_tracking"],
+			[_camera_fpv_gimbal_pan_axis_picker, "camera_fpv_gimbal_pan_axis"], [_camera_fpv_gimbal_tilt_axis_picker, "camera_fpv_gimbal_tilt_axis"],
+			[_camera_fpv_gimbal_pan_travel_picker, "camera_fpv_gimbal_pan_travel"], [_camera_fpv_gimbal_tilt_travel_picker, "camera_fpv_gimbal_tilt_travel"],
+			[_camera_fpv_gimbal_speed_picker, "camera_fpv_gimbal_speed"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

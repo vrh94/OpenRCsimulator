@@ -63,6 +63,9 @@ var shake := DEFAULT_SHAKE
 var vibration_clock_s := 0.0
 var vibration_throttle := 0.0
 var vibration_airspeed := 0.0
+## FPV-5: where the lens looks from the mount's straight ahead (yaw right, pitch up, roll clockwise; deg), from the
+## rig's FpvHead (mouse head-look, head tracking, servo gimbal).
+var look := Vector3.ZERO
 var _attitude := Quaternion.IDENTITY # the smoothed lens attitude
 var _primed := false
 
@@ -213,19 +216,31 @@ static func surface_top(faces: PackedVector3Array, x: float, z: float) -> float:
 
 ## The camera's placement for one drawn pose. airplane: the model root transform (scale included); body: the
 ## aircraft's basis (nose −z); aspect: width / height of the picture. Returns {position, basis, fov} like the other
-## views (fov vertical, deg).
+## views (fov vertical, deg). The lens turns by `look` (FPV-5: yaw right, pitch up, roll clockwise; deg) like a
+## pan-tilt gimbal: pan about the airframe's up axis, then tilt (the mount's uptilt plus the look's pitch), then roll.
 func placement(airplane: Transform3D, body: Basis, aspect: float) -> Dictionary:
-	var b := body.orthonormalized()
-	var tilted := b * Basis(Vector3.RIGHT, deg_to_rad(tilt_deg))
-	return { position = airplane * mount, basis = tilted, fov = vertical_fov_deg(hfov_deg, aspect) }
+	return { position = airplane * mount, basis = aimed(body.orthonormalized()), fov = vertical_fov_deg(hfov_deg, aspect) }
 
 
-## The placement for this frame with the mount's smoothing: rigid when off; otherwise the lens attitude follows the
-## rigid one with the mode's half-life (frame-rate independent), and holds while paused.
+## The lens basis on an airframe attitude, with the uptilt and the look.
+func aimed(airframe: Basis) -> Basis:
+	var pitch := clampf(tilt_deg + look.y, -90.0, 90.0)
+	var out := airframe
+	if look.x != 0.0:
+		out = out * Basis(Vector3.UP, deg_to_rad(-look.x))
+	out = out * Basis(Vector3.RIGHT, deg_to_rad(pitch))
+	if look.z != 0.0:
+		out = out * Basis(Vector3.FORWARD, deg_to_rad(look.z))
+	return out
+
+
+## The placement for this frame with the mount's smoothing: rigid when off; otherwise the airframe attitude the lens
+## sees follows the rigid one with the mode's half-life (frame-rate independent), and holds while paused. The look is
+## applied after the smoothing, so head-look and the gimbal never lag through the soft mount.
 func update(airplane: Transform3D, body: Basis, aspect: float, dt: float, paused: bool) -> Dictionary:
 	var placed := placement(airplane, body, aspect)
 	var half_life: float = SMOOTHING.get(smoothing, 0.0)
-	var rigid := Quaternion((placed.basis as Basis).orthonormalized())
+	var rigid := Quaternion(body.orthonormalized())
 	if half_life <= 0.0 or not _primed:
 		_attitude = rigid
 		_primed = true
@@ -233,7 +248,7 @@ func update(airplane: Transform3D, body: Basis, aspect: float, dt: float, paused
 		var k := 1.0 - pow(2.0, -dt / half_life)
 		_attitude = _attitude.slerp(rigid, k).normalized()
 	if half_life > 0.0:
-		placed.basis = Basis(_attitude)
+		placed.basis = aimed(Basis(_attitude))
 	var jitter := vibration_deg(vibration_clock_s, vibration_throttle, vibration_airspeed, shake, smoothing)
 	if jitter != Vector3.ZERO:
 		# Lens-local pitch (about x), yaw (about y) and roll (about the view axis z).

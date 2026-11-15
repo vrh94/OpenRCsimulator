@@ -88,6 +88,16 @@ const DEFAULTS := {
 	"camera_fpv_noise": CameraSettings.DEFAULTS.camera_fpv_noise,
 	"camera_fpv_motion_blur": CameraSettings.DEFAULTS.camera_fpv_motion_blur,
 	"camera_fpv_quality": CameraSettings.DEFAULTS.camera_fpv_quality,
+	# FPV-5: head-look, head tracking and the servo gimbal.
+	"camera_fpv_head_tracking": CameraSettings.DEFAULTS.camera_fpv_head_tracking,
+	"camera_fpv_head_sensitivity": CameraSettings.DEFAULTS.camera_fpv_head_sensitivity,
+	"camera_fpv_gimbal_pan_axis": CameraSettings.DEFAULTS.camera_fpv_gimbal_pan_axis,
+	"camera_fpv_gimbal_tilt_axis": CameraSettings.DEFAULTS.camera_fpv_gimbal_tilt_axis,
+	"camera_fpv_gimbal_pan_travel": CameraSettings.DEFAULTS.camera_fpv_gimbal_pan_travel,
+	"camera_fpv_gimbal_tilt_travel": CameraSettings.DEFAULTS.camera_fpv_gimbal_tilt_travel,
+	"camera_fpv_gimbal_speed": CameraSettings.DEFAULTS.camera_fpv_gimbal_speed,
+	"camera_fpv_gimbal_invert_pan": CameraSettings.DEFAULTS.camera_fpv_gimbal_invert_pan,
+	"camera_fpv_gimbal_invert_tilt": CameraSettings.DEFAULTS.camera_fpv_gimbal_invert_tilt,
 	# LENS-01: lens and screen effects ([lens] section), validated by render/lens/lens_settings.gd.
 	"lens_effects": LensSettings.DEFAULTS.lens_effects,
 	"impact_effects": LensSettings.DEFAULTS.impact_effects,
@@ -107,6 +117,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"lens_effects", "impact_effects", "impact_colour", "lens_rain", "lens_glasses", "lens_grime", "lens_clear_centre",
 	"camera_fpv_fov", "camera_fpv_tilt", "camera_fpv_smoothing", "camera_fpv_lens",
 	"camera_fpv_shake", "camera_fpv_noise", "camera_fpv_motion_blur", "camera_fpv_quality",
+	"camera_fpv_head_tracking", "camera_fpv_head_sensitivity", "camera_fpv_gimbal_pan_axis", "camera_fpv_gimbal_tilt_axis", "camera_fpv_gimbal_pan_travel", "camera_fpv_gimbal_tilt_travel", "camera_fpv_gimbal_speed", "camera_fpv_gimbal_invert_pan", "camera_fpv_gimbal_invert_tilt",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
 const CAMERA_FILE_KEYS := {
@@ -118,6 +129,15 @@ const CAMERA_FILE_KEYS := {
 	"camera_fpv_lens": "fpv_lens",
 	"camera_fpv_shake": "fpv_shake", "camera_fpv_noise": "fpv_noise", "camera_fpv_motion_blur": "fpv_motion_blur",
 	"camera_fpv_quality": "fpv_quality",
+	"camera_fpv_head_tracking": "fpv_head_tracking",
+	"camera_fpv_head_sensitivity": "fpv_head_sensitivity",
+	"camera_fpv_gimbal_pan_axis": "fpv_gimbal_pan_axis",
+	"camera_fpv_gimbal_tilt_axis": "fpv_gimbal_tilt_axis",
+	"camera_fpv_gimbal_pan_travel": "fpv_gimbal_pan_travel",
+	"camera_fpv_gimbal_tilt_travel": "fpv_gimbal_tilt_travel",
+	"camera_fpv_gimbal_speed": "fpv_gimbal_speed",
+	"camera_fpv_gimbal_invert_pan": "fpv_gimbal_invert_pan",
+	"camera_fpv_gimbal_invert_tilt": "fpv_gimbal_invert_tilt",
 }
 ## FW-RGB-13: display.cfg [aircraft_lighting] key for each global aircraft-lighting preference.
 const AIRCRAFT_LIGHTING_FILE_KEYS := {

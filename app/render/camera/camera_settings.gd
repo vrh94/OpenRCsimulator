@@ -5,6 +5,7 @@ extends RefCounted
 
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const OnboardView := preload("res://render/camera/onboard_view.gd")
+const FpvHead := preload("res://render/camera/fpv_head.gd")
 
 ## The view a Home flight starts in (D1: the pilot view stays the default). "onboard" falls back to the pilot view on
 ## routes without an onboard mount (the helicopter).
@@ -19,6 +20,14 @@ const FPV_LENSES: Array[String] = ["rectilinear", "barrel", "fisheye"]
 const FPV_SHAKES: Array[String] = ["off", "low", "medium", "high"]
 const FPV_NOISES: Array[String] = ["off", "low", "medium", "high"]
 const FPV_QUALITIES: Array[String] = ["low", "medium", "high"]
+## FPV-5: head tracking, head-look sensitivity and the servo gimbal (render/camera/fpv_head.gd). Gimbal axes are the
+## radio's joystick axes as the controller setup numbers them (0…9), -1 for none.
+const FPV_HEAD_TRACKING: Array[String] = FpvHead.TRACKING
+const FPV_HEAD_SENSITIVITIES: Array[float] = FpvHead.SENSITIVITIES
+const FPV_GIMBAL_AXES: Array[int] = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+const FPV_GIMBAL_PAN_TRAVELS: Array[int] = FpvHead.PAN_TRAVELS
+const FPV_GIMBAL_TILT_TRAVELS: Array[int] = FpvHead.TILT_TRAVELS
+const FPV_GIMBAL_SPEEDS: Array[String] = FpvHead.SERVO_SPEED_NAMES
 ## The pilot view's widest vertical FOV (deg), which the auto-zoom narrows from. 50° stays the default until CAM-22;
 ## about 31° is orthoscopic on a 27-inch 16:9 screen seen from 60 cm (CAM-AUD-2026-10-24).
 const FOVS: Array[int] = [30, 35, 40, 45, 50, 55, 60, 70]
@@ -47,6 +56,15 @@ const DEFAULTS := {
 	"camera_fpv_noise": "off",
 	"camera_fpv_motion_blur": false,
 	"camera_fpv_quality": "high",
+	"camera_fpv_head_tracking": "off",
+	"camera_fpv_head_sensitivity": 1.0,
+	"camera_fpv_gimbal_pan_axis": -1,
+	"camera_fpv_gimbal_tilt_axis": -1,
+	"camera_fpv_gimbal_pan_travel": 90,
+	"camera_fpv_gimbal_tilt_travel": 45,
+	"camera_fpv_gimbal_speed": "medium",
+	"camera_fpv_gimbal_invert_pan": false,
+	"camera_fpv_gimbal_invert_tilt": false,
 }
 
 
@@ -71,6 +89,18 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
 	if typeof(raw.get("camera_fpv_motion_blur", DEFAULTS.camera_fpv_motion_blur)) != TYPE_BOOL:
 		out.append("camera_fpv_motion_blur must be a boolean")
+	for pair: Array in [["camera_fpv_head_tracking", FPV_HEAD_TRACKING], ["camera_fpv_gimbal_speed", FPV_GIMBAL_SPEEDS]]:
+		var choice: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
+		if typeof(choice) != TYPE_STRING or choice not in (pair[1] as Array):
+			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
+	for pair: Array in [["camera_fpv_gimbal_pan_axis", FPV_GIMBAL_AXES], ["camera_fpv_gimbal_tilt_axis", FPV_GIMBAL_AXES],
+			["camera_fpv_gimbal_pan_travel", FPV_GIMBAL_PAN_TRAVELS], ["camera_fpv_gimbal_tilt_travel", FPV_GIMBAL_TILT_TRAVELS]]:
+		var number: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
+		if typeof(number) != TYPE_INT or number not in (pair[1] as Array):
+			out.append("%s must be one of the offered values" % pair[0])
+	for key: String in ["camera_fpv_gimbal_invert_pan", "camera_fpv_gimbal_invert_tilt"]:
+		if typeof(raw.get(key, DEFAULTS[key])) != TYPE_BOOL:
+			out.append("%s must be a boolean" % key)
 	if typeof(raw.get("camera_fov", DEFAULTS.camera_fov)) != TYPE_INT or raw.get("camera_fov", DEFAULTS.camera_fov) not in FOVS:
 		out.append("camera_fov must be one of the offered fields of view")
 	if typeof(raw.get("camera_magnifier", DEFAULTS.camera_magnifier)) != TYPE_STRING or raw.get("camera_magnifier", DEFAULTS.camera_magnifier) not in MAGNIFIER_MODES:
@@ -80,7 +110,8 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 	for key: String in ["camera_auto_zoom", "camera_invert_y", "camera_horizon_bias", "camera_overhead_smoothing"]:
 		if typeof(raw.get(key, DEFAULTS[key])) != TYPE_BOOL:
 			out.append("%s must be a boolean" % key)
-	for pair: Array in [["camera_chase_distance", CHASE_DISTANCES], ["camera_sensitivity", SENSITIVITIES]]:
+	for pair: Array in [["camera_chase_distance", CHASE_DISTANCES], ["camera_sensitivity", SENSITIVITIES],
+			["camera_fpv_head_sensitivity", FPV_HEAD_SENSITIVITIES]]:
 		var value: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(value) not in [TYPE_FLOAT, TYPE_INT] or not (pair[1] as Array).any(func(v: float) -> bool: return is_equal_approx(v, float(value))):
 			out.append("%s must be one of the offered values" % pair[0])
@@ -108,6 +139,15 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fpv_noise": str(raw.get("camera_fpv_noise", DEFAULTS.camera_fpv_noise)),
 		"camera_fpv_motion_blur": bool(raw.get("camera_fpv_motion_blur", DEFAULTS.camera_fpv_motion_blur)),
 		"camera_fpv_quality": str(raw.get("camera_fpv_quality", DEFAULTS.camera_fpv_quality)),
+		"camera_fpv_head_tracking": str(raw.get("camera_fpv_head_tracking", DEFAULTS.camera_fpv_head_tracking)),
+		"camera_fpv_head_sensitivity": float(raw.get("camera_fpv_head_sensitivity", DEFAULTS.camera_fpv_head_sensitivity)),
+		"camera_fpv_gimbal_pan_axis": int(raw.get("camera_fpv_gimbal_pan_axis", DEFAULTS.camera_fpv_gimbal_pan_axis)),
+		"camera_fpv_gimbal_tilt_axis": int(raw.get("camera_fpv_gimbal_tilt_axis", DEFAULTS.camera_fpv_gimbal_tilt_axis)),
+		"camera_fpv_gimbal_pan_travel": int(raw.get("camera_fpv_gimbal_pan_travel", DEFAULTS.camera_fpv_gimbal_pan_travel)),
+		"camera_fpv_gimbal_tilt_travel": int(raw.get("camera_fpv_gimbal_tilt_travel", DEFAULTS.camera_fpv_gimbal_tilt_travel)),
+		"camera_fpv_gimbal_speed": str(raw.get("camera_fpv_gimbal_speed", DEFAULTS.camera_fpv_gimbal_speed)),
+		"camera_fpv_gimbal_invert_pan": bool(raw.get("camera_fpv_gimbal_invert_pan", DEFAULTS.camera_fpv_gimbal_invert_pan)),
+		"camera_fpv_gimbal_invert_tilt": bool(raw.get("camera_fpv_gimbal_invert_tilt", DEFAULTS.camera_fpv_gimbal_invert_tilt)),
 	}
 
 
@@ -149,3 +189,4 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 	rig.onboard.set_shake(str(config.camera_fpv_shake))
 	rig.onboard_video = {quality = str(config.camera_fpv_quality), noise = str(config.camera_fpv_noise),
 		motion_blur = bool(config.camera_fpv_motion_blur)}
+	rig.fpv_head.configure(config)

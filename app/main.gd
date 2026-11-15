@@ -27,6 +27,8 @@ const SmokeAssignment := preload("res://ui/smoke_aux_assignment.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
+const FpvHead := preload("res://render/camera/fpv_head.gd")
+const SmokeAux := preload("res://input/smoke_aux.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
 const FpvLens := preload("res://render/camera/fpv_lens.gd")
 const CameraCollision := preload("res://render/camera/camera_collision.gd")
@@ -823,6 +825,16 @@ func _prepare_flight() -> void:
 			_fpv_video_args[pair[0]] = str(args[pair[0]])
 	if args.has("fpv-blur"):
 		_fpv_video_args["fpv-blur"] = true
+	if args.has("fpv-look"):
+		# FPV-5: a fixed head-look (yaw right, pitch up; deg) for captures of the onboard view.
+		var parts := str(args["fpv-look"]).split(",")
+		if parts.size() != 2 or not parts[0].is_valid_float() or not parts[1].is_valid_float():
+			push_error("--fpv-look must be yaw,pitch in degrees (got \"%s\")" % str(args["fpv-look"]))
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_fpv_video_args["fpv-look"] = Vector2(parts[0].to_float(), parts[1].to_float())
 	if args.has("view"):
 		_initial_view = str(args.view)
 		if not CameraRig.is_view(_initial_view) or (args.has("visual_pose") and _initial_view != "pilot"):
@@ -1618,6 +1630,35 @@ func _update_fpv_lens() -> void:
 		_presentation_clock_s())
 
 
+## FPV-5: the onboard lens's head-look sources for this frame: opentrack datagrams and the gimbal's radio channels.
+## Camera input only: the radio's axes are read, never written, and flight-control axes never drive the gimbal.
+func _update_fpv_head() -> void:
+	var head = _rig.fpv_head
+	head.poll_tracking(_camera_dt)
+	if not head.gimbal_enabled():
+		return
+	var radio = session.radio if session != null else null
+	var reserved: Array = SmokeAux.flight_axes(radio.profile) if radio != null else []
+	head.update_gimbal(func(axis: int) -> float:
+		if radio == null or not radio.connected or axis >= radio.axes.size() or not radio.has_axis_sample(axis):
+			return NAN
+		return float(radio.axes[axis]), reserved, _camera_dt)
+
+
+## FPV-5: the help line for head-look, the tracker and the gimbal (empty when all are idle).
+func _fpv_head_text() -> String:
+	var head = _rig.fpv_head
+	var parts := PackedStringArray()
+	var aim: Vector3 = head.offset()
+	if aim != Vector3.ZERO:
+		parts.append("look %+d° %+d°" % [roundi(aim.x), roundi(aim.y)])
+	if head.tracking != "off":
+		parts.append("opentrack: %s" % head.tracking_status)
+	if head.gimbal_enabled():
+		parts.append("gimbal pan %+d° tilt %+d°" % [roundi(head.gimbal.x), roundi(head.gimbal.y)])
+	return "  ".join(parts)
+
+
 ## FPV-4: the displayed pose's time (s): the simulation clock interpolated like the drawn pose, so grain and
 ## vibration are deterministic for a capture and hold while paused.
 func _presentation_clock_s() -> float:
@@ -1901,8 +1942,11 @@ func _status() -> String:
 	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _rig.auto_zoom else "off", _shadow_mode]
 	line += "\n[1] pilot [2] chase [3] onboard FPV [4] fly-by [5] orbit  [C] cycle"
 	if _rig.view == "onboard":
-		line += "\nFPV %d° tilt %+d° mount %s  [−/=] FOV  [Shift+[ ]] tilt  [Backspace] reset" % [
+		line += "\nFPV %d° tilt %+d° mount %s  [−/=] FOV  [Shift+[ ]] tilt  [right-drag] look  [Backspace] reset" % [
 			roundi(_rig.onboard.hfov_deg), roundi(_rig.onboard.tilt_deg), _rig.onboard.smoothing]
+		var head_line := _fpv_head_text()
+		if head_line != "":
+			line += "\n" + head_line
 	line += "\n[L] " + _aircraft_lights_text()
 	if _note != "":
 		line += "\n" + _note
@@ -2457,7 +2501,7 @@ func _camera_input(event: InputEvent) -> bool:
 		get_viewport().set_input_as_handled()
 		return true
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
-		CameraRig.hold_cursor(event.pressed and _rig.view == "orbit")
+		CameraRig.hold_cursor(event.pressed and _rig.drag_holds_cursor())
 	if event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_RIGHT) != 0:
 		_rig.drag(event.relative)
 		get_viewport().set_input_as_handled()
@@ -3532,6 +3576,10 @@ func _build_world() -> bool:
 			_rig.onboard_video[pair[1]] = str(_fpv_video_args[pair[0]])
 	if _fpv_video_args.has("fpv-blur"):
 		_rig.onboard_video.motion_blur = true
+	if _fpv_video_args.has("fpv-look"):
+		var fixed_look: Vector2 = _fpv_video_args["fpv-look"]
+		_rig.fpv_head.mouse = Vector2(clampf(fixed_look.x, -FpvHead.YAW_LIMIT_DEG, FpvHead.YAW_LIMIT_DEG),
+			clampf(fixed_look.y, -FpvHead.PITCH_LIMIT_DEG, FpvHead.PITCH_LIMIT_DEG))
 	_magnifier = Magnifier.new()
 	_magnifier.name = "MagnifierLayer"
 	add_child(_magnifier)
@@ -3645,6 +3693,8 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_came
 		# FPV-4: vibration inputs read the commanded throttle and the observed airspeed; nothing is written back.
 		var airspeed := float(_observer_air(session.sim.state, session.sim.time()).get("V", 0.0))
 		_rig.onboard.set_vibration_inputs(_presentation_clock_s(), session.propulsion_throttle(), airspeed)
+	if _rig.view == "onboard":
+		_update_fpv_head()
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
 		_camera_clearance, defer_camera_cut)
 	if _magnifier != null:
