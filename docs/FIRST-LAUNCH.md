@@ -59,6 +59,7 @@ Current source records local fixed-wing flight statistics. Open **Home → Stati
 | P | Resume after a radio failsafe |
 | C · Shift+C | Next / previous view: pilot, chase, onboard FPV, cockpit, fly-by, orbit, close-up |
 | 3 · Shift+3 | Onboard FPV camera · cockpit view (airplanes). In them: − / = lens angle, Shift+[ / Shift+] FPV camera tilt, drag with the right mouse button to look around, Backspace looks ahead again |
+| M · Shift+M | Next / previous flight-controller mode (airplanes): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home |
 | 1 · 2 · 4 · 5 | Pilot · chase · fly-by · orbit view (2 again: 3D chase that leans with the model, for aerobatics; fly-by: a spectator ahead of the model, sun behind; orbit: drag with the right mouse button) |
 | = · − · Backspace | Zoom in · out · reset (also the mouse wheel); in chase and orbit it moves the camera |
 | Z | Toggle auto-zoom |
@@ -235,8 +236,8 @@ model; **Smooth overhead passes** stops the picture flipping when the model pass
 aids** picker); **Magnifier** adds a small window at the top that shows the model up close in the pilot view (Auto shows it
 when the model gets small). [Camera plan](plans/camera-views.md).
 
-**Settings → Camera** has three more parts for the airplanes' **onboard FPV camera** (key 3) and **cockpit view**
-(Shift+3); they never change how the airplane flies:
+**Settings → Camera** has more parts for the airplanes' **onboard FPV camera** (key 3), **cockpit view**
+(Shift+3) and **flight controller**; the camera parts never change how the airplane flies:
 
 - **FPV camera:** field of view (70–150°, default 110°), uptilt (−10…+30°, default 5°), rigid or soft mount, lens
   (flat, wide-angle by default, fisheye), video quality, camera shake, analog noise, motion blur, and **FPV clean
@@ -250,6 +251,18 @@ when the model gets small). [Camera plan](plans/camera-views.md).
   station, home arrow, signal strength, heading, artificial horizon, flight mode, warnings; each element can be turned
   off; battery figures appear only on electric models), and an **analog video link** whose picture breaks up with
   distance and behind hills, buildings and trees, with the transmitter power (25–1000 mW, default 600 mW).
+
+- **Flight controller:** airplanes fly through a flight controller like **INAV** or **ArduPilot** (FC-1). Choose
+  the mode for each position of the radio's **Flight mode** switch (Controls › Extra channels; low / middle / high,
+  default Manual / Angle / Cruise; a two-position switch uses low and high); M and Shift+M step through every mode.
+  **Manual** sends the sticks straight to the surfaces, exactly as without a flight controller. **Acro**: the gyro
+  holds the attitude and the sticks set roll and pitch rates. **Angle (FBWA)**: the sticks set bank (45° max) and
+  pitch; centred, the wings level. **Horizon (Stabilize)**: self-levelling near the centre, rolls and loops at full
+  stick. **Altitude hold (FBWB)**: pitch stick sets the climb rate, centred holds the height. **Cruise**: also holds
+  the course; turn with the roll stick and release. **Loiter**: circles where it was engaged, holding height and
+  speed. **Return to home (RTL)**: climbs to at least 40 m above the launch point, flies home and circles there.
+  The OSD shows the mode as the firmware prints it (INAV ANGL/CRUZ/LOTR/RTH, ArduPilot FBWA/FBWB/CRUS/LOIT/RTL).
+  The controller moves the same surfaces the pilot moves; the flight physics are unchanged.
 
 The cockpit view sits a quarter of the length behind the nose, just above the fuselage, with a generic canopy frame;
 no aircraft defines a real cockpit yet.

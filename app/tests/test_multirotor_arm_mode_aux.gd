@@ -150,9 +150,10 @@ func _capabilities() -> void:
 		standalone._preserved_extra_aux.has("arm") and standalone._preserved_extra_aux.has("flight_mode"))
 	var quad := ControllerActions.MULTIROTOR_CAPABILITIES
 	var plane := ControllerActions.AIRPLANE_CAPABILITIES
-	_check("arm and flight_mode AUX apply to the multirotor only",
+	_check("arm applies to the multirotor only; flight_mode to the multirotor and (FC-1) the airplane flight controller",
 		ControllerActions.aux_applies("arm", quad) and ControllerActions.aux_applies("flight_mode", quad)
-		and not ControllerActions.aux_applies("arm", plane) and not ControllerActions.aux_applies("flight_mode", ControllerActions.HELICOPTER_CAPABILITIES))
+		and not ControllerActions.aux_applies("arm", plane) and ControllerActions.aux_applies("flight_mode", plane)
+		and not ControllerActions.aux_applies("flight_mode", ControllerActions.HELICOPTER_CAPABILITIES))
 	_check("smoke, flaps and gear AUX follow their equipment",
 		ControllerActions.aux_applies("smoke", {"smoke": true}) and ControllerActions.aux_applies("flaps", plane)
 		and ControllerActions.aux_applies("gear", plane) and not ControllerActions.aux_applies("gear", quad)
@@ -416,14 +417,14 @@ func _setup_rows() -> void:
 	await process_frame
 	plane._draft_profile = _radio_profile({"gear": _axis(4)})
 	plane._update_aux_controls()
-	_check("airplane: quad rows hidden, airplane rows shown", not _row(plane, "arm").visible and not _row(plane, "flight_mode").visible
+	_check("airplane: Arm hidden; airplane rows and (FC-1) Flight mode shown", not _row(plane, "arm").visible and _row(plane, "flight_mode").visible
 		and _row(plane, "smoke").visible and _row(plane, "flaps").visible and _row(plane, "gear").visible)
 	_check("airplane: no legacy arm hint", not plane.aux_legacy_arm_hint.visible)
 	plane.show_all_vehicle_aux.button_pressed = true
 	_check("Show channels for all vehicles reveals the quad rows", _row(plane, "arm").visible and _row(plane, "flight_mode").visible)
 	_check("quad rows are named for assistive technology",
 		str(plane._aux_controls.arm.type.accessibility_name) == "Arm (FPV quad) input type"
-		and str(plane._aux_controls.flight_mode.type.accessibility_name) == "Flight mode (FPV quad) input type",
+		and str(plane._aux_controls.flight_mode.type.accessibility_name) == "Flight mode input type",
 		str(plane._aux_controls.arm.type.accessibility_name))
 	plane.free()
 	var quad := ControllerSetup.new()

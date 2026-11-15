@@ -12869,3 +12869,42 @@ msgstr "機載FPVカメラ（Shift+3: コックピット）。その中で: −/
 
 msgid "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
 msgstr "DJI FPV送信機: スロットルスティックは中央に戻ります。キャリブレーションの各ステップでは、他のスティックを動かす間もスロットルを一番下に保ってください。飛行中は中央がスロットル半分になります。スティックを離した位置に留める設定にすれば別です（DJIのマニュアル参照）。ジンバルダイヤルでFPVカメラを傾けられます: 設定 › カメラ › 視線とジンバル › FPVジンバルのチルトチャンネル。"
+
+msgid "Switch low"
+msgstr "スイッチ下"
+
+msgid "Switch middle"
+msgstr "スイッチ中"
+
+msgid "Switch high"
+msgstr "スイッチ上"
+
+msgid "Angle (FBWA)"
+msgstr "アングル (FBWA)"
+
+msgid "Horizon (Stabilize)"
+msgstr "ホライズン (Stabilize)"
+
+msgid "Altitude hold (FBWB)"
+msgstr "高度維持 (FBWB)"
+
+msgid "Cruise"
+msgstr "クルーズ"
+
+msgid "Loiter"
+msgstr "ロイター（旋回待機）"
+
+msgid "Return to home"
+msgstr "リターン・トゥ・ホーム"
+
+msgid "Flight mode: %s"
+msgstr "フライトモード: %s"
+
+msgid "Airplanes fly through a flight controller like INAV or ArduPilot. The radio's Flight mode switch (Controls › Extra channels) picks these modes; in flight M and Shift+M step through all of them."
+msgstr "飛行機は INAV や ArduPilot のようなフライトコントローラーを通して飛びます。送信機のフライトモードスイッチ（操作 › 追加チャンネル）でこれらのモードを選び、飛行中は M と Shift+M ですべてを順に切り替えます。"
+
+msgid "Manual: sticks straight to the surfaces. Acro: the gyro holds the attitude. Angle and Horizon level the wings. Altitude hold, Cruise, Loiter and Return to home fly by GPS and barometer. A two-position switch uses low and high."
+msgstr "マニュアル: スティックが直接舵面を動かします。アクロ: ジャイロが姿勢を保ちます。アングルとホライズンは主翼を水平に戻します。高度維持、クルーズ、ロイター、リターン・トゥ・ホームは GPS と気圧計で飛びます。2段スイッチは下と上を使います。"
+
+msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
+msgstr "フライトモード: 次へ（Shift+M で戻る）: マニュアル、アクロ、アングル、ホライズン、高度維持、クルーズ、ロイター、リターン・トゥ・ホーム"

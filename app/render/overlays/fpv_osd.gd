@@ -63,11 +63,12 @@ func enabled() -> bool:
 
 ## One telemetry snapshot (OverlayManager.snapshot): numbers, battery sensors, warnings. home_up_m: the pilot
 ## station's ground height above the datum; link: {quality_pct} or {}.
-func feed(snapshot: Dictionary, home_up_m: float, link: Dictionary = {}) -> void:
+func feed(snapshot: Dictionary, home_up_m: float, link: Dictionary = {}, flight_mode := "manual") -> void:
 	var t: Dictionary = snapshot.get("telemetry", {}).duplicate()
 	if t.is_empty():
 		return
 	t.home_up_m = home_up_m
+	t.flight_mode = flight_mode
 	var battery: Dictionary = snapshot.get("battery", {})
 	var reading: Dictionary = {}
 	if battery.get("ok", false):

@@ -13619,3 +13619,42 @@ msgstr "Бортовая FPV-камера (Shift+3: кабина). В ней: �
 
 msgid "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
 msgstr "Пульт DJI FPV: его стик газа возвращается в центр. Держите ГАЗ полностью ВНИЗУ на каждом шаге калибровки, даже когда двигаете другие стики. В полёте центр — половина газа, если не настроить стик оставаться там, где его отпустили (см. руководство DJI). Колесо подвеса может наклонять FPV-камеру: Настройки › Камера › Обзор и подвес › Канал наклона подвеса FPV."
+
+msgid "Switch low"
+msgstr "Переключатель вниз"
+
+msgid "Switch middle"
+msgstr "Переключатель в середине"
+
+msgid "Switch high"
+msgstr "Переключатель вверх"
+
+msgid "Angle (FBWA)"
+msgstr "Angle (FBWA)"
+
+msgid "Horizon (Stabilize)"
+msgstr "Horizon (Stabilize)"
+
+msgid "Altitude hold (FBWB)"
+msgstr "Удержание высоты (FBWB)"
+
+msgid "Cruise"
+msgstr "Круиз"
+
+msgid "Loiter"
+msgstr "Loiter (кружение)"
+
+msgid "Return to home"
+msgstr "Возврат домой"
+
+msgid "Flight mode: %s"
+msgstr "Режим полёта: %s"
+
+msgid "Airplanes fly through a flight controller like INAV or ArduPilot. The radio's Flight mode switch (Controls › Extra channels) picks these modes; in flight M and Shift+M step through all of them."
+msgstr "Самолёты летают через полётный контроллер, как INAV или ArduPilot. Переключатель режима полёта на пульте (Управление › Дополнительные каналы) выбирает эти режимы; в полёте M и Shift+M перебирают их все."
+
+msgid "Manual: sticks straight to the surfaces. Acro: the gyro holds the attitude. Angle and Horizon level the wings. Altitude hold, Cruise, Loiter and Return to home fly by GPS and barometer. A two-position switch uses low and high."
+msgstr "Ручной: стики напрямую на рули. Acro: гироскоп держит положение. Angle и Horizon выравнивают крылья. Удержание высоты, Круиз, Loiter и Возврат домой летят по GPS и барометру. Двухпозиционный переключатель использует нижнее и верхнее положения."
+
+msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
+msgstr "Режим полёта: следующий (Shift+M — назад): Ручной, Acro, Angle, Horizon, Удержание высоты, Круиз, Loiter, Возврат домой"

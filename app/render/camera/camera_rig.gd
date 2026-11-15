@@ -101,6 +101,9 @@ var onboard_link := {mode = "analog", power_mw = 600}
 ## FPV-6: the OSD the route's FpvOsd draws over the onboard picture (style, elements).
 var onboard_osd := {style = "betaflight", elements = ["horizon", "crosshair", "voltage", "battery_pct", "current", "timer",
 	"speed", "altitude", "home", "link", "heading", "mode", "warnings"]}
+## FC-1: the airplane flight controller's modes on the flight-mode switch (low, middle, high), from the FPV settings;
+## the route reads them here with the other onboard preferences.
+var fc_switch_modes := PackedStringArray(["manual", "angle", "cruise"])
 var _last_dt := 0.0
 ## Direction toward the sun (render), set by the route each frame; the fly-by stands with the sun behind it.
 var light_direction := Vector3.ZERO

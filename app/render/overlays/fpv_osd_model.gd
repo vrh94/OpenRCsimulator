@@ -11,6 +11,7 @@
 extends RefCounted
 
 const OsdModel = preload("res://vehicles/multirotor/osd_model.gd")
+const FixedWingFC = preload("res://sim/fixed_wing_fc.gd")
 
 const STYLES: Array[String] = ["off", "betaflight", "inav", "ardupilot"]
 const DEFAULT_STYLE := "betaflight"
@@ -65,7 +66,8 @@ const LAYOUTS := {
 
 
 ## The OSD's input from one telemetry snapshot. t: Telemetry.compute(); battery: a BatterySensors reading (or {});
-## link: {quality_pct} from a video-link model, or {} (no link figure is shown).
+## link: {quality_pct} from a video-link model, or {} (no link figure is shown). FC-1: t.flight_mode is the flight
+## controller's mode (sim/fixed_wing_fc.gd MODES; "manual" when absent).
 static func values(t: Dictionary, battery: Dictionary, link: Dictionary = {}) -> Dictionary:
 	var north := float(t.get("pilot_north_m", NAN))
 	var east := float(t.get("pilot_east_m", NAN))
@@ -89,6 +91,7 @@ static func values(t: Dictionary, battery: Dictionary, link: Dictionary = {}) ->
 		used_mah = float(battery.get("used_mah", NAN)) if has_battery else NAN,
 		link_pct = float(link.get("quality_pct", NAN)),
 		warning = _warning(battery if has_battery else {}),
+		flight_mode = str(t.get("flight_mode", "manual")),
 	}
 
 
@@ -185,9 +188,9 @@ static func _item(style: String, id: String, v: Dictionary, units: String) -> Di
 			return _with({betaflight = "%d" % pct, inav = "LQ %d" % pct, ardupilot = "RSSI %d" % pct}.get(style, str(pct)),
 				_link_severity(q), "antenna" if style == "betaflight" else "")
 		"mode":
-			# The simulator flies the surfaces directly: a manual (pass-through) mode, as a flight controller shows it.
-			return _with({betaflight = "", inav = "MANU", ardupilot = "MANU"}.get(style, ""), NORMAL) \
-				if style != "betaflight" else {}
+			# FC-1: the flight controller's mode as the firmware prints it (Betaflight shows nothing in manual).
+			var mode := str(v.get("flight_mode", "manual"))
+			return _with(FixedWingFC.osd_label(mode, style), WARNING if mode == "rth" else NORMAL)
 		"warnings":
 			var warning: Dictionary = v.get("warning", {})
 			if str(warning.get("text", "")).is_empty():

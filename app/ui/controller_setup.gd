@@ -60,7 +60,7 @@ const CHANNELS: Array[String] = ["roll", "pitch", "yaw", "throttle"]
 const CHANNEL_LABELS: Dictionary = {"roll": "Roll", "pitch": "Pitch", "yaw": "Yaw", "throttle": "Throttle"}
 const AUX_CHANNELS: Array[String] = ["smoke", "flaps", "gear", "arm", "flight_mode"]
 const AUX_CHANNEL_LABELS: Dictionary = {"smoke": "Smoke", "flaps": "Flaps", "gear": "Landing gear",
-	"arm": "Arm (FPV quad)", "flight_mode": "Flight mode (FPV quad)"}
+	"arm": "Arm (FPV quad)", "flight_mode": "Flight mode"}
 const AUX_LEGACY_ARM_HINT := "This profile arms the quad from the Landing gear switch. Assign Arm to make it explicit."
 ## UI-15-UX-03: full-screen workspace (menu-redesign safe inset at 1080p); beyond SPAN the text column stops growing.
 const WORKSPACE_INSET := 48.0

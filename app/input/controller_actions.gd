@@ -12,7 +12,8 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 ## leaves that channel unbound; unlisted keys are ignored as before.
 const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear", "arm", "flight_mode"]
 ## D6-UX-01: the vehicle capability each AUX channel serves (presentation only, like required_capability).
-const AUX_CHANNEL_CAPABILITIES := {"smoke": "smoke", "flaps": "flaps", "gear": "gear", "arm": "multirotor", "flight_mode": "multirotor"}
+## FC-1: "flight_mode" also selects the airplane flight controller's mode (sim/fixed_wing_fc.gd).
+const AUX_CHANNEL_CAPABILITIES := {"smoke": "smoke", "flaps": "flaps", "gear": "gear", "arm": "multirotor", "flight_mode": "flight_mode"}
 ## Product defaults on standardized gamepads, scoped to implemented vehicle capabilities.
 ## Profile/setup validation reserves equipment candidates; flight passes its actual capabilities.
 const AUTOMATIC_BUTTONS := {
@@ -26,9 +27,9 @@ const AUTOMATIC_BUTTONS := {
 	"helicopter_mode": {"channel": "helicopter", "button": JOY_BUTTON_RIGHT_SHOULDER},
 	"helicopter_trainer": {"channel": "helicopter", "button": JOY_BUTTON_LEFT_STICK},
 }
-const AIRPLANE_CAPABILITIES := {"gear": true, "smoke": true, "flaps": true, "rates": true}
+const AIRPLANE_CAPABILITIES := {"gear": true, "smoke": true, "flaps": true, "rates": true, "flight_mode": true}
 const HELICOPTER_CAPABILITIES := {"helicopter": true}
-const MULTIROTOR_CAPABILITIES := {"multirotor": true}
+const MULTIROTOR_CAPABILITIES := {"multirotor": true, "flight_mode": true}
 ## UI-15-UX-02c: vehicle capabilities of actions that AUTOMATIC_BUTTONS does not already name.
 const ACTION_CAPABILITY_EXTRAS := {"flaps_up": "flaps", "flaps_down": "flaps"}
 static var _definition_cache: Dictionary = {}

@@ -731,6 +731,7 @@ const RcCalibration := preload("res://input/rc_calibration.gd")
 const ControllerProfile := preload("res://input/controller_profile.gd")
 const ControllerStore := preload("res://input/controller_profile_store.gd")
 const Sim := preload("res://sim/simulation.gd")
+const FixedWingFC := preload("res://sim/fixed_wing_fc.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
 const NATIVE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v14"
@@ -1328,6 +1329,9 @@ var rate_profile := "full"
 var _high_rate_profile := "full"
 ## Stick commands after shaping (−1…1, throttle 0…1), and the raw input sample they came from.
 var commands := Commands.neutral_commands()
+## FC-1: the flight controller between the flown commands and the servos (sim/fixed_wing_fc.gd). Its default mode
+## "manual" passes the commands through unchanged.
+var flight_controller := FixedWingFC.new()
 var raw := Commands.neutral_raw()
 ## read_raw() -> { roll, pitch, yaw, throttle }: the keyboard, sampled once per physics tick.
 var read_raw: Callable = func() -> Dictionary: return Keyboard.read_raw()
@@ -4261,7 +4265,7 @@ func set_throttle_hold(reason: String, active: bool) -> void:
 
 func _inputs() -> PackedFloat64Array:
 	_flap_mix_owner = _selected_flap_mix_owner()
-	var f := flown_commands()
+	var f := _flight_controller_commands(flown_commands())
 	var values := PackedFloat64Array([f.roll, f.pitch, f.yaw, 0.0 if not throttle_holds.is_empty() else f.throttle])
 	if gear_is_retractable():
 		values.append(1.0 if _gear_requested_down else 0.0)
@@ -4269,6 +4273,23 @@ func _inputs() -> PackedFloat64Array:
 		values.append(_wheel_brake_demand)
 	if flaps_available(): values.append(_flap_requested)
 	return values
+
+
+## FC-1: the flown commands through the flight controller, once per simulation tick (a repeated call in the same
+## tick reuses its output). Manual mode only keeps home (the launch point) current; it never reads the air data.
+func _flight_controller_commands(f: Dictionary) -> Dictionary:
+	if sim == null or external_driver_enabled or not physics_enabled or not aircraft.get("ok", false) \
+			or not Sim.state_is_valid(sim.state):
+		return f
+	var airspeed := NAN
+	if flight_controller.mode != "manual":
+		airspeed = float(air_data(sim.state).get("V", NAN))
+	var out: Dictionary = flight_controller.step(f, sim.state, airspeed, sim.dt(), sim.tick, trims)
+	if out == f:
+		return f
+	var flown := f.duplicate()
+	flown.merge(out, true)
+	return flown
 
 
 func _selected_flap_mix_owner() -> String:

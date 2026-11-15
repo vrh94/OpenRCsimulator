@@ -12410,3 +12410,42 @@ msgstr "Cámara FPV a bordo (Shift+3: cabina). En ella: −/= ángulo de lente, 
 
 msgid "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
 msgstr "Mando DJI FPV: su stick de acelerador vuelve al centro. Mantén el ACELERADOR totalmente ABAJO en cada paso de la calibración, también mientras mueves los otros sticks. En vuelo el centro es medio acelerador, salvo que ajustes el stick para que se quede donde lo dejas (consulta el manual de DJI). El dial del gimbal puede inclinar la cámara FPV: Ajustes › Cámara › Mirada y gimbal › Canal de inclinación del gimbal FPV."
+
+msgid "Switch low"
+msgstr "Interruptor abajo"
+
+msgid "Switch middle"
+msgstr "Interruptor centro"
+
+msgid "Switch high"
+msgstr "Interruptor arriba"
+
+msgid "Angle (FBWA)"
+msgstr "Ángulo (FBWA)"
+
+msgid "Horizon (Stabilize)"
+msgstr "Horizon (Stabilize)"
+
+msgid "Altitude hold (FBWB)"
+msgstr "Mantener altitud (FBWB)"
+
+msgid "Cruise"
+msgstr "Crucero"
+
+msgid "Loiter"
+msgstr "Loiter (circular)"
+
+msgid "Return to home"
+msgstr "Volver a casa"
+
+msgid "Flight mode: %s"
+msgstr "Modo de vuelo: %s"
+
+msgid "Airplanes fly through a flight controller like INAV or ArduPilot. The radio's Flight mode switch (Controls › Extra channels) picks these modes; in flight M and Shift+M step through all of them."
+msgstr "Los aviones vuelan con un controlador de vuelo como INAV o ArduPilot. El interruptor Modo de vuelo de la emisora (Controles › Canales extra) elige estos modos; en vuelo M y Shift+M recorren todos."
+
+msgid "Manual: sticks straight to the surfaces. Acro: the gyro holds the attitude. Angle and Horizon level the wings. Altitude hold, Cruise, Loiter and Return to home fly by GPS and barometer. A two-position switch uses low and high."
+msgstr "Manual: los sticks van directos a los mandos. Acro: el giroscopio mantiene la actitud. Ángulo y Horizon nivelan las alas. Mantener altitud, Crucero, Loiter y Volver a casa vuelan con GPS y barómetro. Un interruptor de dos posiciones usa abajo y arriba."
+
+msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
+msgstr "Modo de vuelo: siguiente (Shift+M atrás): Manual, Acro, Ángulo, Horizon, Mantener altitud, Crucero, Loiter, Volver a casa"

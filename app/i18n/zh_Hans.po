@@ -12818,3 +12818,42 @@ msgstr "机载 FPV 摄像头（Shift+3：座舱）。其中：−/= 镜头角度
 
 msgid "DJI FPV remote: its throttle stick springs back to the middle. Hold the THROTTLE fully DOWN through every calibration step, also while you move the other sticks. In flight the middle is half throttle unless you set the stick to stay where you leave it (see DJI's manual). The gimbal dial can tilt the FPV camera: Settings › Camera › Look & gimbal › FPV gimbal tilt channel."
 msgstr "DJI FPV 遥控器：它的油门摇杆会自动回中。在每个校准步骤中都要把油门完全推到最低，移动其他摇杆时也一样。飞行中中位为半油门，除非你把摇杆设置为停留在松手位置（见 DJI 说明书）。云台拨轮可以调整 FPV 摄像头仰角：设置 › 摄像机 › 视线与云台 › FPV 云台俯仰通道。"
+
+msgid "Switch low"
+msgstr "开关低位"
+
+msgid "Switch middle"
+msgstr "开关中位"
+
+msgid "Switch high"
+msgstr "开关高位"
+
+msgid "Angle (FBWA)"
+msgstr "自稳 (FBWA)"
+
+msgid "Horizon (Stabilize)"
+msgstr "半自稳 (Stabilize)"
+
+msgid "Altitude hold (FBWB)"
+msgstr "定高 (FBWB)"
+
+msgid "Cruise"
+msgstr "巡航"
+
+msgid "Loiter"
+msgstr "盘旋"
+
+msgid "Return to home"
+msgstr "返航"
+
+msgid "Flight mode: %s"
+msgstr "飞行模式：%s"
+
+msgid "Airplanes fly through a flight controller like INAV or ArduPilot. The radio's Flight mode switch (Controls › Extra channels) picks these modes; in flight M and Shift+M step through all of them."
+msgstr "飞机通过类似 INAV 或 ArduPilot 的飞控飞行。遥控器的飞行模式开关（控制 › 附加通道）选择这些模式；飞行中用 M 和 Shift+M 依次切换全部模式。"
+
+msgid "Manual: sticks straight to the surfaces. Acro: the gyro holds the attitude. Angle and Horizon level the wings. Altitude hold, Cruise, Loiter and Return to home fly by GPS and barometer. A two-position switch uses low and high."
+msgstr "手动：摇杆直接控制舵面。Acro：陀螺仪保持姿态。自稳和半自稳会改平机翼。定高、巡航、盘旋和返航依靠 GPS 和气压计飞行。两段开关使用低位和高位。"
+
+msgid "Flight mode: next (Shift+M back): Manual, Acro, Angle, Horizon, Altitude hold, Cruise, Loiter, Return to home"
+msgstr "飞行模式：下一个（Shift+M 上一个）：手动、Acro、自稳、半自稳、定高、巡航、盘旋、返航"

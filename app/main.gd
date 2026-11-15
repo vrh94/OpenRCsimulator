@@ -30,6 +30,7 @@ const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const FpvHead := preload("res://render/camera/fpv_head.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const FpvOsd := preload("res://render/overlays/fpv_osd.gd")
+const FixedWingFC := preload("res://sim/fixed_wing_fc.gd")
 const CanopyFrame := preload("res://render/overlays/canopy_frame.gd")
 const VideoLink := preload("res://render/camera/video_link.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
@@ -410,6 +411,8 @@ var _fpv_osd: CanvasLayer
 var _canopy_frame: CanvasLayer
 ## FPV-9: the flight overlays are stepped aside for the onboard picture or the cockpit (camera_fpv_clean_screen).
 var _fpv_clean := false
+## FC-1: the mode the flight-mode switch selected last; a new switch position wins over the M key.
+var _fc_switch_mode := ""
 var _fpv_osd_since := INF
 var _fpv_osd_config := {}
 ## FPV-7: the analog video link, its last line-of-sight scan (refreshed at LINK_SCAN_S) and a capture override.
@@ -845,6 +848,14 @@ func _prepare_flight() -> void:
 		_fpv_video_args["fpv-blur"] = true
 	if args.has("fpv-clean"): # FPV-9: --fpv-clean=0 keeps the flight overlays over the onboard picture
 		_fpv_video_args["fpv-clean"] = str(args["fpv-clean"]) != "0"
+	if args.has("fc-mode"): # FC-1: --fc-mode=<mode> starts with the flight controller in that mode
+		if not FixedWingFC.is_mode(str(args["fc-mode"])):
+			push_error("--fc-mode must be one of %s (got \"%s\")" % [", ".join(FixedWingFC.MODES), str(args["fc-mode"])])
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_fpv_video_args["fc-mode"] = str(args["fc-mode"])
 	if args.has("fpv-osd"):
 		if str(args["fpv-osd"]) not in CameraSettings.FPV_OSD_STYLES:
 			push_error("--fpv-osd must be one of %s (got \"%s\")" % [", ".join(CameraSettings.FPV_OSD_STYLES), str(args["fpv-osd"])])
@@ -1082,6 +1093,8 @@ func _prepare_flight() -> void:
 				return
 		else:
 			session.setup(setup_request.path, setup_request.expected_id, setup_request.frozen_data)
+	if _fpv_video_args.has("fc-mode") and session != null: # FC-1: --fc-mode (captures, traces)
+		session.flight_controller.set_mode(str(_fpv_video_args["fc-mode"]))
 	startup_preparation_metrics.finish_setup_usec = Time.get_ticks_usec() - finish_began
 	startup_preparation_metrics.workers_after = FlightSession.launch_trim_cache_stats().staged_workers_started
 	if not await _startup_stage("Preparing flight model"):
@@ -1640,6 +1653,7 @@ func _process(delta: float) -> void:
 	# after its final pose, before this frame is drawn.
 	if not _rig.pending_history_reset.is_empty():
 		_rig.commit_history_reset()
+	_update_flight_mode()
 	_update_video_link(dt)
 	_update_fpv_lens()
 	_update_fpv_osd(dt)
@@ -1771,7 +1785,7 @@ func _update_fpv_osd(dt: float, force := false) -> void:
 		_fpv_osd_since = 0.0
 		var snap := _overlay_snapshot()
 		if not snap.is_empty():
-			_fpv_osd.feed(snap, -float(field.pilot.get("down", 0.0)), _video_link.osd_link())
+			_fpv_osd.feed(snap, -float(field.pilot.get("down", 0.0)), _video_link.osd_link(), _flight_mode())
 	var shown: bool = _rig.showing_onboard_lens() and not _fpv_osd.values.is_empty()
 	_fpv_osd.visible = shown
 	if not shown or _last_render_pose.is_empty():
@@ -1785,6 +1799,43 @@ func _update_fpv_osd(dt: float, force := false) -> void:
 	var geo := FpvLens.geometry(_rig.onboard_lens, _rig.onboard.hfov_deg, aspect)
 	var px_per_deg := float(geo.focal) * size.y * 0.5 * PI / 180.0
 	_fpv_osd.set_attitude(pitch, bank, px_per_deg, _rig.onboard.tilt_deg, _presentation_clock_s())
+
+
+## FC-1: the flight controller's mode now ("manual" without a session).
+func _flight_mode() -> String:
+	return str(session.flight_controller.mode) if session != null and session.get("flight_controller") != null else "manual"
+
+
+## FC-1: the flight-mode switch (the radio's "flight_mode" AUX channel, shared with the FPV quad) selects the mode
+## of its position (Settings › Camera › Flight controller). Only a change of position switches, so the M key can
+## pick another mode until the switch moves again.
+func _update_flight_mode() -> void:
+	if session == null or session.get("flight_controller") == null or _scripted:
+		return
+	var radio: RefCounted = session.radio
+	var aux: Variant = radio.profile.get("aux", {})
+	if not radio.connected or typeof(aux) != TYPE_DICTIONARY or typeof(aux.get("flight_mode")) != TYPE_DICTIONARY \
+			or (aux.flight_mode as Dictionary).is_empty() or not radio.auxiliary_request_valid("flight_mode"):
+		_fc_switch_mode = ""
+		return
+	var selected := FixedWingFC.switch_mode(radio.auxiliary_amount("flight_mode"), _rig.fc_switch_modes)
+	if selected != _fc_switch_mode:
+		_fc_switch_mode = selected
+		_set_flight_mode(selected)
+
+
+## [M] / [Shift+M]: the next or previous flight-controller mode.
+func _cycle_flight_mode(direction: int) -> void:
+	if session == null or session.get("flight_controller") == null:
+		return
+	var index := FixedWingFC.MODES.find(_flight_mode())
+	_set_flight_mode(FixedWingFC.MODES[posmod(index + direction, FixedWingFC.MODES.size())])
+
+
+func _set_flight_mode(mode: String) -> void:
+	if session.flight_controller.mode == mode or not session.flight_controller.set_mode(mode):
+		return
+	_note = tr("Flight mode: %s") % tr(str(FixedWingFC.NAMES.get(mode, mode)))
 
 
 ## FPV-5: the onboard lens's head-look sources for this frame: opentrack datagrams and the gimbal's radio channels.
@@ -2106,6 +2157,7 @@ func _status() -> String:
 		line += "\n[T] record trace"
 	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _rig.auto_zoom else "off", _shadow_mode]
 	line += "\n[1] pilot [2] chase [3] onboard FPV [Shift+3] cockpit [4] fly-by [5] orbit  [C] cycle"
+	line += "\nFlight mode: %s  [M] next [Shift+M] previous" % tr(str(FixedWingFC.NAMES.get(_flight_mode(), _flight_mode())))
 	if _rig.view == "onboard":
 		line += "\nFPV %d° tilt %+d° mount %s  [−/=] FOV  [Shift+[ ]] tilt  [right-drag] look  [Backspace] reset" % [
 			roundi(_rig.onboard.hfov_deg), roundi(_rig.onboard.tilt_deg), _rig.onboard.smoothing]
@@ -2157,6 +2209,7 @@ func controller_capabilities() -> Dictionary:
 		"smoke": _supports_show_smoke(),
 		"flaps": session != null and session.flaps_available(),
 		"rates": session != null and session.aircraft.get("ok", false) and session.aircraft.model.controls.has("rates") and not session.external_driver_enabled,
+		"flight_mode": true, # FC-1: the flight-mode switch selects the airplane flight controller's mode
 	}
 
 
@@ -2498,6 +2551,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 			KEY_N:
 				controller_action("rates_toggle")
+				get_viewport().set_input_as_handled()
+			KEY_M:
+				_cycle_flight_mode(-1 if event.shift_pressed else 1)
 				get_viewport().set_input_as_handled()
 			KEY_B:
 				if not session.sim.paused and session.wheel_brake_available() and session.set_wheel_brake(1.0):
@@ -3914,7 +3970,11 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 		_t = t
 	else:
 		# Step the simulation synchronously to time t, then freeze it for the capture.
+		# FC-1: an active flight controller reads the state every tick, as in live flight (manual keeps fixed inputs).
+		var fc_active: bool = session.flight_controller.mode != "manual"
 		for i in roundi(t / sim.dt()):
+			if fc_active:
+				sim.inputs = session._inputs()
 			sim.step()
 		sim.set_paused(true)
 		c = session.commands # physics captures show the real commands, not capture arguments
