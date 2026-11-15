@@ -4,8 +4,9 @@
 ## three styles that follow the look of Betaflight, INAV and ArduPilot (their element choices, labels and usual
 ## places; the drawing and the glyphs are this project's own). Nothing is invented: an element whose source is
 ## absent is not shown (no battery on a glow or gas engine, no link quality until a video link is modelled).
-## Home is the pilot station (the telemetry's pilot vector); altitude is height above it, speed the ground speed (a
-## GPS reading), the timer the flight time. The grid is COLS × ROWS character cells over a 16:9 safe area, as on an
+## Home is the pilot station (the telemetry's pilot vector); altitude is height above it, speed the 3D GPS speed
+## (ground speed and climb rate together, as INAV's 3D speed: it rises in a dive, where the horizontal ground speed
+## alone falls), the timer the flight time. The grid is COLS × ROWS character cells over a 16:9 safe area, as on an
 ## HD goggle OSD.
 extends RefCounted
 
@@ -74,7 +75,7 @@ static func values(t: Dictionary, battery: Dictionary, link: Dictionary = {}) ->
 		home = OsdModel.home_vector(north, east, heading, Vector2.ZERO)
 	var has_battery := bool(battery.get("valid", false))
 	return {
-		speed_mps = float(t.get("ground_speed", NAN)),
+		speed_mps = _speed_3d(t),
 		airspeed_mps = float(t.get("airspeed", NAN)),
 		altitude_m = _height_above_home(t),
 		heading_deg = heading,
@@ -208,6 +209,15 @@ static func _compact(text: String) -> String:
 
 ## Height above the pilot station's ground: the telemetry's height above the datum less `home_up_m` (the station's
 ## ground height above the datum, which the route adds to the telemetry), as a GPS OSD shows height above home.
+## 3D GPS speed (m/s) from the telemetry's horizontal ground speed and vertical speed; NAN without them.
+static func _speed_3d(t: Dictionary) -> float:
+	var horizontal := float(t.get("ground_speed", NAN))
+	var vertical := float(t.get("vertical_speed", 0.0))
+	if not is_finite(horizontal):
+		return NAN
+	return sqrt(horizontal * horizontal + (vertical * vertical if is_finite(vertical) else 0.0))
+
+
 static func _height_above_home(t: Dictionary) -> float:
 	var datum := float(t.get("height_datum", NAN))
 	var home_up := float(t.get("home_up_m", NAN))

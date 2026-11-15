@@ -58,7 +58,13 @@ func _values() -> void:
 	_check("values: home distance is horizontal", is_equal_approx(float(v.home_distance_m), 300.0))
 	_check("values: home arrow points back (south while heading east: right turn of 90°)", is_equal_approx(float(v.home_relative_deg), 90.0), str(v.home_relative_deg))
 	_check("values: altitude above the station's ground", is_equal_approx(float(v.altitude_m), 50.0))
-	_check("values: GPS speed is the ground speed", float(v.speed_mps) == 20.0)
+	_check("values: GPS speed in level flight is the ground speed", float(v.speed_mps) == 20.0)
+	# A steep dive: the horizontal ground speed falls while the plane speeds up; the 3D speed shows the speed-up.
+	var dive := _telemetry()
+	dive.ground_speed = 10.0
+	dive.vertical_speed = -24.0
+	_check("values: GPS speed is 3D (it rises in a dive)", is_equal_approx(float(Model.values(dive, _battery()).speed_mps), 26.0),
+		str(Model.values(dive, _battery()).speed_mps))
 	_check("values: battery from the sensors", float(v.voltage_v) == 15.6 and float(v.current_a) == 12.34 and float(v.used_mah) == 456.0)
 	var bare := Model.values(_telemetry(), {})
 	_check("values: no battery, no battery numbers", is_nan(float(bare.voltage_v)) and is_nan(float(bare.remaining_pct)))
