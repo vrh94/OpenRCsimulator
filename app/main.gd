@@ -30,6 +30,7 @@ const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const FpvHead := preload("res://render/camera/fpv_head.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const FpvOsd := preload("res://render/overlays/fpv_osd.gd")
+const CanopyFrame := preload("res://render/overlays/canopy_frame.gd")
 const VideoLink := preload("res://render/camera/video_link.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
 const FpvLens := preload("res://render/camera/fpv_lens.gd")
@@ -405,6 +406,8 @@ var _fpv_lens_arg := ""
 var _fpv_video_args := {}
 ## FPV-6: the fixed-wing OSD over the onboard picture, and the time since its numbers were last refreshed.
 var _fpv_osd: CanvasLayer
+## FPV-8: the cockpit view's canopy frame.
+var _canopy_frame: CanvasLayer
 var _fpv_osd_since := INF
 var _fpv_osd_config := {}
 ## FPV-7: the analog video link, its last line-of-sight scan (refreshed at LINK_SCAN_S) and a capture override.
@@ -1636,6 +1639,7 @@ func _process(delta: float) -> void:
 	_update_video_link(dt)
 	_update_fpv_lens()
 	_update_fpv_osd(dt)
+	_update_canopy_frame()
 	if _lens != null:
 		_lens.advance(delta, visual_clock_s, not session.holds.is_empty())
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
@@ -1710,6 +1714,17 @@ func _update_fpv_lens() -> void:
 	_fpv_lens.set_video(str(_rig.onboard_video.quality), str(_rig.onboard_video.noise), bool(_rig.onboard_video.motion_blur))
 	_fpv_lens.update(_camera, _rig.showing_onboard_lens() and _airplane.root.visible, _rig.onboard.hfov_deg,
 		_presentation_clock_s())
+
+
+## FPV-8: the canopy frame shows over the cockpit eye only (not over a crash orbit), slid by the head-look.
+func _update_canopy_frame() -> void:
+	if _canopy_frame == null or _rig == null:
+		return
+	var shown: bool = _rig.showing_cockpit() and _airplane.root.visible
+	_canopy_frame.visible = shown
+	if shown:
+		var head: Vector3 = _rig.fpv_head.head_offset()
+		_canopy_frame.set_head(Vector2(head.x, head.y), _rig.cockpit.hfov_deg)
 
 
 ## FPV-6: the fixed-wing OSD. Its numbers (and battery sensors) refresh at the OSD rate in every view while it is
@@ -1798,6 +1813,14 @@ func _configure_onboard_mount() -> void:
 	else:
 		_rig.onboard.clear()
 		if _rig.view == "onboard":
+			_rig.set_view("pilot")
+	# FPV-8: the cockpit eye, estimated from the same meshes (a quarter back from the nose, just above the fuselage top).
+	var eye := CameraRig.OnboardView.derive_cockpit(_airplane.root)
+	if eye.ok:
+		_rig.cockpit.configure(eye.position, eye.source)
+	else:
+		_rig.cockpit.clear()
+		if _rig.view == "cockpit":
 			_rig.set_view("pilot")
 
 
@@ -2057,13 +2080,15 @@ func _status() -> String:
 	else:
 		line += "\n[T] record trace"
 	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _rig.auto_zoom else "off", _shadow_mode]
-	line += "\n[1] pilot [2] chase [3] onboard FPV [4] fly-by [5] orbit  [C] cycle"
+	line += "\n[1] pilot [2] chase [3] onboard FPV [Shift+3] cockpit [4] fly-by [5] orbit  [C] cycle"
 	if _rig.view == "onboard":
 		line += "\nFPV %d° tilt %+d° mount %s  [−/=] FOV  [Shift+[ ]] tilt  [right-drag] look  [Backspace] reset" % [
 			roundi(_rig.onboard.hfov_deg), roundi(_rig.onboard.tilt_deg), _rig.onboard.smoothing]
 		var head_line := _fpv_head_text()
 		if head_line != "":
 			line += "\n" + head_line
+	elif _rig.view == "cockpit":
+		line += "\nCockpit %d°  [−/=] FOV  [right-drag] look  [Backspace] reset" % roundi(_rig.cockpit.hfov_deg)
 	line += "\n[L] " + _aircraft_lights_text()
 	if _note != "":
 		line += "\n" + _note
@@ -2488,16 +2513,19 @@ func _unhandled_input(event: InputEvent) -> void:
 				_rig.set_view("pilot")
 			KEY_2:
 				_rig.select_view("chase") # again: 3D follow (CAM-09)
+			KEY_3 when event.shift_pressed:
+				_rig.set_view("cockpit") # FPV-8
 			KEY_3:
 				_rig.set_view("onboard") # CAM-11/FPV-1
 			KEY_4:
 				_rig.set_view("flyby")
 			KEY_5:
 				_rig.set_view("orbit")
-			KEY_EQUAL, KEY_MINUS when _rig.view == "onboard":
-				# FPV-2: = narrows the onboard lens one step, − widens it.
+			KEY_EQUAL, KEY_MINUS when _rig.view == "onboard" or _rig.view == "cockpit":
+				# FPV-2: = narrows the onboard lens one step, − widens it (FPV-8: the cockpit eye too).
 				_rig.zoom(1.0 if event.physical_keycode == KEY_EQUAL else -1.0)
-				_note = tr("FPV field of view: %d°") % roundi(_rig.onboard.hfov_deg)
+				var lens: RefCounted = _rig.onboard if _rig.view == "onboard" else _rig.cockpit
+				_note = tr("FPV field of view: %d°") % roundi(lens.hfov_deg)
 			KEY_EQUAL:
 				_rig.zoom(1.0)
 			KEY_MINUS:
@@ -3700,6 +3728,8 @@ func _build_world() -> bool:
 		_rig.onboard_video.motion_blur = true
 	_fpv_osd = FpvOsd.new()
 	add_child(_fpv_osd)
+	_canopy_frame = CanopyFrame.new()
+	add_child(_canopy_frame)
 	if _fpv_video_args.has("fpv-osd"):
 		_rig.onboard_osd.style = str(_fpv_video_args["fpv-osd"])
 	if _fpv_video_args.has("fpv-link"):
@@ -3823,7 +3853,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_came
 		# FPV-4: vibration inputs read the commanded throttle and the observed airspeed; nothing is written back.
 		var airspeed := float(_observer_air(session.sim.state, session.sim.time()).get("V", 0.0))
 		_rig.onboard.set_vibration_inputs(_presentation_clock_s(), session.propulsion_throttle(), airspeed)
-	if _rig.view == "onboard":
+	if _rig.view == "onboard" or _rig.view == "cockpit":
 		_update_fpv_head()
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
 		_camera_clearance, defer_camera_cut)
@@ -3874,6 +3904,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	_update_video_link(0.0, true)
 	_update_fpv_lens() # _process does not run while capturing
 	_update_fpv_osd(0.0, true)
+	_update_canopy_frame()
 	var clock_s: float = t if _scripted else sim.time()
 	World.update(_env, clock_s, _render_wind(clock_s), pose.pos, _camera)
 	_update_aircraft_lights(clock_s)

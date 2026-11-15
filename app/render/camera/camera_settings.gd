@@ -11,7 +11,7 @@ const VideoLink := preload("res://render/camera/video_link.gd")
 
 ## The view a Home flight starts in (D1: the pilot view stays the default). "onboard" falls back to the pilot view on
 ## routes without an onboard mount (the helicopter).
-const VIEWS: Array[String] = ["pilot", "chase", "onboard", "flyby", "orbit"]
+const VIEWS: Array[String] = ["pilot", "chase", "onboard", "cockpit", "flyby", "orbit"]
 ## FPV-2: the onboard lens (horizontal FOV, uptilt, mount smoothing).
 const FPV_FOVS: Array[int] = OnboardView.FOVS
 const FPV_TILTS: Array[int] = OnboardView.TILTS
@@ -84,7 +84,7 @@ const DEFAULTS := {
 static func errors(raw: Dictionary) -> PackedStringArray:
 	var out := PackedStringArray()
 	if typeof(raw.get("camera_view", DEFAULTS.camera_view)) != TYPE_STRING or raw.get("camera_view", DEFAULTS.camera_view) not in VIEWS:
-		out.append("camera_view must be pilot, chase, onboard, flyby or orbit")
+		out.append("camera_view must be pilot, chase, onboard, cockpit, flyby or orbit")
 	for pair: Array in [["camera_fpv_fov", FPV_FOVS], ["camera_fpv_tilt", FPV_TILTS]]:
 		var lens: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(lens) != TYPE_INT or lens not in (pair[1] as Array):

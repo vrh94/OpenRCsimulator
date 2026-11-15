@@ -46,7 +46,7 @@ func _run() -> void:
 func _validation() -> void:
 	_check("defaults validate", CameraSettings.errors(CameraSettings.DEFAULTS).is_empty())
 	_check("an empty dictionary means the defaults", CameraSettings.normalized({}) == CameraSettings.DEFAULTS)
-	for bad: Dictionary in [{camera_view = "cockpit"}, {camera_fov = 51}, {camera_fov = "50"}, {camera_auto_zoom = 1},
+	for bad: Dictionary in [{camera_view = "periscope"}, {camera_fov = 51}, {camera_fov = "50"}, {camera_auto_zoom = 1},
 			{camera_zoom_law = "fisheye"}, {camera_horizon_bias = "on"}, {camera_overhead_smoothing = 0}, {camera_magnifier = "big"},
 			{camera_chase_distance = 3.0}, {camera_sensitivity = -1.0}, {camera_invert_y = "yes"}]:
 		_check("rejects %s" % str(bad), not CameraSettings.errors(bad).is_empty())

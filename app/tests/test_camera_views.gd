@@ -329,7 +329,7 @@ func _cycle() -> void:
 	_check("C cycles pilot → chase → fly-by → orbit → close-up → pilot", seen == ["pilot", "chase", "flyby", "orbit", "closeup"] and rig.view == "pilot", str(seen))
 	rig.cycle(-1)
 	_check("Shift+C goes back", rig.view == "closeup")
-	_check("unknown view refused", not rig.set_view("cockpit") and rig.view == "closeup")
+	_check("unknown view refused", not rig.set_view("periscope") and rig.view == "closeup")
 	_check("names keep the historical panel text", rig.view_name() == "close-up" and CameraRig.NAMES.pilot == "pilot")
 	cam.queue_free()
 

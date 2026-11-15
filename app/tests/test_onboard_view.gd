@@ -157,7 +157,7 @@ func _rig_views() -> void:
 	var rig := CameraRig.new(cam, SPAN)
 	_check("rig: no onboard view without a mount", not rig.set_view("onboard") and rig.view == "pilot")
 	var seen := []
-	for i in CameraRig.VIEWS.size() - 1:
+	for i in CameraRig.VIEWS.size() - 2: # FPV-8: the cockpit is unavailable too
 		seen.append(rig.view)
 		rig.cycle(1)
 	_check("rig: C skips onboard without a mount", seen == ["pilot", "chase", "flyby", "orbit", "closeup"] and rig.view == "pilot", str(seen))

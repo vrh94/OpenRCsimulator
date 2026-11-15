@@ -211,6 +211,14 @@ func offset() -> Vector3:
 		clampf(_track.z, -ROLL_LIMIT_DEG, ROLL_LIMIT_DEG))
 
 
+## FPV-8: the pilot's own look (mouse and head tracking, no gimbal) for the cockpit view.
+func head_offset() -> Vector3:
+	return Vector3(
+		clampf(mouse.x + _track.x, -YAW_LIMIT_DEG, YAW_LIMIT_DEG),
+		clampf(mouse.y + _track.y, -PITCH_LIMIT_DEG, PITCH_LIMIT_DEG),
+		clampf(_track.z, -ROLL_LIMIT_DEG, ROLL_LIMIT_DEG))
+
+
 ## The servos jump to their commanded angles (a new flight, a cut).
 func snap_gimbal() -> void:
 	gimbal = gimbal_target

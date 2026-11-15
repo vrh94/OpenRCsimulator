@@ -14,6 +14,13 @@ const STATION_SHARE := 0.05
 const CENTRE_SHARE := 0.05
 const MOUNT_CLEARANCE_M := 0.02
 const PROBE_STEPS := 4
+## FPV-8 cockpit eye: this share of the model length aft of the nose, on the centreline, above the highest surface
+## there by EYE_SHARE of the length (at least EYE_MIN_M): a canopy-frame view until aircraft declare a pilot's eye.
+## On a high-wing model the highest surface there may be the wing, so the eye sits on top of it.
+const COCKPIT_STATION_SHARE := 0.25
+const EYE_SHARE := 0.03
+const EYE_MIN_M := 0.03
+const COCKPIT_HFOV_DEG := 90.0
 ## Nodes whose meshes never define the nose: spinning discs and their blur.
 const EXCLUDED_NAME_PARTS := ["propeller", "prop_blur", "rotor", "blur"]
 ## FPV-2 lens: a horizontal FOV typical of a fixed-wing FPV camera and a small uptilt by default. The settings offer
@@ -142,6 +149,16 @@ func snap() -> void:
 ## Estimates a nose mount from the meshes under `root`, in root's local frame. Returns {ok, position, source,
 ## nose_z, length}; ok is false when the model has no usable geometry.
 static func derive_mount(root: Node3D) -> Dictionary:
+	return estimate_from_faces(collect_faces(root))
+
+
+## FPV-8: estimates the cockpit eye (model frame) the same way; same result keys.
+static func derive_cockpit(root: Node3D) -> Dictionary:
+	return estimate_cockpit(collect_faces(root))
+
+
+## The model's triangles in root's frame (three vertices per triangle), without propeller discs.
+static func collect_faces(root: Node3D) -> PackedVector3Array:
 	var faces := PackedVector3Array()
 	for node in root.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
@@ -150,11 +167,22 @@ static func derive_mount(root: Node3D) -> Dictionary:
 		var to_root := _relative(root, mi)
 		for p in mi.mesh.get_faces():
 			faces.append(to_root * p)
-	return estimate_from_faces(faces)
+	return faces
 
 
 ## The estimate on a triangle list (model frame, three vertices per triangle), so it can be tested without meshes.
 static func estimate_from_faces(faces: PackedVector3Array) -> Dictionary:
+	return estimate_at(faces, NOSE_SETBACK_SHARE, MOUNT_CLEARANCE_M, 0.0)
+
+
+## FPV-8: the cockpit eye on a triangle list.
+static func estimate_cockpit(faces: PackedVector3Array) -> Dictionary:
+	return estimate_at(faces, COCKPIT_STATION_SHARE, EYE_MIN_M, EYE_SHARE)
+
+
+## A point on the centreline `share` of the length aft of the nose, above the highest surface there by
+## max(clearance_m, clearance_share × length).
+static func estimate_at(faces: PackedVector3Array, share: float, clearance_m: float, clearance_share: float) -> Dictionary:
 	var count := faces.size() - faces.size() % 3
 	if count == 0:
 		return { ok = false, position = Vector3.INF, source = "estimated", nose_z = NAN, length = NAN }
@@ -166,7 +194,7 @@ static func estimate_from_faces(faces: PackedVector3Array) -> Dictionary:
 	var length := hi.z - lo.z
 	if length <= 0.0:
 		return { ok = false, position = Vector3.INF, source = "estimated", nose_z = lo.z, length = length }
-	var station := lo.z + NOSE_SETBACK_SHARE * length
+	var station := lo.z + share * length
 	var centre_x := 0.5 * (lo.x + hi.x)
 	var x := centre_x
 	var z := station
@@ -187,7 +215,7 @@ static func estimate_from_faces(faces: PackedVector3Array) -> Dictionary:
 				break
 	if not is_finite(top):
 		return { ok = false, position = Vector3.INF, source = "estimated", nose_z = lo.z, length = length }
-	return { ok = true, position = Vector3(x, top + MOUNT_CLEARANCE_M, z), source = "estimated",
+	return { ok = true, position = Vector3(x, top + maxf(clearance_m, clearance_share * length), z), source = "estimated",
 		nose_z = lo.z, length = length }
 
 

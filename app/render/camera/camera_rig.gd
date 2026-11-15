@@ -20,9 +20,10 @@ const Reconstruction := preload("res://render/reconstruction.gd")
 
 ## The C cycle, in order. Number keys select pilot (1), chase (2), onboard (3), fly-by (4) and orbit (5); 6 and 7 are
 ## reserved (plan §4.4). The cycle skips the onboard view while no mount is configured (helicopter, automation).
-const VIEWS := ["pilot", "chase", "onboard", "flyby", "orbit", "closeup"]
+## FPV-8: Shift+3 selects the cockpit view (a pilot's eye on the airframe with a canopy frame).
+const VIEWS := ["pilot", "chase", "onboard", "cockpit", "flyby", "orbit", "closeup"]
 ## Names the input panel, captures and evidence show (the historical "pilot" and "close-up" are kept).
-const NAMES := { pilot = "pilot", chase = "chase", onboard = "onboard FPV", flyby = "fly-by", orbit = "orbit", closeup = "close-up" }
+const NAMES := { pilot = "pilot", chase = "chase", onboard = "onboard FPV", cockpit = "cockpit", flyby = "fly-by", orbit = "orbit", closeup = "close-up" }
 ## One +/− step or wheel notch: a quarter of a doubling.
 const ZOOM_STEP := 1.189207115002721 # 2^(1/4)
 ## Pilot manual zoom limits (multiplies tan(fov/2): < 1 narrows) and chase boom limits.
@@ -39,7 +40,7 @@ const PILOT_FOV_MAX := 120.0
 ## barrier, 1.11 m from the eye (CAM-02b probe), still 0.52 m deep at the widest manual zoom. Chase and close-up stay
 ## ≥ 1 m from the airframe. The orbit can come within centimetres of a wing tip, so its near plane shrinks with distance.
 ## Onboard: the lens sits centimetres from the fuselage and the propeller disc (plan §5.3 table: 0.03 m).
-const NEAR_M := { pilot = 0.5, chase = 0.25, onboard = 0.03, flyby = 0.5, closeup = 0.25 }
+const NEAR_M := { pilot = 0.5, chase = 0.25, onboard = 0.03, cockpit = 0.03, flyby = 0.5, closeup = 0.25 }
 const ORBIT_NEAR_MIN := 0.05
 const ORBIT_NEAR_MAX := 0.25
 ## CAM-06b: the horizon tilt keeps the aircraft within this share of the half-frame from the centre and lifts the
@@ -87,6 +88,8 @@ var onboard := OnboardView.new()
 ## FPV-5: mouse head-look, head tracking and the servo gimbal of the onboard lens; the route feeds the tracker and the
 ## radio channels each frame (main.gd), and the rig hands the combined look to the onboard view.
 var fpv_head := FpvHead.new()
+## FPV-8: the cockpit eye, a rigid onboard view without lens effects (configured by the route like the onboard mount).
+var cockpit := OnboardView.new()
 ## FPV-3: the onboard lens projection the route's FpvLens applies ("rectilinear", "barrel", "fisheye").
 var onboard_lens := "barrel"
 ## FPV-4: the onboard video settings the route's FpvLens applies (quality, noise, motion_blur).
@@ -112,6 +115,7 @@ var pending_history_reset := ""
 
 func _init(rig_camera: Camera3D, span: float) -> void:
 	camera = rig_camera
+	cockpit.set_preferences(OnboardView.COCKPIT_HFOV_DEG, 0.0, "off")
 	set_span(span)
 
 
@@ -144,11 +148,13 @@ func set_view(id: String) -> bool:
 		chase.reset()
 	elif id == "flyby":
 		flyby.reset()
-	elif id == "orbit" or id == "onboard":
-		_orbit_primed = false # onboard: a crash aftermath orbits the wreck from the lens (focus())
+	elif id == "orbit" or id == "onboard" or id == "cockpit":
+		_orbit_primed = false # onboard/cockpit: a crash aftermath orbits the wreck from the lens (focus())
 		if id == "onboard":
 			onboard.snap() # a cut: a smoothed mount starts settled
 			fpv_head.snap_gimbal()
+		elif id == "cockpit":
+			cockpit.snap()
 	_fov_offset = 0.0
 	_absorb_from = NAN
 	return true
@@ -177,13 +183,23 @@ func cycle(step: int) -> void:
 
 ## Whether a view can be shown: the onboard view needs a configured mount.
 func available(id: String) -> bool:
-	return id != "onboard" or onboard.configured
+	match id:
+		"onboard":
+			return onboard.configured
+		"cockpit":
+			return cockpit.configured
+	return true
 
 
 ## FPV-3: the picture on screen is the onboard lens itself (not a landscape look or the crash orbit of the wreck),
 ## so the lens warp applies. Valid after update() and any focus() of this frame.
 func showing_onboard_lens() -> bool:
 	return view == "onboard" and is_nan(look.x) and not _orbit_primed
+
+
+## FPV-8: whether the picture is the cockpit eye (the canopy frame shows), not a crash orbit or a fixed look.
+func showing_cockpit() -> bool:
+	return view == "cockpit" and is_nan(look.x) and not _orbit_primed
 
 
 ## CAM-06: another auto-zoom law, reached smoothly like a zoom change.
@@ -213,6 +229,8 @@ func zoom(steps: float) -> void:
 	match view:
 		"onboard":
 			onboard.adjust_fov(-signi(roundi(steps)) if absf(steps) >= 0.5 else 0)
+		"cockpit":
+			cockpit.adjust_fov(-signi(roundi(steps)) if absf(steps) >= 0.5 else 0)
 		"pilot":
 			_mark_fov_jump()
 			pilot_zoom = clampf(pilot_zoom * factor, PILOT_ZOOM_MIN, PILOT_ZOOM_MAX)
@@ -232,6 +250,9 @@ func reset_view() -> void:
 	match view:
 		"onboard":
 			onboard.reset_lens()
+			fpv_head.recentre()
+		"cockpit":
+			cockpit.reset_lens()
 			fpv_head.recentre()
 		"pilot":
 			if pilot_zoom != default_pilot_zoom:
@@ -265,15 +286,15 @@ static func release_cursor_if_up() -> void:
 ## Right-button drag (relative pixels): the orbit turns, and the onboard lens looks around (FPV-5) unless a crash
 ## aftermath is orbiting the wreck.
 func drag(relative: Vector2) -> void:
-	if view == "orbit" or (view == "onboard" and _orbit_primed):
+	if view == "orbit" or ((view == "onboard" or view == "cockpit") and _orbit_primed):
 		orbit.rotate(relative)
-	elif view == "onboard" and is_nan(look.x):
+	elif (view == "onboard" or view == "cockpit") and is_nan(look.x):
 		fpv_head.mouse_drag(relative)
 
 
 ## Whether a right-button drag in the current view holds the cursor (CAM-29).
 func drag_holds_cursor() -> bool:
-	return view == "orbit" or view == "onboard"
+	return view == "orbit" or view == "onboard" or view == "cockpit"
 
 
 ## A restarted flight: views with memory start settled again.
@@ -286,8 +307,9 @@ func reset() -> void:
 	_fov_offset = 0.0
 	_absorb_from = NAN
 	onboard.snap()
+	cockpit.snap()
 	fpv_head.snap_gimbal()
-	if view == "onboard":
+	if view == "onboard" or view == "cockpit":
 		_orbit_primed = false # a restarted flight returns to the lens, not the last wreck orbit
 
 
@@ -301,7 +323,7 @@ func reset() -> void:
 func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paused: bool, ground_y: Callable,
 		velocity := Vector3.INF, obstacles := Callable(), defer_history_reset := false) -> void:
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
-	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
+	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or view == "cockpit" or not is_nan(look.x) else "lens")
 	_orbit_entry_eye = Vector3.INF
 	_last_dt = dt
 	var near_value := PilotCamera.projection_value(near_plane())
@@ -360,6 +382,10 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 			# Rigid on the drawn pose by default; FPV-2's optional soft mount smooths only the attitude.
 			onboard.look = fpv_head.offset()
 			_apply(onboard.update(airplane, body, _aspect(), dt, paused))
+		"cockpit":
+			# FPV-8: rigid on the airframe; the pilot's head-look turns it, the camera gimbal does not.
+			cockpit.look = fpv_head.head_offset()
+			_apply(cockpit.update(airplane, body, _aspect(), dt, paused))
 	_placed = true
 	if not defer_history_reset and not pending_history_reset.is_empty():
 		commit_history_reset()
@@ -398,7 +424,7 @@ func focus(point: Vector3, ground_y: Callable, obstacles := Callable()) -> void:
 			if _orbit_entry_eye.is_finite():
 				orbit.start_from(_orbit_entry_eye, point) # entered this frame: start where the last view was, around the wreck
 			_apply(orbit.update(point, ground_y, 0.0, obstacles)) # eased once this frame already, in update()
-		"onboard":
+		"onboard", "cockpit":
 			# Plan §8: a lens on a wreck shows nothing useful, so the aftermath orbits the wreck, starting at the lens.
 			if not _orbit_primed:
 				orbit.start_from(camera.position, point)
@@ -436,7 +462,8 @@ func evidence() -> Dictionary:
 		orbit = [orbit.azimuth_deg, orbit.elevation_deg, orbit.distance],
 		onboard = { configured = onboard.configured, source = onboard.mount_source, mount = onboard.mount,
 			hfov_deg = onboard.hfov_deg, tilt_deg = onboard.tilt_deg, smoothing = onboard.smoothing, lens = onboard_lens,
-			head = fpv_head.evidence() } }
+			head = fpv_head.evidence() },
+			cockpit = { configured = cockpit.configured, mount = cockpit.mount, hfov_deg = cockpit.hfov_deg } }
 
 
 ## Width / height of the picture the camera renders into.
