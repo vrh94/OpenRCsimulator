@@ -85,6 +85,29 @@ Evidence: `tests/test_fpv_long_range.gd` 27/27 (ranges per antenna, 20 km helica
 arithmetic, text formats metric and imperial, unique OSD cells per firmware, trip integration and gap handling,
 preferences). test_camera_settings 51/51, test_ui_modal_responsive 4290/0, test_golden bit-exact.
 
+## FC-4 (done): long-range landmarks (14b)
+
+A 9 km FPV flight showed plain green ground and nothing to navigate by. Two causes, two fixes:
+
+- **Nothing out there**: the club scenery stops at the 5 km horizon ring (SC-01). A new visual-only layer,
+  `app/render/landscape_upgrade/long_range.gd`, builds `app/data/scenery/long_range.json` (written by
+  `tools/scenery/long_range.py`, `--check` in the test): a closed **ring road** (79 km of 6 m gravel, 6.5–16.5 km
+  out) linking three towns with churches (30 / 18 / 14 houses), two farmsteads and two wind farms. It uses the
+  existing scenery prefabs, merged into one static mesh per cluster (turbine rotors baked in) placed at the cluster
+  centre for float precision: 8 meshes, about 18k triangles, about 14 ms to build, no per-frame work. Everything
+  stands on the flat ground past the 6 km horizon relief and clear of the visual mountains. No collision, like the
+  ridges. An earlier try that routed the landmarks through the club scenery broke its cell, triangle and rotor
+  budgets (5 tests) and was replaced by this layer.
+- **Plain ground**: the ground shader's field patchwork is pinned to the pilot (fades 1.8–3 km from the station).
+  `fields_from_camera` (onboard and cockpit views only, `Atmosphere.set_fields_from_camera`) measures that fade from
+  the camera instead (3.5–6.5 km), so the parcels stay under the airplane. The pilot view is unchanged: a westward
+  pilot capture differs from the previous commit in 24 of 921,600 pixels (the 8 km town in the horizon haze).
+
+Evidence: `tests/test_long_range_landmarks.gd` 18/18 (generator check, flat ground and mountain clearance, the road
+encloses the field so every bearing out crosses it, every town and farm on the road, mesh and triangle budgets,
+static meshes, field attachment, the patchwork switch on every ground material and back). The 51 scenery,
+landscape, ground and atmosphere tests and the 15 FPV/camera/golden tests pass.
+
 ## Next
 
-- 14b: distant landmarks for long-range flight (the world is empty beyond about 5 km).
+- 15: Skyhunter 1800; 16: Multiplex FunJet.

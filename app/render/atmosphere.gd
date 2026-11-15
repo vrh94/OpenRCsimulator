@@ -871,6 +871,20 @@ static func update_clouds(env: Environment, sim_time: float) -> bool:
 	return global_offset_changed or sky_changed
 
 
+## FC-4: the far-field parcels fade with the distance from the camera (`on`, FPV views far from the pilot) or from the
+## pilot station (the default). Sets every ground material the field registered; returns how many it set.
+static func set_fields_from_camera(root: Node, on: bool) -> int:
+	if root == null or not is_instance_valid(root):
+		return 0
+	var count := 0
+	for material_value: Variant in root.get_meta("lighting_materials", []):
+		if material_value is ShaderMaterial and is_instance_valid(material_value) \
+				and (material_value as ShaderMaterial).shader == GROUND_SHADER:
+			(material_value as ShaderMaterial).set_shader_parameter("fields_from_camera", on)
+			count += 1
+	return count
+
+
 ## Refresh field materials and cached reflections after an explicit sky edit or restoration.
 ## The sky Environment and sun are updated separately; continuous cloud drift does not call this path.
 static func update_cloud_appearance(root: Node) -> void:

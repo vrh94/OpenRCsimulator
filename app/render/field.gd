@@ -25,6 +25,7 @@ const PeopleGaze = preload("res://scenery/people_gaze.gd")
 const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
 const DistantRidges = preload("res://render/landscape_upgrade/ridges.gd")
 const Countryside = preload("res://render/landscape_upgrade/countryside.gd")
+const LongRange = preload("res://render/landscape_upgrade/long_range.gd") # FC-4 (14b)
 const RcTrackField = preload("res://render/rc_track_field.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
@@ -49,6 +50,7 @@ enum _BuildPhase {
 	NEAR_GRASS,
 	DISTANT_RIDGES,
 	COUNTRYSIDE,
+	LONG_RANGE,
 	PROJECTED_SHADOWS,
 	FIELD_READY,
 	DONE,
@@ -188,6 +190,12 @@ static func _next_build_stage(context: _BuildContext) -> String:
 				context.build_countryside = _countryside_layout_is_present(context)
 				if context.build_countryside:
 					return "Countryside"
+				context.phase = _BuildPhase.LONG_RANGE
+				continue
+			_BuildPhase.LONG_RANGE:
+				# The long-range landmarks belong to the same default countryside as the farms and ridges.
+				if context.build_countryside:
+					return "Long-range landmarks"
 				context.phase = _BuildPhase.PROJECTED_SHADOWS
 				continue
 			_BuildPhase.PROJECTED_SHADOWS:
@@ -349,6 +357,10 @@ static func _advance_build(context: _BuildContext) -> void:
 				context.result.add_child(countryside)
 				if countryside.has_meta("lighting_material"):
 					context.materials.append(countryside.get_meta("lighting_material") as ShaderMaterial)
+			context.phase = _BuildPhase.LONG_RANGE
+		_BuildPhase.LONG_RANGE:
+			if context.build_countryside:
+				context.result.add_child(LongRange.build(str(context.field.get("theme", "temperate"))))
 			context.phase = _BuildPhase.PROJECTED_SHADOWS
 		_BuildPhase.PROJECTED_SHADOWS:
 			FieldProjectedShadows.attach(context.result, context.field, context.lighting)

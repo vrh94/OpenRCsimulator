@@ -188,6 +188,8 @@ var _field_world_lighting: bool = false
 var _world_environment: WorldEnvironment
 var _sun: DirectionalLight3D
 var _field_node: Node3D
+var _far_fields_node: Node3D # FC-4: the field whose ground materials _far_fields_on describes
+var _far_fields_on := false
 
 
 func _failure_options(options: Dictionary) -> Dictionary:
@@ -4019,12 +4021,23 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float, defer_came
 		_rig.onboard.set_vibration_inputs(_presentation_clock_s(), session.propulsion_throttle(), airspeed)
 	if _rig.view == "onboard" or _rig.view == "cockpit":
 		_update_fpv_head()
+	_update_far_fields(_rig.view == "onboard" or _rig.view == "cockpit")
 	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF),
 		_camera_clearance, defer_camera_cut)
 	if _magnifier != null:
 		_magnifier.mode = _rig.magnifier
 		_magnifier.update(_camera, pose.pos, _extent.x, _airplane.root, _rig.view == "pilot" and is_nan(_look.x)
 			and _airplane.root.visible and (session == null or session.crash.is_empty()))
+
+
+## FC-4: in the FPV views the ground's field patchwork follows the airplane (Atmosphere.set_fields_from_camera);
+## set only on a change of view or field.
+func _update_far_fields(on: bool) -> void:
+	if _field_node == null or (_far_fields_node == _field_node and _far_fields_on == on):
+		return
+	Atmosphere.set_fields_from_camera(_field_node, on)
+	_far_fields_node = _field_node
+	_far_fields_on = on
 
 
 func _write_trace_and_quit(ticks: int, path: String) -> void:

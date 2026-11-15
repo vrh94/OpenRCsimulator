@@ -65,6 +65,11 @@ uniform float parcel_blend_m = 80.0;
 uniform float parcel_strength = 0.6;        // of the crop factors below
 uniform float fields_fade_start_m = 1800.0;  // the parcels fade out before the rim fade (L2: no step at the rim)
 uniform float fields_fade_end_m = 3000.0;
+// FC-4: in the onboard / cockpit FPV views the parcels fade with the distance from the camera instead, so an airplane
+// far from the pilot still flies over fields (the pilot view keeps the pilot-pinned fade above).
+uniform bool fields_from_camera = false;
+uniform float fields_camera_fade_start_m = 3500.0;
+uniform float fields_camera_fade_end_m = 6500.0;
 // Phase 4: 0 rough, 1 mown, 2 runway; the surface's rectangle in render x/z (centre and half extents, m).
 uniform int surface_kind = 0;
 uniform vec2 rect_center = vec2(0.0);
@@ -286,7 +291,9 @@ void fragment() {
 		}
 	}
 	float dist_pilot = distance(world_pos.xz, pilot_xz);
-	float far = smoothstep(fields_start_m, fields_full_m, dist_pilot) * (1.0 - smoothstep(fields_fade_start_m, fields_fade_end_m, dist_pilot));
+	float fade = fields_from_camera ? smoothstep(fields_camera_fade_start_m, fields_camera_fade_end_m, d)
+		: smoothstep(fields_fade_start_m, fields_fade_end_m, dist_pilot);
+	float far = smoothstep(fields_start_m, fields_full_m, dist_pilot) * (1.0 - fade);
 	float parcel_weight = far * parcel_strength;
 	// The parcel has no effect at zero weight; its nine-site search needs no derivatives.
 	if (parcel_weight != 0.0) {

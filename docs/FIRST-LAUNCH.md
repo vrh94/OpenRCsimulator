@@ -273,6 +273,12 @@ when the model gets small). [Camera plan](plans/camera-views.md).
   take over. **Return home on video loss** and **Return home on low battery** (electric models) are optional. The OSD
   also warns "BATT LOW FOR HOME" when the charge left, at this flight's average current, would not bring it home with
   a 30 % reserve.
+- **Long-range flying:** past the hills round the club (beyond about 6.5 km) a **ring road** circles the field and
+  links three towns with churches (west 8 km, east 13 km, north 15 km behind the mountains), two farms (south-east
+  7 km, north-west 9.5 km) and two wind farms (south 10 km, south-west 16 km). Fly out on any bearing and you cross
+  the road; follow it from town to town and let the OSD home arrow bring you back. In the onboard and cockpit views
+  the field patchwork stays under the airplane however far it flies. The distant landmarks are scenery only (no
+  collision), like the mountains.
 
 The cockpit view sits a quarter of the length behind the nose, just above the fuselage, with a generic canopy frame;
 no aircraft defines a real cockpit yet.
