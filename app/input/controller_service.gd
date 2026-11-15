@@ -6,6 +6,7 @@ const Profile := preload("res://input/controller_profile.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Calibration := preload("res://input/rc_calibration.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
+const DjiRadio := preload("res://input/dji_radio.gd")
 const RadioMenu := preload("res://input/radio_menu.gd")
 
 signal flight_selection_changed
@@ -160,7 +161,7 @@ static func observed_devices() -> Array:
 			info["kind"] = "radio"
 		elif JetiRadio.has_jeti_identity_claim(info):
 			info["kind"] = "joystick"
-		elif RcInput.looks_like_radio(str(info.name)):
+		elif RcInput.looks_like_radio(str(info.name)) or DjiRadio.matches(info):
 			info["kind"] = "radio"
 		devices.append(info)
 	return devices
@@ -597,7 +598,7 @@ func _ui_selection_eligible_for_setup(ui_id: int, flight_id: int, candidate: Dic
 	if not bool(info.get("connected", false)):
 		return false
 	var radio_hint: bool = JetiRadio.has_jeti_identity_claim(info) or info.get("kind", "") == "radio" \
-		or RcInput.looks_like_radio(str(info.get("name", "")))
+		or RcInput.looks_like_radio(str(info.get("name", ""))) or DjiRadio.matches(info)
 	var explicit_radio: bool = ui_id == flight_id and candidate.get("kind", "") == "radio"
 	var saved_ui: Dictionary = store.match_profile(info, registry.get_devices())
 	explicit_radio = explicit_radio or saved_ui.get("kind", "") == "radio"

@@ -36,6 +36,8 @@ var title_label: Label
 var device_label: Label
 var step_label: Label
 var instruction_label: Label
+## RADIO-DJI-1: a device-specific calibration note (empty and hidden for most radios).
+var device_note_label: Label
 var detected_label: Label
 var error_label: Label
 var error_banner: PanelContainer
@@ -133,6 +135,10 @@ func _init() -> void:
 	instruction_label = _label("", "Prompt")
 	instruction_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_left_column.add_child(instruction_label)
+	device_note_label = _label("SecondaryLabel", "DeviceNote")
+	device_note_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	device_note_label.visible = false
+	_left_column.add_child(device_note_label)
 	detected_label = _label("SecondaryLabel", "Detected")
 	detected_label.visible = false
 	_left_column.add_child(detected_label)
@@ -250,6 +256,12 @@ static func moving_axis(axes: PackedFloat64Array, reference: PackedFloat64Array,
 
 func set_device_name(text: String) -> void:
 	device_label.text = text
+
+
+## A note for this kind of radio during calibration (RADIO-DJI-1); empty hides it.
+func set_device_note(text: String) -> void:
+	device_note_label.text = tr(text) if not text.is_empty() else ""
+	device_note_label.visible = not text.is_empty()
 
 
 ## Host-owned throttle FULL → LOW verification after the wizard finished.

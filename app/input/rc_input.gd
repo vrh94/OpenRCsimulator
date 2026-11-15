@@ -6,6 +6,7 @@ extends RefCounted
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerProfile := preload("res://input/controller_profile.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
+const DjiRadio := preload("res://input/dji_radio.gd")
 const AXES := 10
 const ARM_THROTTLE := 0.05
 
@@ -94,7 +95,7 @@ func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 	var upgraded: Dictionary = ControllerProfile.upgrade_legacy(candidate) if not candidate.is_empty() else {}
 	var jeti_claim := JetiRadio.has_jeti_identity_claim(info)
 	var radio_hint := JetiRadio.matches(info) or str(info.get("kind", "")) == "radio" \
-		or (looks_like_radio(device_name) and not jeti_claim)
+		or (looks_like_radio(device_name) and not jeti_claim) or (DjiRadio.matches(info) and not jeti_claim)
 	if not upgraded.is_empty():
 		if not _activate_profile(upgraded, "calibrated", false):
 			# Keep a repairable radio draft and raw readings, but never arm it.

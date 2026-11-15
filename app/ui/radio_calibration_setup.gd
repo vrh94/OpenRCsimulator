@@ -7,6 +7,7 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const Calibration := preload("res://input/rc_calibration.gd")
 const RcInput := preload("res://input/rc_input.gd")
+const DjiRadio := preload("res://input/dji_radio.gd")
 const CalibrationView := preload("res://ui/controls/calibration_view.gd")
 
 signal completed(profile: Dictionary, warning: String)
@@ -80,6 +81,7 @@ func configure(registry: Object, device_id: int, profile: Dictionary, stick_mode
 		return false
 	_wizard = Calibration.new(profile)
 	view.set_device_name(str(registry.device_for_id(device_id).get("display_name", registry.device_for_id(device_id).get("name", ""))))
+	view.set_device_note(DjiRadio.calibration_note(registry.device_for_id(device_id)))
 	_refresh()
 	return true
 
