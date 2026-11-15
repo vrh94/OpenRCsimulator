@@ -12798,9 +12798,6 @@ msgstr "アナログ: 距離が離れたり、丘や建物、木がパイロッ�
 msgid "FPV transmitter power"
 msgstr "FPV送信出力"
 
-msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open."
-msgstr "出力が高いほど遠くまで届きます。開けた場所では、25 mWで約600 m、200 mWで1.7 km、600 mWで2.9 km、1000 mWで3.8 kmで映像が半分乱れます。"
-
 msgid "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe."
 msgstr "固定は機体に正確に追従します。柔らかいマウントは防振マウントのように素早い動きに少し遅れて映像が追従しますが、カメラが機体から離れることはありません。"
 
@@ -12860,9 +12857,6 @@ msgstr "FPVカメラ"
 
 msgid "Look & gimbal"
 msgstr "視線とジンバル"
-
-msgid "OSD & video link"
-msgstr "OSDと映像伝送"
 
 msgid "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"
 msgstr "機載FPVカメラ（Shift+3: コックピット）。その中で: −/= レンズ角、Shift+[ ] 傾き、右ドラッグで見回し、Backspace で中央へ"
@@ -12947,3 +12941,33 @@ msgstr "バッテリー低下: 帰還中。スティックかモードスイッ�
 
 msgid "Radio signal lost: the flight mode cannot change."
 msgstr "送信機の信号ロスト: フライトモードを変更できません。"
+
+msgid "Patch"
+msgstr "パッチ"
+
+msgid "Helical"
+msgstr "ヘリカル"
+
+msgid "FPV receiver antenna"
+msgstr "FPV受信アンテナ"
+
+msgid "Trip distance"
+msgstr "飛行距離"
+
+msgid "Efficiency (mAh per km)"
+msgstr "効率（km あたり mAh）"
+
+msgid "Remaining time and distance"
+msgstr "残り時間と距離"
+
+msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW, 3.8 km with 1000 mW, 4.8 km with 1600 mW and 6 km with 2500 mW in the open, with the stock antenna."
+msgstr "出力が大きいほど遠くまで届きます: 開けた場所で標準アンテナの場合、25 mW で約 600 m、200 mW で 1.7 km、600 mW で 2.9 km、1000 mW で 3.8 km、1600 mW で 4.8 km、2500 mW で 6 km で映像が半分乱れます。"
+
+msgid "The antenna on your video receiver, kept pointed at the airplane. A patch reaches about 2.5 times as far as the stock antenna, a helical about 4.5 times: with 2500 mW, about 15 km and 27 km."
+msgstr "映像受信機のアンテナで、常に機体に向けておきます。パッチは標準アンテナの約 2.5 倍、ヘリカルは約 4.5 倍遠くまで届きます: 2500 mW なら約 15 km と 27 km です。"
+
+msgid "OSD"
+msgstr "OSD"
+
+msgid "Video link"
+msgstr "映像伝送"

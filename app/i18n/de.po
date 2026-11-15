@@ -13692,9 +13692,6 @@ msgstr "Analog: Das Bordbild bricht mit der Entfernung auf und wenn Hügel, Geb�
 msgid "FPV transmitter power"
 msgstr "FPV-Sendeleistung"
 
-msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open."
-msgstr "Mehr Leistung reicht weiter: Im freien Gelände ist das Bild bei etwa 600 m mit 25 mW, 1,7 km mit 200 mW, 2,9 km mit 600 mW und 3,8 km mit 1000 mW halb gestört."
-
 msgid "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe."
 msgstr "Starr folgt dem Rumpf genau. Weiche Halterungen lassen das Bild schnellen Zuckungen leicht nachlaufen wie eine schwingungsgedämpfte Kamerahalterung; die Kamera verlässt nie den Rumpf."
 
@@ -13754,9 +13751,6 @@ msgstr "FPV-Kamera"
 
 msgid "Look & gimbal"
 msgstr "Umschauen & Gimbal"
-
-msgid "OSD & video link"
-msgstr "OSD & Videoverbindung"
 
 msgid "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"
 msgstr "FPV-Bordkamera (Shift+3: Cockpit). Darin: −/= Objektivwinkel, Shift+[ ] Neigung, Rechtsziehen umschauen, Rücktaste zentrieren"
@@ -13841,3 +13835,33 @@ msgstr "Akku schwach: Rückflug nach Hause. Bewege einen Knüppel oder den Modus
 
 msgid "Radio signal lost: the flight mode cannot change."
 msgstr "Funksignal verloren: Der Flugmodus kann nicht wechseln."
+
+msgid "Patch"
+msgstr "Patch"
+
+msgid "Helical"
+msgstr "Helix"
+
+msgid "FPV receiver antenna"
+msgstr "FPV-Empfangsantenne"
+
+msgid "Trip distance"
+msgstr "Flugstrecke"
+
+msgid "Efficiency (mAh per km)"
+msgstr "Effizienz (mAh pro km)"
+
+msgid "Remaining time and distance"
+msgstr "Restzeit und -strecke"
+
+msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW, 3.8 km with 1000 mW, 4.8 km with 1600 mW and 6 km with 2500 mW in the open, with the stock antenna."
+msgstr "Mehr Leistung reicht weiter: Das Bild ist im freien Gelände mit der Serienantenne bei etwa 600 m mit 25 mW, 1,7 km mit 200 mW, 2,9 km mit 600 mW, 3,8 km mit 1000 mW, 4,8 km mit 1600 mW und 6 km mit 2500 mW halb gestört."
+
+msgid "The antenna on your video receiver, kept pointed at the airplane. A patch reaches about 2.5 times as far as the stock antenna, a helical about 4.5 times: with 2500 mW, about 15 km and 27 km."
+msgstr "Die Antenne an deinem Videoempfänger, immer auf das Flugzeug gerichtet. Eine Patch reicht etwa 2,5-mal so weit wie die Serienantenne, eine Helix etwa 4,5-mal: mit 2500 mW etwa 15 km und 27 km."
+
+msgid "OSD"
+msgstr "OSD"
+
+msgid "Video link"
+msgstr "Videoverbindung"

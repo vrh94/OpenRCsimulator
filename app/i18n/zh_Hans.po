@@ -12747,9 +12747,6 @@ msgstr "模拟：距离变远，或山丘、建筑、树木挡住到飞手位置
 msgid "FPV transmitter power"
 msgstr "FPV 图传发射功率"
 
-msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open."
-msgstr "功率越大距离越远：开阔地带下，25 mW 约 600 m、200 mW 约 1.7 km、600 mW 约 2.9 km、1000 mW 约 3.8 km 时画面受干扰一半。"
-
 msgid "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe."
 msgstr "刚性完全跟随机身。柔性安装让画面在快速抖动时略微滞后，就像减振摄像头支架；摄像头不会离开机身。"
 
@@ -12809,9 +12806,6 @@ msgstr "FPV 摄像头"
 
 msgid "Look & gimbal"
 msgstr "视线与云台"
-
-msgid "OSD & video link"
-msgstr "OSD 与图传"
 
 msgid "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"
 msgstr "机载 FPV 摄像头（Shift+3：座舱）。其中：−/= 镜头角度，Shift+[ ] 仰角，右键拖动转头，Backspace 回中"
@@ -12896,3 +12890,33 @@ msgstr "电量低：正在返航。推动摇杆或模式开关即可接管。"
 
 msgid "Radio signal lost: the flight mode cannot change."
 msgstr "遥控信号丢失：无法切换飞行模式。"
+
+msgid "Patch"
+msgstr "平板天线"
+
+msgid "Helical"
+msgstr "螺旋天线"
+
+msgid "FPV receiver antenna"
+msgstr "FPV 接收天线"
+
+msgid "Trip distance"
+msgstr "飞行里程"
+
+msgid "Efficiency (mAh per km)"
+msgstr "效率（每公里 mAh）"
+
+msgid "Remaining time and distance"
+msgstr "剩余时间和距离"
+
+msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW, 3.8 km with 1000 mW, 4.8 km with 1600 mW and 6 km with 2500 mW in the open, with the stock antenna."
+msgstr "功率越大距离越远：在开阔地使用原装天线时，25 mW 约 600 m、200 mW 约 1.7 km、600 mW 约 2.9 km、1000 mW 约 3.8 km、1600 mW 约 4.8 km、2500 mW 约 6 km 时画面损坏一半。"
+
+msgid "The antenna on your video receiver, kept pointed at the airplane. A patch reaches about 2.5 times as far as the stock antenna, a helical about 4.5 times: with 2500 mW, about 15 km and 27 km."
+msgstr "视频接收机上的天线，始终对准飞机。平板天线的距离约为原装天线的 2.5 倍，螺旋天线约 4.5 倍：使用 2500 mW 时约为 15 km 和 27 km。"
+
+msgid "OSD"
+msgstr "OSD"
+
+msgid "Video link"
+msgstr "图传"

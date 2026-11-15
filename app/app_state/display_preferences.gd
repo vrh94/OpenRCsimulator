@@ -105,6 +105,7 @@ const DEFAULTS := {
 	# FPV-7: the analog video link.
 	"camera_fpv_link": CameraSettings.DEFAULTS.camera_fpv_link,
 	"camera_fpv_vtx_power": CameraSettings.DEFAULTS.camera_fpv_vtx_power,
+	"camera_fpv_rx_antenna": CameraSettings.DEFAULTS.camera_fpv_rx_antenna,
 	# FC-1: the airplane flight controller's flight-mode switch positions.
 	"camera_fc_switch_low": CameraSettings.DEFAULTS.camera_fc_switch_low,
 	"camera_fc_switch_mid": CameraSettings.DEFAULTS.camera_fc_switch_mid,
@@ -134,7 +135,7 @@ const OPTIONAL_KEYS: Array[String] = [
 	"camera_fpv_head_tracking", "camera_fpv_head_sensitivity", "camera_fpv_gimbal_pan_axis", "camera_fpv_gimbal_tilt_axis", "camera_fpv_gimbal_pan_travel", "camera_fpv_gimbal_tilt_travel", "camera_fpv_gimbal_speed", "camera_fpv_gimbal_invert_pan", "camera_fpv_gimbal_invert_tilt",
 	"camera_fpv_osd", "camera_fpv_osd_elements", "camera_fpv_link", "camera_fpv_vtx_power",
 	"camera_fc_switch_low", "camera_fc_switch_mid", "camera_fc_switch_high",
-	"camera_fc_rc_link", "camera_fc_video_rth", "camera_fc_battery_rth",
+	"camera_fc_rc_link", "camera_fc_video_rth", "camera_fc_battery_rth", "camera_fpv_rx_antenna",
 ] # schema-1 extensions; older files and callers keep defaults
 ## CAM-17: display.cfg [camera] key for each preference.
 const CAMERA_FILE_KEYS := {
@@ -158,6 +159,7 @@ const CAMERA_FILE_KEYS := {
 	"camera_fpv_osd": "fpv_osd", "camera_fpv_osd_elements": "fpv_osd_elements",
 	"camera_fpv_link": "fpv_link", "camera_fpv_vtx_power": "fpv_vtx_power",
 	"camera_fc_switch_low": "fc_switch_low", "camera_fc_switch_mid": "fc_switch_mid", "camera_fc_switch_high": "fc_switch_high",
+	"camera_fpv_rx_antenna": "fpv_rx_antenna",
 	"camera_fc_rc_link": "fc_rc_link", "camera_fc_video_rth": "fc_video_rth", "camera_fc_battery_rth": "fc_battery_rth",
 }
 ## FW-RGB-13: display.cfg [aircraft_lighting] key for each global aircraft-lighting preference.

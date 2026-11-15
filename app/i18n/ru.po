@@ -13548,9 +13548,6 @@ msgstr "Аналоговый: бортовая картинка рассыпае
 msgid "FPV transmitter power"
 msgstr "Мощность FPV-передатчика"
 
-msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open."
-msgstr "Больше мощность — дальше связь: на открытой местности картинка наполовину разрушена примерно на 600 м при 25 мВт, 1,7 км при 200 мВт, 2,9 км при 600 мВт и 3,8 км при 1000 мВт."
-
 msgid "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe."
 msgstr "Жёсткое точно следует за планером. Мягкие крепления дают картинке слегка отставать при резких рывках, как демпфированное крепление; камера никогда не покидает планер."
 
@@ -13610,9 +13607,6 @@ msgstr "FPV-камера"
 
 msgid "Look & gimbal"
 msgstr "Обзор и подвес"
-
-msgid "OSD & video link"
-msgstr "OSD и видеоканал"
 
 msgid "Onboard FPV camera (Shift+3: cockpit). In it: −/= lens angle, Shift+[ ] tilt, right-drag look, Backspace re-centre"
 msgstr "Бортовая FPV-камера (Shift+3: кабина). В ней: −/= угол объектива, Shift+[ ] наклон, перетаскивание правой кнопкой — обзор, Backspace — центр"
@@ -13697,3 +13691,33 @@ msgstr "Низкий заряд: возврат домой. Двиньте ст�
 
 msgid "Radio signal lost: the flight mode cannot change."
 msgstr "Сигнал пульта потерян: режим полёта сменить нельзя."
+
+msgid "Patch"
+msgstr "Патч"
+
+msgid "Helical"
+msgstr "Спиральная"
+
+msgid "FPV receiver antenna"
+msgstr "Антенна FPV-приёмника"
+
+msgid "Trip distance"
+msgstr "Пройденное расстояние"
+
+msgid "Efficiency (mAh per km)"
+msgstr "Эффективность (мА·ч на км)"
+
+msgid "Remaining time and distance"
+msgstr "Оставшиеся время и расстояние"
+
+msgid "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW, 3.8 km with 1000 mW, 4.8 km with 1600 mW and 6 km with 2500 mW in the open, with the stock antenna."
+msgstr "Чем больше мощность, тем дальше: на открытой местности со штатной антенной картинка наполовину разрушена примерно на 600 м при 25 мВт, 1,7 км при 200 мВт, 2,9 км при 600 мВт, 3,8 км при 1000 мВт, 4,8 км при 1600 мВт и 6 км при 2500 мВт."
+
+msgid "The antenna on your video receiver, kept pointed at the airplane. A patch reaches about 2.5 times as far as the stock antenna, a helical about 4.5 times: with 2500 mW, about 15 km and 27 km."
+msgstr "Антенна вашего видеоприёмника, всегда направленная на самолёт. Патч достаёт примерно в 2,5 раза дальше штатной, спиральная — примерно в 4,5 раза: при 2500 мВт около 15 км и 27 км."
+
+msgid "OSD"
+msgstr "OSD"
+
+msgid "Video link"
+msgstr "Видеоканал"

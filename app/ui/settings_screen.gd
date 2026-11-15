@@ -15,7 +15,7 @@ const CAMERA_AIDS: Array[String] = ["off", "horizon", "overhead", "both"]
 ## Settings pages, in tab order. CAM-17 added Camera.
 const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera", "Lighting"]
 ## FPV-9: the Camera page's parts, one shown at a time so each fits without scrolling.
-const CAMERA_PARTS: Array[String] = ["General", "FPV camera", "Look & gimbal", "OSD & video link", "Flight controller"]
+const CAMERA_PARTS: Array[String] = ["General", "FPV camera", "Look & gimbal", "OSD", "Video link", "Flight controller"]
 const LensSettings := preload("res://render/lens/lens_settings.gd")
 ## LENS-01 rows at the end of the Lighting page: node name, preference key, choices, caption. "Glasses in pilot
 ## view" (lens_glasses) stays a display.cfg / --lens-glasses preference: the page has no room for a seventh row at 1080p.
@@ -151,6 +151,8 @@ var _camera_fpv_osd_picker: OptionButton
 var _camera_fpv_osd_boxes := {}
 ## FPV-7: the analog video link.
 var _camera_fpv_link_picker: OptionButton
+## FC-3: the receiving antenna at the pilot station.
+var _camera_fpv_rx_antenna_picker: OptionButton
 ## FC-1: the flight-mode switch positions (low, middle, high).
 var _camera_fc_switch_pickers: Array[OptionButton] = []
 ## FC-2: failsafe: the modelled radio link and the optional returns home.
@@ -485,13 +487,14 @@ func _build() -> void:
 	graphics_page.add_child(_shadow_group)
 
 	# CAM-17: camera preferences; presentation only, applied to a Home flight at once.
-	# FPV-9: General, FPV camera, Look & gimbal, OSD & video link; FC-1: Flight controller.
+	# FPV-9: General, FPV camera, Look & gimbal, OSD; FC-3: Video link; FC-1: Flight controller.
 	var camera_parts := _build_camera_parts(camera_page)
 	var camera_views: VBoxContainer = camera_parts[0]
 	var fpv_camera: VBoxContainer = camera_parts[1]
 	var fpv_look: VBoxContainer = camera_parts[2]
 	var fpv_osd: VBoxContainer = camera_parts[3]
-	var fc_part: VBoxContainer = camera_parts[4]
+	var fpv_video: VBoxContainer = camera_parts[4] # FC-3: the video link has its own part (long-range gear)
+	var fc_part: VBoxContainer = camera_parts[5]
 	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
 	_add_row(camera_views, "First view", _camera_view_picker)
 	_set_localized_tooltip(_camera_view_picker, "The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms.")
@@ -615,11 +618,14 @@ func _build() -> void:
 	osd_flow.add_theme_constant_override("h_separation", 16)
 	fpv_osd.add_child(osd_flow)
 	_camera_fpv_link_picker = _camera_picker("CameraFpvLink", "camera_fpv_link", CameraSettings.FPV_LINKS)
-	_add_row(fpv_osd, "FPV video link", _camera_fpv_link_picker)
+	_add_row(fpv_video, "FPV video link", _camera_fpv_link_picker)
 	_set_localized_tooltip(_camera_fpv_link_picker, "Analog: the onboard picture breaks up with distance and when hills, buildings or trees block the path to your receiver at the pilot station, and the OSD shows the signal. It never changes how the airplane flies.")
 	_camera_fpv_vtx_picker = _camera_picker("CameraFpvVtx", "camera_fpv_vtx_power", CameraSettings.FPV_VTX_POWERS)
-	_add_row(fpv_osd, "FPV transmitter power", _camera_fpv_vtx_picker)
-	_set_localized_tooltip(_camera_fpv_vtx_picker, "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open.")
+	_add_row(fpv_video, "FPV transmitter power", _camera_fpv_vtx_picker)
+	_set_localized_tooltip(_camera_fpv_vtx_picker, "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW, 3.8 km with 1000 mW, 4.8 km with 1600 mW and 6 km with 2500 mW in the open, with the stock antenna.")
+	_camera_fpv_rx_antenna_picker = _camera_picker("CameraFpvRxAntenna", "camera_fpv_rx_antenna", CameraSettings.FPV_RX_ANTENNAS)
+	_add_row(fpv_video, "FPV receiver antenna", _camera_fpv_rx_antenna_picker)
+	_set_localized_tooltip(_camera_fpv_rx_antenna_picker, "The antenna on your video receiver, kept pointed at the airplane. A patch reaches about 2.5 times as far as the stock antenna, a helical about 4.5 times: with 2500 mW, about 15 km and 27 km.")
 	# FC-1: the airplane flight controller's modes on the radio's Flight mode switch.
 	fc_part.add_child(_label("Airplanes fly through a flight controller like INAV or ArduPilot. The radio's Flight mode switch (Controls › Extra channels) picks these modes; in flight M and Shift+M step through all of them.", "SecondaryLabel", true))
 	for index: int in CameraSettings.FC_SWITCH_KEYS.size():
@@ -897,7 +903,7 @@ func _shadow_picker(node_name: String, key: String, values: Array) -> OptionButt
 func _build_camera_parts(page: VBoxContainer) -> Array[VBoxContainer]:
 	var switcher := GridContainer.new()
 	switcher.name = "CameraParts"
-	switcher.columns = ceili(CAMERA_PARTS.size() / 2.0) # FC-1: five parts in two rows keep the page narrow
+	switcher.columns = ceili(CAMERA_PARTS.size() / 2.0) # FC-1: the parts in two rows keep the page narrow
 	_camera_parts_grid = switcher
 	switcher.add_theme_constant_override("h_separation", 8)
 	switcher.add_theme_constant_override("v_separation", 8)
@@ -1010,6 +1016,8 @@ func _choice_caption(key: String, value: Variant) -> String:
 			high = tr("High")}.get(value, str(value))
 		"camera_fpv_quality": return {low = tr("Low"), medium = tr("Medium"), high = tr("%s (default)") % tr("High")}.get(value, str(value))
 		"camera_fpv_link": return {off = tr("Off (perfect picture)"), analog = tr("%s (default)") % tr("Analog")}.get(value, str(value))
+		"camera_fpv_rx_antenna": return {omni = tr("%s (default)") % tr("Stock"), patch = tr("Patch"),
+			helical = tr("Helical")}.get(value, str(value))
 		"camera_fc_rc_link": return {off = tr("%s (default)") % tr("Off"), elrs_2g4 = tr("2.4 GHz (ExpressLRS)"),
 			lr_900 = tr("900 MHz (long range)")}.get(value, str(value))
 		"camera_fc_switch_low", "camera_fc_switch_mid", "camera_fc_switch_high":
@@ -1571,6 +1579,7 @@ func _sync_controls() -> void:
 	_camera_fpv_gimbal_invert_tilt_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_tilt", false)))
 	_select_metadata(_camera_fpv_osd_picker, str(_draft.get("camera_fpv_osd", CameraSettings.DEFAULTS.camera_fpv_osd)))
 	_select_metadata(_camera_fpv_link_picker, str(_draft.get("camera_fpv_link", CameraSettings.DEFAULTS.camera_fpv_link)))
+	_select_metadata(_camera_fpv_rx_antenna_picker, str(_draft.get("camera_fpv_rx_antenna", CameraSettings.DEFAULTS.camera_fpv_rx_antenna)))
 	_select_metadata(_camera_fc_rc_link_picker, str(_draft.get("camera_fc_rc_link", CameraSettings.DEFAULTS.camera_fc_rc_link)))
 	_camera_fc_video_rth_toggle.set_pressed_no_signal(bool(_draft.get("camera_fc_video_rth", false)))
 	_camera_fc_battery_rth_toggle.set_pressed_no_signal(bool(_draft.get("camera_fc_battery_rth", false)))
@@ -1859,7 +1868,8 @@ func _refresh_translated_text() -> void:
 			[_camera_fpv_gimbal_speed_picker, "camera_fpv_gimbal_speed"], [_camera_fpv_osd_picker, "camera_fpv_osd"],
 			[_camera_fpv_link_picker, "camera_fpv_link"], [_camera_fpv_vtx_picker, "camera_fpv_vtx_power"],
 			[_camera_fc_switch_pickers[0], "camera_fc_switch_low"], [_camera_fc_switch_pickers[1], "camera_fc_switch_mid"],
-			[_camera_fc_switch_pickers[2], "camera_fc_switch_high"], [_camera_fc_rc_link_picker, "camera_fc_rc_link"]]:
+			[_camera_fc_switch_pickers[2], "camera_fc_switch_high"], [_camera_fc_rc_link_picker, "camera_fc_rc_link"],
+			[_camera_fpv_rx_antenna_picker, "camera_fpv_rx_antenna"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

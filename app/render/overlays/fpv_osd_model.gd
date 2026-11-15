@@ -16,13 +16,18 @@ const FixedWingFC = preload("res://sim/fixed_wing_fc.gd")
 const STYLES: Array[String] = ["off", "betaflight", "inav", "ardupilot"]
 const DEFAULT_STYLE := "betaflight"
 const ELEMENTS: Array[String] = ["horizon", "crosshair", "voltage", "battery_pct", "current", "timer", "speed",
-	"altitude", "home", "link", "heading", "airspeed", "mode", "warnings"]
+	"altitude", "home", "link", "heading", "airspeed", "mode", "warnings", "trip", "efficiency", "remaining"]
 const ELEMENT_NAMES := {"horizon": "Artificial horizon", "crosshair": "Crosshair", "voltage": "Battery voltage",
 	"battery_pct": "Battery %", "current": "Current and mAh", "timer": "Flight timer", "speed": "GPS speed",
 	"altitude": "Altitude", "home": "Home arrow and distance", "link": "Signal strength", "heading": "Heading",
-	"airspeed": "Airspeed", "mode": "Flight mode", "warnings": "Warnings"}
+	"airspeed": "Airspeed", "mode": "Flight mode", "warnings": "Warnings", "trip": "Trip distance",
+	"efficiency": "Efficiency (mAh per km)", "remaining": "Remaining time and distance"}
 const DEFAULT_ELEMENTS: Array[String] = ["horizon", "crosshair", "voltage", "battery_pct", "current", "timer", "speed",
-	"altitude", "home", "link", "heading", "mode", "warnings"]
+	"altitude", "home", "link", "heading", "mode", "warnings", "trip", "remaining"]
+## FC-3: the remaining-time estimate keeps this share of the pack in reserve (as INAV's capacity warning does), and
+## efficiency needs this much trip first.
+const REMAINING_RESERVE := 0.2
+const EFFICIENCY_MIN_TRIP_M := 200.0
 const UNITS: Array[String] = ["metric", "imperial"]
 const COLS := 50
 const ROWS := 18
@@ -53,19 +58,22 @@ const LAYOUTS := {
 		crosshair = "default", ladder = false, sidebars = true,
 		cells = {link = [1, 1, -1], home = [25, 1, 0], heading = [25, 2, 0], speed = [1, 9, -1], altitude = [48, 9, 1],
 			airspeed = [1, 10, -1], mode = [48, 1, 1], current = [1, 15, -1], voltage = [1, 16, -1],
-			battery_pct = [11, 16, -1], timer = [48, 16, 1], warnings = [25, 12, 0]},
+			battery_pct = [11, 16, -1], timer = [48, 16, 1], warnings = [25, 12, 0],
+			trip = [48, 14, 1], remaining = [48, 15, 1], efficiency = [1, 14, -1]},
 	},
 	"inav": {
 		crosshair = "aircraft", ladder = true, sidebars = true,
 		cells = {link = [1, 1, -1], heading = [25, 1, 0], home = [25, 2, 0], mode = [48, 1, 1], speed = [1, 8, -1],
 			airspeed = [1, 9, -1], altitude = [48, 8, 1], current = [1, 15, -1], voltage = [1, 16, -1],
-			battery_pct = [12, 16, -1], timer = [48, 16, 1], warnings = [25, 13, 0]},
+			battery_pct = [12, 16, -1], timer = [48, 16, 1], warnings = [25, 13, 0],
+			trip = [48, 14, 1], remaining = [48, 15, 1], efficiency = [1, 14, -1]},
 	},
 	"ardupilot": {
 		crosshair = "cross", ladder = false, sidebars = false,
 		cells = {voltage = [1, 1, -1], battery_pct = [12, 1, -1], current = [1, 2, -1], mode = [25, 1, 0],
 			home = [25, 2, 0], link = [48, 1, 1], altitude = [48, 8, 1], speed = [1, 16, -1], airspeed = [1, 15, -1],
-			heading = [25, 16, 0], timer = [48, 16, 1], warnings = [25, 13, 0]},
+			heading = [25, 16, 0], timer = [48, 16, 1], warnings = [25, 13, 0],
+			trip = [48, 14, 1], remaining = [48, 15, 1], efficiency = [1, 3, -1]},
 	},
 }
 
@@ -101,7 +109,27 @@ static func values(t: Dictionary, battery: Dictionary, link: Dictionary = {}) ->
 		flight_mode = str(t.get("flight_mode", "manual")),
 		failsafe = str(t.get("failsafe", "")),
 		home_mah = float(reserve.get("needed_mah", NAN)),
-	}
+	}.merged(_long_range(t, battery if has_battery else {}))
+
+
+## FC-3: trip distance (t.trip_m, GPS ground track), efficiency (mAh per km) and the time and distance left until
+## REMAINING_RESERVE of the pack, at this flight's average current and efficiency. Existing figures only.
+static func _long_range(t: Dictionary, battery: Dictionary) -> Dictionary:
+	var trip := float(t.get("trip_m", NAN))
+	var used := float(battery.get("used_mah_raw", NAN))
+	var capacity := float(battery.get("capacity_mah", NAN))
+	var time_s := float(t.get("time_s", NAN))
+	var efficiency := NAN
+	if is_finite(trip) and trip >= EFFICIENCY_MIN_TRIP_M and is_finite(used):
+		efficiency = used / (trip / 1000.0)
+	var remaining_s := NAN
+	var remaining_m := NAN
+	if is_finite(used) and is_finite(capacity) and capacity > 0.0 and is_finite(time_s) and time_s >= HOME_RESERVE_AFTER_S and used > 0.0:
+		var usable := maxf(capacity * (1.0 - REMAINING_RESERVE) - used, 0.0)
+		remaining_s = usable / (used / time_s)
+		if is_finite(efficiency) and efficiency > 0.0:
+			remaining_m = usable / efficiency * 1000.0
+	return {trip_m = trip, efficiency_mah_km = efficiency, remaining_s = remaining_s, remaining_m = remaining_m}
 
 
 ## FC-2: the charge (mAh) the flight home needs at this flight's average current, from existing sensor figures only:
@@ -217,6 +245,24 @@ static func _item(style: String, id: String, v: Dictionary, units: String) -> Di
 			# FC-1: the flight controller's mode as the firmware prints it (Betaflight shows nothing in manual).
 			var mode := str(v.get("flight_mode", "manual"))
 			return _with(FixedWingFC.osd_label(mode, style), WARNING if mode == "rth" else NORMAL)
+		"trip":
+			var trip := float(v.get("trip_m", NAN))
+			if not is_finite(trip):
+				return {}
+			return _with("TRIP " + _compact(OsdModel.distance_text(trip, units)), NORMAL)
+		"efficiency":
+			var mah_km := float(v.get("efficiency_mah_km", NAN))
+			if not is_finite(mah_km):
+				return {}
+			return _with("%dMAH/MI" % roundi(mah_km * 1.609344) if units == "imperial" else "%dMAH/KM" % roundi(mah_km), NORMAL)
+		"remaining":
+			var left_s := float(v.get("remaining_s", NAN))
+			if not is_finite(left_s):
+				return {}
+			var text := "REM " + OsdModel.clock_text(left_s)
+			if is_finite(float(v.get("remaining_m", NAN))):
+				text += " " + _compact(OsdModel.distance_text(float(v.remaining_m), units))
+			return _with(text, WARNING if left_s < 60.0 else NORMAL)
 		"warnings":
 			var warning: Dictionary = v.get("warning", {})
 			if str(warning.get("text", "")).is_empty():

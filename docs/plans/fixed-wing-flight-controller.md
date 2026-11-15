@@ -66,6 +66,25 @@ Evidence: `tests/test_fc_failsafe.gd` 33/33 (link ranges, delays, terrain, takeo
 reserve arithmetic, preferences, and a closed-loop Stik flight: radio lost 342 m out with full roll held, it comes
 home and circles 40 m above home; a roll stick then gives Angle back). `tests/test_fixed_wing_fc.gd` 49/49.
 
+## FC-3 (done): long-range gear and OSD (14a)
+
+- **Video transmitter**: 1.6 W and 2.5 W join 25–1000 mW (same margin law: 2.5 W reaches 50 % picture quality
+  at 6 km with the stock antenna).
+- **Receiving antenna** (Settings › Camera › Video link): Stock omni (default, 0 dB) / Patch (+8 dB, about 15 km at
+  2.5 W) / Helical (+13 dB, about 27 km). The gain adds to the margin; it is a presentation choice in the range of
+  common FPV ground antennas, not a measurement. Captures: `--fpv-antenna=omni|patch|helical`.
+- **OSD elements** (Settings › Camera › OSD):
+  - **Trip** (on by default): the GPS ground speed integrated over the flight. Pauses longer than 1 s are not bridged.
+  - **Remaining** (on by default): time and distance until the pack reaches a 20 % reserve, from this flight's average
+    current and efficiency. Shown after 30 s; a warning under a minute.
+  - **Efficiency** (off by default): used mAh per km (or mi) of trip, after 200 m.
+  - All three come from the existing battery sensor figures; glow and gas engines show only the trip.
+- Settings › Camera now has six parts (OSD and Video link are separate), laid out in two rows, each fitting 1080p.
+
+Evidence: `tests/test_fpv_long_range.gd` 27/27 (ranges per antenna, 20 km helical vs stock, efficiency / remaining
+arithmetic, text formats metric and imperial, unique OSD cells per firmware, trip integration and gap handling,
+preferences). test_camera_settings 51/51, test_ui_modal_responsive 4290/0, test_golden bit-exact.
+
 ## Next
 
-- FC-3: long-range experience on the 40 km ground.
+- 14b: distant landmarks for long-range flight (the world is empty beyond about 5 km).

@@ -27,6 +27,9 @@ var units := "metric"
 var sensors = BatterySensors.new()
 ## FC-2: the last battery sensor reading (the low-battery failsafe reads its alarms).
 var last_reading := {}
+## FC-3: the GPS trip distance this flight (m).
+var trip_m := 0.0
+var _trip_time_s := NAN
 var values := {}
 var items: Array[Dictionary] = []
 var _pitch := 0.0
@@ -73,6 +76,13 @@ func feed(snapshot: Dictionary, home_up_m: float, link: Dictionary = {}, flight_
 	t.home_up_m = home_up_m
 	t.flight_mode = flight_mode
 	t.failsafe = str(fc.get("failsafe", ""))
+	# FC-3: the trip, as an FC integrates its GPS ground speed (gaps over a second are not bridged).
+	var now := float(t.get("time_s", NAN))
+	var speed := float(t.get("ground_speed", NAN))
+	if is_finite(now) and is_finite(speed) and is_finite(_trip_time_s) and now > _trip_time_s and now - _trip_time_s <= 1.0:
+		trip_m += speed * (now - _trip_time_s)
+	_trip_time_s = now
+	t.trip_m = trip_m
 	t.fc_awaiting_pilot = bool(fc.get("awaiting_pilot", false))
 	var battery: Dictionary = snapshot.get("battery", {})
 	var reading: Dictionary = {}
@@ -99,6 +109,8 @@ func set_attitude(pitch_deg: float, bank_deg: float, px_per_deg: float, uptilt_d
 func reset() -> void:
 	sensors.reset()
 	last_reading = {}
+	trip_m = 0.0
+	_trip_time_s = NAN
 	values = {}
 	items.clear()
 

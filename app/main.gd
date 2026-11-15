@@ -892,6 +892,14 @@ func _prepare_flight() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 		_fpv_video_args["fpv-vtx"] = str(args["fpv-vtx"]).to_int()
+	if args.has("fpv-antenna"): # FC-3: the receiving antenna (captures)
+		if str(args["fpv-antenna"]) not in CameraSettings.FPV_RX_ANTENNAS:
+			push_error("--fpv-antenna must be one of %s (got \"%s\")" % [", ".join(CameraSettings.FPV_RX_ANTENNAS), str(args["fpv-antenna"])])
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_fpv_video_args["fpv-antenna"] = str(args["fpv-antenna"])
 	if args.has("fpv-link-quality"):
 		# Captures: a fixed link quality (0…1) instead of the modelled one.
 		var forced := str(args["fpv-link-quality"])
@@ -1713,7 +1721,7 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 func _update_video_link(dt: float, force := false) -> void:
 	if _rig == null or _fpv_lens == null:
 		return
-	_video_link.configure(str(_rig.onboard_link.mode), int(_rig.onboard_link.power_mw))
+	_video_link.configure(str(_rig.onboard_link.mode), int(_rig.onboard_link.power_mw), str(_rig.onboard_link.get("antenna", "omni")))
 	_rc_link.configure(str(_rig.fc_failsafe.get("rc_link", "off")))
 	var video_on: bool = _video_link.enabled() and _rig.onboard.configured
 	if not _last_render_pose.is_empty() and (video_on or _rc_link.enabled()):
@@ -3890,6 +3898,8 @@ func _build_world() -> bool:
 		_rig.onboard_link.mode = str(_fpv_video_args["fpv-link"])
 	if _fpv_video_args.has("fpv-vtx"):
 		_rig.onboard_link.power_mw = int(_fpv_video_args["fpv-vtx"])
+	if _fpv_video_args.has("fpv-antenna"):
+		_rig.onboard_link.antenna = str(_fpv_video_args["fpv-antenna"])
 	if _fpv_video_args.has("fpv-look"):
 		var fixed_look: Vector2 = _fpv_video_args["fpv-look"]
 		_rig.fpv_head.mouse = Vector2(clampf(fixed_look.x, -FpvHead.YAW_LIMIT_DEG, FpvHead.YAW_LIMIT_DEG),

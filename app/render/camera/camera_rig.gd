@@ -97,10 +97,9 @@ var onboard_video := {quality = "high", noise = "off", motion_blur = false}
 ## FPV-7: the analog video link the route's VideoLink models (mode, transmitter power in mW).
 ## FPV-9: hide the flight overlays while the onboard picture or the cockpit is shown.
 var onboard_clean_screen := true
-var onboard_link := {mode = "analog", power_mw = 600}
+var onboard_link := {mode = "analog", power_mw = 600, antenna = "omni"}
 ## FPV-6: the OSD the route's FpvOsd draws over the onboard picture (style, elements).
-var onboard_osd := {style = "betaflight", elements = ["horizon", "crosshair", "voltage", "battery_pct", "current", "timer",
-	"speed", "altitude", "home", "link", "heading", "mode", "warnings"]}
+var onboard_osd := {style = "betaflight", elements = (preload("res://render/overlays/fpv_osd_model.gd").DEFAULT_ELEMENTS as Array).duplicate()}
 ## FC-1: the airplane flight controller's modes on the flight-mode switch (low, middle, high), from the FPV settings;
 ## the route reads them here with the other onboard preferences.
 var fc_switch_modes := PackedStringArray(["manual", "angle", "cruise"])

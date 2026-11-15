@@ -246,12 +246,15 @@ when the model gets small). [Camera plan](plans/camera-views.md).
   [opentrack](https://github.com/opentrack/opentrack) (output *UDP over network* to 127.0.0.1, port 4242); and a
   **camera gimbal on the radio**: choose a knob or slider channel for pan and/or tilt, its travel, servo speed and
   direction. The flight sticks are never used; a lost channel brings the camera back to the centre.
-- **OSD & video link:** an on-screen display over the onboard picture in **Betaflight**, **INAV** or **ArduPilot**
+- **OSD:** an on-screen display over the onboard picture in **Betaflight**, **INAV** or **ArduPilot**
   style (battery voltage, %, current and mAh, flight timer, GPS speed, altitude and distance above/from the pilot
-  station, home arrow, signal strength, heading, artificial horizon, flight mode, warnings; each element can be turned
-  off; battery figures appear only on electric models), and an **analog video link** whose picture breaks up with
-  distance and behind hills, buildings and trees, with the transmitter power (25–1000 mW, default 600 mW).
-
+  station, home arrow, signal strength, heading, artificial horizon, flight mode, warnings, and for long range the
+  **trip distance**, **efficiency** in mAh/km and the **remaining time and distance** to a 20 % battery reserve;
+  each element can be turned off; battery figures appear only on electric models).
+- **Video link:** an **analog video link** whose picture breaks up with distance and behind hills, buildings and
+  trees: transmitter power 25–2500 mW (default 600 mW; 2.5 W reaches about 6 km) and the **receiver antenna**
+  (stock; a **patch** about 2.5× and a **helical** about 4.5× the range, kept pointed at the airplane: about 15 km
+  and 27 km with 2.5 W).
 - **Flight controller:** airplanes fly through a flight controller like **INAV** or **ArduPilot** (FC-1). Choose
   the mode for each position of the radio's **Flight mode** switch (Controls › Extra channels; low / middle / high,
   default Manual / Angle / Cruise; a two-position switch uses low and high); M and Shift+M step through every mode.

@@ -37,6 +37,7 @@ const FPV_OSD_STYLES: Array[String] = FpvOsdModel.STYLES
 const FPV_OSD_ELEMENTS: Array[String] = FpvOsdModel.ELEMENTS
 ## FPV-7: the analog video link and its transmitter power (render/camera/video_link.gd).
 const FPV_LINKS: Array[String] = VideoLink.MODES
+const FPV_RX_ANTENNAS: Array[String] = VideoLink.ANTENNAS
 ## FC-1: the flight-controller modes a flight-mode switch position may select.
 const FC_MODES: Array[String] = ["manual", "acro", "angle", "horizon", "alt_hold", "cruise", "loiter", "rth"]
 const FC_SWITCH_KEYS: Array[String] = ["camera_fc_switch_low", "camera_fc_switch_mid", "camera_fc_switch_high"]
@@ -86,6 +87,8 @@ const DEFAULTS := {
 	"camera_fpv_osd_elements": FpvOsdModel.DEFAULT_ELEMENTS,
 	"camera_fpv_link": VideoLink.DEFAULT_MODE,
 	"camera_fpv_vtx_power": VideoLink.DEFAULT_POWER_MW,
+	# FC-3: the receiving antenna at the pilot station (long range: patch or helical).
+	"camera_fpv_rx_antenna": VideoLink.DEFAULT_ANTENNA,
 	# FC-1: the airplane flight controller's modes on the flight-mode switch (low, middle, high position).
 	"camera_fc_switch_low": FixedWingFC.DEFAULT_SWITCH_MODES[0],
 	"camera_fc_switch_mid": FixedWingFC.DEFAULT_SWITCH_MODES[1],
@@ -125,7 +128,8 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 		out.append("camera_fpv_osd_elements must list OSD elements (%s)" % ", ".join(FPV_OSD_ELEMENTS))
 	for pair: Array in [["camera_fpv_head_tracking", FPV_HEAD_TRACKING], ["camera_fpv_gimbal_speed", FPV_GIMBAL_SPEEDS],
 			["camera_fpv_osd", FPV_OSD_STYLES], ["camera_fpv_link", FPV_LINKS], ["camera_fc_switch_low", FC_MODES],
-			["camera_fc_switch_mid", FC_MODES], ["camera_fc_switch_high", FC_MODES], ["camera_fc_rc_link", FC_RC_LINKS]]:
+			["camera_fc_switch_mid", FC_MODES], ["camera_fc_switch_high", FC_MODES], ["camera_fc_rc_link", FC_RC_LINKS],
+			["camera_fpv_rx_antenna", FPV_RX_ANTENNAS]]:
 		var choice: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(choice) != TYPE_STRING or choice not in (pair[1] as Array):
 			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
@@ -190,6 +194,7 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fpv_osd_elements": _osd_elements(raw.get("camera_fpv_osd_elements", DEFAULTS.camera_fpv_osd_elements)),
 		"camera_fpv_link": str(raw.get("camera_fpv_link", DEFAULTS.camera_fpv_link)),
 		"camera_fpv_vtx_power": int(raw.get("camera_fpv_vtx_power", DEFAULTS.camera_fpv_vtx_power)),
+		"camera_fpv_rx_antenna": str(raw.get("camera_fpv_rx_antenna", DEFAULTS.camera_fpv_rx_antenna)),
 		"camera_fc_switch_low": str(raw.get("camera_fc_switch_low", DEFAULTS.camera_fc_switch_low)),
 		"camera_fc_switch_mid": str(raw.get("camera_fc_switch_mid", DEFAULTS.camera_fc_switch_mid)),
 		"camera_fc_switch_high": str(raw.get("camera_fc_switch_high", DEFAULTS.camera_fc_switch_high)),
@@ -248,7 +253,8 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 		motion_blur = bool(config.camera_fpv_motion_blur)}
 	rig.fpv_head.configure(config)
 	rig.onboard_clean_screen = bool(config.camera_fpv_clean_screen)
-	rig.onboard_link = {mode = str(config.camera_fpv_link), power_mw = int(config.camera_fpv_vtx_power)}
+	rig.onboard_link = {mode = str(config.camera_fpv_link), power_mw = int(config.camera_fpv_vtx_power),
+		antenna = str(config.camera_fpv_rx_antenna)}
 	rig.onboard_osd = {style = str(config.camera_fpv_osd), elements = (config.camera_fpv_osd_elements as Array).duplicate()}
 	rig.fc_switch_modes = PackedStringArray([str(config.camera_fc_switch_low), str(config.camera_fc_switch_mid),
 		str(config.camera_fc_switch_high)])

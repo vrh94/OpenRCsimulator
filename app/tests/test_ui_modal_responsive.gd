@@ -39,7 +39,7 @@ func run() -> void:
 					screen.get_child(0).theme = ThemeSpec.build()
 					await settle()
 					var pages: Array = ["default"]
-					if route == "settings": pages = [0,1,2,3,4,"camera 1","camera 2","camera 3","camera 4"] # Display, Interface, Sound, Graphics, Camera (CAM-17) and its FPV parts (FPV-9) and Flight controller (FC-1)
+					if route == "settings": pages = [0,1,2,3,4,"camera 1","camera 2","camera 3","camera 4","camera 5"] # Display, Interface, Sound, Graphics, Camera (CAM-17) and its FPV parts (FPV-9) and Flight controller (FC-1)
 					if route == "failures": pages = ["settings","availability"]
 					if route == "random": pages = ["default", "error"]
 					for page in pages:
