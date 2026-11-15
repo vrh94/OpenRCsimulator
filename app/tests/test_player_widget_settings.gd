@@ -18,7 +18,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_check("legacy defaults retain their exact shape", Settings.DEFAULTS == {
 		preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"],
-		units = "auto", stick_mode = 2, radio_model = "jeti_ds24_ii",
+		units = "metric", stick_mode = 2, radio_model = "jeti_ds24_ii",
 	})
 	_check("widget IDs append to the existing overlay IDs", Settings.IDS.slice(Settings.IDS.size() - Settings.PLAYER_IDS.size()) == Settings.PLAYER_IDS
 		and Settings.PLAYER_IDS == ["speed", "height", "power", "weather", "fuel", "trims", "engine"] + Settings.CLASSIC_IDS + Settings.NAVIGATION_IDS + Settings.TRAINING_IDS

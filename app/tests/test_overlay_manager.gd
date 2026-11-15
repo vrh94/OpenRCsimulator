@@ -139,7 +139,7 @@ func _preferences() -> void:
 	cfg.set_value("hud", "radio_model", "unknown")
 	cfg.save(PREFS)
 	var damaged: Dictionary = Preferences.load_from(PREFS).hud
-	_check("damaged [hud] values fall back per key", damaged.units == "auto" and damaged.preset == "pilot"
+	_check("damaged [hud] values fall back per key", damaged.units == "metric" and damaged.preset == "pilot"
 		and damaged.stick_mode == 1 and damaged.radio_model == "jeti_ds24_ii", str(damaged))
 
 
@@ -160,8 +160,8 @@ func _manager() -> void:
 	await process_frame
 	await process_frame
 	_check("Pilot preset shows its five overlays", _shown(manager) == ["flight", "transmitter", "warnings", "wind", "controls"], str(_shown(manager)))
-	_check("imperial for English: 20 m/s = 45 mph", manager.frames.flight.values.airspeed.text == "45 mph", manager.frames.flight.values.airspeed.text)
-	_check("height above ground in ft", manager.frames.flight.values.height.text == "98 ft", manager.frames.flight.values.height.text)
+	_check("metric by default, also in English: 20 m/s = 72 km/h", manager.frames.flight.values.airspeed.text == "72 km/h", manager.frames.flight.values.airspeed.text)
+	_check("height above ground in m", manager.frames.flight.values.height.text == "30 m", manager.frames.flight.values.height.text)
 	_check("nonfinite aircraft hide the fuel reading row", not manager.frames.flight.values.fuel.visible)
 	_check("two warning chips", manager.frames.warnings.chips.get_child_count() == 2)
 	_check("pilot layout at 1920×1080: no overlap, all on screen", _layout_ok(manager, false, Vector2(1920, 1080)), _rects(manager))

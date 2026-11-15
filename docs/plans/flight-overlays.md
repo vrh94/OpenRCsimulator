@@ -30,7 +30,7 @@ Rules the implementation keeps:
 - Overlays read the session; they never write to it. A 3 s trace with `--hud=overlays` equals the legacy trace except its creation time (Stik and Extra).
 - Automation keeps the legacy labels: `--hud=legacy` is the direct-route default; `--hud=overlays` opts in. `capture_ui` still reads `_hud.text`.
 - Numbers come from 64-bit state in `telemetry.gd` (pure): load factor = −F<sub>z,body</sub>/(m·g) from `sim.last_loads` (gravity excluded); height above ground from `GroundTerrain.sample` on the session's own surface table. No session accessor was added.
-- Units (`units.gd`): metric km/h·m·m/s, imperial mph·ft·ft/min, SI m/s·m; "auto" = imperial for English, metric otherwise (D3). Exact factors 0.44704 m/s and 0.3048 m.
+- Units (`units.gd`): metric km/h·m·m/s, imperial mph·ft·ft/min, SI m/s·m; default metric in every language; "auto" (by language: imperial for English, metric otherwise) stays a choice (D3, revised 2026-11-15). Exact factors 0.44704 m/s and 0.3048 m.
 - Numbers refresh at 10 Hz; sticks every frame.
 - The first-flight hint sits bottom centre. The optional latency camera marker is off by default, has its own close button and saved switch in Flight overlays, and stops sampling while hidden. It sits beside the controls guide when enabled; see the [camera protocol and controls](../FIRST-LAUNCH.md#8-film-stick-to-screen-latency-f6a).
 
@@ -113,7 +113,7 @@ limits; missing/nonfinite readings do not invent cues. Existing urgent source wa
 | --- | --- | --- |
 | D1 | Replace UI-27? | Yes |
 | D2 | Default preset | Pilot |
-| D3 | Default units | By language (en imperial, es metric) |
+| D3 | Default units | Metric in every language (revised 2026-11-15; was by language: en imperial, es metric). "By language" remains selectable |
 | D4 | Default stick mode | Mode 2 |
 | D5 | Stall source | Aircraft envelope `a1`/`n1`, 2° margin |
 | D6 | Height reference | Above the ground under the aircraft |

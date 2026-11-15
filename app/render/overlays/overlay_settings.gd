@@ -45,7 +45,8 @@ const RADIO_MODELS := ["jeti_ds24_ii", "radiolink_t16d"]
 ## Derived from the visible set, so the saved [hud] keys carry it without a new preference.
 const BATTERY_DETAIL_WITH := "telemetry"
 ## D2/D3/D4: Pilot preset, units by language, Mode 2.
-const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "auto", stick_mode = 2, radio_model = "jeti_ds24_ii" }
+## Units default to metric (km/h, m) in every language; "auto" (by language) stays a choice.
+const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "metric", stick_mode = 2, radio_model = "jeti_ds24_ii" }
 
 
 ## Settings from anything (a preferences file, a dialog): always a complete valid dictionary, defaults where invalid.
