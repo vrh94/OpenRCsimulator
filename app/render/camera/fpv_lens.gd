@@ -39,6 +39,8 @@ var supersample_max := SUPERSAMPLE_MAX
 var quality := DEFAULT_QUALITY
 var noise := DEFAULT_NOISE
 var motion_blur := false
+## FPV-7: how broken the analog picture is (0 clean … 1 lost), from the route's VideoLink.
+var breakup := 0.0
 var active := false
 var _previous_basis := Basis()
 var _has_previous := false
@@ -142,7 +144,7 @@ func build(parent: Node) -> void:
 
 ## Whether the lens pass is needed at all: a warp, or a video effect that only the pass can draw.
 func needs_pass() -> bool:
-	return model != "rectilinear" or float(NOISE.get(noise, 0.0)) > 0.0 or motion_blur
+	return model != "rectilinear" or float(NOISE.get(noise, 0.0)) > 0.0 or motion_blur or breakup > 0.001
 
 
 ## FPV-4 video settings; unknown values are ignored.
@@ -199,6 +201,7 @@ func update(flight_camera: Camera3D, on: bool, hfov_deg: float, clock_s := 0.0) 
 	_material.set_shader_parameter("blur_rotation", rotation)
 	_material.set_shader_parameter("noise_amount", float(NOISE.get(noise, 0.0)))
 	_material.set_shader_parameter("noise_time", clock_s)
+	_material.set_shader_parameter("breakup", breakup if breakup > 0.001 else 0.0)
 	_material.set_shader_parameter("picture_size", size)
 	var key := [model, geo.focal, aspect]
 	if key != _last.get("key", []):
@@ -219,7 +222,7 @@ func set_model(lens: String) -> void:
 ## Evidence for captures and tests.
 func evidence() -> Dictionary:
 	return { active = active, model = model, viewport_size = _viewport.size if _viewport != null else Vector2i.ZERO,
-		geometry = _last.get("geometry", {}), quality = quality, noise = noise, motion_blur = motion_blur }
+		geometry = _last.get("geometry", {}), quality = quality, noise = noise, motion_blur = motion_blur, breakup = breakup }
 
 
 func _set_active(on: bool, flight_camera: Camera3D) -> void:

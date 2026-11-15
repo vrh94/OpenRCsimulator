@@ -91,6 +91,8 @@ var fpv_head := FpvHead.new()
 var onboard_lens := "barrel"
 ## FPV-4: the onboard video settings the route's FpvLens applies (quality, noise, motion_blur).
 var onboard_video := {quality = "high", noise = "off", motion_blur = false}
+## FPV-7: the analog video link the route's VideoLink models (mode, transmitter power in mW).
+var onboard_link := {mode = "analog", power_mw = 600}
 ## FPV-6: the OSD the route's FpvOsd draws over the onboard picture (style, elements).
 var onboard_osd := {style = "betaflight", elements = ["horizon", "crosshair", "voltage", "battery_pct", "current", "timer",
 	"speed", "altitude", "home", "link", "heading", "mode", "warnings"]}

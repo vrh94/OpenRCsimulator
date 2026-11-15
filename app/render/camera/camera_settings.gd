@@ -7,6 +7,7 @@ const PilotCamera := preload("res://render/pilot_camera.gd")
 const OnboardView := preload("res://render/camera/onboard_view.gd")
 const FpvHead := preload("res://render/camera/fpv_head.gd")
 const FpvOsdModel := preload("res://render/overlays/fpv_osd_model.gd")
+const VideoLink := preload("res://render/camera/video_link.gd")
 
 ## The view a Home flight starts in (D1: the pilot view stays the default). "onboard" falls back to the pilot view on
 ## routes without an onboard mount (the helicopter).
@@ -32,6 +33,9 @@ const FPV_GIMBAL_SPEEDS: Array[String] = FpvHead.SERVO_SPEED_NAMES
 ## FPV-6: the fixed-wing OSD style and its elements (render/overlays/fpv_osd_model.gd).
 const FPV_OSD_STYLES: Array[String] = FpvOsdModel.STYLES
 const FPV_OSD_ELEMENTS: Array[String] = FpvOsdModel.ELEMENTS
+## FPV-7: the analog video link and its transmitter power (render/camera/video_link.gd).
+const FPV_LINKS: Array[String] = VideoLink.MODES
+const FPV_VTX_POWERS: Array[int] = VideoLink.POWERS_MW
 ## The pilot view's widest vertical FOV (deg), which the auto-zoom narrows from. 50° stays the default until CAM-22;
 ## about 31° is orthoscopic on a 27-inch 16:9 screen seen from 60 cm (CAM-AUD-2026-10-24).
 const FOVS: Array[int] = [30, 35, 40, 45, 50, 55, 60, 70]
@@ -71,6 +75,8 @@ const DEFAULTS := {
 	"camera_fpv_gimbal_invert_tilt": false,
 	"camera_fpv_osd": FpvOsdModel.DEFAULT_STYLE,
 	"camera_fpv_osd_elements": FpvOsdModel.DEFAULT_ELEMENTS,
+	"camera_fpv_link": VideoLink.DEFAULT_MODE,
+	"camera_fpv_vtx_power": VideoLink.DEFAULT_POWER_MW,
 }
 
 
@@ -98,12 +104,13 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 	if not FpvOsdModel.valid_elements(raw.get("camera_fpv_osd_elements", DEFAULTS.camera_fpv_osd_elements)):
 		out.append("camera_fpv_osd_elements must list OSD elements (%s)" % ", ".join(FPV_OSD_ELEMENTS))
 	for pair: Array in [["camera_fpv_head_tracking", FPV_HEAD_TRACKING], ["camera_fpv_gimbal_speed", FPV_GIMBAL_SPEEDS],
-			["camera_fpv_osd", FPV_OSD_STYLES]]:
+			["camera_fpv_osd", FPV_OSD_STYLES], ["camera_fpv_link", FPV_LINKS]]:
 		var choice: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(choice) != TYPE_STRING or choice not in (pair[1] as Array):
 			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
 	for pair: Array in [["camera_fpv_gimbal_pan_axis", FPV_GIMBAL_AXES], ["camera_fpv_gimbal_tilt_axis", FPV_GIMBAL_AXES],
-			["camera_fpv_gimbal_pan_travel", FPV_GIMBAL_PAN_TRAVELS], ["camera_fpv_gimbal_tilt_travel", FPV_GIMBAL_TILT_TRAVELS]]:
+			["camera_fpv_gimbal_pan_travel", FPV_GIMBAL_PAN_TRAVELS], ["camera_fpv_gimbal_tilt_travel", FPV_GIMBAL_TILT_TRAVELS],
+			["camera_fpv_vtx_power", FPV_VTX_POWERS]]:
 		var number: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(number) != TYPE_INT or number not in (pair[1] as Array):
 			out.append("%s must be one of the offered values" % pair[0])
@@ -159,6 +166,8 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fpv_gimbal_invert_tilt": bool(raw.get("camera_fpv_gimbal_invert_tilt", DEFAULTS.camera_fpv_gimbal_invert_tilt)),
 		"camera_fpv_osd": str(raw.get("camera_fpv_osd", DEFAULTS.camera_fpv_osd)),
 		"camera_fpv_osd_elements": _osd_elements(raw.get("camera_fpv_osd_elements", DEFAULTS.camera_fpv_osd_elements)),
+		"camera_fpv_link": str(raw.get("camera_fpv_link", DEFAULTS.camera_fpv_link)),
+		"camera_fpv_vtx_power": int(raw.get("camera_fpv_vtx_power", DEFAULTS.camera_fpv_vtx_power)),
 	}
 
 
@@ -210,4 +219,5 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 	rig.onboard_video = {quality = str(config.camera_fpv_quality), noise = str(config.camera_fpv_noise),
 		motion_blur = bool(config.camera_fpv_motion_blur)}
 	rig.fpv_head.configure(config)
+	rig.onboard_link = {mode = str(config.camera_fpv_link), power_mw = int(config.camera_fpv_vtx_power)}
 	rig.onboard_osd = {style = str(config.camera_fpv_osd), elements = (config.camera_fpv_osd_elements as Array).duplicate()}

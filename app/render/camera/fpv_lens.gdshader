@@ -7,6 +7,8 @@
 // source or beyond 89° fall off into the lens's dark rim. The geometry is mirrored by fpv_lens.gd source_point().
 // FPV-4: optional rotational motion blur (taps along the source points the same ray had over the shutter, from the
 // camera-space rotation blur_rotation) and video noise (per-pixel grain, deterministic in noise_time).
+// FPV-7: analog link breakup (0 clean … 1 lost, video_link.gd): torn and jittering lines, colour loss, snow and
+// dropout streaks that grow as the link fades, full static when it is lost. Deterministic in noise_time.
 shader_type canvas_item;
 
 uniform sampler2D source : filter_linear, repeat_disable;
@@ -21,6 +23,7 @@ uniform mat3 blur_rotation = mat3(1.0);
 uniform float noise_amount = 0.0;
 uniform float noise_time = 0.0;
 uniform vec2 picture_size = vec2(1920.0, 1080.0);
+uniform float breakup = 0.0;
 
 const float THETA_LIMIT = 1.5533430; // 89°
 const float RIM = 0.03; // share of the source edge over which the picture fades into the rim
@@ -39,6 +42,16 @@ float hash12(vec2 p) {
 
 void fragment() {
 	vec2 p = vec2((UV.x * 2.0 - 1.0) * aspect, 1.0 - UV.y * 2.0);
+	float frame = floor(noise_time * 60.0);
+	float line = floor(UV.y * picture_size.y / 3.0); // bands of three lines, like an analog sync error
+	if (breakup > 0.0) {
+		// Torn lines: some bands slip sideways; the whole picture jitters vertically as sync is lost.
+		float tear = hash12(vec2(line, frame * 3.0 + 11.0));
+		if (tear < breakup * breakup * breakup * 0.5) {
+			p.x += (hash12(vec2(line * 1.7, frame + 5.0)) - 0.5) * 0.3 * breakup;
+		}
+		p.y += (hash12(vec2(frame, 19.0)) - 0.5) * 0.06 * breakup * breakup;
+	}
 	float r = length(p);
 	float theta = model == 0 ? 2.0 * atan(r / (2.0 * focal)) : (model == 1 ? r / focal : atan(r / focal));
 	if (theta >= THETA_LIMIT) {
@@ -69,10 +82,19 @@ void fragment() {
 		if (noise_amount > 0.0) {
 			// Analog-style grain: luminance noise with a little chroma, new every video frame.
 			vec2 cell = floor(UV * picture_size);
-			float frame = floor(noise_time * 60.0);
 			float n = hash12(cell + frame * 17.0) - 0.5;
 			vec3 chroma = vec3(hash12(cell + frame * 29.0 + 3.1), hash12(cell + frame * 31.0 + 7.7), hash12(cell + frame * 37.0 + 1.3)) - 0.5;
 			c = max(c + noise_amount * (n + 0.3 * chroma) * (0.35 + c), vec3(0.0));
+		}
+		if (breakup > 0.0) {
+			vec2 cell = floor(UV * picture_size * 0.5); // analog snow is coarser than the display pixels
+			float snow = hash12(cell + frame * 43.0);
+			float luma = dot(c, vec3(0.299, 0.587, 0.114));
+			c = mix(c, vec3(luma), smoothstep(0.3, 0.85, breakup)); // colour drops out as the signal weakens
+			c = mix(c, vec3(snow), clamp(pow(breakup, 2.5), 0.0, 1.0));
+			if (hash12(vec2(line * 0.37, frame * 7.0 + 2.0)) < breakup * breakup * 0.06) {
+				c = vec3(0.6 + 0.4 * snow); // a white dropout streak
+			}
 		}
 		COLOR = vec4(c, 1.0);
 	}

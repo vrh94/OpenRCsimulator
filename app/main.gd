@@ -30,6 +30,7 @@ const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const FpvHead := preload("res://render/camera/fpv_head.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const FpvOsd := preload("res://render/overlays/fpv_osd.gd")
+const VideoLink := preload("res://render/camera/video_link.gd")
 const Magnifier := preload("res://render/camera/magnifier.gd")
 const FpvLens := preload("res://render/camera/fpv_lens.gd")
 const CameraCollision := preload("res://render/camera/camera_collision.gd")
@@ -406,6 +407,13 @@ var _fpv_video_args := {}
 var _fpv_osd: CanvasLayer
 var _fpv_osd_since := INF
 var _fpv_osd_config := {}
+## FPV-7: the analog video link, its last line-of-sight scan (refreshed at LINK_SCAN_S) and a capture override.
+const LINK_SCAN_S := 0.1
+const LINK_TERRAIN_SAMPLES := 24
+var _video_link := VideoLink.new()
+var _link_scan_since := INF
+var _link_scan := {distance_m = 0.0, terrain = false, scenery = 0.0}
+var _link_quality_arg := NAN
 ## CAM-09: the scenery collision world the cameras keep clear of (a reference, built once with the session's).
 var _camera_obstacles: Dictionary = {}
 ## RC-TRACK: this flight's RC car circuit, decided once; it feeds the field build, the wheels and the obstacles.
@@ -838,6 +846,32 @@ func _prepare_flight() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 		_fpv_video_args["fpv-osd"] = str(args["fpv-osd"])
+	if args.has("fpv-link"):
+		if str(args["fpv-link"]) not in CameraSettings.FPV_LINKS:
+			push_error("--fpv-link must be one of %s (got \"%s\")" % [", ".join(CameraSettings.FPV_LINKS), str(args["fpv-link"])])
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_fpv_video_args["fpv-link"] = str(args["fpv-link"])
+	if args.has("fpv-vtx"):
+		if not str(args["fpv-vtx"]).is_valid_int() or str(args["fpv-vtx"]).to_int() not in CameraSettings.FPV_VTX_POWERS:
+			push_error("--fpv-vtx must be one of %s mW (got \"%s\")" % [str(CameraSettings.FPV_VTX_POWERS), str(args["fpv-vtx"])])
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_fpv_video_args["fpv-vtx"] = str(args["fpv-vtx"]).to_int()
+	if args.has("fpv-link-quality"):
+		# Captures: a fixed link quality (0…1) instead of the modelled one.
+		var forced := str(args["fpv-link-quality"])
+		if not forced.is_valid_float() or forced.to_float() < 0.0 or forced.to_float() > 1.0:
+			push_error("--fpv-link-quality must be 0…1 (got \"%s\")" % forced)
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		_link_quality_arg = forced.to_float()
 	if args.has("fpv-look"):
 		# FPV-5: a fixed head-look (yaw right, pitch up; deg) for captures of the onboard view.
 		var parts := str(args["fpv-look"]).split(",")
@@ -1599,6 +1633,7 @@ func _process(delta: float) -> void:
 	# after its final pose, before this frame is drawn.
 	if not _rig.pending_history_reset.is_empty():
 		_rig.commit_history_reset()
+	_update_video_link(dt)
 	_update_fpv_lens()
 	_update_fpv_osd(dt)
 	if _lens != null:
@@ -1635,6 +1670,39 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 
 
 ## CAM-12/FPV-3: after the rig and any crash focus placed the camera this frame.
+## FPV-7: the analog video link for this frame, presentation only. The line of sight from the receiver (the pilot's
+## eye) to the aircraft is scanned at LINK_SCAN_S: terrain under the straight path, and the share of it behind the
+## scenery's collision proxies (buildings, trees). The quality is smoothed every frame and drives the lens breakup
+## and the OSD's signal figure. force: scan now (captures).
+func _update_video_link(dt: float, force := false) -> void:
+	if _rig == null or _fpv_lens == null:
+		return
+	_video_link.configure(str(_rig.onboard_link.mode), int(_rig.onboard_link.power_mw))
+	if not _video_link.enabled() or not _rig.onboard.configured or _last_render_pose.is_empty():
+		_fpv_lens.breakup = 0.0
+		return
+	_link_scan_since += dt
+	if force or _link_scan_since >= LINK_SCAN_S:
+		_link_scan_since = 0.0
+		var pilot: Dictionary = field.get("pilot", {})
+		var receiver: Vector3 = Frames.ned_to_render([float(pilot.get("north", 0.0)), float(pilot.get("east", 0.0)),
+			float(pilot.get("down", 0.0)) - float(pilot.get("eye_height", 1.7))])
+		var aircraft: Vector3 = _last_render_pose.pos
+		var terrain := false
+		for i in range(1, LINK_TERRAIN_SAMPLES):
+			var point := receiver.lerp(aircraft, float(i) / LINK_TERRAIN_SAMPLES)
+			var ground := _ground_height(point.x, point.z)
+			if is_finite(ground) and ground > point.y + 0.3:
+				terrain = true
+				break
+		_link_scan = {distance_m = receiver.distance_to(aircraft), terrain = terrain,
+			scenery = 1.0 - clampf(_camera_clearance(receiver, aircraft), 0.0, 1.0)}
+	_video_link.update(float(_link_scan.distance_m), bool(_link_scan.terrain), float(_link_scan.scenery), _presentation_clock_s(), dt)
+	if is_finite(_link_quality_arg):
+		_video_link.quality = _link_quality_arg
+	_fpv_lens.breakup = _video_link.breakup()
+
+
 func _update_fpv_lens() -> void:
 	if _fpv_lens == null or _rig == null:
 		return
@@ -1663,7 +1731,7 @@ func _update_fpv_osd(dt: float, force := false) -> void:
 		_fpv_osd_since = 0.0
 		var snap := _overlay_snapshot()
 		if not snap.is_empty():
-			_fpv_osd.feed(snap, -float(field.pilot.get("down", 0.0)))
+			_fpv_osd.feed(snap, -float(field.pilot.get("down", 0.0)), _video_link.osd_link())
 	var shown: bool = _rig.showing_onboard_lens() and not _fpv_osd.values.is_empty()
 	_fpv_osd.visible = shown
 	if not shown or _last_render_pose.is_empty():
@@ -3248,6 +3316,8 @@ func _on_resetting() -> void:
 	if _fpv_osd != null:
 		_fpv_osd.reset()
 		_fpv_osd_since = INF
+	_video_link.reset()
+	_link_scan_since = INF
 	_queue_companion_transition()
 	_aircraft_lights.reset()
 	if is_instance_valid(_rgb_lighting):
@@ -3632,6 +3702,10 @@ func _build_world() -> bool:
 	add_child(_fpv_osd)
 	if _fpv_video_args.has("fpv-osd"):
 		_rig.onboard_osd.style = str(_fpv_video_args["fpv-osd"])
+	if _fpv_video_args.has("fpv-link"):
+		_rig.onboard_link.mode = str(_fpv_video_args["fpv-link"])
+	if _fpv_video_args.has("fpv-vtx"):
+		_rig.onboard_link.power_mw = int(_fpv_video_args["fpv-vtx"])
 	if _fpv_video_args.has("fpv-look"):
 		var fixed_look: Vector2 = _fpv_video_args["fpv-look"]
 		_rig.fpv_head.mouse = Vector2(clampf(fixed_look.x, -FpvHead.YAW_LIMIT_DEG, FpvHead.YAW_LIMIT_DEG),
@@ -3797,6 +3871,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	InputPanel.update(_panel, Commands.neutral_raw(), c, _view_name(), _status(), surfaces, session.throws_deg())
 	var pose := _current_pose() if _scripted else _pose_of(sim.state)
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
+	_update_video_link(0.0, true)
 	_update_fpv_lens() # _process does not run while capturing
 	_update_fpv_osd(0.0, true)
 	var clock_s: float = t if _scripted else sim.time()

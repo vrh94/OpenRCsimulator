@@ -145,6 +145,9 @@ var _camera_fpv_gimbal_invert_tilt_toggle: CheckButton
 ## FPV-6: the fixed-wing OSD style and one check box per element.
 var _camera_fpv_osd_picker: OptionButton
 var _camera_fpv_osd_boxes := {}
+## FPV-7: the analog video link.
+var _camera_fpv_link_picker: OptionButton
+var _camera_fpv_vtx_picker: OptionButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
@@ -580,6 +583,12 @@ func _build() -> void:
 		_camera_fpv_osd_boxes[id] = box
 		osd_flow.add_child(box)
 	_add_row(camera_page, "FPV OSD elements", osd_flow)
+	_camera_fpv_link_picker = _camera_picker("CameraFpvLink", "camera_fpv_link", CameraSettings.FPV_LINKS)
+	_add_row(camera_page, "FPV video link", _camera_fpv_link_picker)
+	_set_localized_tooltip(_camera_fpv_link_picker, "Analog: the onboard picture breaks up with distance and when hills, buildings or trees block the path to your receiver at the pilot station, and the OSD shows the signal. It never changes how the airplane flies.")
+	_camera_fpv_vtx_picker = _camera_picker("CameraFpvVtx", "camera_fpv_vtx_power", CameraSettings.FPV_VTX_POWERS)
+	_add_row(camera_page, "FPV transmitter power", _camera_fpv_vtx_picker)
+	_set_localized_tooltip(_camera_fpv_vtx_picker, "More power reaches farther: the picture is half broken at about 600 m with 25 mW, 1.7 km with 200 mW, 2.9 km with 600 mW and 3.8 km with 1000 mW in the open.")
 	_set_localized_tooltip(_camera_fpv_smoothing_picker, "Rigid follows the airframe exactly. Soft mounts let the picture trail fast twitches slightly, like a vibration-damped camera mount; the camera never leaves the airframe.")
 
 	_opaque_toggle = CheckButton.new()
@@ -906,6 +915,10 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"camera_fpv_shake", "camera_fpv_noise": return {off = tr("%s (default)") % tr("Off"), low = tr("Low"), medium = tr("Medium"),
 			high = tr("High")}.get(value, str(value))
 		"camera_fpv_quality": return {low = tr("Low"), medium = tr("Medium"), high = tr("%s (default)") % tr("High")}.get(value, str(value))
+		"camera_fpv_link": return {off = tr("Off (perfect picture)"), analog = tr("%s (default)") % tr("Analog")}.get(value, str(value))
+		"camera_fpv_vtx_power":
+			var mw := "%d mW" % int(value)
+			return tr("%s (default)") % mw if int(value) == int(CameraSettings.DEFAULTS.camera_fpv_vtx_power) else mw
 		"camera_fpv_osd": return {off = tr("Off"), betaflight = tr("%s (default)") % "Betaflight", inav = "INAV", ardupilot = "ArduPilot"}.get(value, str(value))
 		"camera_fpv_head_tracking": return {off = tr("%s (default)") % tr("Off"), opentrack = tr("opentrack (UDP)")}.get(value, str(value))
 		"camera_fpv_gimbal_pan_axis", "camera_fpv_gimbal_tilt_axis":
@@ -1457,6 +1470,8 @@ func _sync_controls() -> void:
 	_camera_fpv_gimbal_invert_pan_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_pan", false)))
 	_camera_fpv_gimbal_invert_tilt_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_tilt", false)))
 	_select_metadata(_camera_fpv_osd_picker, str(_draft.get("camera_fpv_osd", CameraSettings.DEFAULTS.camera_fpv_osd)))
+	_select_metadata(_camera_fpv_link_picker, str(_draft.get("camera_fpv_link", CameraSettings.DEFAULTS.camera_fpv_link)))
+	_select_metadata(_camera_fpv_vtx_picker, int(_draft.get("camera_fpv_vtx_power", CameraSettings.DEFAULTS.camera_fpv_vtx_power)))
 	var osd_elements: Variant = _draft.get("camera_fpv_osd_elements", CameraSettings.DEFAULTS.camera_fpv_osd_elements)
 	for id: String in _camera_fpv_osd_boxes:
 		(_camera_fpv_osd_boxes[id] as CheckBox).set_pressed_no_signal(id in osd_elements)
@@ -1729,7 +1744,8 @@ func _refresh_translated_text() -> void:
 			[_camera_fpv_head_sensitivity_picker, "camera_fpv_head_sensitivity"], [_camera_fpv_head_tracking_picker, "camera_fpv_head_tracking"],
 			[_camera_fpv_gimbal_pan_axis_picker, "camera_fpv_gimbal_pan_axis"], [_camera_fpv_gimbal_tilt_axis_picker, "camera_fpv_gimbal_tilt_axis"],
 			[_camera_fpv_gimbal_pan_travel_picker, "camera_fpv_gimbal_pan_travel"], [_camera_fpv_gimbal_tilt_travel_picker, "camera_fpv_gimbal_tilt_travel"],
-			[_camera_fpv_gimbal_speed_picker, "camera_fpv_gimbal_speed"], [_camera_fpv_osd_picker, "camera_fpv_osd"]]:
+			[_camera_fpv_gimbal_speed_picker, "camera_fpv_gimbal_speed"], [_camera_fpv_osd_picker, "camera_fpv_osd"],
+			[_camera_fpv_link_picker, "camera_fpv_link"], [_camera_fpv_vtx_picker, "camera_fpv_vtx_power"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
