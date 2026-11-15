@@ -133,6 +133,8 @@ func set_view(id: String) -> bool:
 		flyby.reset()
 	elif id == "orbit" or id == "onboard":
 		_orbit_primed = false # onboard: a crash aftermath orbits the wreck from the lens (focus())
+		if id == "onboard":
+			onboard.snap() # a cut: a smoothed mount starts settled
 	_fov_offset = 0.0
 	_absorb_from = NAN
 	return true
@@ -185,10 +187,12 @@ func toggle_auto_zoom() -> void:
 	auto_zoom = not auto_zoom
 
 
-## steps > 0 zooms in (pilot: narrower FOV; chase/orbit: closer), < 0 out.
+## steps > 0 zooms in (pilot: narrower FOV; chase/orbit: closer; onboard: one 10° lens step narrower), < 0 out.
 func zoom(steps: float) -> void:
 	var factor := pow(ZOOM_STEP, -steps)
 	match view:
+		"onboard":
+			onboard.adjust_fov(-signi(roundi(steps)) if absf(steps) >= 0.5 else 0)
 		"pilot":
 			_mark_fov_jump()
 			pilot_zoom = clampf(pilot_zoom * factor, PILOT_ZOOM_MIN, PILOT_ZOOM_MAX)
@@ -206,6 +210,8 @@ func zoom(steps: float) -> void:
 ## Backspace: the current view's zoom and offsets back to their defaults.
 func reset_view() -> void:
 	match view:
+		"onboard":
+			onboard.reset_lens()
 		"pilot":
 			if pilot_zoom != default_pilot_zoom:
 				_mark_fov_jump()
@@ -250,6 +256,7 @@ func reset() -> void:
 	_screen_up = Vector3.ZERO
 	_fov_offset = 0.0
 	_absorb_from = NAN
+	onboard.snap()
 	if view == "onboard":
 		_orbit_primed = false # a restarted flight returns to the lens, not the last wreck orbit
 
@@ -320,8 +327,8 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 				_orbit_primed = true
 			_apply(orbit.update(target, ground_y, dt, obstacles))
 		"onboard":
-			# Rigid on the drawn pose: no smoothing, so the picture never lags the aircraft (FPV-2 adds an option).
-			_apply(onboard.placement(airplane, body, _aspect()))
+			# Rigid on the drawn pose by default; FPV-2's optional soft mount smooths only the attitude.
+			_apply(onboard.update(airplane, body, _aspect(), dt, paused))
 	_placed = true
 	if not defer_history_reset and not pending_history_reset.is_empty():
 		commit_history_reset()
@@ -397,7 +404,7 @@ func evidence() -> Dictionary:
 	return { view = view, auto_zoom = auto_zoom, pilot_zoom = pilot_zoom, chase_zoom = chase.zoom,
 		orbit = [orbit.azimuth_deg, orbit.elevation_deg, orbit.distance],
 		onboard = { configured = onboard.configured, source = onboard.mount_source, mount = onboard.mount,
-			hfov_deg = onboard.hfov_deg, tilt_deg = onboard.tilt_deg } }
+			hfov_deg = onboard.hfov_deg, tilt_deg = onboard.tilt_deg, smoothing = onboard.smoothing } }
 
 
 ## Width / height of the picture the camera renders into.

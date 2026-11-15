@@ -16,13 +16,23 @@ const MOUNT_CLEARANCE_M := 0.02
 const PROBE_STEPS := 4
 ## Nodes whose meshes never define the nose: spinning discs and their blur.
 const EXCLUDED_NAME_PARTS := ["propeller", "prop_blur", "rotor", "blur"]
-## Lens defaults (FPV-2 makes them settings): a horizontal FOV typical of a fixed-wing FPV camera and a small uptilt.
+## FPV-2 lens: a horizontal FOV typical of a fixed-wing FPV camera and a small uptilt by default. The settings offer
+## FOVS and TILTS; in flight −/= step the FOV and Shift+[ / Shift+] the tilt within the same limits, and Backspace
+## returns to the chosen settings.
 const DEFAULT_HFOV_DEG := 110.0
 const DEFAULT_TILT_DEG := 5.0
-const HFOV_MIN_DEG := 60.0
+const FOVS: Array[int] = [70, 80, 90, 100, 110, 120, 130, 140, 150]
+const TILTS: Array[int] = [-10, -5, 0, 5, 10, 15, 20, 25, 30]
+const HFOV_MIN_DEG := 70.0
 const HFOV_MAX_DEG := 150.0
+const HFOV_STEP_DEG := 10.0
 const TILT_MIN_DEG := -10.0
 const TILT_MAX_DEG := 30.0
+const TILT_STEP_DEG := 5.0
+## FPV-2 mount smoothing: a soft (vibration-damped) mount lets the lens attitude trail the airframe by this half-life
+## (s); "off" is the rigid mount. Position always stays on the mount, so the lens never leaves the airframe.
+const SMOOTHING := { off = 0.0, light = 0.03, medium = 0.08 }
+const DEFAULT_SMOOTHING := "off"
 
 ## Mount in the model frame (root's local axes: −z nose, +y up, +x right); valid only when `configured`.
 var mount := Vector3.ZERO
@@ -30,6 +40,12 @@ var mount_source := ""
 var configured := false
 var hfov_deg := DEFAULT_HFOV_DEG
 var tilt_deg := DEFAULT_TILT_DEG
+## The pilot's settings, which Backspace restores after in-flight steps.
+var preferred_hfov_deg := DEFAULT_HFOV_DEG
+var preferred_tilt_deg := DEFAULT_TILT_DEG
+var smoothing := DEFAULT_SMOOTHING
+var _attitude := Quaternion.IDENTITY # the smoothed lens attitude
+var _primed := false
 
 
 ## Installs a mount (model frame). source: "declared" (aircraft data) or "estimated" (derive_mount()).
@@ -43,6 +59,50 @@ func clear() -> void:
 	mount = Vector3.ZERO
 	mount_source = ""
 	configured = false
+	_primed = false
+
+
+## The pilot's lens settings: they apply at once and become what Backspace restores.
+func set_preferences(hfov: float, tilt: float, smoothing_mode: String) -> void:
+	preferred_hfov_deg = clampf(hfov, HFOV_MIN_DEG, HFOV_MAX_DEG)
+	preferred_tilt_deg = clampf(tilt, TILT_MIN_DEG, TILT_MAX_DEG)
+	hfov_deg = preferred_hfov_deg
+	tilt_deg = preferred_tilt_deg
+	set_smoothing(smoothing_mode)
+
+
+func set_smoothing(mode: String) -> void:
+	if SMOOTHING.has(mode) and mode != smoothing:
+		smoothing = mode
+		_primed = false
+
+
+## In-flight steps; each returns true when the value changed.
+func adjust_fov(steps: int) -> bool:
+	var next := clampf(hfov_deg + HFOV_STEP_DEG * steps, HFOV_MIN_DEG, HFOV_MAX_DEG)
+	var changed := next != hfov_deg
+	hfov_deg = next
+	return changed
+
+
+func adjust_tilt(steps: int) -> bool:
+	var next := clampf(tilt_deg + TILT_STEP_DEG * steps, TILT_MIN_DEG, TILT_MAX_DEG)
+	var changed := next != tilt_deg
+	tilt_deg = next
+	return changed
+
+
+## Backspace: back to the chosen settings. Returns true when anything changed.
+func reset_lens() -> bool:
+	var changed := hfov_deg != preferred_hfov_deg or tilt_deg != preferred_tilt_deg
+	hfov_deg = preferred_hfov_deg
+	tilt_deg = preferred_tilt_deg
+	return changed
+
+
+## The next update() starts settled on the mount (view change, restart, teleport).
+func snap() -> void:
+	_primed = false
 
 
 ## Estimates a nose mount from the meshes under `root`, in root's local frame. Returns {ok, position, source,
@@ -127,6 +187,23 @@ func placement(airplane: Transform3D, body: Basis, aspect: float) -> Dictionary:
 	var b := body.orthonormalized()
 	var tilted := b * Basis(Vector3.RIGHT, deg_to_rad(tilt_deg))
 	return { position = airplane * mount, basis = tilted, fov = vertical_fov_deg(hfov_deg, aspect) }
+
+
+## The placement for this frame with the mount's smoothing: rigid when off; otherwise the lens attitude follows the
+## rigid one with the mode's half-life (frame-rate independent), and holds while paused.
+func update(airplane: Transform3D, body: Basis, aspect: float, dt: float, paused: bool) -> Dictionary:
+	var placed := placement(airplane, body, aspect)
+	var half_life: float = SMOOTHING.get(smoothing, 0.0)
+	var rigid := Quaternion((placed.basis as Basis).orthonormalized())
+	if half_life <= 0.0 or not _primed:
+		_attitude = rigid
+		_primed = true
+		return placed
+	if not paused and dt > 0.0:
+		var k := 1.0 - pow(2.0, -dt / half_life)
+		_attitude = _attitude.slerp(rigid, k).normalized()
+	placed.basis = Basis(_attitude)
+	return placed
 
 
 ## Vertical FOV (deg) giving `hfov` horizontally at `aspect`.

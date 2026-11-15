@@ -4,9 +4,15 @@
 extends RefCounted
 
 const PilotCamera := preload("res://render/pilot_camera.gd")
+const OnboardView := preload("res://render/camera/onboard_view.gd")
 
-## The view a Home flight starts in (D1: the pilot view stays the default).
-const VIEWS: Array[String] = ["pilot", "chase", "flyby", "orbit"]
+## The view a Home flight starts in (D1: the pilot view stays the default). "onboard" falls back to the pilot view on
+## routes without an onboard mount (the helicopter).
+const VIEWS: Array[String] = ["pilot", "chase", "onboard", "flyby", "orbit"]
+## FPV-2: the onboard lens (horizontal FOV, uptilt, mount smoothing).
+const FPV_FOVS: Array[int] = OnboardView.FOVS
+const FPV_TILTS: Array[int] = OnboardView.TILTS
+const FPV_SMOOTHING: Array[String] = ["off", "light", "medium"]
 ## The pilot view's widest vertical FOV (deg), which the auto-zoom narrows from. 50° stays the default until CAM-22;
 ## about 31° is orthoscopic on a 27-inch 16:9 screen seen from 60 cm (CAM-AUD-2026-10-24).
 const FOVS: Array[int] = [30, 35, 40, 45, 50, 55, 60, 70]
@@ -27,6 +33,9 @@ const DEFAULTS := {
 	"camera_chase_distance": 1.0,
 	"camera_sensitivity": 1.0,
 	"camera_invert_y": false,
+	"camera_fpv_fov": int(OnboardView.DEFAULT_HFOV_DEG),
+	"camera_fpv_tilt": int(OnboardView.DEFAULT_TILT_DEG),
+	"camera_fpv_smoothing": OnboardView.DEFAULT_SMOOTHING,
 }
 
 
@@ -34,7 +43,14 @@ const DEFAULTS := {
 static func errors(raw: Dictionary) -> PackedStringArray:
 	var out := PackedStringArray()
 	if typeof(raw.get("camera_view", DEFAULTS.camera_view)) != TYPE_STRING or raw.get("camera_view", DEFAULTS.camera_view) not in VIEWS:
-		out.append("camera_view must be pilot, chase, flyby or orbit")
+		out.append("camera_view must be pilot, chase, onboard, flyby or orbit")
+	for pair: Array in [["camera_fpv_fov", FPV_FOVS], ["camera_fpv_tilt", FPV_TILTS]]:
+		var lens: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
+		if typeof(lens) != TYPE_INT or lens not in (pair[1] as Array):
+			out.append("%s must be one of the offered values" % pair[0])
+	var smoothing: Variant = raw.get("camera_fpv_smoothing", DEFAULTS.camera_fpv_smoothing)
+	if typeof(smoothing) != TYPE_STRING or smoothing not in FPV_SMOOTHING:
+		out.append("camera_fpv_smoothing must be off, light or medium")
 	if typeof(raw.get("camera_fov", DEFAULTS.camera_fov)) != TYPE_INT or raw.get("camera_fov", DEFAULTS.camera_fov) not in FOVS:
 		out.append("camera_fov must be one of the offered fields of view")
 	if typeof(raw.get("camera_magnifier", DEFAULTS.camera_magnifier)) != TYPE_STRING or raw.get("camera_magnifier", DEFAULTS.camera_magnifier) not in MAGNIFIER_MODES:
@@ -64,12 +80,16 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_chase_distance": float(raw.get("camera_chase_distance", DEFAULTS.camera_chase_distance)),
 		"camera_sensitivity": float(raw.get("camera_sensitivity", DEFAULTS.camera_sensitivity)),
 		"camera_invert_y": bool(raw.get("camera_invert_y", DEFAULTS.camera_invert_y)),
+		"camera_fpv_fov": int(raw.get("camera_fpv_fov", DEFAULTS.camera_fpv_fov)),
+		"camera_fpv_tilt": int(raw.get("camera_fpv_tilt", DEFAULTS.camera_fpv_tilt)),
+		"camera_fpv_smoothing": str(raw.get("camera_fpv_smoothing", DEFAULTS.camera_fpv_smoothing)),
 	}
 
 
 ## A flight's start: every preference, including the first view and the chase boom.
 static func apply_at_start(rig: RefCounted, preferences: Dictionary) -> void:
 	var config := normalized(preferences)
+	rig.onboard.set_preferences(float(config.camera_fpv_fov), float(config.camera_fpv_tilt), config.camera_fpv_smoothing)
 	rig.set_view(config.camera_view)
 	rig.auto_zoom = config.camera_auto_zoom
 	rig.chase.zoom = config.camera_chase_distance
@@ -85,6 +105,9 @@ static func apply_changes(rig: RefCounted, before: Dictionary, after: Dictionary
 		rig.toggle_auto_zoom()
 	if not is_equal_approx(config.camera_chase_distance, old.camera_chase_distance):
 		rig.chase.zoom = config.camera_chase_distance
+	# FPV-2: a changed lens setting applies at once; an unchanged one leaves the pilot's in-flight steps alone.
+	if config.camera_fpv_fov != old.camera_fpv_fov or config.camera_fpv_tilt != old.camera_fpv_tilt:
+		rig.onboard.set_preferences(float(config.camera_fpv_fov), float(config.camera_fpv_tilt), config.camera_fpv_smoothing)
 	apply_live(rig, config)
 
 
@@ -96,3 +119,4 @@ static func apply_live(rig: RefCounted, config: Dictionary) -> void:
 	rig.magnifier = str(config.camera_magnifier)
 	rig.orbit.sensitivity = float(config.camera_sensitivity)
 	rig.orbit.invert_y = bool(config.camera_invert_y)
+	rig.onboard.set_smoothing(str(config.camera_fpv_smoothing))

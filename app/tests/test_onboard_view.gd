@@ -5,12 +5,16 @@
 #     with the model root; the FOV converts horizontal to vertical;
 #   - the rig: no onboard view (key 3, C cycle) without a mount; with one, the cycle visits it after chase; near plane
 #     0.03 m; the picture is identical at any frame time (no smoothing);
-#   - a crash aftermath orbits the wreck starting from the lens; a restart returns to the lens.
+#   - a crash aftermath orbits the wreck starting from the lens; a restart returns to the lens;
+#   - FPV-2: FOV/tilt steps stay within limits and Backspace restores the settings; −/= step the lens in the rig;
+#     the soft mount trails a step and settles, at the same rate at 30 and 240 fps, holds while paused, never moves
+#     the lens off the mount and starts settled after a cut; settings validate, apply at start and on change.
 # Run: godot --headless --path . --script res://tests/test_onboard_view.gd
 extends SceneTree
 
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraRig := preload("res://render/camera/camera_rig.gd")
+const CameraSettings := preload("res://render/camera/camera_settings.gd")
 const OnboardView := preload("res://render/camera/onboard_view.gd")
 
 const SPAN := 1.5
@@ -39,6 +43,9 @@ func _run() -> void:
 	_rigid_lens()
 	_rig_views()
 	_wreck()
+	_lens_steps()
+	_soft_mount()
+	_settings()
 	print("all %d onboard view checks passed" % _count if _failures == 0 else "%d of %d failed" % [_failures, _count])
 	quit(1 if _failures > 0 else 0)
 
@@ -195,4 +202,102 @@ func _wreck() -> void:
 	rig.reset()
 	rig.update(impact, airplane, Basis.IDENTITY, 1.0 / 60.0, false, _flat)
 	_check("wreck: a restart returns to the lens", cam.position.is_equal_approx(lens))
+	cam.free()
+
+
+func _lens_steps() -> void:
+	var view := OnboardView.new()
+	view.set_preferences(110.0, 5.0, "off")
+	_check("steps: = narrows by 10°", view.adjust_fov(-1) and view.hfov_deg == 100.0)
+	for i in 20:
+		view.adjust_fov(-1)
+	_check("steps: FOV stops at its minimum", view.hfov_deg == OnboardView.HFOV_MIN_DEG and not view.adjust_fov(-1))
+	for i in 20:
+		view.adjust_tilt(1)
+	_check("steps: tilt stops at its maximum", view.tilt_deg == OnboardView.TILT_MAX_DEG and not view.adjust_tilt(1))
+	_check("steps: Backspace restores the settings", view.reset_lens() and view.hfov_deg == 110.0 and view.tilt_deg == 5.0)
+	_check("steps: nothing to restore reports no change", not view.reset_lens())
+	view.set_preferences(500.0, -90.0, "off")
+	_check("steps: preferences are clamped", view.hfov_deg == OnboardView.HFOV_MAX_DEG and view.tilt_deg == OnboardView.TILT_MIN_DEG)
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	rig.onboard.configure(Vector3(0, 0.1, -0.8), "estimated")
+	rig.set_view("onboard")
+	rig.zoom(1.0)
+	_check("rig: = (zoom in) narrows the onboard lens", rig.onboard.hfov_deg == OnboardView.DEFAULT_HFOV_DEG - OnboardView.HFOV_STEP_DEG)
+	rig.zoom(-1.0)
+	rig.zoom(-1.0)
+	_check("rig: − widens it", rig.onboard.hfov_deg == OnboardView.DEFAULT_HFOV_DEG + OnboardView.HFOV_STEP_DEG)
+	var chase_zoom: float = rig.chase.zoom
+	rig.reset_view()
+	_check("rig: Backspace restores the onboard lens only", rig.onboard.hfov_deg == OnboardView.DEFAULT_HFOV_DEG and rig.chase.zoom == chase_zoom)
+	cam.free()
+
+
+## Lens forward direction after rolling the airframe 30° at once and holding it for `seconds` at `fps`.
+func _soft_step(mode: String, fps: float, seconds: float) -> Dictionary:
+	var view := OnboardView.new()
+	view.configure(Vector3(0, 0.1, -0.8), "estimated")
+	view.set_preferences(110.0, 0.0, mode)
+	var at := Vector3(0, 30, 0)
+	view.update(Transform3D(Basis.IDENTITY, at), Basis.IDENTITY, 1.0, 1.0 / fps, false)
+	var rolled := Basis(Vector3.FORWARD, deg_to_rad(30.0))
+	var placed := {}
+	for i in roundi(seconds * fps):
+		placed = view.update(Transform3D(rolled, at), rolled, 1.0, 1.0 / fps, false)
+	return { placed = placed, rolled = rolled, view = view }
+
+
+func _soft_mount() -> void:
+	var rigid := _soft_step("off", 60.0, 1.0 / 60.0)
+	_check("mount: rigid follows a roll in the same frame", (rigid.placed.basis as Basis).is_equal_approx(rigid.rolled))
+	var early := _soft_step("medium", 60.0, 0.05)
+	var lag := rad_to_deg(Quaternion((early.placed.basis as Basis)).angle_to(Quaternion(early.rolled)))
+	_check("mount: a soft mount trails a sudden roll", lag > 5.0 and lag < 30.0, "%.2f°" % lag)
+	var settled := _soft_step("medium", 60.0, 2.0)
+	# float32 acos near 1 resolves about 0.03°, so the settled bound is 0.1°.
+	var residual := rad_to_deg(Quaternion((settled.placed.basis as Basis)).angle_to(Quaternion(settled.rolled)))
+	_check("mount: and settles on the airframe", residual < 0.1, "%.4f°" % residual)
+	_check("mount: the lens never leaves the mount", (early.placed.position as Vector3).is_equal_approx(Vector3(0, 30, 0) + early.rolled * Vector3(0, 0.1, -0.8)))
+	var slow := _soft_step("light", 30.0, 0.1)
+	var fast := _soft_step("light", 240.0, 0.1)
+	var a := Quaternion((slow.placed.basis as Basis)).angle_to(Quaternion(slow.rolled))
+	var b := Quaternion((fast.placed.basis as Basis)).angle_to(Quaternion(fast.rolled))
+	_check("mount: the same lag at 30 and 240 fps", absf(a - b) < deg_to_rad(0.05), "%.4f° vs %.4f°" % [rad_to_deg(a), rad_to_deg(b)])
+	var view: OnboardView = early.view
+	var held: Basis = early.placed.basis
+	var paused: Dictionary = view.update(Transform3D(early.rolled, Vector3(0, 30, 0)), early.rolled, 1.0, 1.0 / 60.0, true)
+	_check("mount: holds while paused", (paused.basis as Basis).is_equal_approx(held))
+	view.snap()
+	var cut: Dictionary = view.update(Transform3D(early.rolled, Vector3(0, 30, 0)), early.rolled, 1.0, 1.0 / 60.0, false)
+	_check("mount: starts settled after a cut", (cut.basis as Basis).is_equal_approx(early.rolled))
+
+
+func _settings() -> void:
+	_check("settings: defaults validate", CameraSettings.errors({}).is_empty())
+	_check("settings: onboard is an offered first view", CameraSettings.errors({camera_view = "onboard"}).is_empty())
+	_check("settings: an unoffered FPV FOV is refused", not CameraSettings.errors({camera_fpv_fov = 115}).is_empty())
+	_check("settings: a float tilt is refused", not CameraSettings.errors({camera_fpv_tilt = 5.0}).is_empty())
+	_check("settings: an unknown mount is refused", not CameraSettings.errors({camera_fpv_smoothing = "gimbal"}).is_empty())
+	var normal := CameraSettings.normalized({})
+	_check("settings: defaults are 110°, +5°, rigid", normal.camera_fpv_fov == 110 and normal.camera_fpv_tilt == 5 and normal.camera_fpv_smoothing == "off")
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	rig.onboard.configure(Vector3(0, 0.1, -0.8), "estimated")
+	var chosen := {camera_view = "onboard", camera_fpv_fov = 130, camera_fpv_tilt = 15, camera_fpv_smoothing = "light"}
+	CameraSettings.apply_at_start(rig, chosen)
+	_check("settings: a flight starts in the chosen onboard lens", rig.view == "onboard" and rig.onboard.hfov_deg == 130.0
+		and rig.onboard.tilt_deg == 15.0 and rig.onboard.smoothing == "light")
+	rig.onboard.adjust_tilt(1)
+	var softer := chosen.duplicate()
+	softer.camera_fpv_smoothing = "medium"
+	CameraSettings.apply_changes(rig, chosen, softer)
+	_check("settings: changing only the mount keeps an in-flight tilt", rig.onboard.tilt_deg == 20.0 and rig.onboard.smoothing == "medium")
+	var wider := softer.duplicate()
+	wider.camera_fpv_fov = 140
+	CameraSettings.apply_changes(rig, softer, wider)
+	_check("settings: a changed lens applies at once", rig.onboard.hfov_deg == 140.0 and rig.onboard.tilt_deg == 15.0)
+	var helicopter := CameraRig.new(cam, SPAN)
+	CameraSettings.apply_at_start(helicopter, chosen)
+	_check("settings: no mount (helicopter) keeps the pilot view", helicopter.view == "pilot")
 	cam.free()

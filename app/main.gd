@@ -1852,6 +1852,9 @@ func _status() -> String:
 		line += "\n[T] record trace"
 	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _rig.auto_zoom else "off", _shadow_mode]
 	line += "\n[1] pilot [2] chase [3] onboard FPV [4] fly-by [5] orbit  [C] cycle"
+	if _rig.view == "onboard":
+		line += "\nFPV %d° tilt %+d° mount %s  [−/=] FOV  [Shift+[ ]] tilt  [Backspace] reset" % [
+			roundi(_rig.onboard.hfov_deg), roundi(_rig.onboard.tilt_deg), _rig.onboard.smoothing]
 	line += "\n[L] " + _aircraft_lights_text()
 	if _note != "":
 		line += "\n" + _note
@@ -2241,6 +2244,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				if not session.sim.paused and session.wheel_brake_available() and session.set_wheel_brake(1.0):
 					_wheel_brake_key_held = true
 					get_viewport().set_input_as_handled()
+			KEY_BRACKETLEFT, KEY_BRACKETRIGHT when event.shift_pressed and _rig.view == "onboard":
+				# FPV-2: Shift+[ / Shift+] tilt the onboard camera; plain [ ] stay aileron trim.
+				_rig.onboard.adjust_tilt(-1 if event.physical_keycode == KEY_BRACKETLEFT else 1)
+				_note = tr("FPV camera tilt: %d°") % roundi(_rig.onboard.tilt_deg)
+				get_viewport().set_input_as_handled()
 			KEY_BRACKETLEFT, KEY_BRACKETRIGHT:
 				if session.adjust_aileron_trim(-0.005 if event.physical_keycode == KEY_BRACKETLEFT else 0.005):
 					_note = tr("Aileron trim: %+.1f%%") % (session.trims.roll * 100.0)
@@ -2277,6 +2285,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				_rig.set_view("flyby")
 			KEY_5:
 				_rig.set_view("orbit")
+			KEY_EQUAL, KEY_MINUS when _rig.view == "onboard":
+				# FPV-2: = narrows the onboard lens one step, − widens it.
+				_rig.zoom(1.0 if event.physical_keycode == KEY_EQUAL else -1.0)
+				_note = tr("FPV field of view: %d°") % roundi(_rig.onboard.hfov_deg)
 			KEY_EQUAL:
 				_rig.zoom(1.0)
 			KEY_MINUS:
