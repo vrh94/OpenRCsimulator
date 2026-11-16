@@ -27,7 +27,7 @@ SCENARIOS = {
     "soak": dict(start="airborne", timeout_s=2400, phase_timeout_s=1900, sample_s=1800, phases=["startup", "selection", "loading", "right_circuit", "home", "shutdown"]),
 }
 ALL_V1 = ["ugly-standard", "ugly-night", "jet-circuit", "transitions", "green-paradise", "memory"]
-AIRCRAFT = [STIK, "stik-electric-6s", "gp-extra-300s-60", "p51d-mustang-120", "f4u-corsair-250", JET, "turbo-lumber-evolution", "moonrunner-x99"]
+AIRCRAFT = [STIK, "stik-electric-6s", "gp-extra-300s-60", "p51d-mustang-120", "f4u-corsair-250", JET, "turbo-lumber-evolution", "moonrunner-x99", "twin-boom-1800"]
 TIMES = {"day", "dawn", "golden_hour", "sunset", "blue_hour", "evening", "moonrise", "night", "night_dark"}
 WEATHER = {"calm", "steady", "crosswind", "gusty", "updraft", "turbulent", "hot-high", "cool-dense"}
 SKIES = {"classic", "clear", "cirrus", "fair_cumulus", "broken", "overcast", "prestorm", "distant_storm", "electrical_storm"}
@@ -82,8 +82,8 @@ def validate(value: dict, *, resolved: bool = False) -> None:
         raise ValueError("isolated landing requires airborne stock Stik at Club Field in calm weather")
     if value["aircraft"] != STIK and any(p in phases for p in ("takeoff", "roll", "large_loop", "approach", "landing", "stop")):
         raise ValueError("this aircraft has no calibrated maneuver/landing profile; use the airborne navigation scenario")
-    if value["aircraft"] == "moonrunner-x99" and value["start"] == "runway":
-        raise ValueError("MoonRunner has no wheel-runway start")
+    if value["aircraft"] in ("moonrunner-x99", "twin-boom-1800") and value["start"] == "runway":
+        raise ValueError(f"{value['aircraft']} has no wheel-runway start")
     if value["landscape"] != "club_field" and value["start"] == "runway":
         raise ValueError("runway scenario requires Club Field")
     if value["landscape"] != "club_field" and any(p in phases for p in ("farmhouse", "flag", "approach", "landing", "stop")):

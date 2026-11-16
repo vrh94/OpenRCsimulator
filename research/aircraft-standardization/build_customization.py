@@ -668,6 +668,7 @@ OVERLAY_FAMILY = "moonrunner-x99"
 OVERLAY_SOURCES = {
     OVERLAY_FAMILY: OVERLAY_SOURCE,
     "stik-electric-6s": Path("assets/aircraft/stik-electric-6s/customization-bindings.json"),
+    "twin-boom-1800": Path("assets/aircraft/twin-boom-1800/customization-bindings.json"),
 }
 
 

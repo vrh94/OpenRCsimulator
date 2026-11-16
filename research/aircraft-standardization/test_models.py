@@ -364,6 +364,10 @@ class AircraftModelManifestTests(unittest.TestCase):
             "assets/aircraft/stik-electric-6s/customization-bindings.json",
             "app/data/aircraft_model_overlays/stik-electric-6s.json",
             "app/data/aircraft_customization_overlays/stik-electric-6s.json",
+            "assets/aircraft/twin-boom-1800/model-bindings.json",
+            "assets/aircraft/twin-boom-1800/customization-bindings.json",
+            "app/data/aircraft_model_overlays/twin-boom-1800.json",
+            "app/data/aircraft_customization_overlays/twin-boom-1800.json",
             "app/tests/fixtures/moonrunner-overlay-pre-electric-descriptor.json",
             "app/tests/fixtures/moonrunner-overlay-pre-electric-customization.json",
         }
@@ -371,7 +375,8 @@ class AircraftModelManifestTests(unittest.TestCase):
             path.relative_to(ROOT).as_posix() for path in OUTPUT_DIR.glob("*.json")
         )
         overlays = []
-        for family, directory in (("moonrunner-x99", "moonrunner-x99-overlay"), ("stik-electric-6s", "stik-electric-6s")):
+        for family, directory in (("moonrunner-x99", "moonrunner-x99-overlay"), ("stik-electric-6s", "stik-electric-6s"),
+                                  ("twin-boom-1800", "twin-boom-1800")):
             overlays.append(load_json(ROOT / f"app/data/aircraft_model_overlays/{family}.json"))
             customization_overlay = load_json(ROOT / f"app/data/aircraft_customization_overlays/{family}.json")
             for source in customization_overlay["families"][0]["presentation_sources"]:

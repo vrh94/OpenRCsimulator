@@ -13721,3 +13721,12 @@ msgstr "OSD"
 
 msgid "Video link"
 msgstr "Видеоканал"
+
+msgid "Longreach 1800"
+msgstr "Longreach 1800"
+
+msgid "Twin-boom FPV · 1.80 m · 4S electric pusher"
+msgstr "FPV с двумя балками · 1,80 м · толкающий электромотор 4S"
+
+msgid "Experimental: original long-range FPV design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
+msgstr "Экспериментальный: оригинальный дальний FPV-проект с учебной аэродинамикой и оценочной электросиловой установкой; без шасси (запуск с руки), более прочный пенопластовый планер. Не проверен в полёте."

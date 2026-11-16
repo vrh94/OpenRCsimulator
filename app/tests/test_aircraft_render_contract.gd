@@ -49,6 +49,9 @@ func _initialize() -> void:
 				if str(airplane.model_manifest.builder.adapter) == "imported_glb":
 					var hinges: Array = ["elevator_left", "elevator_right"] \
 						if entry.id == Builder.AVANTI_ID and surface == "elevator" else [surface]
+					# Step 15: the twin-boom 1800 draws one rudder channel on both fins.
+					if entry.id == "twin-boom-1800" and surface == "rudder":
+						hinges = ["rudder_left", "rudder_right"]
 					for hinge_name: String in hinges:
 						var hinge: Dictionary = airplane.hinges[hinge_name]
 						var relative: Basis = hinge.node.basis * hinge.rest.inverse()

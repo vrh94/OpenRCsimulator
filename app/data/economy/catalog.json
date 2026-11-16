@@ -4,8 +4,8 @@
   "price_date": "2026-10-25",
   "generated_from": {
     "price_catalog_sha256": "a4b6017efc68b5840d68a4701783f5b8b511d4d85aeb8304104a1dd416c06dea",
-    "aircraft_costing_sha256": "9ede5ad5d28288a088f698f21e3310a04f26fe0d55b044c5925cd81fb556ea5f",
-    "aircraft_catalog_sha256": "327b292ed158eb80a5efdefe7245b32fdda53dfc22a306b62a16786e42b79cf2",
+    "aircraft_costing_sha256": "ab6d09ce90a9304c2d9005489d5380d6cf8f364183fca8b4e54083ad7cc9c5d7",
+    "aircraft_catalog_sha256": "10e941259c5dff5350d07c4e1f4652eaad8258920b7baffcc7e66bf63db84ccc",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "c8b34bac1aabf0ce74a9c696e8bb65c888b39021f50e350b01c67dd46a4a9708"
   },
@@ -9622,6 +9622,389 @@
           "probe_winglet_right_fill_1",
           "probe_winglet_right_outer",
           "probe_winglet_right_top",
+          "propeller/propulsion_main"
+        ]
+      }
+    },
+    {
+      "format": "openrc-aircraft-economics v1",
+      "aircraft_id": "twin-boom-1800",
+      "source_sha256": "8782925379de607941a06b519cc9542f9cd2a240a31f51b4fee806feb327a3db",
+      "currency": "USD",
+      "price_date": "2026-10-25",
+      "valuation_kind": "independent_partial_inventory_costing",
+      "components": [
+        {
+          "id": "wing_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "EPO wing panels with spar, ailerons and two aileron servos. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "pod_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "pod_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "EPO pod, hatch, canopy and fittings. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "boom_left",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "boom_left"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Left carbon tail boom with mounts. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "boom_right",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "boom_right"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Right carbon tail boom with mounts. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "tail_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "tail_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Stabilizer, elevator, two fins and rudders with their servos. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "motor_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "motor_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "2820-class 920 Kv outrunner. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "propeller_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "propeller_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "11x7 pusher propeller and adapter; a propeller strike replaces this line only. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "esc_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "esc_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "60 A ESC with BEC. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "battery_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "battery_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "4S 5000 mAh LiPo flight pack. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "fpv_camera",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fpv_camera"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "FPV camera and nose mount. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "video_transmitter",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "video_transmitter"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Video transmitter and antenna. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "avionics_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "avionics_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Receiver, flight controller and GPS. Unpriced: no offer for this part was reviewed for the original twin-boom 1800 design (step 15); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced assembly, flight-controller setup, balancing and post-crash inspection labor. No transferable allowance assumed; not salvageable."
+        }
+      ],
+      "exclusions": [
+        {
+          "id": "ballast_reference",
+          "scope": "inventory",
+          "physical_inventory_ids": [
+            "ballast_reference"
+          ],
+          "reason": "Virtual reference-build balancing mass; it is not a purchasable component."
+        }
+      ],
+      "missing": [
+        "No USD offer was reviewed for any part of the original twin-boom 1800 build (step 15, 2026-11-16): every component line is unpriced, so damage is reported with an incomplete valuation.",
+        "Assembly, flight-controller setup and commissioning labor has no verified basis; no foam repair recipe applies to this aircraft yet.",
+        "No replacement price for economic component: wing_main.",
+        "No replacement price for economic component: pod_main.",
+        "No replacement price for economic component: boom_left.",
+        "No replacement price for economic component: boom_right.",
+        "No replacement price for economic component: tail_main.",
+        "No replacement price for economic component: motor_main.",
+        "No replacement price for economic component: propeller_main.",
+        "No replacement price for economic component: esc_main.",
+        "No replacement price for economic component: battery_main.",
+        "No replacement price for economic component: fpv_camera.",
+        "No replacement price for economic component: video_transmitter.",
+        "No replacement price for economic component: avionics_main.",
+        "No replacement price for economic component: final_assembly_and_commissioning."
+      ],
+      "complete": false,
+      "contact_components": {
+        "probe_wing_left_tip": [
+          "wing_main"
+        ],
+        "probe_wing_right_tip": [
+          "wing_main"
+        ],
+        "probe_nose": [
+          "pod_main",
+          "fpv_camera",
+          "battery_main"
+        ],
+        "probe_propeller_bottom": [
+          "propeller_main",
+          "motor_main"
+        ],
+        "probe_stabilizer_left_tip": [
+          "tail_main",
+          "boom_left"
+        ],
+        "probe_stabilizer_right_tip": [
+          "tail_main",
+          "boom_right"
+        ],
+        "probe_fin_left_top": [
+          "tail_main"
+        ],
+        "probe_fin_right_top": [
+          "tail_main"
+        ],
+        "probe_boom_left_end": [
+          "boom_left",
+          "tail_main"
+        ],
+        "probe_boom_right_end": [
+          "boom_right",
+          "tail_main"
+        ],
+        "probe_belly_nose": [
+          "pod_main",
+          "fpv_camera",
+          "battery_main"
+        ],
+        "probe_belly_forward": [
+          "pod_main",
+          "battery_main",
+          "video_transmitter"
+        ],
+        "probe_belly_centre": [
+          "pod_main",
+          "video_transmitter",
+          "avionics_main"
+        ],
+        "probe_belly_wing": [
+          "pod_main",
+          "avionics_main",
+          "esc_main",
+          "wing_main"
+        ],
+        "probe_belly_aft": [
+          "pod_main",
+          "esc_main",
+          "motor_main"
+        ],
+        "propeller/propulsion_main": [
+          "propeller_main"
+        ]
+      },
+      "propeller_component_id": "propeller_main",
+      "propeller_inspection_ids": [
+        "motor_main",
+        "pod_main"
+      ],
+      "physical_signature": {
+        "inventory": {
+          "wing_main": {
+            "name": "EPO wing panels, spar, ailerons and aileron servos",
+            "mass": 0.62,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "pod_main": {
+            "name": "EPO pod, hatch, canopy and fittings",
+            "mass": 0.46,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "boom_left": {
+            "name": "left carbon tail boom and mounts",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "boom_right": {
+            "name": "right carbon tail boom and mounts",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "tail_main": {
+            "name": "stabilizer, elevator, two fins and rudders with their servos",
+            "mass": 0.19,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "motor_main": {
+            "name": "2820-class 920 Kv outrunner",
+            "mass": 0.155,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "propeller_main": {
+            "name": "11x7 pusher propeller and adapter",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "esc_main": {
+            "name": "60 A ESC with BEC",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "battery_main": {
+            "name": "4S 5000 mAh battery",
+            "mass": 0.515625,
+            "mass_unit": "kg",
+            "energy_source": "lipo"
+          },
+          "fpv_camera": {
+            "name": "FPV camera and nose mount",
+            "mass": 0.03,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "video_transmitter": {
+            "name": "video transmitter and antenna",
+            "mass": 0.04,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "avionics_main": {
+            "name": "receiver, flight controller and GPS",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "ballast_reference": {
+            "name": "virtual reference-build balancing mass (wiring, connectors, hardware)",
+            "mass": 0.28937500000000016,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "electric_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "probe_belly_aft",
+          "probe_belly_centre",
+          "probe_belly_forward",
+          "probe_belly_nose",
+          "probe_belly_wing",
+          "probe_boom_left_end",
+          "probe_boom_right_end",
+          "probe_fin_left_top",
+          "probe_fin_right_top",
+          "probe_nose",
+          "probe_propeller_bottom",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_wing_left_tip",
+          "probe_wing_right_tip",
           "propeller/propulsion_main"
         ]
       }

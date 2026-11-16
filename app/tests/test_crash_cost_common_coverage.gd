@@ -36,6 +36,9 @@ const ESSENTIAL = {
 		"gear": ["gear_main", "gear_tail"], "propulsion": ["motor_main", "propeller_main"]},
 	"moonrunner-x99": {"wing": ["wing_left", "wing_right", "spars_main"], "body": ["body_main"],
 		"propulsion": ["motor_main", "motor_mount", "propeller_main"]},
+	# Step 15: gearless twin-boom; the booms belong to the body group, both fins and the stabilizer to tail_main.
+	"twin-boom-1800": {"wing": ["wing_main"], "body": ["pod_main", "boom_left", "boom_right"], "tail": ["tail_main"],
+		"propulsion": ["motor_main", "propeller_main"]},
 }
 var checks := 0
 var failures := 0
@@ -52,7 +55,7 @@ func _initialize() -> void:
 	route_ids.sort()
 	var expected_ids := ESSENTIAL.keys()
 	expected_ids.sort()
-	check("exactly eleven fixed-wing routes are independently listed", route_ids == expected_ids)
+	check("exactly twelve fixed-wing routes are independently listed", route_ids == expected_ids)
 	for id: String in route_ids:
 		var loaded: Dictionary = Catalog.load_for(id)
 		var physical: Dictionary = Aircraft.load_file(Routes.entry(id).data)

@@ -108,6 +108,28 @@ encloses the field so every bearing out crosses it, every town and farm on the r
 static meshes, field attachment, the patchwork switch on every ground material and back). The 51 scenery,
 landscape, ground and atmosphere tests and the 15 FPV/camera/golden tests pass.
 
+## Step 15 (done): Longreach 1800, a Skyhunter 1800-class twin-boom
+
+An original long-range FPV airplane (`twin-boom-1800`, experimental): 1.80 m, 2.6 kg, H-tail with twin fins, 4S
+920 Kv pusher, no landing gear (hand launch). It is an original design, not a replica: only the class figures (span,
+area, weight, power system) come from Skyhunter 1800 retail listings. One authored design file generates the physics
+(TB-01, TT-07 textbook build-up) and the model (TB-02, a stdlib GLB builder). Details, numbers and limits:
+[research/twin-boom-1800](../../research/twin-boom-1800/README.md).
+
+- **No flight-physics change.** The airplane uses existing laws and capabilities (`conventional`, `locked_up`,
+  `single_pusher`, `pack_ecm`, `tolerant_hull`). The golden tapes are bit-exact.
+- **No change to the other aircraft.** The model is a separately proved overlay family, so the base model and paint
+  registries and every other base manifest are byte-identical. Adding a family changes the shared overlay scripts
+  that the MoonRunner and electric Stik proofs hash. The electric Stik's paint kit (built in Blender) keeps its
+  template through an explicit reviewed identity pair in `custom_skin.gd`, the same mechanism the Stik and Extra use.
+- **Fleet integration.** Catalog entry, hand launch (with the MoonRunner), Workshop descriptor, paint slots, crash
+  economics (partial dossier with unpriced estimated lines and a cost profile), and the fleet tests' explicit lists.
+- **Not yet.** No paint kit (it needs Blender 5.2.2). Not flight-validated.
+
+Evidence: `tests/test_twin_boom_1800.gd` 17/17 (generators current, both data files load, trims 11–26 m/s, hands-off
+hand launch in calm air and a breeze, FC angle and cruise modes, model hinges and parts). The fleet sweep, the golden
+tapes and the aircraft, economy, Workshop and skin Python suites pass.
+
 ## Next
 
-- 15: Skyhunter 1800; 16: Multiplex FunJet.
+- 16: Multiplex FunJet-class fast delta (original design, tailless elevon pusher on the X8 capabilities).

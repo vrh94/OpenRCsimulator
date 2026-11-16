@@ -7,7 +7,7 @@ const PACKAGE_PROOF_FORMAT := "openrc-aircraft-model-package v1"
 const PACKAGE_PROOF_ROOT := "res://data/aircraft_models/proofs/"
 const TEXT_HASH := "lf_text"
 const BINARY_HASH := "raw"
-const OVERLAY_FAMILIES := ["moonrunner-x99", "stik-electric-6s"]
+const OVERLAY_FAMILIES := ["moonrunner-x99", "stik-electric-6s", "twin-boom-1800"]
 const CRASH_SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "engine", "propeller",
 	"horizontal_tail", "vertical_tail", "gear", "canopy"]
 

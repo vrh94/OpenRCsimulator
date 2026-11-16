@@ -22,6 +22,7 @@ const GLOW_FS64V := "stik-glow-fs64v-4t"
 const ELECTRIC := "stik-electric-6s"
 const HELI := "xcell-60-research"
 const X8 := "moonrunner-x99"
+const TWIN_BOOM := "twin-boom-1800"
 
 var _failures := 0
 var ui: RefCounted
@@ -164,7 +165,15 @@ func _run() -> void:
 	_check("MoonRunner X99: Home card and tooltip use the selected name",
 		home.aircraft_name_label.text == "MoonRunner X99" and home.aircraft_name_label.tooltip_text == "MoonRunner X99", home.aircraft_name_label.text)
 	_check("X8: catalog counter", home.aircraft_count_label.text == _aircraft_counter(X8), home.aircraft_count_label.text)
-	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before the X8.
+	# Step 15: the twin-boom 1800 follows the X8; also gearless, it starts by hand.
+	await ui.tap(KEY_ENTER)
+	await _preview(app)
+	_check("twin-boom 1800: shown, experimental, Fly enabled, starts by hand", home.aircraft_id == TWIN_BOOM and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental") and home.start_choice == "hand_launch"
+		and app.home_scene.airplane.aircraft_id == TWIN_BOOM and home.aircraft_name_label.text == "Longreach 1800"
+		and home.aircraft_count_label.text == _aircraft_counter(TWIN_BOOM),
+		"%s / %s / %s / %s" % [home.aircraft_id, home.start_choice, home.aircraft_status_label.text, home.aircraft_count_label.text])
+	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before the twin-boom.
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("helicopter is last in the catalog with the HX-700 preview and pad start",
@@ -198,7 +207,10 @@ func _run() -> void:
 	_check("previous through the RC vehicles reaches the last helicopter", home.aircraft_id == HELI and home.activity_id.is_empty(), home.selected_id())
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("previous from the helicopter returns to the X8", home.aircraft_id == X8, home.aircraft_id)
+	_check("previous from the helicopter returns to the twin-boom 1800", home.aircraft_id == TWIN_BOOM, home.aircraft_id)
+	await ui.tap(KEY_ENTER)
+	await _preview(app)
+	_check("previous again: the X8", home.aircraft_id == X8, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("previous again: the Lumber", home.aircraft_id == TIMBER, home.aircraft_id)

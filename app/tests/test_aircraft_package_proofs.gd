@@ -117,7 +117,9 @@ func _run_case(case_name: String, pack_path: String) -> void:
 			_check("electric model resolves from packaged source proofs", electric.get("ok", false), str(electric.get("errors", [])))
 			var companion: Dictionary = OverlayCustomization.describe("stik-electric-6s")
 			_check("electric companion resolves with packaged presentation proofs", companion.get("ok", false), str(companion.get("errors", [])))
-			_check("electric paint resolves with packaged adapter proofs", not ElectricSkin.identity(ElectricSkin.FAMILY).is_empty() and CustomSkin.base_identity(ElectricSkin.FAMILY) == ElectricSkin.identity(ElectricSkin.FAMILY))
+			# Step 15: the published kit keeps its reviewed template identity; the live identity is its admitted successor.
+			_check("electric paint resolves with packaged adapter proofs", ElectricSkin.identity(ElectricSkin.FAMILY) == CustomSkin.ELECTRIC_CURRENT_PAINT_IDENTITY
+				and CustomSkin.base_identity(ElectricSkin.FAMILY) == CustomSkin.ELECTRIC_LEGACY_PAINT_IDENTITY, ElectricSkin.identity(ElectricSkin.FAMILY))
 		elif case_name == "electric_missing_proof":
 			_check("electric model rejects an omitted packaged proof", not electric.get("ok", false) and _has_code(electric, "MODEL_PACKAGE_PROOF_MISSING"), str(electric))
 		else:

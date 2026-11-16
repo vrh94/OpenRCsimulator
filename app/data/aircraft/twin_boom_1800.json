@@ -1,0 +1,1365 @@
+{
+  "format": "openrc-aircraft v2",
+  "physical_identity_version": 1,
+  "id": "twin-boom-1800",
+  "description": "EXPERIMENTAL TB-01: original twin-boom EPO pusher in the 1.8 m long-range FPV class (Skyhunter 1800 class figures: 1.8 m, 36 dm2, 920 Kv, 11x7). Geometry/textbook aerodynamics, estimated inventory, borrowed APC 11x7 propeller map, estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight validated.",
+  "convention_id": "openrc-le-frd-v1",
+  "capabilities": {
+    "controls": "conventional",
+    "gear": "locked_up",
+    "propulsion_layout": "single_pusher",
+    "energy": "fixed_voltage",
+    "damage": "tolerant_hull",
+    "flaps": "not_simulated"
+  },
+  "frames": {
+    "le_frame": "D0: [x_aft,y_right,z_up] = [model Z,model X,model Y], metres; wing root leading edge on the symmetry plane",
+    "body": "FRD about inventory CG"
+  },
+  "reference": {
+    "wing_area": {
+      "value": 0.378,
+      "unit": "m2",
+      "kind": "derived",
+      "source": "assets/aircraft/twin-boom-1800/design.json (original design d1): straight taper, span x (root + tip) / 2"
+    },
+    "wing_span": {
+      "value": 1.8,
+      "unit": "m",
+      "kind": "manual",
+      "source": "Skyhunter 1800 class span 1800 mm (retail listings); design d1"
+    },
+    "mean_chord": {
+      "value": 0.21,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/twin-boom-1800/TB-01/derive_physics.py: S/b; MAC 0.2119 m"
+    },
+    "aero_reference_point": {
+      "value": [
+        0.06125,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/twin-boom-1800/TB-01/derive_physics.py: quarter chord of the unswept quarter-chord line at the datum height"
+    },
+    "planform": "tapered",
+    "root_chord": {
+      "value": 0.245,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/aircraft/twin-boom-1800/design.json (original design d1)"
+    },
+    "tip_chord": {
+      "value": 0.175,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/aircraft/twin-boom-1800/design.json (original design d1)"
+    }
+  },
+  "balance": {
+    "plan_cg": {
+      "value": [
+        0.095,
+        0.0,
+        -0.04290865384615385
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/twin-boom-1800/TB-01/derive_physics.py: design longitudinal CG (95 mm aft of the root LE, 41 % MAC), inventory-derived lateral/vertical CG"
+    },
+    "firewall": {
+      "value": [
+        0.295,
+        0.0,
+        -0.035
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/aircraft/twin-boom-1800/design.json (original design d1): motor mount plate at the pod's tail"
+    },
+    "configuration": "virtual-balanced-reference-v1",
+    "cg_tolerance": {
+      "value": 0.001,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "TB-01 reference build tolerance"
+    }
+  },
+  "inventory": [
+    {
+      "id": "wing_main",
+      "name": "EPO wing panels, spar, ailerons and aileron servos",
+      "mass": {
+        "value": 0.62,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.09,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.21,
+          1.8,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "pod_main",
+      "name": "EPO pod, hatch, canopy and fittings",
+      "mass": {
+        "value": 0.46,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.07,
+          0.0,
+          -0.075
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.72,
+          0.13,
+          0.13
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "boom_left",
+      "name": "left carbon tail boom and mounts",
+      "mass": {
+        "value": 0.07,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.555,
+          -0.21,
+          -0.015
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          1.01,
+          0.022,
+          0.022
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "boom_right",
+      "name": "right carbon tail boom and mounts",
+      "mass": {
+        "value": 0.07,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.555,
+          0.21,
+          -0.015
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          1.01,
+          0.022,
+          0.022
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "tail_main",
+      "name": "stabilizer, elevator, two fins and rudders with their servos",
+      "mass": {
+        "value": 0.19,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.97,
+          0.0,
+          0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.14,
+          0.5,
+          0.16
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "motor_main",
+      "name": "2820-class 920 Kv outrunner",
+      "mass": {
+        "value": 0.155,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.31,
+          0.0,
+          -0.035
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.035,
+          0.035
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "propeller_main",
+      "name": "11x7 pusher propeller and adapter",
+      "mass": {
+        "value": 0.025,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.345,
+          0.0,
+          -0.035
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.02,
+          0.2794,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "esc_main",
+      "name": "60 A ESC with BEC",
+      "mass": {
+        "value": 0.065,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.2,
+          0.0,
+          -0.08
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.07,
+          0.035,
+          0.015
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "battery_main",
+      "name": "4S 5000 mAh battery",
+      "mass": {
+        "value": 0.515625,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.2,
+          0.0,
+          -0.09
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.15,
+          0.05,
+          0.045
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      },
+      "energy_source": "lipo"
+    },
+    {
+      "id": "fpv_camera",
+      "name": "FPV camera and nose mount",
+      "mass": {
+        "value": 0.03,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.4,
+          0.0,
+          -0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.03,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "video_transmitter",
+      "name": "video transmitter and antenna",
+      "mass": {
+        "value": 0.04,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.02,
+          0.0,
+          -0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.05,
+          0.04,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "avionics_main",
+      "name": "receiver, flight controller and GPS",
+      "mass": {
+        "value": 0.07,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.06,
+          0.0,
+          -0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.08,
+          0.05,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "ballast_reference",
+      "name": "virtual reference-build balancing mass (wiring, connectors, hardware)",
+      "mass": {
+        "value": 0.28937500000000016,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: design flying mass minus the estimated component inventory; NOT measured hardware"
+      },
+      "position": {
+        "value": [
+          0.011922246220302687,
+          0.0,
+          -0.07
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: residual moment for the design CG; NOT measured ballast"
+      },
+      "size": {
+        "value": [
+          0.1,
+          0.06,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "TB-01 virtual balancing mass envelope (pod interior)"
+      }
+    }
+  ],
+  "start": {
+    "level_speed": {
+      "value": 12.8855934484415,
+      "unit": "m/s",
+      "kind": "derived",
+      "source": "research/twin-boom-1800/TB-01/derive_physics.py: 1.4 times clean 1-g stall (9.2 m/s) at the design mass and estimated CL_max: the trim a pilot sets for a hand launch, inside the class's 13-16 m/s cruise"
+    }
+  },
+  "controls": {
+    "surface_ids": {
+      "aileron_left": "surface_aileron_left",
+      "aileron_right": "surface_aileron_right",
+      "elevator": "surface_elevator",
+      "rudder": "surface_rudder"
+    },
+    "max_throw": {
+      "aileron": {
+        "value": 18.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "assets/aircraft/twin-boom-1800/design.json (original design d1): typical foam FPV throws; the two rudders move together"
+      },
+      "elevator": {
+        "value": 15.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "assets/aircraft/twin-boom-1800/design.json (original design d1): typical foam FPV throws; the two rudders move together"
+      },
+      "rudder": {
+        "value": 20.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "assets/aircraft/twin-boom-1800/design.json (original design d1): typical foam FPV throws; the two rudders move together"
+      }
+    },
+    "servo_full_throw_time": {
+      "value": 0.12,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "TB-01: 12 g metal-gear servo class (about 0.10 s/60 deg) over the estimated throws; not measured"
+    }
+  },
+  "aero": {
+    "source": "research/twin-boom-1800/TB-01/derive_physics.py: geometry/textbook estimate, no identified aerodynamics",
+    "conventions": {
+      "alpha_beta": "rad",
+      "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",
+      "elevator": "per radian, positive = trailing edge DOWN (dCm/dElev < 0)",
+      "aileron": "per radian per surface, positive = trailing edge DOWN; right and left listed separately",
+      "rudder": "per radian, positive = trailing edge LEFT (dCn/dRud < 0)",
+      "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|",
+      "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"
+    },
+    "coefficients": {
+      "CL0": {
+        "value": 0.34410007625210587,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CLa": {
+        "value": 4.8494126790888155,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CLq": {
+        "value": 4.332134970046472,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CLde": {
+        "value": 0.3196204940958192,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CLda_each": {
+        "value": 0.39265343552397486,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CD0": {
+        "value": 0.03125925925925926,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CL_minD": {
+        "value": 0.3,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "k_induced": {
+        "value": 0.04642019173513614,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CDda_each": {
+        "value": 0.0151,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CDdr": {
+        "value": 0.0303,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CDde": {
+        "value": 0.0135,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CYb": {
+        "value": -0.3028066446178336,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CYp": {
+        "value": -0.02589359836010064,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CYr": {
+        "value": 0.20025759528845427,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "CYdr": {
+        "value": 0.11652492947011138,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Clb": {
+        "value": -0.07189560309275797,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Clp": {
+        "value": -0.7478826337097598,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Clr": {
+        "value": 0.17860039914009238,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Clda_right": {
+        "value": -0.14738195214098893,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Clda_left": {
+        "value": 0.14738195214098893,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cldr": {
+        "value": 0.004660997178804456,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cm0": {
+        "value": 1.0071053720632495e-05,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cma": {
+        "value": -1.502353947325531,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cmq": {
+        "value": -17.27696684482819,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cmde": {
+        "value": -1.3260445499094407,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cmda_each": {
+        "value": -0.09816335888099373,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cnb": {
+        "value": 0.1039314222308115,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cnp": {
+        "value": -0.08290816326530615,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cnr": {
+        "value": -0.10929004539435709,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cnda_right": {
+        "value": 0.029326000681115152,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cnda_left": {
+        "value": -0.029326000681115152,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      },
+      "Cndr": {
+        "value": -0.059715014111074875,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: Helmbold finite wing/tails, thin-airfoil flap effectiveness, strip and tail-volume derivatives on the design d1 geometry (TT-07 method)"
+      }
+    },
+    "surfaces": {
+      "wing_aileron_effectiveness": {
+        "value": 0.3303844026940769,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: research/aero/aileron_effectiveness.py on the tapered strips; matches Clda_right; model consistency, not flight calibration"
+      },
+      "wing_section_cm_ac": {
+        "value": -0.06,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TB-01: cambered section moment about the aerodynamic centre (Clark-Y class); unmeasured"
+      },
+      "attached_limit": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TB-01: local attached flow/oracle boundary, established solver domain"
+      },
+      "tail_local_limit": {
+        "value": 12.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TB-01: tail attached flow angle limit; provisional"
+      },
+      "tail_stall_end": {
+        "value": 24.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TB-01: tail flat-plate transition end; provisional"
+      },
+      "tail_CD0": {
+        "value": 0.012,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TB-01: tail profile drag coefficient; provisional"
+      },
+      "tail_k": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TB-01: tail induced drag coefficient; provisional"
+      },
+      "tail_CD90": {
+        "value": 1.2642857142857145,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      },
+      "horizontal": {
+        "area": {
+          "value": 0.065,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "assets/aircraft/twin-boom-1800/design.json (original design d1): stabilizer chord x span"
+        },
+        "position": {
+          "value": [
+            0.9325,
+            0.0,
+            0.0
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "lift_slope": {
+          "value": 2.105848914489803,
+          "unit": "1/rad",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "control_effectiveness": {
+          "value": 0.882644567393753,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "incidence": {
+          "value": -0.03994402994084696,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "downwash_gradient": {
+          "value": 0.33328181042098215,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        }
+      },
+      "vertical": {
+        "area": {
+          "value": 0.0384,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "assets/aircraft/twin-boom-1800/design.json (original design d1): both fins, trapezoids above the stabilizer"
+        },
+        "position": {
+          "value": [
+            0.9836880215351701,
+            0.0,
+            0.07200000000000001
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "lift_slope": {
+          "value": 1.996377907956799,
+          "unit": "1/rad",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "control_effectiveness": {
+          "value": 0.5745616949074306,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "incidence": {
+          "value": 0.0,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        }
+      }
+    },
+    "reference_coefficients": {
+      "CLadot": {
+        "value": 1.4438217858051356,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      }
+    },
+    "envelope": {
+      "CL_max": {
+        "value": 1.3,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TB-01: clean flat-bottomed foam wing peak lift, no flaps; unmeasured"
+      },
+      "CL_min": {
+        "value": -0.9,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "TB-01: inverted peak lift of a cambered section; unmeasured"
+      },
+      "stall_blend_width": {
+        "value": 10.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TB-01: attached-to-flat-plate stall blending width (fleet practice)"
+      },
+      "CD90": {
+        "value": 1.2642857142857145,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      },
+      "sideslip_blend": {
+        "value": [
+          15,
+          25
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "TB-01 linear-to-sine sideslip blend (fleet value)"
+      }
+    }
+  },
+  "propulsion": {
+    "kind": "electric_prop",
+    "motor": {
+      "kv_rpm_per_volt": {
+        "value": 920,
+        "unit": "rpm/V",
+        "kind": "manual",
+        "source": "Skyhunter 1800 class power system: 2820 920 Kv motor (retail listings, design.json class_reference)"
+      },
+      "resistance_scope": "motor_winding_equivalent",
+      "resistance_ohm": {
+        "value": 0.05,
+        "unit": "ohm",
+        "kind": "estimated",
+        "source": "TB-01: equivalent winding resistance of a 28-mm 900 Kv-class outrunner (catalogue range 0.04-0.07 ohm); not measured"
+      },
+      "no_load_current_a": {
+        "value": 1.0,
+        "unit": "A",
+        "kind": "estimated",
+        "source": "TB-01: no-load current of a 28-mm 900 Kv-class outrunner near 10 V; not measured"
+      },
+      "no_load_context": {
+        "voltage_v": {
+          "value": 14.8,
+          "unit": "V",
+          "kind": "estimated",
+          "source": "TB-01: 4S nominal fixed bus (ideal-bus configuration); no sag or depletion"
+        },
+        "rpm": {
+          "value": 13570.0,
+          "unit": "rpm",
+          "kind": "derived",
+          "source": "research/twin-boom-1800/TB-01/derive_physics.py: Kv·(V − R·I0)"
+        },
+        "temperature_c": {
+          "value": 25.0,
+          "unit": "°C",
+          "kind": "estimated",
+          "source": "TB-01: context only; no thermal model"
+        }
+      }
+    },
+    "battery": {
+      "kind": "fixed_voltage",
+      "voltage_v": {
+        "value": 14.8,
+        "unit": "V",
+        "kind": "estimated",
+        "source": "TB-01: 4S nominal fixed bus (ideal-bus configuration); no sag or depletion"
+      }
+    },
+    "esc": {
+      "kind": "ideal_motoring",
+      "command_mapping": "identity"
+    },
+    "propeller": {
+      "diameter": {
+        "value": 0.2794,
+        "unit": "m",
+        "kind": "manual",
+        "source": "Skyhunter 1800 class 11x7 propeller, nominal 11 in"
+      },
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.1204
+          ],
+          [
+            0.373,
+            0.0933
+          ],
+          [
+            0.396,
+            0.0904
+          ],
+          [
+            0.417,
+            0.0877
+          ],
+          [
+            0.438,
+            0.0844
+          ],
+          [
+            0.462,
+            0.0803
+          ],
+          [
+            0.479,
+            0.0773
+          ],
+          [
+            0.501,
+            0.0731
+          ],
+          [
+            0.527,
+            0.0676
+          ],
+          [
+            0.549,
+            0.0629
+          ],
+          [
+            0.567,
+            0.0587
+          ],
+          [
+            0.594,
+            0.0526
+          ],
+          [
+            0.61,
+            0.0494
+          ],
+          [
+            0.638,
+            0.0432
+          ],
+          [
+            0.655,
+            0.0397
+          ],
+          [
+            0.68,
+            0.0348
+          ],
+          [
+            0.703,
+            0.0305
+          ],
+          [
+            0.723,
+            0.0267
+          ],
+          [
+            0.744,
+            0.0226
+          ],
+          [
+            0.766,
+            0.0184
+          ],
+          [
+            0.789,
+            0.0139
+          ],
+          [
+            0.81,
+            0.0099
+          ],
+          [
+            0.832,
+            0.0058
+          ],
+          [
+            0.852,
+            0.002
+          ],
+          [
+            0.876,
+            -0.0026
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC Volume 1 APC Sport 11x7 two-blade: static kt0473 at 5837.0 rpm and jb0480_6002 tunnel (manifests in research/timber/tt07). Borrowed for an 11x7 pusher; no same-propeller or RPM equivalence."
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.0541
+          ],
+          [
+            0.373,
+            0.058
+          ],
+          [
+            0.396,
+            0.0578
+          ],
+          [
+            0.417,
+            0.0574
+          ],
+          [
+            0.438,
+            0.0568
+          ],
+          [
+            0.462,
+            0.0558
+          ],
+          [
+            0.479,
+            0.055
+          ],
+          [
+            0.501,
+            0.0536
+          ],
+          [
+            0.527,
+            0.0515
+          ],
+          [
+            0.549,
+            0.0496
+          ],
+          [
+            0.567,
+            0.0477
+          ],
+          [
+            0.594,
+            0.0447
+          ],
+          [
+            0.61,
+            0.0432
+          ],
+          [
+            0.638,
+            0.0399
+          ],
+          [
+            0.655,
+            0.038
+          ],
+          [
+            0.68,
+            0.0352
+          ],
+          [
+            0.703,
+            0.0328
+          ],
+          [
+            0.723,
+            0.0307
+          ],
+          [
+            0.744,
+            0.0281
+          ],
+          [
+            0.766,
+            0.0255
+          ],
+          [
+            0.789,
+            0.0224
+          ],
+          [
+            0.81,
+            0.0195
+          ],
+          [
+            0.832,
+            0.0166
+          ],
+          [
+            0.852,
+            0.0137
+          ],
+          [
+            0.876,
+            0.0102
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC Volume 1 APC Sport 11x7 two-blade: static kt0473 at 5837.0 rpm and jb0480_6002 tunnel (manifests in research/timber/tt07). Borrowed for an 11x7 pusher; no same-propeller or RPM equivalence."
+      },
+      "rotating_inertia": {
+        "value": 0.0002,
+        "unit": "kg·m2",
+        "kind": "estimated",
+        "source": "TB-01: 11x7 pusher propeller, adapter and outrunner bell; not measured"
+      },
+      "thrust_angles": {
+        "value": [
+          0.0,
+          0.0
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "assets/aircraft/twin-boom-1800/design.json (original design d1): motor axis along the body axis"
+      },
+      "thrust_line_offset": {
+        "value": [
+          0.24999999999999997,
+          0.0,
+          0.00790865384615385
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/twin-boom-1800/TB-01/derive_physics.py: design propeller hub minus inventory CG; pusher aft of the CG"
+      }
+    },
+    "id": "propulsion_main"
+  },
+  "crash_hull": {
+    "value": [
+      [
+        0.0175,
+        -0.9,
+        0.03929484861766085
+      ],
+      [
+        0.0175,
+        0.9,
+        0.03929484861766085
+      ],
+      [
+        -0.43,
+        0.0,
+        -0.075
+      ],
+      [
+        0.345,
+        0.0,
+        -0.1747
+      ],
+      [
+        1.03,
+        -0.25,
+        0.0
+      ],
+      [
+        1.03,
+        0.25,
+        0.0
+      ],
+      [
+        1.0823760430703402,
+        -0.21,
+        0.16
+      ],
+      [
+        1.0823760430703402,
+        0.21,
+        0.16
+      ],
+      [
+        1.06,
+        -0.21,
+        -0.026
+      ],
+      [
+        1.06,
+        0.21,
+        -0.026
+      ],
+      [
+        -0.36,
+        0.0,
+        -0.135
+      ],
+      [
+        -0.26,
+        0.0,
+        -0.145
+      ],
+      [
+        -0.1,
+        0.0,
+        -0.145
+      ],
+      [
+        0.12,
+        0.0,
+        -0.14
+      ],
+      [
+        0.24,
+        0.0,
+        -0.115
+      ]
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "research/twin-boom-1800/TB-01/derive_physics.py: design wing tips, nose and pod belly stations, pusher disc bottom, stabilizer and fin tips, boom ends"
+  },
+  "crash_hull_ids": [
+    "probe_wing_left_tip",
+    "probe_wing_right_tip",
+    "probe_nose",
+    "probe_propeller_bottom",
+    "probe_stabilizer_left_tip",
+    "probe_stabilizer_right_tip",
+    "probe_fin_left_top",
+    "probe_fin_right_top",
+    "probe_boom_left_end",
+    "probe_boom_right_end",
+    "probe_belly_nose",
+    "probe_belly_forward",
+    "probe_belly_centre",
+    "probe_belly_wing",
+    "probe_belly_aft"
+  ],
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "nose",
+    "propeller",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top",
+    "fin_top",
+    "tail_end",
+    "tail_end",
+    "belly",
+    "belly",
+    "belly",
+    "belly",
+    "belly"
+  ],
+  "crash_tolerance": {
+    "terminal_specific_energy": {
+      "value": 12.5,
+      "unit": "J/kg",
+      "kind": "estimated",
+      "source": "EPO foam airframe, the MoonRunner X99's X8-08 estimate (five times the shared 2.5 J/kg); drop tests pending"
+    },
+    "crash_depth": {
+      "value": 0.12,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "a foam belly can bury about 12 cm in turf (X8-08 estimate)"
+    },
+    "presentation_durability": {
+      "value": 4.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "EPO against balsa/ply crash presentation divisor (X8-08 estimate)"
+    }
+  },
+  "plausibility": {
+    "mass_range": {
+      "value": [
+        2.3,
+        3.5
+      ],
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "Skyhunter 1800 class: recommended flying weight 3 kg, maximum 3.5 kg (retail listings); lighter 4S 5000 build"
+    },
+    "inertia_reference": {
+      "value": [
+        0.1846699268157051,
+        0.2936592778151652,
+        0.46616396458279336
+      ],
+      "unit": "kg·m2",
+      "kind": "derived",
+      "source": "research/twin-boom-1800/TB-01/derive_physics.py: same inventory box estimate; self-reference is no independent plausibility evidence"
+    }
+  }
+}

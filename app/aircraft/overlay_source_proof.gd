@@ -26,16 +26,38 @@ const ELECTRIC_SOURCE_PATHS := [
 	"res://aircraft/overlay_source_proof.gd",
 ]
 
+const TWIN_BOOM_FAMILY := "twin-boom-1800"
+const TWIN_BOOM_PROOF_SOURCE := "assets/aircraft/twin-boom-1800/runtime-proof.json"
+const TWIN_BOOM_SOURCE_PATHS := [
+	"assets/aircraft/twin-boom-1800/customization-bindings.json",
+	"assets/aircraft/twin-boom-1800/model-bindings.json",
+	"res://aircraft/customization_overlay.gd",
+	"res://aircraft/model_manifest.gd",
+	"res://aircraft/model_overlay_registry.gd",
+	"res://aircraft/model_registry.gd",
+	"res://aircraft/overlay_source_proof.gd",
+]
+
 static func source_paths(family: String) -> Array:
 	if family == "moonrunner-x99": return SOURCE_PATHS
 	if family == ELECTRIC_FAMILY: return ELECTRIC_SOURCE_PATHS
+	if family == TWIN_BOOM_FAMILY: return TWIN_BOOM_SOURCE_PATHS
 	return []
+
+static func _proof_source(family: String) -> String:
+	if family == ELECTRIC_FAMILY: return ELECTRIC_PROOF_SOURCE
+	if family == TWIN_BOOM_FAMILY: return TWIN_BOOM_PROOF_SOURCE
+	return PROOF_SOURCE
+
+static func _proof_format(family: String) -> String:
+	if family == ELECTRIC_FAMILY or family == TWIN_BOOM_FAMILY: return "openrc-%s-overlay-source-proof" % family
+	return FORMAT
 
 static func verify(manifest: Dictionary, family: String = "moonrunner-x99") -> Dictionary:
 	var paths := source_paths(family)
 	if paths.is_empty(): return _failure("Unknown overlay source proof family.")
-	var proof_source := ELECTRIC_PROOF_SOURCE if family == ELECTRIC_FAMILY else PROOF_SOURCE
-	var proof_format := "openrc-stik-electric-6s-overlay-source-proof" if family == ELECTRIC_FAMILY else FORMAT
+	var proof_source := _proof_source(family)
+	var proof_format := _proof_format(family)
 	var record := {}
 	for item: Variant in manifest.get("authoring_sources", []):
 		if item is Dictionary and item.get("path") == proof_source and item.get("role") == "overlay_runtime_proof":

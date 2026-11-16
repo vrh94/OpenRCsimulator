@@ -270,6 +270,7 @@
 # Generated overlay proof is checked byte-for-byte.
 /assets/aircraft/moonrunner-x99-overlay/runtime-proof.json text eol=lf
 /assets/aircraft/stik-electric-6s/runtime-proof.json text eol=lf
+/assets/aircraft/twin-boom-1800/runtime-proof.json text eol=lf
 # Historical Workshop fixtures assert exact bytes, independent of core.autocrlf.
 /app/tests/fixtures/moonrunner-overlay-pre-electric-descriptor.json text eol=lf
 /app/tests/fixtures/moonrunner-overlay-pre-electric-customization.json text eol=lf
@@ -292,6 +293,11 @@
 /app/aircraft/moonrunner_x99_geometry.gd text eol=lf
 /app/assets/aircraft/moonrunner-x99/moonrunner_x99.glb.import text eol=lf
 /app/assets/aircraft/moonrunner-x99/moonrunner_x99_bolido.glb.import text eol=lf
+
+# Step 15: generated twin-boom 1800 geometry and imported asset settings (TB-02 build_model.py --check).
+/assets/aircraft/twin-boom-1800/model-geometry.json text eol=lf
+/app/aircraft/twin_boom_1800_geometry.gd text eol=lf
+/app/assets/aircraft/twin-boom-1800/twin_boom_1800.glb.import text eol=lf
 
 # F4U geometry records the exact source JSON hashes.
 /assets/aircraft/f4u-corsair-250/gear-samples.json text eol=lf

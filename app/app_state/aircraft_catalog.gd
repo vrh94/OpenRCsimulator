@@ -149,6 +149,21 @@ const ENTRIES := [
 		battery_data = "res://data/aircraft/battery/moonrunner_x99_6s_pack.json",
 	},
 	{
+		# Step 15 (TB-01/TB-02): an original twin-boom EPO pusher in the Skyhunter 1800 class, model and physics generated
+		# from assets/aircraft/twin-boom-1800/design.json. Conventional controls (two rudders on one channel), pusher, no
+		# landing gear (hand launch), EPO tolerant hull.
+		id = "twin-boom-1800",
+		visual_family = "twin-boom-1800",
+		name = "Longreach 1800",
+		short_name = "Longreach 1800",
+		summary = "Twin-boom FPV · 1.80 m · 4S electric pusher",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: original long-range FPV design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated.",
+		data = "res://data/aircraft/twin_boom_1800.json",
+		# The finite 4S 5000 mAh class pack is the default battery mode, as on the MoonRunner.
+		battery_data = "res://data/aircraft/battery/twin_boom_1800_4s_pack.json",
+	},
+	{
 		id = "xcell-60-research",
 		vehicle = "rotorcraft",
 		visual_family = "hx-700",

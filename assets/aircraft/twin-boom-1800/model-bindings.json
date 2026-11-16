@@ -1,0 +1,129 @@
+{
+  "schema": "openrc-aircraft-model-bindings",
+  "version": 2,
+  "families": [
+    {
+      "family_id": "twin-boom-1800",
+      "builder": {
+        "script": "res://aircraft/imported_model.gd",
+        "adapter": "imported_glb"
+      },
+      "geometry": {
+        "script": "res://aircraft/twin_boom_1800_geometry.gd",
+        "source": "assets/aircraft/twin-boom-1800/model-geometry.json",
+        "revision_path": "revision",
+        "identity_path": "catalog_id",
+        "datum": {
+          "model_z_le": {
+            "value": 0.0
+          },
+          "model_y_thrust": {
+            "value": 0.0
+          }
+        }
+      },
+      "asset": {
+        "kind": "imported_glb",
+        "path": "res://assets/aircraft/twin-boom-1800/twin_boom_1800.glb",
+        "identity_path": "source_alias"
+      },
+      "bindings": {
+        "controls": {
+          "aileron_left": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_left",
+                "node": "aileron_left_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.aileron_left_hinge"
+              }
+            ]
+          },
+          "aileron_right": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_right",
+                "node": "aileron_right_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.aileron_right_hinge"
+              }
+            ]
+          },
+          "elevator": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevator",
+                "node": "elevator_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.elevator_hinge"
+              }
+            ]
+          },
+          "rudder": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "rudder_left",
+                "node": "rudder_left_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.rudder_left_hinge"
+              },
+              {
+                "key": "rudder_right",
+                "node": "rudder_right_hinge",
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.rudder_right_hinge"
+              }
+            ]
+          }
+        },
+        "rotor": {
+          "present": true,
+          "node": "propeller",
+          "spin_node": "propeller_spin",
+          "diameter": {
+            "path": "thrust.propeller_diameter.value"
+          },
+          "source": "geometry_articulation",
+          "geometry_ref": "articulations.propeller_spin"
+        },
+        "gear": {
+          "keys": {}
+        },
+        "crash": {
+          "provider": "gltf_extras",
+          "metadata_script": "",
+          "asset_node": ""
+        }
+      },
+      "authoring_sources": [
+        {
+          "path": "assets/aircraft/twin-boom-1800/design.json",
+          "role": "asset_identity"
+        },
+        {
+          "path": "assets/aircraft/twin-boom-1800/customization-bindings.json",
+          "role": "overlay_customization_source"
+        },
+        {
+          "path": "assets/aircraft/twin-boom-1800/runtime-proof.json",
+          "role": "overlay_runtime_proof"
+        }
+      ],
+      "construction": {
+        "version": 1,
+        "hinge_axis": "+X",
+        "rotor": {
+          "frame_node": "thrust_frame",
+          "geometry_ref": "thrust",
+          "axis": "+X"
+        },
+        "gear": [],
+        "material_grow": []
+      }
+    }
+  ]
+}

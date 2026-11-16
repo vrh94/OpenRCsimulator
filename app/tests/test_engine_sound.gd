@@ -18,6 +18,7 @@ const EXPECTED_AIRCRAFT_BLADE_COUNTS := {
 	"sebart-avanti-s-a200-p100rx": 2,
 	"turbo-lumber-evolution": 3,
 	"moonrunner-x99": 2, # X8-09: APC 12x6E(P) two-blade pusher
+	"twin-boom-1800": 2, # TB-01: 11x7 two-blade pusher (borrowed APC 11x7 tables)
 }
 
 class LegacySessionStub extends Node:

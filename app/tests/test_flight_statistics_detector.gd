@@ -143,6 +143,9 @@ func _test_profiles_for_catalog_fleet() -> void:
 				_test_moonrunner_unreviewed_hull(pack_path, pack.model, pack_bindings,
 					Profiles.resolve(aircraft_id, pack.model, pack_bindings))
 			continue
+		if aircraft_id == "twin-boom-1800":
+			_test_gearless_unreviewed(aircraft_id, model, bindings, profile)
+			continue
 		if aircraft_id in UNREVIEWED_WHEEL_IDS:
 			_check_unreviewed_wheel_profile(aircraft_id, aircraft_id, model, bindings, profile)
 			var battery_path := str(entry.get("battery_data", ""))
@@ -276,6 +279,18 @@ func _test_moonrunner_unreviewed_hull(path: String, model: Dictionary, bindings:
 		and not raw.has("landing_support") and not raw.get("capabilities", {}).has("landing_support")
 		and roles_absent and raw.get("crash_hull_components", [])[7] == "belly"
 		and raw.get("crash_hull_components", [])[8] == "belly")
+
+
+# Step 15: the twin-boom 1800 is hand-launched and belly-landed like the X8; it gets no fabricated wheel support either.
+func _test_gearless_unreviewed(aircraft_id: String, model: Dictionary, bindings: Dictionary, profile: Dictionary) -> void:
+	_check("%s authors locked-up gear with no installed wheels" % aircraft_id, model.get("capabilities", {}).get("gear") == "locked_up"
+		and model.get("landing_gear", {}).is_empty())
+	_check("%s landing credit is explicitly unavailable pending support review" % aircraft_id, profile.get("landing_available") == false
+		and profile.get("reason") == "unreviewed_aircraft_profile", str(profile.get("reason")))
+	_check("%s has no fabricated main/stop wheel maps" % aircraft_id, profile.get("main_indices", []).is_empty()
+		and profile.get("stop_indices", []).is_empty() and profile.get("rest_height_m") == -1.0)
+	_check("%s contact contract has zero wheel support bindings" % aircraft_id, bool(bindings.get("ok", false))
+		and bindings.get("support_points", []).is_empty() and not bindings.get("hull_probes", []).is_empty())
 
 
 func _test_takeoff_backfill_and_air_start() -> void:

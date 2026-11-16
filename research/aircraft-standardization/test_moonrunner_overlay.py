@@ -57,7 +57,7 @@ class ModelOverlayTests(unittest.TestCase):
         cls.temporary.cleanup()
 
     def test_base_aggregate_is_current_and_unchanged(self):
-        self.assertEqual(set(models.OVERLAY_SOURCES), {"moonrunner-x99", "stik-electric-6s"})
+        self.assertEqual(set(models.OVERLAY_SOURCES), {"moonrunner-x99", "stik-electric-6s", "twin-boom-1800"})
         self.assertEqual(set(custom.OVERLAY_SOURCES), set(models.OVERLAY_SOURCES))
         aggregate = self.root / custom.OUTPUT_PATH
         original = aggregate.read_bytes()

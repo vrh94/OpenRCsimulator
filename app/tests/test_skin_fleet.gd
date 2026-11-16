@@ -50,6 +50,11 @@ func _run() -> void:
 	var packages := {}
 	for id: String in ids:
 		var spec := Skins.kit(id)
+		if id == "twin-boom-1800":
+			# Step 15: kits are built in Blender 5.2.2 (tools/skins/build_skin_kits.py); until one is built, custom paint is
+			# refused cleanly and the Workshop's colour slots still apply.
+			check(id + " has no paint kit yet and refuses custom paint", spec.is_empty() and not Skins._base(id).get("ok", true))
+			continue
 		check(id + " has a kit", not spec.is_empty() and FileAccess.file_exists(Skins.kit_path(id)))
 		if spec.is_empty(): continue
 		check(id + " matches its stock identity", Skins.base_identity(id) == spec.stock_sha256)
@@ -128,7 +133,12 @@ func _test_paint_identity_guards(ids: PackedStringArray) -> void:
 			check(family + " accepts the restored kit identity", Skins.base_identity(family) == saved)
 	if ids.has(ElectricSkin.FAMILY):
 		var spec := Skins.kit(ElectricSkin.FAMILY)
-		check("electric paint binds its own verified model", not spec.is_empty() and ElectricSkin.identity(ElectricSkin.FAMILY) == spec.get("stock_sha256", ""))
+		check("electric paint binds its own verified model", not spec.is_empty()
+			and ElectricSkin.identity(ElectricSkin.FAMILY) == Skins.ELECTRIC_CURRENT_PAINT_IDENTITY
+			and spec.get("stock_sha256", "") == Skins.ELECTRIC_LEGACY_PAINT_IDENTITY
+			and Skins._compatible_paint_template(ElectricSkin.FAMILY, Skins.ELECTRIC_LEGACY_PAINT_IDENTITY, Skins.ELECTRIC_CURRENT_PAINT_IDENTITY))
+		check("electric template pair is refused for the Stik family",
+			not Skins._compatible_paint_template(ProceduralSkin.STIK, Skins.ELECTRIC_LEGACY_PAINT_IDENTITY, Skins.ELECTRIC_CURRENT_PAINT_IDENTITY))
 		check("electric paint rejects the Stik family", ElectricSkin.identity(ProceduralSkin.STIK).is_empty())
 		check("electric adapter rejects an unrelated family", not ElectricSkin.prepare(ProceduralSkin.STIK, null).ok)
 		if not spec.is_empty():

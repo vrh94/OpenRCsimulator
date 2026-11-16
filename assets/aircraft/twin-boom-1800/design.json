@@ -1,0 +1,62 @@
+{
+  "format": "openrc-twin-boom-design v1",
+  "catalog_id": "twin-boom-1800",
+  "revision": "d1",
+  "status": "Original OpenRC design (step 15): a twin-boom EPO pusher in the 1.8 m long-range FPV class (Skyhunter 1800 class). Our own parametric outline from the class's published headline figures (span, wing area, motor, propeller); no kit drawing, CAD, photograph or livery was used.",
+  "class_reference": "Retail listings of the SonicModell/ZOHD Skyhunter 1800 (checked 2026-11-16): span 1800 mm, length 1400 mm, main wing area 36 dm2, recommended flying weight 3 kg, 2820 920 Kv motor, 11x7 propeller, 60 A ESC, three 12 g servos (getfpv.com, motionrc.com, unmannedtechshop.co.uk). Used as class figures only.",
+  "frame": "LE frame [x_aft, y_right, z_up] in metres; D0 = wing root leading edge on the symmetry plane at the wing chord plane",
+  "wing": {
+    "span": 1.8,
+    "root_chord": 0.245,
+    "tip_chord": 0.175,
+    "quarter_chord_sweep_deg": 0.0,
+    "dihedral_deg": 2.5,
+    "incidence_deg": 2.0,
+    "thickness_ratio": 0.12,
+    "aileron_y": [0.5, 0.86],
+    "aileron_chord_fraction": 0.24
+  },
+  "pod": {
+    "stations": [
+      [-0.43, 0.0, -0.075, -0.075],
+      [-0.41, 0.03, -0.11, -0.04],
+      [-0.36, 0.05, -0.135, -0.02],
+      [-0.26, 0.065, -0.145, -0.012],
+      [-0.1, 0.065, -0.145, -0.012],
+      [0.12, 0.06, -0.14, -0.012],
+      [0.24, 0.045, -0.115, -0.015],
+      [0.3, 0.03, -0.08, -0.02]
+    ],
+    "stations_note": "[x, half width, bottom z, top z]; the wing sits on the pod's flat top",
+    "canopy": {"x": [-0.37, -0.12], "half_width": 0.04, "height": 0.035}
+  },
+  "booms": {"y": 0.21, "x": [0.05, 1.06], "z": -0.015, "radius": 0.011},
+  "stabilizer": {
+    "le_x": 0.9,
+    "chord": 0.13,
+    "span": 0.5,
+    "z": 0.0,
+    "thickness": 0.008,
+    "elevator_chord": 0.05
+  },
+  "fins": {
+    "y": 0.21,
+    "root_le_x": 0.9,
+    "root_z": 0.0,
+    "height": 0.16,
+    "root_chord": 0.15,
+    "tip_chord": 0.09,
+    "le_sweep_deg": 30.0,
+    "thickness": 0.008,
+    "rudder_chord": 0.045
+  },
+  "thrust": {
+    "hub": [0.345, 0.0, -0.035],
+    "propeller_diameter": 0.2794,
+    "downthrust_deg": 0.0,
+    "right_thrust_deg": 0.0
+  },
+  "throws_deg": {"aileron": 18.0, "elevator": 15.0, "rudder": 20.0},
+  "flying_mass_kg": 2.6,
+  "cg_aft_of_root_le_m": 0.095
+}

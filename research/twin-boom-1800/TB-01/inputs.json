@@ -1,0 +1,67 @@
+{
+  "format": "openrc-twin-boom-inputs v1",
+  "estimates": {
+    "section_slope_factor": {"value": 0.9, "unit": "1", "source": "TB-01: Helmbold section slope factor kappa for an unidentified cambered foam section (fleet practice, TT-07)"},
+    "control_efficiency": {"value": 0.8, "unit": "1", "source": "TB-01: thin-airfoil flap effectiveness correction for foam hinge gaps (fleet practice, TT-07)"},
+    "wing_zero_lift_angle": {"value": -0.045, "unit": "rad", "source": "TB-01: flat-bottomed cambered foam section zero-lift angle (Clark-Y class about -3 deg); unmeasured"},
+    "wing_section_moment": {"value": -0.06, "unit": "1", "source": "TB-01: cambered section moment about the aerodynamic centre (Clark-Y class); unmeasured"},
+    "tail_pressure_ratio": {"value": 0.92, "unit": "1", "source": "TB-01: tail dynamic pressure ratio; the pusher slipstream passes between the booms under the stabilizer"},
+    "fin_pressure_ratio": {"value": 0.92, "unit": "1", "source": "TB-01: fin dynamic pressure/sidewash ratio; fins outside the slipstream"},
+    "fin_endplate_factor": {"value": 1.35, "unit": "1", "source": "TB-01: stabilizer end-plate correction to each fin's geometric aspect ratio"},
+    "tail_incidence": {"value": 0.0, "unit": "rad", "source": "TB-01: stabilizer incidence relative to the body datum (design d1)"},
+    "skin_drag_coefficient": {"value": 0.022, "unit": "1", "source": "TB-01: skin/form drag coefficient of a foam pod-and-boom airframe at RC Reynolds number; provisional build-up"},
+    "excrescence_drag_area": {"value": 0.0035, "unit": "m2", "source": "TB-01: two 22 mm booms, antennas, camera and hinge drag area, m2; provisional"},
+    "span_efficiency": {"value": 0.8, "unit": "1", "source": "TB-01: Oswald efficiency of a moderately tapered high wing"},
+    "minimum_drag_lift": {"value": 0.3, "unit": "1", "source": "TB-01: cambered wing minimum profile-drag lift coefficient (fleet practice, TT-07)"},
+    "control_drag_aileron": {"value": 0.0151, "unit": "1", "source": "TB-01: borrowed UltraStick25e-class control drag (as TT-07)"},
+    "control_drag_elevator": {"value": 0.0135, "unit": "1", "source": "TB-01: borrowed UltraStick25e-class control drag (as TT-07)"},
+    "control_drag_rudder": {"value": 0.0303, "unit": "1", "source": "TB-01: borrowed UltraStick25e-class control drag (as TT-07)"},
+    "body_side_slope": {"value": 0.1, "unit": "1", "source": "TB-01: small pod sideslip side-force slope per radian"},
+    "high_wing_dihedral_effect": {"value": 0.01, "unit": "1", "source": "TB-01: provisional high-wing wing-body roll restoring increment"},
+    "adverse_yaw_factor": {"value": 0.3, "unit": "1", "source": "TB-01: differential profile/induced aileron adverse-yaw estimate (fleet practice)"},
+    "CL_max": {"value": 1.3, "unit": "1", "source": "TB-01: clean flat-bottomed foam wing peak lift, no flaps; unmeasured"},
+    "CL_min": {"value": -0.9, "unit": "1", "source": "TB-01: inverted peak lift of a cambered section; unmeasured"},
+    "stall_blend_width": {"value": 10.0, "unit": "deg", "source": "TB-01: attached-to-flat-plate stall blending width (fleet practice)"},
+    "attached_limit": {"value": 8.0, "unit": "deg", "source": "TB-01: local attached flow/oracle boundary, established solver domain"},
+    "tail_local_limit": {"value": 12.0, "unit": "deg", "source": "TB-01: tail attached flow angle limit; provisional"},
+    "tail_stall_end": {"value": 24.0, "unit": "deg", "source": "TB-01: tail flat-plate transition end; provisional"},
+    "tail_CD0": {"value": 0.012, "unit": "1", "source": "TB-01: tail profile drag coefficient; provisional"},
+    "tail_k": {"value": 0.08, "unit": "1", "source": "TB-01: tail induced drag coefficient; provisional"},
+    "motor_resistance": {"value": 0.05, "unit": "ohm", "source": "TB-01: equivalent winding resistance of a 28-mm 900 Kv-class outrunner (catalogue range 0.04-0.07 ohm); not measured"},
+    "motor_no_load_current": {"value": 1.0, "unit": "A", "source": "TB-01: no-load current of a 28-mm 900 Kv-class outrunner near 10 V; not measured"},
+    "bus_voltage": {"value": 14.8, "unit": "V", "source": "TB-01: 4S nominal fixed bus (ideal-bus configuration); no sag or depletion"},
+    "winding_temperature": {"value": 25.0, "unit": "°C", "source": "TB-01: context only; no thermal model"},
+    "rotor_inertia": {"value": 0.0002, "unit": "kg·m2", "source": "TB-01: 11x7 pusher propeller, adapter and outrunner bell; not measured"},
+    "servo_full_throw_time": {"value": 0.12, "unit": "s", "source": "TB-01: 12 g metal-gear servo class (about 0.10 s/60 deg) over the estimated throws; not measured"}
+  },
+  "inventory": [
+    {"id": "wing_main", "name": "EPO wing panels, spar, ailerons and aileron servos", "mass_kg": 0.62, "position": [0.09, 0.0, 0.0], "size": [0.21, 1.8, 0.03]},
+    {"id": "pod_main", "name": "EPO pod, hatch, canopy and fittings", "mass_kg": 0.46, "position": [-0.07, 0.0, -0.075], "size": [0.72, 0.13, 0.13]},
+    {"id": "boom_left", "name": "left carbon tail boom and mounts", "mass_kg": 0.07, "position": [0.555, -0.21, -0.015], "size": [1.01, 0.022, 0.022]},
+    {"id": "boom_right", "name": "right carbon tail boom and mounts", "mass_kg": 0.07, "position": [0.555, 0.21, -0.015], "size": [1.01, 0.022, 0.022]},
+    {"id": "tail_main", "name": "stabilizer, elevator, two fins and rudders with their servos", "mass_kg": 0.19, "position": [0.97, 0.0, 0.05], "size": [0.14, 0.5, 0.16]},
+    {"id": "motor_main", "name": "2820-class 920 Kv outrunner", "mass_kg": 0.155, "position": [0.31, 0.0, -0.035], "size": [0.04, 0.035, 0.035]},
+    {"id": "propeller_main", "name": "11x7 pusher propeller and adapter", "mass_kg": 0.025, "position": [0.345, 0.0, -0.035], "size": [0.02, 0.2794, 0.02]},
+    {"id": "esc_main", "name": "60 A ESC with BEC", "mass_kg": 0.065, "position": [0.2, 0.0, -0.08], "size": [0.07, 0.035, 0.015]},
+    {"id": "battery_main", "name": "4S 5000 mAh battery", "mass_kg": 0.515625, "position": [-0.2, 0.0, -0.09], "size": [0.15, 0.05, 0.045], "energy_source": "lipo"},
+    {"id": "fpv_camera", "name": "FPV camera and nose mount", "mass_kg": 0.03, "position": [-0.4, 0.0, -0.05], "size": [0.03, 0.03, 0.03]},
+    {"id": "video_transmitter", "name": "video transmitter and antenna", "mass_kg": 0.04, "position": [-0.02, 0.0, -0.05], "size": [0.05, 0.04, 0.02]},
+    {"id": "avionics_main", "name": "receiver, flight controller and GPS", "mass_kg": 0.07, "position": [0.06, 0.0, -0.04], "size": [0.08, 0.05, 0.03]}
+  ],
+  "inventory_source": "TB-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/twin-boom-1800/design.json; not weighed",
+  "propulsion": {
+    "kind": "electric_prop",
+    "motor": {
+      "kv_rpm_per_volt": {"value": 920, "unit": "rpm/V", "kind": "manual", "source": "Skyhunter 1800 class power system: 2820 920 Kv motor (retail listings, design.json class_reference)"},
+      "resistance_scope": "motor_winding_equivalent"
+    },
+    "battery": {"kind": "fixed_voltage"},
+    "esc": {"kind": "ideal_motoring", "command_mapping": "identity"},
+    "propeller": {
+      "diameter": {"value": 0.2794, "unit": "m", "kind": "manual", "source": "Skyhunter 1800 class 11x7 propeller, nominal 11 in"},
+      "ct_table": {"value": [[0.0, 0.1204], [0.373, 0.0933], [0.396, 0.0904], [0.417, 0.0877], [0.438, 0.0844], [0.462, 0.0803], [0.479, 0.0773], [0.501, 0.0731], [0.527, 0.0676], [0.549, 0.0629], [0.567, 0.0587], [0.594, 0.0526], [0.61, 0.0494], [0.638, 0.0432], [0.655, 0.0397], [0.68, 0.0348], [0.703, 0.0305], [0.723, 0.0267], [0.744, 0.0226], [0.766, 0.0184], [0.789, 0.0139], [0.81, 0.0099], [0.832, 0.0058], [0.852, 0.002], [0.876, -0.0026]], "unit": "1", "kind": "borrowed", "source": "UIUC Volume 1 APC Sport 11x7 two-blade: static kt0473 at 5837.0 rpm and jb0480_6002 tunnel (manifests in research/timber/tt07). Borrowed for an 11x7 pusher; no same-propeller or RPM equivalence."},
+      "cp_table": {"value": [[0.0, 0.0541], [0.373, 0.058], [0.396, 0.0578], [0.417, 0.0574], [0.438, 0.0568], [0.462, 0.0558], [0.479, 0.055], [0.501, 0.0536], [0.527, 0.0515], [0.549, 0.0496], [0.567, 0.0477], [0.594, 0.0447], [0.61, 0.0432], [0.638, 0.0399], [0.655, 0.038], [0.68, 0.0352], [0.703, 0.0328], [0.723, 0.0307], [0.744, 0.0281], [0.766, 0.0255], [0.789, 0.0224], [0.81, 0.0195], [0.832, 0.0166], [0.852, 0.0137], [0.876, 0.0102]], "unit": "1", "kind": "borrowed", "source": "UIUC Volume 1 APC Sport 11x7 two-blade: static kt0473 at 5837.0 rpm and jb0480_6002 tunnel (manifests in research/timber/tt07). Borrowed for an 11x7 pusher; no same-propeller or RPM equivalence."}
+    }
+  },
+  "conventions": {"alpha_beta": "rad", "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)", "elevator": "per radian, positive = trailing edge DOWN (dCm/dElev < 0)", "aileron": "per radian per surface, positive = trailing edge DOWN; right and left listed separately", "rudder": "per radian, positive = trailing edge LEFT (dCn/dRud < 0)", "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|", "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"}
+}
