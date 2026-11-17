@@ -12521,3 +12521,9 @@ msgstr "FPV de doble botalón · 1,80 m · propulsor eléctrico 4S"
 
 msgid "Experimental: original long-range FPV design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
 msgstr "Experimental: diseño FPV original de largo alcance con aerodinámica de manual y motorización eléctrica estimada; sin tren de aterrizaje (lanzamiento a mano), célula de espuma más resistente. Sin validar en vuelo."
+
+msgid "Key %s"
+msgstr "Tecla %s"
+
+msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
+msgstr "Pon la palanca de paso colectivo al %.0f%% (0° de paso, ahora %.1f°), luego arma y suelta el bloqueo."

@@ -83,7 +83,7 @@ func run() -> void:
  session.radio.profile.actions={helicopter_arm={type="button",button=25},helicopter_trainer={type="unbound"}}
  var custom: Dictionary=Actions.effective_bindings(session.radio.profile,flight.controller_capabilities())
  check("helicopter remaps and Clear beat defaults",custom.helicopter_arm.button==25 and custom.helicopter_trainer.type=="unbound")
- check("controller guide follows remapped arm and cleared trainer",flight.controller_controls_text().contains("25") and flight.controller_controls_text().contains(tr("Unbound")))
+ check("controller guide follows remapped arm; cleared trainer names its keyboard key",flight.controller_controls_text().contains("25") and flight.controller_controls_text().contains(tr("Key %s")%"G"))
  flight.free(); session.free()
  print("HELI-20 controller actions: %d checks, %d failed"%[checks,failures])
  quit(0 if failures==0 else 1)

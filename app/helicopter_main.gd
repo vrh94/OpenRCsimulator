@@ -356,6 +356,9 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  _hud.text+="\n"+(tr(session.pause_reason) if not session.pause_reason.is_empty() else _note)
  if wreck_active:
   _hud.text+="\n"+str(session.crash.component).replace("_"," ")+" · %.1f m/s · "%float(session.crash.normal_speed_mps)+tr("P: pause/resume wreck · R: restart")
+ elif session.power_phase()=="DISARMED" and session.radio.connected:
+  # HELI-RADIO-1: arming needs the collective within 1° of zero pitch, which on a radio is a low stick, not the bottom.
+  _hud.text+="\n"+tr("Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold.")%[session.startup_collective*100.0,rad_to_deg(session.collective_pitch())]
  elif session.power_phase()=="DISARMED":
   _hud.text+="\n"+tr("Center cyclic/yaw and set zero pitch before arming; release hold and wait for governed RPM.")
  # Cold start/coast are expected lifecycle states; their low-RPM model label is
@@ -510,6 +513,11 @@ func set_overlays_visible(on: bool) -> void:
 func controller_capabilities() -> Dictionary:
  return ControllerActions.HELICOPTER_CAPABILITIES.duplicate()
 
+## HELI-RADIO-1: a helicopter action the controller does not bind still works from the keyboard (_unhandled_input);
+## the guide names that key instead of only "Unbound", so a radio pilot can find how to arm and start the rotor.
+const KEYBOARD_FALLBACK := {"helicopter_arm": "B", "helicopter_hold": "H", "helicopter_mode": "I", "helicopter_trainer": "G",
+ "camera_cycle": "C", "restart_flight": "R", "pause": "P"}
+
 ## Show the saved bindings, including raw radio channels, instead of keyboard-only instructions.
 func controller_controls_text() -> String:
  var profile: Dictionary=session.radio.profile
@@ -524,6 +532,8 @@ func controller_controls_text() -> String:
    var prompt: String=Prompts.prompt(binding,family,info).text
    if profile.get("kind","")!="gamepad" and binding.get("type","")=="button":
     prompt=tr("Button %d")%int(binding.button)
+   elif binding.get("type","")=="unbound" and KEYBOARD_FALLBACK.has(action):
+    prompt=tr("Key %s")%KEYBOARD_FALLBACK[action]
    parts.append(prompt+": "+tr(str(ControllerActions.action_definition(action).label)))
   lines.append(" · ".join(parts))
  return "\n".join(lines)

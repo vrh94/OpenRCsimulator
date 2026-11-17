@@ -13874,3 +13874,9 @@ msgstr "Doppelleitwerksträger-FPV · 1,80 m · 4S-Elektro-Druckantrieb"
 
 msgid "Experimental: original long-range FPV design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
 msgstr "Experimentell: eigenes Langstrecken-FPV-Design mit Lehrbuch-Aerodynamik und geschätztem Elektroantrieb; kein Fahrwerk (Handstart), robustere Schaumzelle. Nicht flugerprobt."
+
+msgid "Key %s"
+msgstr "Taste %s"
+
+msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
+msgstr "Pitch-Knüppel auf %.0f%% stellen (0° Pitch, jetzt %.1f°), dann scharf schalten und Hold lösen."

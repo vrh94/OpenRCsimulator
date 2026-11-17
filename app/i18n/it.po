@@ -13756,3 +13756,9 @@ msgstr "FPV a doppia trave · 1,80 m · spingente elettrico 4S"
 
 msgid "Experimental: original long-range FPV design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
 msgstr "Sperimentale: progetto FPV originale a lungo raggio con aerodinamica da manuale e motorizzazione elettrica stimata; senza carrello (lancio a mano), cellula in espanso più robusta. Non validato in volo."
+
+msgid "Key %s"
+msgstr "Tasto %s"
+
+msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
+msgstr "Porta lo stick del collettivo al %.0f%% (passo 0°, ora %.1f°), poi arma e rilascia il blocco."

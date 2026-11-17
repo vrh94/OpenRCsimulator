@@ -840,7 +840,8 @@ func _height_over_radius(state: PackedFloat64Array) -> float:
  return (-state[2]-offset[2]-ground)/aircraft.context.main_model.rotor_radius_m
 
 func _ready() -> void:
- if external_controller_selection: return
+ # A session without input (tests, traces) never claims a physical controller, as on the airplane route.
+ if external_controller_selection or not input_enabled: return
  Input.joy_connection_changed.connect(_on_joy_connection_changed)
  for id: int in Input.get_connected_joypads():
   if not radio.connected: _on_joy_connection_changed(id,true)

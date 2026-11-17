@@ -13730,3 +13730,9 @@ msgstr "FPV с двумя балками · 1,80 м · толкающий эле
 
 msgid "Experimental: original long-range FPV design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
 msgstr "Экспериментальный: оригинальный дальний FPV-проект с учебной аэродинамикой и оценочной электросиловой установкой; без шасси (запуск с руки), более прочный пенопластовый планер. Не проверен в полёте."
+
+msgid "Key %s"
+msgstr "Клавиша %s"
+
+msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
+msgstr "Установите ручку общего шага на %.0f%% (шаг 0°, сейчас %.1f°), затем включите двигатель и снимите блокировку."
