@@ -1,289 +1,157 @@
-<a id="development-support"></a>
+# OpenRC Simulator — FPV fixed-wing fork
 
-<p align="center">
-  <a href="https://openai.com/">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="site/assets/brands/openai/OAI_OpenAI_Wordmark_White.svg">
-      <img src="site/assets/brands/openai/OAI_OpenAI_Wordmark_Black.svg" alt="OpenAI" width="220">
-    </picture>
-  </a>
-</p>
+**An open-source RC flight simulator with an optional FPV mode for fixed-wing airplanes.** Connect a USB radio
+(RadioMaster, DJI FPV Remote Controller 3 and others), a gamepad or the keyboard, and fly either from the pilot's
+position on the field or through an onboard FPV camera with an OSD, a flight controller and a radio/video link model.
 
-<p align="center">
-  <strong>Thank you, OpenAI, for supporting open source.</strong><br>
-  OpenAI provides a <strong>ChatGPT Pro subscription</strong> to support the maintainer's open-source projects, including OpenRC Simulator.<br>
-  This in-kind support helps us build, experiment and share with the RC community.<br>
-  <strong>AI development contributor: <a href="https://openai.com/codex/">Codex by OpenAI</a>.</strong>
-</p>
+This repository ([vrh94/OpenRCsimulator](https://github.com/vrh94/OpenRCsimulator)) is a fork of
+[bultodepapas/OpenRCsimulator](https://github.com/bultodepapas/OpenRCsimulator). It contains everything in the
+upstream source plus the **FPV fixed-wing work** described below. There is **no packaged download of this fork yet**:
+run it from source (see [Run from source](#run-from-source)). The upstream v0.2.7 release ZIPs
+([below](#upstream-release-downloads)) do **not** include the FPV additions.
 
----
+> **Beta / experimental.** Flight models use estimated data and still need independent measurements and pilot
+> evaluation. Automated tests check consistency and regressions; they do not prove real-aircraft accuracy. The FPV
+> additions never change the flight physics: the golden flight recordings stay bit-identical.
 
-<p align="center">
-  <a href="https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=hero">
-    <img src="site/assets/branding/openrc-banner.svg" alt="OpenRC Simulator — BETA" width="960">
-  </a>
-</p>
-
-# OpenRC Simulator
-
-**An open-source flying field for RC pilots.** Connect your USB transmitter, pick an airplane and fly from the pilot's position. A gamepad or keyboard works too. Explore sport flying, warbirds, electric models and jets, with external cameras when you want a closer look.
-
-**[Download and fly](#download-and-fly)** · **[Aircraft](#aircraft)** · **[Player guide](docs/FIRST-LAUNCH.md)** · **[Project website](https://bultodepapas.github.io/OpenRCsimulator/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=website)** · **[Roadmap and donations](#roadmap-and-donations)** · **[Supporters](#sponsors-and-supporters)** · **[For developers](#develop-and-contribute)**
-
-<p align="center">
-  <a href="https://www.paypal.com/paypalme/bultodepapas">
-    <img src="https://img.shields.io/badge/Donate%20via-PayPal-0070BA?logo=paypal&amp;logoColor=white&amp;style=for-the-badge" alt="Donate via PayPal">
-  </a>
-</p>
+**[What this fork adds](#what-this-fork-adds)** · **[Aircraft](#aircraft)** · **[Other vehicles](#other-vehicles)** ·
+**[Controllers](#controllers)** · **[Run from source](#run-from-source)** · **[Player guide](docs/FIRST-LAUNCH.md)** ·
+**[Develop](#develop-and-contribute)** · **[License](#license)**
 
 ![Home screen with MoonRunner X99 at Club field](docs/media/ui-home-moonrunner-x99.png)
 
-*Home with MoonRunner X99. Game images below were captured from development builds on **28–29 October 2026**, at **1920×1080**. [Capture details](docs/media/README.md#readme-gallery).*
+*Home screen (upstream capture, 28–29 October 2026, 1920×1080; [capture details](docs/media/README.md#readme-gallery)).*
 
-> **Beta preview.** The simulator is being built with the RC community. Flight models still need independent measurements and pilot evaluation; automated tests do not establish real-aircraft accuracy.
+## What this fork adds
 
-## Download and fly
+All of it is optional: with the default settings the simulator flies as upstream does, and the chase/pilot views,
+radio support and physics are unchanged. Everything is set under **Settings → Camera** and explained in the
+[player guide](docs/FIRST-LAUNCH.md).
 
-**Latest release: [v0.2.7](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.2.7).** Download your ZIP, extract it and launch. You do **not** need to install Godot or compile anything.
-
-| Platform | Download and launch |
+| Area | In this version |
 | --- | --- |
-| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.2.7&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download)<br>Open `OpenRC Simulator.exe`. |
-| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.2.7&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download)<br>Run `openrc-simulator.x86_64`. |
-| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.2.7&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download)<br>Open `OpenRC Simulator.app`. |
+| **Onboard FPV camera** (key **3**) | Camera on the airplane with field of view 70–150° (default 110°), uptilt −10…+30°, rigid or soft mount, flat / wide-angle / fisheye lens, video quality, camera shake, analog noise and motion blur. **FPV clean screen** hides the flight panels while flying FPV. |
+| **Cockpit view** (**Shift+3**) | Seat a quarter of the length behind the nose with a generic canopy frame (no aircraft has a modelled cockpit yet). |
+| **Look around** | Right-mouse head-look, **opentrack** head tracking (UDP 127.0.0.1:4242) and a **servo gimbal** driven by a radio knob/slider channel (pan and/or tilt). DJI's gimbal dial can tilt the camera. |
+| **OSD** | Betaflight, INAV or ArduPilot style: battery V / % / A / mAh (electric models), timer, 3D GPS speed, altitude, distance, home arrow, link quality, heading, artificial horizon, flight mode, warnings, trip distance, mAh/km and remaining time/distance to a 20 % reserve. Every element can be switched off. |
+| **Video link** | Analog video that breaks up with distance and behind hills, buildings and trees; 25–2500 mW transmitter and stock / patch / helical receiver antennas (about 6, 15 and 27 km at 2.5 W). |
+| **Flight controller** (FC-1) | INAV / ArduPilot-style modes on the radio's flight-mode switch or **M / Shift+M**: Manual, Acro, Angle (FBWA), Horizon, Altitude hold (FBWB), Cruise, Loiter, Return to home. It moves the same control surfaces as the pilot; Manual is identical to flying without it. |
+| **Radio link and failsafe** (FC-2) | Optional 2.4 GHz (ExpressLRS-like, about 6 km) or 900 MHz (about 30 km) link. Signal loss → return to home ("RX LOSS - RTH"), stick takeover when the link is back; optional RTH on video loss or low battery and a "BATT LOW FOR HOME" estimate. |
+| **Long-range scenery** (FC-4) | Visual-only ring road, three towns, two farms and two wind farms 6.5–16 km from the club field to navigate by; the field patchwork follows the airplane in the FPV views. |
+| **Units** | Metric by default in every language. |
+| **Controllers** | DJI FPV Remote Controller 3 recognised as a radio (USB `2ca3:1021`, "DJI Virtual Joystick"); helicopter HUD names the keyboard key for every unassigned helicopter action. |
+| **Aircraft** | **Longreach 1800**, an original long-range twin-boom FPV airplane in the Skyhunter 1800 class (see below). |
 
-[Checksums](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/SHA256SUMS) · [Release manifest](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/release-manifest.json) · [Linux ABI report](https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.2.7/linux-abi.json) · [Installation guide for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.2.7/docs/FIRST-LAUNCH.md) · [Release notes](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.2.7/docs/releases/v0.2.7.md). Archives are unsigned; the macOS app is ad-hoc signed, not notarized. The installation guide covers platform launch permissions. If a download does not start, use the [direct release assets](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.2.7).
+The step-by-step history is in the commit log (`FPV-1` … `FPV-10`, `UNITS-1`, `RADIO-DJI-1`, `FC-1` … `FC-4`,
+`Step 15`, `HELI-RADIO-1`) and in [the flight-controller plan](docs/plans/fixed-wing-flight-controller.md).
 
-**For your first flight:**
-
-1. Select **Ugly Stick** and **Club field**.
-2. Choose **Start: in the air**, **Calm** and **Day** for an uncomplicated start, or **Start: runway** to explore takeoffs and landings.
-3. Check your controls, then press **Fly**. **Esc** pauses, **R** restarts and **C / Shift+C** changes the view.
-
-### Bring your transmitter
-
-| Controls | Getting ready |
-| --- | --- |
-| **USB RC transmitter** | Connect in USB joystick mode with RF modules off. Select the radio profile and calibrate using the guide for your build. After saving calibration, move throttle away from low and back to low to arm. Transmitter rates and curves remain yours. |
-| **Gamepad** | Mapped pads have a Mode 2 starting layout. Check the displayed bindings and remap buttons as needed. |
-| **Keyboard** | Arrow keys: pitch/roll; **A / D**: rudder; **W / S**: throttle. **Down** pulls back on the elevator. |
-
-[Radio setup for this release](https://github.com/bultodepapas/OpenRCsimulator/blob/v0.2.7/docs/FIRST-LAUNCH.md#radio-setup) covers calibration. [Controls, rates, trims and equipment](docs/FIRST-LAUNCH.md#3-fly). Controller compatibility depends on the device, firmware and operating system.
-
-**The hangar and features below describe current source.** The published ZIP can differ from current source. Use the release notes for what your download includes.
+**Not in this version yet:** a fast FunJet-class delta (next step), ArduPilot SITL, multiplayer, and a packaged
+release of the fork. Shadows that look square in some interactive flights are an open issue.
 
 ## Aircraft
 
-Current source has **seven fixed-wing airframes and ten airplane configurations**. The Ugly Stik is the reference model; the other configurations are experimental. Click an aircraft for its guide, controls and modeling limits.
+Home offers **nine fixed-wing airplanes and one helicopter**. The Ugly Stick (glow) is the reference model; all
+others are **experimental**. Click a name for its guide, controls and modelling limits.
 
-### MoonRunner X99
+| Aircraft | Type | Notes |
+| --- | --- | --- |
+| [Ugly Stick](docs/UGLY-STIK-PLAN.md) | High-wing sport trainer · 1.52 m · .61 glow | Reference model, tricycle gear. |
+| Ugly Stick · Electric 6S | Same airframe · 6S electric | Finite battery or ideal supply. |
+| [Great Planes Extra 300S .60](docs/EXTRA-300-PLAN.md) | Low-wing aerobat · 1.63 m · .61 glow | Taildragger, finite fuel. |
+| [P-51D Mustang 1/4](docs/P51-PLAN.md) | Giant-scale warbird · 2.82 m · 120 cc gasoline | Flaps, retracts. |
+| [F4U-1D Corsair 1/4.5](docs/F4U-PLAN.md) | Giant-scale warbird · 2.78 m · Moki 250 radial | Flaps, retracts, folding wings, 13 paint schemes. |
+| [Vantage Jet](docs/AVANTI-S-PLAN.md) | Sport jet · 2.00 m · JetCat P100-RX | Spooling turbine, flaps, retracts. |
+| [Turbo Lumber Evolution](docs/TIMBER-INTEGRATION-PLAN.md) | High-wing STOL · 1.55 m · 4S electric | Fixed wheels. |
+| [MoonRunner X99](tools/aircraft/moonrunner/README.md) | EPO flying wing · 2.12 m · 6S electric pusher | Elevons, no gear: hand launch or airborne start. |
+| [Longreach 1800](research/twin-boom-1800/README.md) | Twin-boom FPV · 1.80 m · 4S electric pusher | **New in this fork.** Original design (not a replica) in the Skyhunter 1800 class: pod with nose camera, carbon booms, H-tail, hand launch, 4S 5000 mAh pack. Physics and 3D model come from one design file; numbers are estimates, not flight-validated; no paint kit yet. |
+| [RC Helicopter Research Trainer](docs/HELICOPTER.md) | X-Cell .60 physics · HX-700 visual | Ground-pad or hover start; see the [radio start sequence](docs/HELICOPTER.md). |
 
-**2.12 m · 6S electric pusher · elevons · hand launch or airborne start.** MoonRunner X99 joins the current-source hangar as an experimental flying wing, with no landing gear. [Model and asset pipeline](tools/aircraft/moonrunner/README.md) · [Aircraft asset terms](docs/AIRCRAFT-LICENSING.md).
-
-| MoonRunner X99 over Club field | MoonRunner X99 model close-up |
-| --- | --- |
-| ![MoonRunner X99 in a simulator flight over Club field](docs/media/flight-moonrunner-x99.png) | ![MoonRunner X99 model with swept wings, winglets and rear propeller](docs/media/studio-moonrunner-x99.png) |
-
-### Sport models, warbirds and jet
-
-<table>
-  <tr>
-    <td width="33%" align="center" valign="top">
-      <a href="docs/UGLY-STIK-PLAN.md"><img src="docs/media/studio-jensen-das-ugly-stik-60.png" alt="Red and white Jensen Das Ugly Stik 60, studio model view" width="288"></a><br>
-      <a href="docs/UGLY-STIK-PLAN.md"><strong>Jensen Das Ugly Stik 60</strong></a><br>
-      1.52 m · .61 glow · tricycle gear<br>
-      The reference sport model.
-    </td>
-    <td width="33%" align="center" valign="top">
-      <a href="docs/EXTRA-300-PLAN.md"><img src="docs/media/studio-gp-extra-300s-60.png" alt="Great Planes Extra 300S, studio model view" width="288"></a><br>
-      <a href="docs/EXTRA-300-PLAN.md"><strong>Extra 300S .60</strong></a><br>
-      1.63 m · .61 glow · taildragger<br>
-      An aerobatic airframe with finite fuel.
-    </td>
-    <td width="33%" align="center" valign="top">
-      <a href="docs/TIMBER-INTEGRATION-PLAN.md"><img src="docs/media/studio-turbo-lumber-evolution.png" alt="Turbo Lumber Evolution, studio model view" width="288"></a><br>
-      <a href="docs/TIMBER-INTEGRATION-PLAN.md"><strong>Turbo Lumber Evolution</strong></a><br>
-      1.55 m · 4S electric · fixed wheels<br>
-      Finite battery or optional ideal supply.
-    </td>
-  </tr>
-  <tr>
-    <td align="center" valign="top">
-      <a href="docs/P51-PLAN.md"><img src="docs/media/studio-p51d-mustang-120.png" alt="P-51D Mustang warbird, studio model view" width="288"></a><br>
-      <a href="docs/P51-PLAN.md"><strong>P-51D Mustang 1/4</strong></a><br>
-      2.82 m · 120 cc gasoline<br>
-      Flaps and retractable taildragger gear.
-    </td>
-    <td align="center" valign="top">
-      <a href="docs/F4U-PLAN.md"><img src="docs/media/studio-f4u-corsair-250.png" alt="F4U Corsair in its Midnight paint scheme, current studio model view" width="288"></a><br>
-      <a href="docs/F4U-PLAN.md"><strong>F4U-1D Corsair 1/4.5</strong></a><br>
-      2.78 m · Moki S250 radial<br>
-      Flaps, retracts, folding wings and 13 paint schemes.
-    </td>
-    <td align="center" valign="top">
-      <a href="docs/AVANTI-S-PLAN.md"><img src="docs/media/studio-sebart-avanti-s-a200-p100rx.png" alt="Vantage Jet, studio model view" width="288"></a><br>
-      <a href="docs/AVANTI-S-PLAN.md"><strong>Vantage Jet</strong></a><br>
-      2.00 m · JetCat P100-RX turbine<br>
-      Spooling turbine, flaps and retracts.
-    </td>
-  </tr>
-</table>
-
-**More ways to fly the Stik:** three additional [O.S. glow installations](docs/GLOW-ENGINES.md) — MAX-61FX, MAX-55AX and FS-64V — share its airframe, with finite fuel and engine start, cut and mixture controls.
-
-At **Club field**, geared airplanes offer runway or airborne starts. At **Green paradise**, they start airborne; MoonRunner X99 retains its hand-launch option. Aircraft equipment varies: use the in-game control guide for the selected model.
-
-[Full-size model views and capture details](docs/media/README.md#aircraft-stills). Studio views show the current models; the MoonRunner X99 flight image comes from the running simulator.
-
-## Current features
-
-| For the pilot | What you can explore |
-| --- | --- |
-| **Fly from the flightline** | Ground-pilot, chase, fly-by, orbit and close-up cameras; manual/automatic zoom and a ground-shadow aid. |
-| **Set up your controls** | Radio calibration, remapping, rates, trim, device-aware help and low-throttle arming. Disconnection pauses the flight for recovery. |
-| **Manage the model** | Aircraft-specific flaps, retracts, brakes, glow-engine controls, fuel and electric batteries. Source/configuration determines which equipment is available. |
-| **Change the conditions** | Wind, gusts, turbulence and atmosphere settings; separate day, dusk and night lighting. Restart repeats the selected conditions. |
-| **Practice and review** | Optional trim and emergency practice, local flight statistics, flight overlays, and fixed-wing logs: **F10** records, **F11** marks a maneuver. [Flight logging](docs/FLIGHT-LOGGING.md) |
-| **Hear and see the aircraft** | Positional engine/propeller sounds, field ambience, aircraft lights and supported exhaust/show-smoke effects. |
-| **Choose the graphics** | Standard and optional High/Forward+ modes. Current source also has a separate [Windows NVIDIA build](tools/graphics/native/README.md) with DLSS, DLAA and Reflex; it is not the v0.2.7 download. |
-
-The current interface offers **English, Español, 简体中文, Português (Brasil), Deutsch, Français, Italiano, Русский and 日本語**. The v0.2.7 download includes all nine.
-
-### Make a model your own
-
-The experimental **Aircraft Workshop** lets you save local builds, adjust supported setup parameters, customize supported paint/smoke/lighting options and launch test flights. You can compare changes and export/import builds. Available adjustments depend on the aircraft.
-
-| Appearance | Flight setup |
-| --- | --- |
-| ![Workshop appearance page with paint and registration controls](docs/media/ui-workshop-appearance.png) | ![Workshop flight-setup page with airframe scale and mass settings](docs/media/ui-workshop-setup.png) |
-
-[Workshop guide](docs/AIRCRAFT-WORKSHOP.md) · [Supported adjustments](docs/AIRCRAFT-WORKSHOP.md#supported-adjustments). These tools explore simulated configurations; they do not certify a real build.
-
-## Landscapes
-
-**Club field** has the runway, flightline, vegetation, lake, buildings and night fixtures. **Green paradise** offers an open, flat grass surface without scenery obstacles or a lake. Select the landscape on Home; to change it after flying, return to Home first.
-
-| Club field | Green paradise |
-| --- | --- |
-| ![Club field runway and surrounding scenery, captured in the application](docs/media/landscape-club-field.png) | ![Green paradise flat grass landscape, captured in the application](docs/media/landscape-green-paradise.png) |
-
-*Matching elevated views captured in the running simulator. Green paradise intentionally has no scenery obstacles.*
-
-[Landscape guide](docs/LANDSCAPES.md) · [Weather](docs/WIND-ATMOSPHERE-REFERENCE.md) · [Time of day](docs/TIME-OF-DAY-PLAN.md). Natural Random briefings use Club field; RC-car courses are separate.
-
-### Display targets
-
-**1920×1080 is the primary development target** for clarity, visual quality and performance. Higher resolutions, including 1440p and 4K, come next; 720p is the fallback priority. These are targets, not a hardware-performance guarantee. [Resolution policy](AGENTS.md#display-resolution-priorities).
-
-### Help shape the flight model
-
-RC experience is especially valuable here. Tell us the build, aircraft, controller and operating system, then describe the maneuver, your inputs, expected response and observed response. A flight log with a maneuver marker makes feedback easier to investigate.
-
-**[Send pilot feedback](https://github.com/bultodepapas/OpenRCsimulator/issues/new?template=pilot_feedback.md)** · **[Report a bug](https://github.com/bultodepapas/OpenRCsimulator/issues/new?template=bug_report.md)** · [How pilots can contribute](CONTRIBUTING.md#help-as-a-pilot).
-
-Handling, takeoffs/landings, controller compatibility and target-machine performance still need evaluation. Collision and repair-cost models are estimates, and flyable structural damage remains unfinished. [Roadmap](ROADMAP.md).
-
-## Other experimental activities
+Three O.S. glow installations of the Stik remain technical specimens ([glow engines](docs/GLOW-ENGINES.md)).
+Aircraft terms: [AIRCRAFT-LICENSING](docs/AIRCRAFT-LICENSING.md).
 
 <table>
   <tr>
-    <td width="33%" align="center" valign="top">
-      <a href="docs/HELICOPTER.md"><img src="docs/media/studio-xcell-60-research.png" alt="HX-700 visual surrogate used by the X-Cell helicopter research trainer" width="288"></a><br>
-      <a href="docs/HELICOPTER.md"><strong>RC Helicopter Research Trainer</strong></a><br>
-      X-Cell .60 reference physics with HX-700 surrogate visuals. Ground-pad or hover starts.
-    </td>
-    <td width="33%" align="center" valign="top">
-      <a href="research/rc-monster-truck/README.md"><img src="docs/media/studio-mt8-bisonte.png" alt="Bisonte MT8 RC monster truck, studio model view" width="288"></a><br>
-      <a href="research/rc-monster-truck/README.md"><strong>Bisonte MT8</strong></a><br>
-      Selectable in Home beside the aircraft, with its own driving course and keyboard or gamepad controls.
-    </td>
-    <td width="33%" align="center" valign="top">
-      <a href="research/rc-monster-truck/README.md"><img src="docs/media/studio-monster-car-2.png" alt="MONSTER CAR 2 RC truck, studio model view" width="288"></a><br>
-      <a href="research/rc-monster-truck/README.md"><strong>MONSTER CAR 2</strong></a><br>
-      The second truck adds nitro propulsion and fuel state.
-    </td>
+    <td width="33%" align="center"><img src="docs/media/studio-jensen-das-ugly-stik-60.png" alt="Ugly Stik 60 studio view" width="288"><br>Ugly Stick</td>
+    <td width="33%" align="center"><img src="docs/media/studio-moonrunner-x99.png" alt="MoonRunner X99 studio view" width="288"><br>MoonRunner X99</td>
+    <td width="33%" align="center"><img src="docs/media/studio-p51d-mustang-120.png" alt="P-51D Mustang studio view" width="288"><br>P-51D Mustang</td>
   </tr>
 </table>
 
-The advanced HX-700 helicopter candidate remains a laboratory project. Home's vehicle catalog also offers an experimental [5 m RC blimp](docs/research/rc-airship/BL-12/README.md) and [FPV quad with a local three-lap gate race](docs/research/drone-racing/M1-M3-2026-11-11/README.md). Their flight models use estimated data; physical, pilot and target-hardware qualification remain open.
+**Helicopter with a radio:** pull the collective fully down and press Continue, set the stick to about 17 % (the
+HUD shows the target and the current pitch), press **B** to arm and **H** to release the hold, wait for GOVERNED.
+A spring-centred throttle (DJI) sits at about +5.7° pitch, so set it to stay put for helicopters.
 
-## Roadmap and donations
+## Other vehicles
 
-**ArduPilot / Mission Planner SITL integration is on the roadmap.** The current priority is to make OpenRC Simulator more robust and efficient, and to improve controller and platform compatibility across Windows, Linux, macOS and ARM. SITL integration is planned, not available in the current download.
+Home's vehicle list also has the experimental **Bisonte MT8** and **MONSTER CAR 2** RC trucks on their own driving
+course ([RC trucks](research/rc-monster-truck/README.md)), a [5 m RC blimp](docs/research/rc-airship/BL-12/README.md)
+and an [FPV quad with a three-lap gate race](docs/research/drone-racing/M1-M3-2026-11-11/README.md). They use
+estimated data.
 
-We also want to bring OpenRC Simulator to **Steam**. Steam could make updates and installation easier, help more pilots discover the project, grow the community and give the developer better usage analytics. Its services could also help with a future online multiplayer implementation; multiplayer is not available yet.
+## Controllers
 
-The first donation goal is Steam's [**US$100 app submission fee**](https://partner.steamgames.com/doc/gettingstarted/appfee). If donations exceed that goal, the remaining funds will pay for AI model tokens to help develop and improve the simulator. **[Donate via PayPal](https://www.paypal.com/paypalme/bultodepapas).** Every contribution helps; thank you for supporting the project.
-
-## Sponsors and supporters
-
-[OpenAI's development support](#development-support) helps sustain this work. The acknowledgments below describe each manufacturer's or community partner's contribution.
-
-### Partners
-
-Thank you to the manufacturers who have granted permission for product representations. Their permissions have specific scopes; integration may still be pending.
-
-| Savox | SonicModell |
+| Controller | Getting ready |
 | --- | --- |
-| <a href="https://www.teamsavox.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="site/assets/brands/savox/TeamSavox-Logo-Mono-White.png"><img src="site/assets/brands/savox/TeamSavox-Logo-LightBG.webp" alt="Savox" width="180"></picture></a> | [<img src="site/assets/brands/sonicmodell/sonicmodell-logo.png" alt="SonicModell" width="180">](https://www.sonicmodell.com/) |
-| Product representations authorized; [servo catalogue integration planned](docs/plans/savox-servos.md). | Appearance, names and branding for the covered models, including Skyhunter models; integration pending. |
+| **USB RC radio** (RadioMaster, Jeti, …) | USB joystick mode, RF module off. Controls → **Set up this device…** → radio calibration. Move the throttle away from low and back to low to arm. Rates and curves stay on your radio. |
+| **DJI FPV Remote Controller 3** | USB-C data cable; it appears as "DJI Virtual Joystick" and is treated as a radio. Hold the throttle fully **down** through every calibration step, because the stick springs back to the middle. Live qualification with the hardware is still open. DJI motion controllers are not supported. |
+| **Gamepad** | Mode 2 starting layout; remap in Controls. |
+| **Keyboard** | Arrows: pitch/roll · A/D: rudder · W/S: throttle · C / Shift+C: views · 3 / Shift+3: FPV / cockpit · M: flight mode · Esc: pause · R: restart. |
 
-| Hitec RCD | FLYWING |
+Assign the **Flight mode** switch, gimbal channels and helicopter arm/hold in Controls → Extra channels / Buttons.
+[Full control reference](docs/FIRST-LAUNCH.md#3-fly).
+
+## Run from source
+
+Requires Git, Bash, curl, unzip and Python 3. The pinned engine is the official **Godot 4.8-beta2** prerelease,
+downloaded and verified by `app/get-godot.sh` (Linux x86_64, Windows x86_64 under Git Bash, macOS ARM64).
+
+```sh
+git clone -c core.autocrlf=false https://github.com/vrh94/OpenRCsimulator.git
+cd OpenRCsimulator
+"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import   # first time only
+"$(app/get-godot.sh)" --path app                                           # start the simulator
+```
+
+More in [developer setup](docs/TOOLS.md#developer-setup).
+
+### Upstream release downloads
+
+The packaged **upstream v0.2.7** release does not contain this fork's FPV work:
+
+| Platform | Download |
 | --- | --- |
-| [<img src="site/assets/brands/hitec/hitec-radio-logo-footer.png" alt="Hitec RCD" width="180">](https://www.hitecrcd.com/) | [<img src="site/assets/brands/flywing/flywing-logo.png" alt="FLYWING" width="180">](https://flywingrc.com/) |
-| Published servo products may be featured with official product links; integration pending. | Names, simplified exterior models and real color schemes within the agreed terms; models pending. |
-
-Further permissions cover **[GEMFAN](https://www.gemfanhobby.com/)** propeller names/representations and **[KONTRONIK](https://www.kontronik.com/)** independently recreated product models. **[Leomotion Drives](https://www.leomotiondrives.com/)** permits selected representations with render approval before publication. These integrations are pending.
-
-Manufacturer permissions do not imply financial sponsorship or validation of the flight models. [Permission scopes, conditions and logo sources](site/BRANDS.md) remain authoritative.
-
-### Community support
-
-[<img src="site/assets/brands/revoc/revoc-custom-logo.png" alt="REVOC Custom" width="180">](https://shop.revoc.eu/)
-
-Thank you to **REVOC Custom** for its community-supporter acknowledgment and to **[Aloft Hobbies](https://alofthobbies.com/)** for sharing the project and offering knowledge and feedback. These acknowledgments do not promise funding, hardware or product-representation rights.
-
-Pilot reports, real-world measurements, translations, licensed assets and development time all help. [Ways to contribute](CONTRIBUTING.md).
-
----
+| **Windows · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=windows&release=v0.2.7&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_windows#download) |
+| **Linux · x86_64** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=linux&release=v0.2.7&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_linux#download) |
+| **macOS · Apple Silicon / Intel** | [Download ZIP](https://bultodepapas.github.io/OpenRCsimulator/en.html?download=macos&release=v0.2.7&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=download_macos#download) |
 
 ## Develop and contribute
 
-The production application is in **`app/`**. Start with [developer setup](docs/TOOLS.md#developer-setup), then choose the relevant [tool and verification workflow](docs/tools/README.md). The documentation map and source define what is implemented; plans describe remaining work.
+The application is in **`app/`** (Godot 4.8-beta2, GDScript; custom float64 6-DoF kernel at a fixed 240 Hz with RK4;
+optional C++/GDExtension native backends). Aircraft data use the validated `openrc-aircraft v2` format and are
+generated by Python pipelines; see the [aircraft contract](docs/AIRCRAFT_CONTRACT.md) and
+[architecture](docs/STACK.md).
 
-### Technologies
+Run one test:
 
-| Layer | Current source |
-| --- | --- |
-| **Engine and application** | Pinned official **Godot 4.8-beta2** prerelease; **GDScript** for the application and reference simulation. See the release notes for the packaged engine version. |
-| **Flight dynamics** | Custom **float64**, six-degree-of-freedom rigid-body kernel, **RK4** and fixed **240 Hz** ticks. Vehicle-specific laws enter through `VehicleModel`. |
-| **Native evaluation** | In-house **C++ / GDExtension** backends with GDScript reference/fallback paths. [NK-3 selection and qualification](research/native-kernel/README.md#normal-flight-backend-selection) |
-| **Rendering** | Godot Compatibility/OpenGL and optional Forward+; [graphics modes](tools/graphics/README.md) own reconstruction options and platform limits. |
-| **Aircraft and assets** | Validated `openrc-aircraft v2` data with units, evidence and sources; **Python** source generators and **Blender / glTF** asset pipelines. |
-| **Verification and delivery** | Headless tests, golden flights, exact replay, schema/trace checks, rendered captures and **GitHub Actions** package checks for Windows, Linux and macOS. |
-
-```mermaid
-flowchart LR
-    Controls["Radio / gamepad / keyboard"] --> Session["Flight session"]
-    Data["Validated aircraft data"] --> Model["VehicleModel"]
-    Model --> Session
-    Session --> Kernel["Shared float64 kernel · 240 Hz"]
-    Kernel --> View["Rendering / audio / UI"]
-    Kernel --> Logs["Flight logs / replay"]
+```sh
+cd app
+python3 ../tools/godot/run_checked.py --timeout 600 -- "$(../app/get-godot.sh)" --headless --path . \
+  --audio-driver Dummy --script res://tests/test_twin_boom_1800.gd
 ```
 
-[Architecture and boundaries](docs/STACK.md) · [Aircraft authoring contract](docs/AIRCRAFT_CONTRACT.md). Simulation state stays separate from rendering, and generated data is rebuilt through its owning pipeline.
+Unplug joysticks before running the test suite: some tests otherwise read the physical controller. Tool index:
+[docs/tools](docs/tools/README.md) · [documentation map](docs/README.md) · [contributing](CONTRIBUTING.md).
 
-| I want to… | Start here |
-| --- | --- |
-| Fix a bug or improve a feature | [Contributing](CONTRIBUTING.md) · [Repository guidance](AGENTS.md) |
-| Add or refine an aircraft | [Aircraft contract](docs/AIRCRAFT_CONTRACT.md) · [Asset sources](assets/source-deliveries/README.md) |
-| Create a landscape | [Landscape authoring](docs/LANDSCAPES.md) |
-| Run tests, captures or exports | [Tool index](docs/tools/README.md) · [Release workflow](docs/TOOLS.md#release-sequence) |
-| Find a track or understand a decision | [Documentation map](docs/README.md) · [Roadmap](ROADMAP.md) · [Decisions](docs/DECISIONS.md) · [Lessons](docs/LEARNINGS.md) |
+## Upstream project and acknowledgments
 
-The three.js experiment in `prototypes/stage0/three/` is a frozen platform comparison; it is not the production simulator.
+OpenRC Simulator is created and maintained upstream by
+[bultodepapas](https://github.com/bultodepapas/OpenRCsimulator); its README lists the project's sponsors, manufacturer
+permissions and donation link. Manufacturer permission scopes for product representations are recorded in
+[site/BRANDS.md](site/BRANDS.md). The FPV fork work was developed with Claude Code.
 
 ## License
 
-Project code is [MIT](LICENSE). Models, recordings, brand marks and other assets keep their own terms: [aircraft permissions](docs/AIRCRAFT-LICENSING.md), [landscape provenance](assets/landscape/PROVENANCE.json), [scenery provenance](assets/scenery/PROVENANCE.json), [field credits](app/assets/landscape/UPGRADE_CREDITS.md), [tree license](app/assets/landscape/trees/LICENSE.txt) and [media provenance](docs/media/README.md). Reference scans with unclear redistribution rights are not bundled.
+Project code is [MIT](LICENSE). Models, recordings, brand marks and other assets keep their own terms:
+[aircraft permissions](docs/AIRCRAFT-LICENSING.md), [landscape provenance](assets/landscape/PROVENANCE.json),
+[scenery provenance](assets/scenery/PROVENANCE.json), [field credits](app/assets/landscape/UPGRADE_CREDITS.md),
+[tree license](app/assets/landscape/trees/LICENSE.txt) and [media provenance](docs/media/README.md).
