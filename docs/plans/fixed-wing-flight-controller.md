@@ -172,7 +172,19 @@ UIUC APC Sport 7x9 (pitch speed for 100 m/s at about 33,000 rpm), 200 A ESC, the
 
 Evidence: `tests/test_fast_delta_780_6s.gd` 16/16. Details: [FD-03](../../research/fast-delta-780/README.md#fd-03-the-6s-speed-variant).
 
+## Step 18 (done): Traxxas X-Maxx 8S replica
+
+- `x-maxx-8s` in the ground catalog and Home roster, generated from
+  [`assets/vehicles/x-maxx/design.json`](../../assets/vehicles/x-maxx/design.json) by XM-02 (GLB with named pivots) and
+  XM-01 (`openrc-ground-vehicle` data); [research/x-maxx](../../research/x-maxx/README.md) has the sources, the
+  estimates and the rights record. No logos or graphics (owner's choice); owner-stated Traxxas permission in DECISIONS.
+- `vehicles/ground/x_maxx_model.gd` poses arms, shocks, driveshafts, steering and wheels from the physics state; the
+  damage view gets separate bumpers, the lights optional `lamp_anchors`, the dashboard a per-vehicle scale label.
+- The truck physics is unchanged: the X-Maxx is data on the existing electric 4WD law (T = T0 (1 - w/w0)).
+- Evidence: `app/tests/test_x_maxx.gd`, 20 checks (generators, published figures, rig against data and GLB, paints,
+  roster, sag and clearance, top speed, steady corners).
+
 ## Next
 
-The plan's steps 12–17 are done; step 11 (shadows) is deferred. Planned next (user decisions 2026-11-17): an X-Maxx
-replica truck, truck tuning, a user mod folder, and a Triglav National Park landscape with solid terrain (Planica/Tamar).
+The plan's steps 12–18 are done; step 11 (shadows) is deferred. Planned next (user decisions 2026-11-17): truck
+tuning, a user mod folder, and a Triglav National Park landscape with solid terrain (Planica/Tamar).

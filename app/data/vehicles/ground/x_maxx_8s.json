@@ -1,0 +1,337 @@
+{
+  "format": "openrc-ground-vehicle",
+  "version": 1,
+  "id": "x-maxx-8s-replica-v1",
+  "name": "Traxxas X-Maxx 8S",
+  "description": "Replica of the Traxxas X-Maxx 8S from published dimensions, mass, tire size, motor Kv and claimed top speed (assets/vehicles/x-maxx/design.json); suspension, inertia, tire, ESC current and drivetrain values are labelled estimates, not measured vehicle data. Shape only, no logos or graphics.",
+  "drive_configuration": "electric_4wd",
+  "geometry_source": {
+    "spec_path": "assets/vehicles/x-maxx/design.json",
+    "spec_sha256": "d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6",
+    "glb_path": "app/assets/vehicles/x-maxx/x_maxx.glb",
+    "glb_sha256": "f865540b72c94a7462c07b5e49daf2fdaaa2d1ad51c40a2f0a0f50eeec45d80a",
+    "asset_frame": {
+      "right": "+X",
+      "up": "+Y",
+      "forward": "-Z"
+    },
+    "physics_frame": {
+      "forward": "+X",
+      "right": "+Y",
+      "down": "+Z"
+    },
+    "rights_status": "Replica of the Traxxas X-Maxx 8S (77086-4) made with the permission the project owner stated on 2026-11-17 (docs/DECISIONS.md). Shape and proportions only: no Traxxas logos, decals or graphics are included."
+  },
+  "parameters": {
+    "sprung_mass_kg": {
+      "value": 7.46,
+      "unit": "kg",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: 8.66 kg published without battery + 1.20 kg estimated packs - 4 x 0.60 kg unsprung"
+    },
+    "unsprung_mass_kg": {
+      "value": 0.6,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.unsprung_mass_per_corner: tire and wheel (about 0.45 kg) plus hub carrier, half the arms, half the shock and the outer driveshaft"
+    },
+    "sprung_inertia_kg_m2": {
+      "value": [
+        0.084211,
+        0.174887,
+        0.219983,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "kg m^2",
+      "kind": "estimated",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: 0.65 x a uniform 0.62 x 0.40 x 0.22 m box of the sprung mass (assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.sprung_envelope, sprung_gyration_factor)"
+    },
+    "wheel_spin_inertia_kg_m2": {
+      "value": 0.004417,
+      "unit": "kg m^2",
+      "kind": "estimated",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: tire and wheel 0.0026 plus the motor rotor 2.5e-05 reflected through 17.05:1 and shared by four wheels (0.0018)"
+    },
+    "gravity_m_per_s2": {
+      "value": 9.80665,
+      "unit": "m/s^2",
+      "kind": "borrowed",
+      "source": "standard gravity"
+    },
+    "corner_x_datum_frd_m": {
+      "value": [
+        0.24,
+        0.24,
+        -0.24,
+        -0.24
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: half the 0.480 m published wheelbase"
+    },
+    "corner_y_datum_frd_m": {
+      "value": [
+        -0.21900000000000003,
+        0.21900000000000003,
+        -0.21900000000000003,
+        0.21900000000000003
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: (0.540 m published width - 0.102 m tire width) / 2"
+    },
+    "corner_z_datum_frd_m": {
+      "value": [
+        0.027,
+        0.027,
+        0.027,
+        0.027
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.wheel_center_rest_below_datum: free-length wheel centre below the tub, set so the static ride height gives the published 102 mm clearance"
+    },
+    "cg_forward_from_datum_m": {
+      "value": 0.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "centred between the axles (battery pods either side of the motor)"
+    },
+    "cg_right_from_datum_m": {
+      "value": 0.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "symmetric layout"
+    },
+    "cg_height_above_chassis_datum_m": {
+      "value": 0.065,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.sprung_cg_above_datum: batteries and motor low in the tub (0.03-0.05 m), body shell and towers high (0.15-0.2 m)"
+    },
+    "arm_inner_offset_m": {
+      "value": 0.05,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.arm_inner_offset: inner hinge pins from the centre line"
+    },
+    "arm_length_m": {
+      "value": 0.169,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: wheel centre 0.2190 m minus the inner hinge offset"
+    },
+    "wheel_center_rest_below_chassis_datum_m": {
+      "value": 0.027,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.wheel_center_rest_below_datum: free-length wheel centre below the tub, set so the static ride height gives the published 102 mm clearance"
+    },
+    "tire_radius_m": {
+      "value": 0.1015,
+      "unit": "m",
+      "kind": "derived",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) published.tire_diameter: half of: Retailer listings of the 77086-4: 8.0 x 4.0 in tires (203 mm)"
+    },
+    "suspension_stiffness_n_per_m": {
+      "value": 800.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.wheel_rate: about 23 mm static sag and a 3.3 Hz corner ride frequency (static sag 22.9 mm)"
+    },
+    "suspension_damping_n_s_per_m": {
+      "value": 38.6264,
+      "unit": "N s/m",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: 0.50 of critical damping for 1.865 kg per corner on 800 N/m"
+    },
+    "tire_stiffness_n_per_m": {
+      "value": 5000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.tire_stiffness: large soft monster-truck tire"
+    },
+    "tire_damping_n_s_per_m": {
+      "value": 30.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.tire_damping: estimate"
+    },
+    "tire_slip_relaxation_s": {
+      "value": 0.05,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.tire_slip_relaxation: estimate for a large soft tire"
+    },
+    "travel_droop_m": {
+      "value": 0.085,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.travel_droop: droop travel from the spring's free length"
+    },
+    "travel_bump_m": {
+      "value": 0.065,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.travel_bump: bump travel from the spring's free length"
+    },
+    "bump_stop_stiffness_n_per_m": {
+      "value": 15000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "compliant bump stop"
+    },
+    "bump_stop_damping_n_s_per_m": {
+      "value": 100.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "compliant bump stop"
+    },
+    "droop_stop_stiffness_n_per_m": {
+      "value": 10000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "droop limit (shock fully extended)"
+    },
+    "droop_stop_damping_n_s_per_m": {
+      "value": 80.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "droop limit"
+    },
+    "drive_torque_per_wheel_nm": {
+      "value": 7.183339,
+      "unit": "N m",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: Kt 0.00749 N m/A x 250 A ESC limit (estimate) x 17.05:1 x 0.90 efficiency = 28.73 N m at the wheels, over four wheels. research/x-maxx/XM-01/derive_vehicle.py: 1275 Kv at 8S nominal (29.6 V) turns 3952 rad/s free; the 22.35 m/s claim taken as 95 % of free ground speed gives 23.5 m/s on the 0.1015 m tire, a free wheel speed of 231.8 rad/s and an overall ratio of 17.05:1"
+    },
+    "brake_torque_per_wheel_nm": {
+      "value": 2.5,
+      "unit": "N m",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.brake_torque_per_wheel: ESC brake through the drivetrain"
+    },
+    "brake_front_fraction": {
+      "value": 0.5,
+      "unit": "1",
+      "kind": "derived",
+      "source": "shaft-driven 4WD without a centre differential: the motor brake reaches both axles equally"
+    },
+    "reverse_torque_fraction": {
+      "value": 0.6,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.reverse_fraction: ESC reverse limit"
+    },
+    "drive_torque_fade_rad_s": {
+      "value": 231.786362,
+      "unit": "rad/s",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: 1275 Kv at 8S nominal (29.6 V) turns 3952 rad/s free; the 22.35 m/s claim taken as 95 % of free ground speed gives 23.5 m/s on the 0.1015 m tire, a free wheel speed of 231.8 rad/s and an overall ratio of 17.05:1"
+    },
+    "rolling_resistance_coefficient": {
+      "value": 0.04,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.rolling_resistance: large knobby tire"
+    },
+    "tire_friction_scale": {
+      "value": 0.95,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.tire_friction_scale: estimate"
+    },
+    "max_steer_angle_rad": {
+      "value": 0.5235987755982988,
+      "unit": "rad",
+      "kind": "estimated",
+      "source": "assets/vehicles/x-maxx/design.json (SHA-256 d3b6af11ba995735bfe426650463e1ce0b1d42743429f953e6a9a312129896b6) estimates.max_steer_angle: estimate"
+    },
+    "steer_servo_natural_frequency_rad_s": {
+      "value": 18.0,
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "high-torque steering servo (the fleet's value)"
+    },
+    "steer_servo_damping_ratio": {
+      "value": 0.9,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "the fleet's value"
+    },
+    "hull_probe_centers_datum_frd_m": {
+      "value": [
+        0.36,
+        0.0,
+        -0.025,
+        -0.36,
+        0.0,
+        -0.025,
+        0.0,
+        0.0,
+        -0.035,
+        0.22,
+        0.0,
+        -0.11,
+        0.17,
+        -0.15,
+        -0.1,
+        0.17,
+        0.15,
+        -0.1,
+        -0.075,
+        -0.11,
+        -0.205,
+        -0.075,
+        0.11,
+        -0.205,
+        -0.28,
+        -0.15,
+        -0.125,
+        -0.28,
+        0.15,
+        -0.125
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: spheres inside the XM-02 body and chassis (app/assets/vehicles/x-maxx/x_maxx.glb SHA-256 f865540b72c94a7462c07b5e49daf2fdaaa2d1ad51c40a2f0a0f50eeec45d80a); the tub probe's underside is the datum and the roof reaches the published 350 mm height at ride"
+    },
+    "hull_probe_radii_m": {
+      "value": [
+        0.03,
+        0.03,
+        0.035,
+        0.05,
+        0.045,
+        0.045,
+        0.045,
+        0.045,
+        0.045,
+        0.045
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/x-maxx/XM-01/derive_vehicle.py: sized to the body and chassis"
+    },
+    "hull_contact_stiffness_n_per_m": {
+      "value": 15000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "the fleet's value"
+    },
+    "hull_contact_damping_n_s_per_m": {
+      "value": 150.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "the fleet's value"
+    },
+    "hull_contact_friction_scale": {
+      "value": 0.6,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "the fleet's value"
+    }
+  }
+}

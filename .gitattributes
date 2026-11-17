@@ -169,6 +169,10 @@
 /app/assets/vehicles/monster-car-2/SOURCE.txt text eol=lf
 /assets/vehicles/monster-car-2/*.json -text
 /assets/vehicles/monster-car-2/SOURCE.txt text eol=lf
+# Step 18: the X-Maxx replica's design is hashed by its data; keep its bytes exact on every checkout.
+/assets/vehicles/x-maxx/design.json -text
+/app/assets/vehicles/x-maxx/x_maxx.glb binary
+/app/assets/vehicles/x-maxx/x_maxx.glb.import text eol=lf
 /research/rc-monster-truck/monster-car-2/visual_bake.py text eol=lf
 /app/data/economy/*.json text eol=lf
 /app/data/economy/**/*.json text eol=lf

@@ -299,6 +299,7 @@ func _ready() -> void:
 	dashboard = Dashboard.new()
 	dashboard.vehicle_name = _vehicle_entry.name
 	dashboard.nitro = _vehicle_entry.nitro
+	dashboard.scale_label = str(_vehicle_entry.get("scale", "1:8"))
 	dashboard.airfield = not use_practice_fixture
 	dashboard.track_available = _course.has("track")
 	for spawn: Dictionary in _course.get("spawns", []):

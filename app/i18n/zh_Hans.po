@@ -11853,6 +11853,12 @@ msgstr "遥控大脚车 · 电动四驱"
 msgid "Experimental: estimated electric 4WD model; mass, suspension and tires are estimates, not measured. The car setup opens before you drive."
 msgstr "实验性：估算的电动四驱模型；质量、悬挂和轮胎均为估算值，并非实测。驾驶前会打开车辆设置。"
 
+msgid "RC monster truck · 1/5 scale · 8S electric 4WD"
+msgstr "遥控大脚车 · 1/5 比例 · 8S 电动四驱"
+
+msgid "Experimental: replica from published dimensions, weight, tires, motor and top speed; suspension, tires and ESC current are estimates, not measured. The car setup opens before you drive."
+msgstr "实验性：根据公布的尺寸、重量、轮胎、电机和最高速度制作的复刻；悬挂、轮胎和电调电流均为估算值，并非实测。驾驶前会打开车辆设置。"
+
 msgid "RC monster truck · nitro 4WD"
 msgstr "遥控大脚车 · 硝基四驱"
 

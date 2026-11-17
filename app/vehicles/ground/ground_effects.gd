@@ -440,6 +440,9 @@ func _build_vehicle_lights(visual: Dictionary) -> bool:
 	var body_y := bounds.position.y + bounds.size.y * 0.53
 	var front_z := bounds.position.z - 0.013
 	var rear_z := bounds.end.z + 0.013
+	# A model may place its lamps itself (`lamp_anchors`: right-side head and tail lens centres in the vehicle frame,
+	# mirrored to the left); otherwise they follow the body's bounds.
+	var anchors: Dictionary = visual.get("lamp_anchors", {})
 	var sphere := SphereMesh.new()
 	sphere.radius = 0.013
 	sphere.height = 0.026
@@ -447,6 +450,8 @@ func _build_vehicle_lights(visual: Dictionary) -> bool:
 	sphere.rings = 6
 	for side in [-1.0, 1.0]:
 		var head_position := Vector3(side * half_width, body_y, front_z)
+		if anchors.get("head") is Vector3:
+			head_position = Vector3(side * absf(anchors.head.x), anchors.head.y, anchors.head.z)
 		var head_color := Color(1.0, 0.79, 0.48)
 		var head_material := _make_lens_material(head_color, 0.25)
 		_headlight_materials.append(head_material)
@@ -464,6 +469,8 @@ func _build_vehicle_lights(visual: Dictionary) -> bool:
 		_vehicle_root.add_child(spot)
 		_headlight_lights.append(spot)
 		var tail_position := Vector3(side * half_width * 0.83, body_y, rear_z)
+		if anchors.get("tail") is Vector3:
+			tail_position = Vector3(side * absf(anchors.tail.x), anchors.tail.y, anchors.tail.z)
 		var tail_color := Color(1.0, 0.025, 0.012)
 		var tail_material := _make_lens_material(tail_color, 0.18)
 		_tail_materials.append(tail_material)

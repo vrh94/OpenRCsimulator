@@ -1642,6 +1642,92 @@
 					}
 				}
 			]
+		},
+		"x-maxx-8s": {
+			"default_label": "Red",
+			"base": {
+				"XM_Paint": {
+					"albedo": "#c8102e",
+					"roughness": 0.12,
+					"clearcoat": 1.0,
+					"clearcoat_roughness": 0.03
+				},
+				"XM_Trim_Black": {
+					"albedo": "#141416",
+					"roughness": 0.6
+				},
+				"XM_Plastic_Black": {
+					"albedo": "#18181a",
+					"roughness": 0.55
+				},
+				"XM_Glass": {
+					"albedo": "#0a0d10",
+					"roughness": 0.04,
+					"specular": 0.6
+				},
+				"XM_Tire_Rubber": {
+					"albedo": "#1f1f21",
+					"roughness": 0.9,
+					"normal_texture": "res://assets/vehicle-paints/shared/rubber_normal.jpg",
+					"normal_scale": 0.8,
+					"triplanar_scale": 18.0
+				},
+				"XM_Wheel": {
+					"albedo": "#1c1d20",
+					"roughness": 0.4,
+					"metallic": 0.4
+				},
+				"XM_Metal": {
+					"roughness_texture": "res://assets/vehicle-paints/shared/brushed_metal_roughness.jpg",
+					"roughness": 0.6,
+					"triplanar_scale": 14.0,
+					"albedo": "#b9bcc2",
+					"metallic": 0.9
+				},
+				"XM_Spring": {
+					"albedo": "#202124",
+					"roughness": 0.45,
+					"metallic": 0.6
+				},
+				"XM_Light": {
+					"albedo": "#f6efd8",
+					"roughness": 0.1,
+					"emission": "#4a4638"
+				},
+				"XM_Accent": {
+					"albedo": "#7a7d82",
+					"roughness": 0.5
+				}
+			},
+			"skins": [
+				{
+					"id": "blue",
+					"label": "Blue",
+					"materials": {
+						"XM_Paint": {
+							"albedo": "#1450b4"
+						}
+					}
+				},
+				{
+					"id": "green",
+					"label": "Green",
+					"materials": {
+						"XM_Paint": {
+							"albedo": "#3fa535"
+						}
+					}
+				},
+				{
+					"id": "orange",
+					"label": "Orange",
+					"materials": {
+						"XM_Paint": {
+							"albedo": "#f06a14"
+						}
+					}
+				}
+			]
 		}
 	},
 	"detail_map_means": {

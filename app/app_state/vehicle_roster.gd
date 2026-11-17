@@ -43,6 +43,12 @@ const ACTIVITIES := [
 		summary = "RC monster truck · nitro 4WD",
 		status_note = "Experimental: supplied nitro 4WD estimate; engine, clutch, fuel and tires are simulated estimates, not measured. The car setup opens before you drive.",
 	},
+	{
+		id = "x-maxx-8s", family = GROUND,
+		name = "Traxxas X-Maxx 8S", short_name = "X-Maxx 8S",
+		summary = "RC monster truck · 1/5 scale · 8S electric 4WD",
+		status_note = "Experimental: replica from published dimensions, weight, tires, motor and top speed; suspension, tires and ESC current are estimates, not measured. The car setup opens before you drive.",
+	},
 ]
 
 

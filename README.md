@@ -40,11 +40,12 @@ radio support and physics are unchanged. Everything is set under **Settings → 
 | **Long-range scenery** (FC-4) | Visual-only ring road, three towns, two farms and two wind farms 6.5–16 km from the club field to navigate by; the field patchwork follows the airplane in the FPV views. |
 | **Units** | Metric by default in every language. |
 | **Controllers** | DJI FPV Remote Controller 3 recognised as a radio (USB `2ca3:1021`, "DJI Virtual Joystick"); calibrated radios also drive the RC trucks; helicopter HUD names the keyboard key for every unassigned helicopter action. |
-| **RC truck views** | Onboard FPV camera (3) and bumper camera (Shift+3) on the Bisonte MT8 and MONSTER CAR 2. |
+| **RC truck views** | Onboard FPV camera (3) and bumper camera (Shift+3) on every RC truck. |
+| **Traxxas X-Maxx 8S** (Step 18) | A drivable replica of the 8S monster truck from its published size, weight, tires, motor and top speed (about 84 km/h), generated from one editable design file, with four stock paints and no logos (see below). |
 | **Aircraft** | **Longreach 1800**, an original long-range twin-boom FPV airplane in the Skyhunter 1800 class, and **Dartwing 780**, an original fast flying wing in the FunJet class, also as a **6S speed version that holds 360 km/h** (see below). |
 
 The step-by-step history is in the commit log (`FPV-1` … `FPV-10`, `UNITS-1`, `RADIO-DJI-1`, `FC-1` … `FC-4`,
-`Step 15`, `Step 16`, `Step 17`, `HELI-RADIO-1`, `RADIO-CAR-1`, `CAR-VIEW-1`) and in [the flight-controller plan](docs/plans/fixed-wing-flight-controller.md).
+`Step 15`, `Step 16`, `Step 17`, `Step 18`, `HELI-RADIO-1`, `RADIO-CAR-1`, `CAR-VIEW-1`) and in [the flight-controller plan](docs/plans/fixed-wing-flight-controller.md).
 
 **Not in this version yet:** ArduPilot SITL, multiplayer, and a packaged
 release of the fork. Shadows that look square in some interactive flights are an open issue.
@@ -87,7 +88,10 @@ A spring-centred throttle (DJI) sits at about +5.7° pitch, so set it to stay pu
 ## Other vehicles
 
 Home's vehicle list also has the experimental **Bisonte MT8** and **MONSTER CAR 2** RC trucks on their own driving
-course ([RC trucks](research/rc-monster-truck/README.md)). In this fork they can be driven with a **calibrated RC radio**
+course ([RC trucks](research/rc-monster-truck/README.md)), and a **Traxxas X-Maxx 8S** replica: 0.78 m long, 9.9 kg
+with its two 4S packs, about 84 km/h flat out, and it wheelies on full throttle and spins out if you floor it with the
+wheel turned, so feather the throttle in turns. Its physics and model are generated from
+[one design file](assets/vehicles/x-maxx/design.json) you can edit ([how](research/x-maxx/README.md#modding-it)). In this fork they can be driven with a **calibrated RC radio**
 (aileron steers, elevator forward/back drives and reverses; DJI remotes work too) as well as a gamepad or the keyboard,
 and they have an **onboard FPV camera** (key **3**, using the FPV camera settings) and a **bumper camera**
 (**Shift+3**) besides chase, driver's stand, orbit and circuit overview. There is also a [5 m RC blimp](docs/research/rc-airship/BL-12/README.md)

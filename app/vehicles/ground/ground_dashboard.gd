@@ -13,6 +13,8 @@ signal controller_selected(device_id: int)
 var menu_visible := true
 var vehicle_name := "Bisonte MT8"
 var nitro := false
+## Scale shown under the name; the catalog entry's `scale` (the stock trucks are 1:8).
+var scale_label := "1:8"
 var fuel_status: Label
 var fuel_gauge: ProgressBar
 var engine_start_button: Button
@@ -139,7 +141,8 @@ func _ready() -> void:
 	column.add_theme_constant_override("separation", 10)
 	scroll.add_child(column)
 	header.add_child(_label(vehicle_name, 28))
-	header.add_child(_label(words("1:8 · Nitro 4WD · Experimental", "1:8 · Nitro 4×4 · Experimental") if nitro else words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
+	var kind: String = words("1:8 · Nitro 4WD · Experimental", "1:8 · Nitro 4×4 · Experimental") if nitro else words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental")
+	header.add_child(_label(kind.replace("1:8", scale_label) if scale_label != "1:8" else kind, 14))
 	if nitro:
 		fuel_status = _label("", 15)
 		fuel_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

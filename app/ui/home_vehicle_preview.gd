@@ -13,6 +13,7 @@ const MultirotorVisual := preload("res://vehicles/multirotor/multirotor_visual.g
 const AirshipVisual := preload("res://vehicles/airship/airship_visual.gd")
 const Mt8Model := preload("res://vehicles/ground/mt8_model.gd")
 const MonsterCar2Model := preload("res://vehicles/ground/monster_car_2_model.gd")
+const XMaxxModel := preload("res://vehicles/ground/x_maxx_model.gd")
 
 
 static func handles(id: String) -> bool:
@@ -23,7 +24,11 @@ static func handles(id: String) -> bool:
 static func resource_path(id: String, skin := "") -> String:
 	match Roster.family(id):
 		Roster.GROUND:
-			return Mt8Model.SCENE if id == "mt8-bisonte" else MonsterCar2Model.SCENE if id == "monster-car-2" else ""
+			match id:
+				"mt8-bisonte": return Mt8Model.SCENE
+				"monster-car-2": return MonsterCar2Model.SCENE
+				"x-maxx-8s": return XMaxxModel.SCENE
+			return ""
 		Roster.MULTIROTOR:
 			return MultirotorVisual.MODEL_PATH
 		Roster.AIRSHIP:

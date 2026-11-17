@@ -7,6 +7,7 @@ const FORMAT := "openrc-ground-vehicle"
 const VERSION := 1
 const DEFAULT_PATH := "res://data/vehicles/ground/mt8_bisonte.json"
 const MONSTER_CAR_2_PATH := "res://data/vehicles/ground/monster_car_2.json"
+const X_MAXX_PATH := "res://data/vehicles/ground/x_maxx_8s.json"
 const KINDS := ["manual", "measured", "derived", "borrowed", "estimated"]
 const TOP_KEYS := ["format", "version", "id", "name", "description", "drive_configuration", "geometry_source", "parameters", "powertrain"]
 const REQUIRED_TOP_KEYS := ["format", "version", "id", "name", "description", "drive_configuration", "geometry_source", "parameters"]
@@ -99,7 +100,7 @@ static func load_default() -> Dictionary:
 	return load_file(DEFAULT_PATH)
 
 
-## Resolve only the two application vehicle IDs. `load_default()` remains the
+## Resolve only the application vehicle IDs. `load_default()` remains the
 ## historical Bisonte entry point and is intentionally byte/model compatible.
 static func load_vehicle(vehicle_id: String) -> Dictionary:
 	match vehicle_id:
@@ -107,6 +108,8 @@ static func load_vehicle(vehicle_id: String) -> Dictionary:
 			return load_default()
 		"monster-car-2":
 			return load_file(MONSTER_CAR_2_PATH)
+		"x-maxx-8s":
+			return load_file(X_MAXX_PATH)
 		_:
 			return _result(PackedStringArray(["Unknown ground vehicle id: %s" % vehicle_id]))
 

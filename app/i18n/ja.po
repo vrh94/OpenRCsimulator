@@ -11904,6 +11904,12 @@ msgstr "RCモンスタートラック · 電動4WD"
 msgid "Experimental: estimated electric 4WD model; mass, suspension and tires are estimates, not measured. The car setup opens before you drive."
 msgstr "実験段階：推定の電動4WDモデルです。質量、サスペンション、タイヤは推定値で、実測ではありません。運転前にカーのセットアップが開きます。"
 
+msgid "RC monster truck · 1/5 scale · 8S electric 4WD"
+msgstr "RCモンスタートラック · 1/5スケール · 8S電動4WD"
+
+msgid "Experimental: replica from published dimensions, weight, tires, motor and top speed; suspension, tires and ESC current are estimates, not measured. The car setup opens before you drive."
+msgstr "実験段階：公表された寸法、重量、タイヤ、モーター、最高速度に基づくレプリカです。サスペンション、タイヤ、ESC電流は推定値で、実測ではありません。運転前にカーのセットアップが開きます。"
+
 msgid "RC monster truck · nitro 4WD"
 msgstr "RCモンスタートラック · ニトロ4WD"
 

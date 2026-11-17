@@ -12798,6 +12798,12 @@ msgstr "RC-Monstertruck · elektrisch 4WD"
 msgid "Experimental: estimated electric 4WD model; mass, suspension and tires are estimates, not measured. The car setup opens before you drive."
 msgstr "Experimentell: geschätztes elektrisches 4WD-Modell; Masse, Fahrwerk und Reifen sind Schätzwerte, nicht gemessen. Das Auto-Setup öffnet sich vor der Fahrt."
 
+msgid "RC monster truck · 1/5 scale · 8S electric 4WD"
+msgstr "RC-Monstertruck · Maßstab 1:5 · 8S elektrisch 4WD"
+
+msgid "Experimental: replica from published dimensions, weight, tires, motor and top speed; suspension, tires and ESC current are estimates, not measured. The car setup opens before you drive."
+msgstr "Experimentell: Nachbau nach veröffentlichten Maßen, Gewicht, Reifen, Motor und Höchstgeschwindigkeit; Fahrwerk, Reifen und Reglerstrom sind Schätzwerte, nicht gemessen. Das Auto-Setup öffnet sich vor der Fahrt."
+
 msgid "RC monster truck · nitro 4WD"
 msgstr "RC-Monstertruck · Nitro 4WD"
 

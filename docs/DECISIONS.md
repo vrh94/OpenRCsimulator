@@ -348,6 +348,19 @@ containment with either backend; do not build a generic backend framework meanwh
 [SQLite WAL](https://www.sqlite.org/wal.html) requires same-host access, so remote
 workers must use structured transport rather than share this database.
 
+### Replicate the Traxxas X-Maxx with the owner's stated permission
+
+**Step 18, 2026-11-17.** The project owner asked for an identical model of the
+Traxxas X-Maxx and stated that they have Traxxas's permission. The truck is a
+replica under its real name (`x-maxx-8s`, "Traxxas X-Maxx 8S"), built from
+published figures and generated geometry
+([research/x-maxx](../research/x-maxx/README.md)). At the owner's request it
+carries no Traxxas logos or graphics, and none were taken from the web. The written
+grant is not in this repository; the replica's
+[rights record](../research/x-maxx/README.md#rights-record) lists what it must cover.
+Revisit if the grant does not cover public source, forks or binaries: rename the
+catalog entry and keep the generic shape.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.
