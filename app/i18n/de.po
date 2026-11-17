@@ -13880,3 +13880,6 @@ msgstr "Taste %s"
 
 msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
 msgstr "Pitch-Knüppel auf %.0f%% stellen (0° Pitch, jetzt %.1f°), dann scharf schalten und Hold lösen."
+
+msgid "Bumper camera"
+msgstr "Stoßstangenkamera"

@@ -13907,3 +13907,6 @@ msgstr "Touche %s"
 
 msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
 msgstr "Placez le manche de pas collectif à %.0f%% (pas de 0°, actuellement %.1f°), puis armez et relâchez le maintien."
+
+msgid "Bumper camera"
+msgstr "Caméra pare-chocs"

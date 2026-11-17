@@ -13762,3 +13762,6 @@ msgstr "Tasto %s"
 
 msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
 msgstr "Porta lo stick del collettivo al %.0f%% (passo 0°, ora %.1f°), poi arma e rilascia il blocco."
+
+msgid "Bumper camera"
+msgstr "Telecamera paraurti"

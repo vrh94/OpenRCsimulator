@@ -13736,3 +13736,6 @@ msgstr "Клавиша %s"
 
 msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
 msgstr "Установите ручку общего шага на %.0f%% (шаг 0°, сейчас %.1f°), затем включите двигатель и снимите блокировку."
+
+msgid "Bumper camera"
+msgstr "Камера на бампере"

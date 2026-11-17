@@ -39,11 +39,12 @@ radio support and physics are unchanged. Everything is set under **Settings → 
 | **Radio link and failsafe** (FC-2) | Optional 2.4 GHz (ExpressLRS-like, about 6 km) or 900 MHz (about 30 km) link. Signal loss → return to home ("RX LOSS - RTH"), stick takeover when the link is back; optional RTH on video loss or low battery and a "BATT LOW FOR HOME" estimate. |
 | **Long-range scenery** (FC-4) | Visual-only ring road, three towns, two farms and two wind farms 6.5–16 km from the club field to navigate by; the field patchwork follows the airplane in the FPV views. |
 | **Units** | Metric by default in every language. |
-| **Controllers** | DJI FPV Remote Controller 3 recognised as a radio (USB `2ca3:1021`, "DJI Virtual Joystick"); helicopter HUD names the keyboard key for every unassigned helicopter action. |
+| **Controllers** | DJI FPV Remote Controller 3 recognised as a radio (USB `2ca3:1021`, "DJI Virtual Joystick"); calibrated radios also drive the RC trucks; helicopter HUD names the keyboard key for every unassigned helicopter action. |
+| **RC truck views** | Onboard FPV camera (3) and bumper camera (Shift+3) on the Bisonte MT8 and MONSTER CAR 2. |
 | **Aircraft** | **Longreach 1800**, an original long-range twin-boom FPV airplane in the Skyhunter 1800 class (see below). |
 
 The step-by-step history is in the commit log (`FPV-1` … `FPV-10`, `UNITS-1`, `RADIO-DJI-1`, `FC-1` … `FC-4`,
-`Step 15`, `HELI-RADIO-1`) and in [the flight-controller plan](docs/plans/fixed-wing-flight-controller.md).
+`Step 15`, `HELI-RADIO-1`, `RADIO-CAR-1`, `CAR-VIEW-1`) and in [the flight-controller plan](docs/plans/fixed-wing-flight-controller.md).
 
 **Not in this version yet:** a fast FunJet-class delta (next step), ArduPilot SITL, multiplayer, and a packaged
 release of the fork. Shadows that look square in some interactive flights are an open issue.
@@ -84,7 +85,10 @@ A spring-centred throttle (DJI) sits at about +5.7° pitch, so set it to stay pu
 ## Other vehicles
 
 Home's vehicle list also has the experimental **Bisonte MT8** and **MONSTER CAR 2** RC trucks on their own driving
-course ([RC trucks](research/rc-monster-truck/README.md)), a [5 m RC blimp](docs/research/rc-airship/BL-12/README.md)
+course ([RC trucks](research/rc-monster-truck/README.md)). In this fork they can be driven with a **calibrated RC radio**
+(aileron steers, elevator forward/back drives and reverses; DJI remotes work too) as well as a gamepad or the keyboard,
+and they have an **onboard FPV camera** (key **3**, using the FPV camera settings) and a **bumper camera**
+(**Shift+3**) besides chase, driver's stand, orbit and circuit overview. There is also a [5 m RC blimp](docs/research/rc-airship/BL-12/README.md)
 and an [FPV quad with a three-lap gate race](docs/research/drone-racing/M1-M3-2026-11-11/README.md). They use
 estimated data.
 

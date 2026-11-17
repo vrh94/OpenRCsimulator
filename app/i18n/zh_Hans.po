@@ -12935,3 +12935,6 @@ msgstr "按键 %s"
 
 msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
 msgstr "将总距杆置于 %.0f%%（0° 螺距，当前 %.1f°），然后解锁并释放保持。"
+
+msgid "Bumper camera"
+msgstr "保险杠摄像头"

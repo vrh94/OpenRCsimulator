@@ -36,6 +36,17 @@ const ContactDebug = preload("res://vehicles/ground/contact_debug.gd")
 const NitroExhaust = preload("res://vehicles/ground/nitro_exhaust.gd")
 const LensStack = preload("res://render/lens/lens_stack.gd")
 const LensSettings = preload("res://render/lens/lens_settings.gd")
+const RcInput = preload("res://input/rc_input.gd")
+const ControllerProfile = preload("res://input/controller_profile.gd")
+const ControllerActions = preload("res://input/controller_actions.gd")
+const ProfileStore = preload("res://input/controller_profile_store.gd")
+const OnboardView = preload("res://render/camera/onboard_view.gd")
+const FpvLens = preload("res://render/camera/fpv_lens.gd")
+const CameraSettings = preload("res://render/camera/camera_settings.gd")
+const DisplayPreferences = preload("res://app_state/display_preferences.gd")
+const Preferences = preload("res://app_state/preferences.gd")
+## RADIO-CAR-1: a radio's elevator stick inside this share of its travel is neutral (no drive, no reverse).
+const RADIO_DRIVE_NEUTRAL := 0.04
 
 
 ## Adapts the scene's stopped/export-pending recording to the application exit guard.
@@ -103,6 +114,21 @@ var driver = Driver.new()
 var user_args := PackedStringArray()
 var scripted_controls := Callable() # deterministic test seam, sampled only on physics ticks
 var controller_registry: RefCounted
+## RADIO-CAR-1: a calibrated radio drives the car the way RC car simulators use an airplane transmitter: the aileron
+## stick steers, the elevator stick drives (forward accelerates, back reverses; the nitro truck brakes instead). The
+## profile is the one saved for that radio in Controls (the aircraft's); on the Home route it is read from the
+## controller store, elsewhere only through this seam: func(device record) -> profile ({} when none).
+var radio_profile_provider: Callable
+## CAR-VIEW-1: Settings › Camera (the FPV camera's FOV, tilt, mount, shake, lens and video). Empty: read the saved
+## display settings on the Home route, defaults elsewhere.
+var camera_preferences: Dictionary = {}
+var _radio: RcInput
+var _radio_key := ""
+var _profile_store: RefCounted
+var _stored_radio_profiles := {}
+var _fpv_lens: FpvLens
+var _body_rest := Transform3D()
+var _body_node: Node3D
 var joy_axis_reader: Callable = func(id: int, axis: JoyAxis) -> float: return Input.get_joy_axis(id, axis)
 var joy_button_reader: Callable = func(id: int, button: JoyButton) -> bool: return Input.is_joy_button_pressed(id, button)
 var enable_audio := true
@@ -124,7 +150,7 @@ var sky_config: Dictionary = SkyConfig.defaults()
 ## and blood if the vehicle runs into the driver in the pilot view. Null when disabled.
 var _lens: LensStack
 ## Camera rig mode → lens view (chase, pilot, orbit, and the fixed track overview as a tripod camera).
-const LENS_VIEWS := ["chase", "pilot", "orbit", "flyby"]
+const LENS_VIEWS := ["chase", "pilot", "orbit", "flyby", "fpv", "fpv"]
 var _lighting := {}
 var _environment: Environment
 var _presentation_context := {}
@@ -210,6 +236,7 @@ func _ready() -> void:
 		set_process(false)
 		return
 	add_child(visual.root)
+	_configure_onboard_views()
 	if _vehicle_entry.nitro: visual["gear_ratio"] = float(_model.powertrain.gear_ratio)
 	_damage_view = DamageView.new()
 	if not _damage_view.prepare(visual):
@@ -294,6 +321,9 @@ func _ready() -> void:
 	_previous = _snapshot.duplicate()
 	if enable_audio:
 		_build_audio()
+	_fpv_lens = FpvLens.new()
+	_fpv_lens.build(self)
+	_apply_camera_preferences()
 	_start_lens()
 	open_garage()
 	_capture_initial_controller_selection()
@@ -368,11 +398,15 @@ func _initialize_driving_devices() -> void:
 	if _source_controller_registry != null:
 		preferred = _source_controller_registry.selected_device_id("flight")
 	if not _is_flight_gamepad(_registry_device_for_id(preferred)):
+		# A recognized gamepad first; otherwise (RADIO-CAR-1) the aircraft's radio when it is calibrated.
+		var aircraft_radio := preferred
 		preferred = -1
 		for record: Dictionary in controller_registry.get_devices():
 			if _is_flight_gamepad(record):
 				preferred = int(record.id)
 				break
+		if preferred < 0 and _is_driving_radio(_registry_device_for_id(aircraft_radio)):
+			preferred = aircraft_radio
 	controller_registry.select_device("flight", preferred)
 
 
@@ -398,7 +432,7 @@ func _refresh_driving_devices() -> void:
 
 
 func select_driving_device(device: int) -> void:
-	if device >= 0 and not _is_flight_gamepad(_registry_device_for_id(device)):
+	if device >= 0 and not _is_driving_device(_registry_device_for_id(device)):
 		return
 	if controller_registry.select_device("flight", device):
 		# Selecting the same item is also an explicit reconnect acknowledgement.
@@ -410,8 +444,13 @@ func _refresh_controller_ui() -> void:
 	if dashboard == null or controller_registry == null:
 		return
 	var selected := _registry_selected_device_id("flight")
-	dashboard.set_controllers(controller_registry.get_devices(), selected, _controller_requires_selection)
-	UiInput.set_gamepad(selected if _has_flight_gamepad() else -1)
+	var radio_ids: Array = []
+	for record: Dictionary in controller_registry.get_devices():
+		if not _is_flight_gamepad(record) and _is_driving_radio(record):
+			radio_ids.append(int(record.id))
+	dashboard.set_controllers(controller_registry.get_devices(), selected, _controller_requires_selection, radio_ids,
+		_radio_hint(selected) if selected in radio_ids else "")
+	UiInput.set_gamepad(selected if _has_flight_gamepad() and _is_flight_gamepad(_registry_device_for_id(selected)) else -1)
 
 func _build_airfield() -> void:
 	var exclusions: Array = []
@@ -544,7 +583,7 @@ func _registry_joy_controls() -> Dictionary:
 			_begin_controller_loss("Controller selection cleared.", "Selección de control cancelada.")
 		return {"connected": false}
 	var record: Dictionary = _registry_device_for_id(device)
-	if not _is_flight_gamepad(record):
+	if not _is_driving_device(record):
 		if not _controller_requires_selection or _controller_device_id != device:
 			_controller_device_id = device
 			_controller_generation = int(record.get("generation", 0))
@@ -564,6 +603,9 @@ func _registry_joy_controls() -> Dictionary:
 	return _joy_controls(device)
 
 func _joy_controls(device: int) -> Dictionary:
+	var record: Dictionary = _registry_device_for_id(device)
+	if not _is_flight_gamepad(record) and _is_driving_radio(record):
+		return _radio_controls(device, record)
 	return {"connected": true, "device_id": device,
 		"left_x": joy_axis_reader.call(device, JOY_AXIS_LEFT_X),
 		"right_trigger": joy_axis_reader.call(device, JOY_AXIS_TRIGGER_RIGHT),
@@ -586,7 +628,7 @@ func _capture_initial_controller_selection() -> void:
 	var record: Dictionary = _registry_device_for_id(device)
 	_controller_device_id = device
 	_controller_generation = int(record.get("generation", 0))
-	if not _is_flight_gamepad(record):
+	if not _is_driving_device(record):
 		_begin_controller_loss("Select a connected, recognized gamepad for driving.", "Selecciona un mando reconocido y conectado para conducir.")
 
 func _registry_selected_device_id(role: String) -> int:
@@ -638,7 +680,7 @@ func apply_controller_selection(device: int) -> bool:
 	var record: Dictionary = _registry_device_for_id(device)
 	_controller_device_id = device
 	_controller_generation = int(record.get("generation", 0))
-	if not _is_flight_gamepad(record):
+	if not _is_driving_device(record):
 		_begin_controller_loss("Select a connected, recognized gamepad for driving.", "Selecciona un mando reconocido y conectado para conducir.")
 		return false
 	_controller_requires_selection = false
@@ -666,7 +708,7 @@ func _has_flight_gamepad() -> bool:
 	if device < 0:
 		return false
 	var record: Dictionary = _registry_device_for_id(device)
-	return _is_flight_gamepad(record) and device == _controller_device_id \
+	return _is_driving_device(record) and device == _controller_device_id \
 		and int(record.get("generation", 0)) == _controller_generation
 
 func _accept_controller_button(device: int) -> bool:
@@ -678,7 +720,7 @@ func _accept_controller_button(device: int) -> bool:
 		var record: Dictionary = _registry_device_for_id(device)
 		if record.get("connected", false) != true:
 			continue
-		if role == "flight" and (not _is_flight_gamepad(record) or _controller_requires_selection or not _has_flight_gamepad()):
+		if role == "flight" and (not _is_driving_device(record) or _controller_requires_selection or not _has_flight_gamepad()):
 			continue
 		return true
 	return false
@@ -716,7 +758,14 @@ func _process(delta: float) -> void:
 	var basis := Basis(qa.slerp(qb, alpha))
 	var target := Frames.ned_to_render([drawn[0], drawn[1], drawn[2]])
 	visual.root.transform = Frames.root_transform(basis, target, visual_cg)
+	if camera_rig.showing_onboard():
+		camera_rig.vehicle_frame = _vehicle_camera_frame()
+		var speed: float = Vector3(float(drawn[3]), float(drawn[4]), float(drawn[5])).length()
+		camera_rig.onboard.set_vibration_inputs(session.time_s(), float(_last_controls.get("throttle", 0.0)), speed)
 	camera_rig.update(camera, target, basis, delta, dashboard.menu_visible, func(x: float, z: float) -> float: return _render_road.call(-z, x).height_m)
+	if _fpv_lens != null:
+		_fpv_lens.update(camera, camera_rig.mode == CameraRig.MODE_FPV and not dashboard.menu_visible \
+			and camera_rig.onboard.configured, camera_rig.onboard.hfov_deg, session.time_s())
 	World.update(_environment, 37.0 + session.time_s(), Vector3.ZERO, target, camera)
 	var telemetry: Dictionary = session.telemetry_snapshot()
 	telemetry.surface_id = _render_road.call(drawn[0], drawn[1]).surface_id
@@ -805,7 +854,134 @@ func _start_lens() -> void:
 
 ## Settings changed during the drive: rebuild the lens from the new preference (presentation only).
 func apply_lens_preferences() -> void:
+	if departure_managed:
+		camera_preferences = {} # the Home route re-reads Settings › Camera too (the shell calls this on every change)
+	_apply_camera_preferences()
 	_start_lens()
+
+
+## CAR-VIEW-1: the onboard mounts from the built model in its rest pose (model frame, −z forward), and the sprung
+## body's rest offset so the cameras can ride on the body (presentation only).
+func _configure_onboard_views() -> void:
+	camera_rig.configure_mounts(OnboardView.collect_faces(visual.root))
+	_body_node = null
+	var nodes: Variant = visual.get("nodes", {})
+	if typeof(nodes) == TYPE_DICTIONARY and nodes.get("Body") is Node3D:
+		_body_node = nodes.Body
+		_body_rest = visual.root.global_transform.affine_inverse() * _body_node.global_transform
+
+
+## The model root moved by the body's motion on its suspension since the rest pose (root frame), in the world.
+func _vehicle_camera_frame() -> Transform3D:
+	var root_xf: Transform3D = visual.root.global_transform
+	if _body_node == null or not is_instance_valid(_body_node):
+		return root_xf
+	var now: Transform3D = root_xf.affine_inverse() * _body_node.global_transform
+	return root_xf * (now * _body_rest.affine_inverse())
+
+
+## CAR-VIEW-1: Settings › Camera's FPV choices for the onboard camera and its lens (the bumper camera is fixed).
+func _apply_camera_preferences() -> void:
+	var config: Dictionary = camera_preferences
+	if config.is_empty() and departure_managed:
+		config = DisplayPreferences.new(Preferences.DEFAULT_PATH + ".display").config
+	var prefs: Dictionary = CameraSettings.normalized(config)
+	camera_rig.onboard.set_preferences(float(prefs.camera_fpv_fov), float(prefs.camera_fpv_tilt), str(prefs.camera_fpv_smoothing))
+	camera_rig.onboard.set_shake(str(prefs.camera_fpv_shake))
+	if _fpv_lens != null:
+		_fpv_lens.set_model(str(prefs.camera_fpv_lens))
+		_fpv_lens.set_video(str(prefs.camera_fpv_quality), str(prefs.camera_fpv_noise), bool(prefs.camera_fpv_motion_blur))
+
+
+## RADIO-CAR-1: the saved Controls profile of a radio, {} when the device is no calibrated radio.
+func _driving_radio_profile(record: Dictionary) -> Dictionary:
+	if record.get("connected") != true or str(record.get("kind", "")) not in ["radio", "joystick"]:
+		return {}
+	var provider := radio_profile_provider
+	if not provider.is_valid():
+		if not departure_managed:
+			return {}
+		provider = _stored_radio_profile
+	var profile: Variant = provider.call(record)
+	if typeof(profile) != TYPE_DICTIONARY or str(profile.get("kind", "")) != "radio" or profile.get("configured", true) != true:
+		return {}
+	return profile
+
+
+func _is_driving_radio(record: Dictionary) -> bool:
+	return not _driving_radio_profile(record).is_empty()
+
+
+## A device the car can be driven with: a recognized gamepad, or (RADIO-CAR-1) a calibrated radio.
+func _is_driving_device(record: Dictionary) -> bool:
+	return _is_flight_gamepad(record) or _is_driving_radio(record)
+
+
+## The controller store's profile for a radio, cached per connection (the store is read once per device generation).
+func _stored_radio_profile(record: Dictionary) -> Dictionary:
+	var key := "%s:%s:%s" % [record.get("id", -1), record.get("generation", 0), record.get("guid", "")]
+	if _stored_radio_profiles.has(key):
+		return _stored_radio_profiles[key]
+	if _profile_store == null:
+		_profile_store = ProfileStore.new()
+	var profile := {}
+	var storage: Dictionary = _profile_store.load_all()
+	if bool(storage.get("ok", false)):
+		var devices: Array[Dictionary] = []
+		for device: Dictionary in controller_registry.get_devices():
+			devices.append(device)
+		profile = _profile_store.match_profile(record, devices)
+	_stored_radio_profiles[key] = profile
+	return profile
+
+
+## RADIO-CAR-1: the radio's sticks as the gamepad-shaped sample the driver input expects: aileron steers; elevator
+## forward is throttle, back is reverse throttle (the driver's neutral gate and trigger shaping apply unchanged).
+func _radio_controls(device: int, record: Dictionary) -> Dictionary:
+	var key := "%d:%d" % [device, int(record.get("generation", 0))]
+	if _radio == null or _radio_key != key:
+		_radio = RcInput.new()
+		_radio.connect_device(device, record, ControllerProfile.upgrade_legacy(_driving_radio_profile(record)))
+		_radio_key = key
+	_radio.poll(func(id: int, axis: int) -> float: return float(joy_axis_reader.call(id, axis)), Session.DT, Callable(), false)
+	if not _radio.connected or not _radio.input_error.is_empty() or not _radio.profile_error.is_empty():
+		return {"connected": true, "device_id": device, "left_x": NAN, "right_trigger": NAN, "left_trigger": NAN}
+	var sticks: Dictionary = _radio.sticks()
+	var drive := clampf(-float(sticks.pitch), -1.0, 1.0) # pitch is positive with the stick pulled back
+	var reverse := drive < -RADIO_DRIVE_NEUTRAL
+	return {"connected": true, "device_id": device, "left_x": clampf(float(sticks.roll), -1.0, 1.0),
+		"right_trigger": -drive if reverse else maxf(drive, 0.0), "left_trigger": 0.0, "reverse": reverse}
+
+
+## RADIO-CAR-1: the garage's control line for a radio: the sticks, and the buttons its Controls bindings give.
+func _radio_hint(device: int) -> String:
+	var es := TranslationServer.get_locale().begins_with("es")
+	var nitro: bool = _vehicle_entry.get("nitro", false)
+	var text := ("Palanca de alerón: girar · Profundidad adelante: acelerar · atrás: %s" % ("frenar" if nitro else "reversa")) if es \
+		else ("Aileron stick: steer · Elevator forward: accelerate · back: %s" % ("brake" if nitro else "reverse"))
+	var parts: PackedStringArray = []
+	var bindings: Dictionary = ControllerActions.effective_bindings(_driving_radio_profile(_registry_device_for_id(device)))
+	for row: Array in [["camera_cycle", "camera", "cámara"], ["restart_flight", "restart", "reiniciar"], ["pause", "garage", "garaje"]]:
+		var binding: Dictionary = bindings.get(row[0], {})
+		if str(binding.get("type", "")) == "button":
+			parts.append(("Botón %d: %s" if es else "Button %d: %s") % [int(binding.button), row[2] if es else row[1]])
+	parts.append("C / 3 / Shift+3: cámara · R: recuperar · Esc: garaje" if es else "C / 3 / Shift+3: camera · R: recover · Esc: garage")
+	return text + "\n" + " · ".join(parts)
+
+
+## RADIO-CAR-1: a radio button does what its Controls binding says (camera, restart, pause), never a gamepad layout.
+func _radio_button_action(device: int, button: int) -> String:
+	var profile := _driving_radio_profile(_registry_device_for_id(device))
+	if profile.is_empty():
+		return ""
+	var bindings: Dictionary = ControllerActions.effective_bindings(profile)
+	for pair: Array in [["camera_cycle", "camera"], ["restart_flight", "reset"], ["pause", "menu"]]:
+		var binding: Dictionary = bindings.get(pair[0], {})
+		if str(binding.get("type", "")) == "button" and int(binding.get("button", -1)) == button:
+			if pair[1] == "menu" and dashboard.menu_visible:
+				return "resume"
+			return pair[1]
+	return ""
 
 
 ## Damage and hard landings throw dirt at a nearby camera; reported events only, never the physics.
@@ -951,10 +1127,19 @@ func handle_action(action: String) -> void:
 				_after_reset()
 				_run_was_driven = true
 				dashboard.message("Recovered and repaired. This run is marked as assisted.", "Recuperado y reparado. Esta prueba queda marcada como asistida.")
-		"camera":
-			camera_rig.mode = (camera_rig.mode + 1) % (4 if _course.has("track") else 3)
+		"camera", "camera_previous":
+			camera_rig.mode = camera_rig.next_mode(_course.has("track"), -1 if action == "camera_previous" else 1)
 			camera_rig.reset()
 			_update_camera_status()
+		"camera_fpv", "camera_bumper":
+			# CAR-VIEW-1: 3 toggles the onboard FPV camera, Shift+3 the bumper camera (as 3 / Shift+3 on airplanes).
+			var wanted: int = CameraRig.MODE_FPV if action == "camera_fpv" else CameraRig.MODE_BUMPER
+			if camera_rig.available(wanted, _course.has("track")):
+				camera_rig.mode = 0 if camera_rig.mode == wanted else wanted
+				camera_rig.reset()
+				_update_camera_status()
+		"look_reset":
+			camera_rig.reset_look()
 		"track_view":
 			if _course.has("track"):
 				camera_rig.mode = 0 if camera_rig.mode == 3 else 3
@@ -1262,7 +1447,9 @@ func _unhandled_input(event: InputEvent) -> void:
 						and focused.is_visible_in_tree() and dashboard.root_control.is_ancestor_of(focused):
 					return
 				handle_action("resume")
-			KEY_C: handle_action("camera")
+			KEY_C: handle_action("camera_previous" if event.shift_pressed else "camera")
+			KEY_3: handle_action("camera_bumper" if event.shift_pressed else "camera_fpv")
+			KEY_BACKSPACE: handle_action("look_reset")
 			KEY_L: handle_action("lights")
 			KEY_K: handle_action("aux_lights")
 			KEY_N: handle_action("neon")
@@ -1280,7 +1467,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		_shortcut_buttons[edge] = true
 		if _departure_guard_active: return # observe edges, including a button held through Stay
 		var action := ""
-		if event.button_index == JOY_BUTTON_START:
+		var pressed_record: Dictionary = _registry_device_for_id(event.device)
+		if not _is_flight_gamepad(pressed_record) and _is_driving_radio(pressed_record):
+			# RADIO-CAR-1: radio buttons follow their Controls bindings; driving shortcuts only while driving.
+			action = _radio_button_action(event.device, event.button_index)
+			if action in ["camera", "reset"] and (dashboard.menu_visible or not _accept_driving_controller_button(event.device)):
+				action = ""
+		elif event.button_index == JOY_BUTTON_START:
 			action = "resume" if dashboard.menu_visible else "menu"
 		elif dashboard.menu_visible and dashboard.checkpoint_review.visible and event.is_action_pressed("ui_cancel"):
 			action = "close_checkpoint_review"

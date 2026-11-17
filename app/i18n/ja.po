@@ -12986,3 +12986,6 @@ msgstr "キー %s"
 
 msgid "Set the collective stick to %.0f%% (0° pitch, now %.1f°), then arm and release hold."
 msgstr "コレクティブスティックを %.0f%%（ピッチ0°、現在 %.1f°）に合わせ、アームしてからホールドを解除します。"
+
+msgid "Bumper camera"
+msgstr "バンパーカメラ"

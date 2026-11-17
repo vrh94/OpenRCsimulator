@@ -316,12 +316,20 @@ func _ready() -> void:
 	_focus_resume.call_deferred()
 
 
-func set_controllers(devices: Array, selected: int, needs_selection: bool) -> void:
+## radio_ids (RADIO-CAR-1): calibrated radios the car can be driven with, listed after the gamepads; radio_hint is
+## their control line (the scene knows each radio's button bindings).
+func set_controllers(devices: Array, selected: int, needs_selection: bool, radio_ids: Array = [], radio_hint := "") -> void:
 	controller_choice.clear()
 	_controller_ids = [-1]
 	controller_choice.add_item(words("Keyboard", "Teclado"))
 	var current := {}
+	var radio_selected := false
 	for device: Dictionary in devices:
+		if device.get("connected", false) and int(device.get("id", -1)) in radio_ids:
+			_controller_ids.append(int(device.id))
+			controller_choice.add_item(str(device.get("name", "RC radio")) + words(" (radio)", " (radio)"))
+			radio_selected = radio_selected or int(device.id) == selected
+			continue
 		if not device.get("connected", false) or not device.get("known", false) or device.get("kind", "") != "gamepad":
 			continue
 		_controller_ids.append(int(device.id))
@@ -361,6 +369,10 @@ func set_controllers(devices: Array, selected: int, needs_selection: bool) -> vo
 		control_hint.text += words("\n%s: restart · %s: headlights", "\n%s: reiniciar · %s: faros") % [_button_name(JOY_BUTTON_BACK, current), _button_name(JOY_BUTTON_LEFT_SHOULDER, current)]
 		if nitro:
 			control_hint.text += words(" · %s: auxiliary lights", " · %s: luces auxiliares") % _button_name(JOY_BUTTON_RIGHT_SHOULDER, current)
+	if radio_selected and not needs_selection:
+		control_hint.text = radio_hint
+		resume_button.text = words("DRIVE · Enter", "CONDUCIR · Enter")
+		_menu_button.text = words("Garage · Esc", "Garaje · Esc")
 	controller_choice.tooltip_text = words("This selection only controls the car. Aircraft settings are preserved.", "Esta selección controla solo el carro. Los ajustes de vuelo se conservan.")
 	update_input_status(false, needs_selection, true)
 
@@ -463,7 +475,7 @@ func set_spawn_proposal(current: String, pending: String = "") -> void:
 
 func update_camera(selected: int) -> void:
 	_camera_mode = selected
-	var names := [tr("Chase"), tr("Pilot stand"), tr("Orbit"), tr("Circuit overview")]
+	var names := [tr("Chase"), tr("Pilot stand"), tr("Orbit"), tr("Circuit overview"), tr("Onboard FPV"), tr("Bumper camera")]
 	camera_button.text = tr("Camera: %s · C") % names[selected]
 	camera_status.text = tr("Used when you select Drive.") if selected != 3 else tr("Overview is active in the garage and while driving.")
 	if overview_button != null:
