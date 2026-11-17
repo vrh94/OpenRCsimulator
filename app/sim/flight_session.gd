@@ -865,6 +865,11 @@ const START_HALF_POWER := "airborne_half_power"
 const START_HAND_LAUNCH := "hand_launch"
 const HAND_LAUNCH_RELEASE_HEIGHT_M := 1.9
 const HAND_LAUNCH_SPEED_MPS := 6.5
+## Step 17: an aircraft may declare its own throw (start.hand_launch_speed), e.g. a heavy speed wing thrown hard; the
+## shared 6.5 m/s applies to every other gearless airplane.
+static func hand_launch_speed(model: Dictionary) -> float:
+	var own: float = float(model.get("hand_launch_speed", NAN))
+	return own if is_finite(own) else HAND_LAUNCH_SPEED_MPS
 const HAND_LAUNCH_CLIMB_RAD := 0.08726646259971647 # 5 degrees
 const HAND_LAUNCH_THROTTLE := 1.0
 const EXTERNAL_SPAWN_MAX_OFFSET_M := 100000.0
@@ -3937,7 +3942,7 @@ func _reset_hand_launch_start(transaction: Dictionary) -> Dictionary:
 		release = hand_launch_release(_runway_field, local_wind)
 		if not release.ok:
 			return release
-	var state: PackedFloat64Array = Scenarios.Trim.state_for(HAND_LAUNCH_SPEED_MPS, 0.0,
+	var state: PackedFloat64Array = Scenarios.Trim.state_for(hand_launch_speed(aircraft.model), 0.0,
 		HAND_LAUNCH_CLIMB_RAD, float(release.heading), M.v3(release.north, release.east, down))
 	if not Sim.state_is_valid(state):
 		return {ok = false, message = "hand launch: invalid release state"}

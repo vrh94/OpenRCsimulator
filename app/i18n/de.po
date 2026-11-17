@@ -13884,6 +13884,18 @@ msgstr "Pitch-Knüppel auf %.0f%% stellen (0° Pitch, jetzt %.1f°), dann scharf
 msgid "Bumper camera"
 msgstr "Stoßstangenkamera"
 
+msgid "Dartwing 780 · Speed 6S"
+msgstr "Dartwing 780 · Speed 6S"
+
+msgid "Dartwing · 6S"
+msgstr "Dartwing · 6S"
+
+msgid "Speed wing · 0.78 m · 6S electric pusher · 360 km/h"
+msgstr "Speed-Nurflügel · 0,78 m · 6S-Elektro-Druckantrieb · 360 km/h"
+
+msgid "Experimental: 6S speed build of the Dartwing 780 with an estimated 2000 Kv drive on a measured 7x9 propeller; holds about 360 km/h level on a fresh pack. Very sensitive at speed; no landing gear (hand launch). Not flight-validated."
+msgstr "Experimentell: 6S-Speed-Aufbau des Dartwing 780 mit geschätztem 2000-Kv-Antrieb an einem vermessenen 7x9-Propeller; hält auf frischem Akku etwa 360 km/h im Horizontalflug. Bei hoher Geschwindigkeit sehr feinfühlig; kein Fahrwerk (Handstart). Nicht im Flug validiert."
+
 msgid "Dartwing 780"
 msgstr "Dartwing 780"
 

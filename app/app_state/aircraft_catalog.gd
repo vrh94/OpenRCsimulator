@@ -179,6 +179,20 @@ const ENTRIES := [
 		battery_data = "res://data/aircraft/battery/fast_delta_780_4s_pack.json",
 	},
 	{
+		# Step 17: the same airframe on a 6S speed drive (research/fast-delta-780/FD-03): 2000 Kv, measured APC 7x9, 6S
+		# 4000 mAh pack, 1.42 kg. Holds 360 km/h level on a fresh pack; shares the Dartwing's visual model.
+		id = "fast-delta-780-6s",
+		visual_family = "fast-delta-780",
+		name = "Dartwing 780 · Speed 6S",
+		short_name = "Dartwing · 6S",
+		summary = "Speed wing · 0.78 m · 6S electric pusher · 360 km/h",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: 6S speed build of the Dartwing 780 with an estimated 2000 Kv drive on a measured 7x9 propeller; holds about 360 km/h level on a fresh pack. Very sensitive at speed; no landing gear (hand launch). Not flight-validated.",
+		data = "res://data/aircraft/fast_delta_780_6s.json",
+		# The finite 6S 4000 mAh pack is the default battery mode.
+		battery_data = "res://data/aircraft/battery/fast_delta_780_6s_pack.json",
+	},
+	{
 		id = "xcell-60-research",
 		vehicle = "rotorcraft",
 		visual_family = "hx-700",

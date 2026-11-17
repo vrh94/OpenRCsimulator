@@ -149,7 +149,10 @@ def strip_map(b, cr, ct, cla):
     return ys, a0, inverse(a0)
 
 
-def derive(inputs=None):
+def derive(inputs=None, variant=None):
+    """variant (FD-03): optional {id, description, flying_mass_kg, mass_range, mass_range_source, hand_launch_speed, start_level_speed} for a physics variant
+    of the same airframe; None writes the base aircraft."""
+    variant = variant or {}
     i = copy.deepcopy(inputs if inputs is not None else json.loads((HERE / "inputs.json").read_text(encoding="utf-8")))
     d = json.loads(DESIGN.read_text(encoding="utf-8"))
     v = lambda name: i["estimates"][name]["value"]
@@ -169,7 +172,7 @@ def derive(inputs=None):
     x_ac = x_frac(y_mac, 0.25)  # the wing's aerodynamic centre: quarter chord of the MAC
     tan_half = (x_frac(h, 0.5) - x_frac(0.0, 0.5)) / h
     tan_quarter = (x_frac(h, 0.25) - x_frac(0.0, 0.25)) / h
-    mass, cg_x = d["flying_mass_kg"], d["cg_aft_of_root_le_m"]
+    mass, cg_x = variant.get("flying_mass_kg", d["flying_mass_kg"]), d["cg_aft_of_root_le_m"]
 
     # Inventory and the balancing residue that puts the CG at the design station.
     items = []
@@ -348,8 +351,8 @@ def derive(inputs=None):
     throws = d["throws_deg"]
     rate = lambda value, why: q(value, "1", "estimated", why)
     model = dict(
-        format="openrc-aircraft v2", physical_identity_version=1, id="fast-delta-780",
-        description="EXPERIMENTAL FD-01: original fast swept flying-wing EPO pusher in the 0.78 m speed-wing class (FunJet class figures: 783 mm, 14.5 dm2, 875 g, 4S). Geometry/textbook tailless aerodynamics, estimated inventory, borrowed APC 7x6 propeller map, estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight validated.",
+        format="openrc-aircraft v2", physical_identity_version=1, id=variant.get("id", "fast-delta-780"),
+        description=variant.get("description") or "EXPERIMENTAL FD-01: original fast swept flying-wing EPO pusher in the 0.78 m speed-wing class (FunJet class figures: 783 mm, 14.5 dm2, 875 g, 4S). Geometry/textbook tailless aerodynamics, estimated inventory, borrowed APC 7x6 propeller map, estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight validated.",
         convention_id="openrc-le-frd-v1",
         capabilities=dict(controls="elevon", gear="locked_up", propulsion_layout="single_pusher", energy="fixed_voltage",
                           damage="tolerant_hull", flaps="not_simulated", airframe_layout="tailless"),
@@ -363,7 +366,8 @@ def derive(inputs=None):
                      firewall=q([hub[0] - 0.05, 0.0, hub[2]], "m", "estimated", dsrc + ": motor mount in the centre body's tail"),
                      configuration="virtual-balanced-reference-v1", cg_tolerance=q(0.001, "m", "estimated", "FD-01 reference build tolerance")),
         inventory=items,
-        start=dict(level_speed=q(speed, "m/s", source=SCRIPT + ": 1.5 times clean 1-g stall (%.1f m/s) at the design mass and estimated CL_max: a firm hand-launch speed for a loaded speed wing" % vs)),
+        start=dict(level_speed=variant["start_level_speed"] if "start_level_speed" in variant else q(speed, "m/s", source=SCRIPT + ": 1.5 times clean 1-g stall (%.1f m/s) at the design mass and estimated CL_max: a firm hand-launch speed for a loaded speed wing" % vs),
+                   **({"hand_launch_speed": variant["hand_launch_speed"]} if "hand_launch_speed" in variant else {})),
         controls=dict(surface_ids={"elevon_left": "surface_elevon_left", "elevon_right": "surface_elevon_right"},
                       max_throw=dict(aileron=q(throws["aileron"], "deg", "estimated", dsrc + ": speed-wing roll share of the elevon travel"),
                                      elevator=q(throws["elevator"], "deg", "estimated", dsrc + ": speed-wing pitch share of the elevon travel"),
@@ -383,7 +387,7 @@ def derive(inputs=None):
         crash_tolerance=dict(terminal_specific_energy=q(12.5, "J/kg", "estimated", tolerance_src),
                              crash_depth=q(0.1, "m", "estimated", "a small foam nose can bury about 10 cm in turf (X8-08 estimate scaled)"),
                              presentation_durability=q(4.0, "1", "estimated", "EPO against balsa/ply crash presentation divisor (X8-08 estimate)")),
-        plausibility=dict(mass_range=q([0.75, 1.05], "kg", "estimated", "FunJet class: flying weight 875 g (retail listings); 3S-4S builds"),
+        plausibility=dict(mass_range=q(variant.get("mass_range", [0.75, 1.05]), "kg", "estimated", variant.get("mass_range_source", "FunJet class: flying weight 875 g (retail listings); 3S-4S builds")),
                           inertia_reference=q(j[:3], "kg·m2", source=SCRIPT + ": same inventory box estimate; self-reference is no independent plausibility evidence")))
     validate_physical_identity(model)
     summary = dict(mass=mass, cg=cg, inertia=j, wing_area=s, aspect_ratio=ar, mac=mac, x_ac=x_ac, x_np=x_np, stall_speed=vs, start_speed=speed,
@@ -393,25 +397,28 @@ def derive(inputs=None):
     return model, summary
 
 
-def pack_variant(model):
-    """The same airframe and inventory on the finite 4S 2200 mAh class pack (pack_ecm)."""
-    pack_bytes = PACK_FILE.read_bytes()
-    pack = json.loads(pack_bytes.decode("utf-8"))
+def pack_variant(model, pack=None):
+    """The same airframe and inventory on the finite 4S 2200 mAh class pack (pack_ecm). pack (FD-03): optional
+    {id, label, auxiliary, esc} for another pack and drive."""
+    pack = pack or {}
+    pack_id = pack.get("id", PACK_ID)
+    pack_bytes = (ROOT / "app/data/batteries/packs" / (pack_id + ".json")).read_bytes()
+    pack_data = json.loads(pack_bytes.decode("utf-8"))
     battery_item = next(item for item in model["inventory"] if item["id"] == "battery_main")
-    if pack["mass_kg"]["value"] != battery_item["mass"]["value"]:
+    if pack_data["mass_kg"]["value"] != battery_item["mass"]["value"]:
         raise ValueError("FD-01: pack mass must equal the battery_main inventory mass")
     variant = copy.deepcopy(model)
-    variant["description"] = model["description"].replace("estimated electric drive", "estimated electric drive on the finite 4S 2200 mAh class pack (pack_ecm)")
+    variant["description"] = model["description"].replace("estimated electric drive", "estimated electric drive on the finite %s pack (pack_ecm)" % pack.get("label", "4S 2200 mAh class"))
     variant["capabilities"]["energy"] = "pack_ecm"
     src = SCRIPT + " pack variant: "
     est = lambda value, unit, source: q(value, unit, "estimated", src + source)
     der = lambda value, unit, source: q(value, unit, "derived", src + source)
     variant["propulsion"]["battery"] = {
         "kind": "pack_ecm",
-        "pack": {"id": PACK_ID, "sha256": hashlib.sha256(pack_bytes).hexdigest()},
+        "pack": {"id": pack_id, "sha256": hashlib.sha256(pack_bytes).hexdigest()},
         "mount_inventory_id": "battery_main",
         "initial_soc": est(1.0, "1", "freshly charged pack at rest; the session may override it"),
-        "auxiliary_current_a": est(0.4, "A", "flight controller, receiver, FPV camera, video transmitter and two servos, about 5 W through an assumed 80 % BEC, referred to a 15 V pack; not measured"),
+        "auxiliary_current_a": est(pack.get("auxiliary_current_a", 0.4), "A", pack.get("auxiliary", "flight controller, receiver, FPV camera, video transmitter and two servos, about 5 W through an assumed 80 % BEC, referred to a 15 V pack; not measured")),
         "cooling_airflow_fraction": est(0.1, "1", "enclosed foam bay under the hatch; ram air past the pack assumed 10 % of airspeed (fleet value)"),
         "weak_cell": {"capacity_factor": der(1.0, "1", "new balanced pack"), "resistance_factor": der(1.0, "1", "new balanced pack"),
                       "soc_offset": der(0.0, "1", "balanced charge")},
@@ -421,7 +428,7 @@ def pack_variant(model):
         "low_voltage_cutoff": {
             "mode": "soft", "cell_detection": "auto",
             "detection_max_cell_v": est(4.3, "V", "Betaflight-style 4.30 V/cell auto-detection maximum (BAT-00 F7, fleet value)"),
-            "cutoff_per_cell_v": est(3.2, "V", "common 60 A ESC default 3.2 V/cell; installed setting unknown"),
+            "cutoff_per_cell_v": est(pack.get("cutoff_per_cell_v", 3.2), "V", pack.get("esc", "common 60 A ESC default 3.2 V/cell; installed setting unknown")),
             "soft_limit": est(0.5, "1", "soft cutoff to 50 % output (fleet value)"),
             "soft_ramp_s": est(3.0, "s", "soft cutoff ramp (fleet value)"),
             "debounce_s": est(0.5, "s", "brief punch-out sag does not trip (fleet value)"),

@@ -36,8 +36,8 @@ func _press_key(flight: Node, physical_keycode: int) -> void:
 
 func _initialize() -> void:
 	_check("default is the Ugly Stik and it is in the catalog", Catalog.DEFAULT_ID == AirplaneBuilder.STIK_ID and Catalog.has(Catalog.DEFAULT_ID))
-	_check("fourteen catalog entries, unique IDs", Catalog.ids().size() == 14 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 14, str(Catalog.ids()))
-	_check("thirteen airplane configurations remain available to airplane solvers", Catalog.airplane_flyable_ids().size() == 13 and Catalog.airplane_flyable_ids().has(AirplaneBuilder.TIMBER_ID)
+	_check("fifteen catalog entries, unique IDs", Catalog.ids().size() == 15 and Array(Catalog.ids()).filter(func(i): return Catalog.ids().count(i) == 1).size() == 15, str(Catalog.ids()))
+	_check("fourteen airplane configurations remain available to airplane solvers", Catalog.airplane_flyable_ids().size() == 14 and Catalog.airplane_flyable_ids().has(AirplaneBuilder.TIMBER_ID)
 		and Catalog.airplane_flyable_ids().has(AirplaneBuilder.X8_ID))
 	var expected_airplane_families := PackedStringArray([
 		AirplaneBuilder.STIK_ID, "stik-electric-6s", AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.CORSAIR_ID,
@@ -54,7 +54,7 @@ func _initialize() -> void:
 		and not airplane_families.has("hx-700")
 		and all_airplane_families_registered,
 		str(airplane_families))
-	_check("fourteen simulated entries include the experimental helicopter", Catalog.flyable_ids().size() == 14 and Catalog.flyable_ids().has("xcell-60-research")
+	_check("fifteen simulated entries include the experimental helicopter", Catalog.flyable_ids().size() == 15 and Catalog.flyable_ids().has("xcell-60-research")
 		and Catalog.flyable_entries().all(func(e): return e.data != "" and e.status != Catalog.PREVIEW), str(Catalog.flyable_ids()))
 	_check("Extra's finite glow store is exposed to fill selection", Catalog.has_finite_fuel(AirplaneBuilder.EXTRA_ID))
 	var wing_entry: Dictionary = Catalog.entry("moonrunner-x99")
@@ -78,7 +78,7 @@ func _initialize() -> void:
 	_check("unknown ID: no entry, cannot fly", Catalog.entry("nope").is_empty() and not Catalog.can_fly("nope"))
 	_check("step wraps both ways", Catalog.step(Catalog.ids()[-1], 1) == Catalog.ids()[0] and Catalog.step(Catalog.ids()[0], -1) == Catalog.ids()[-1])
 	_check("the airplane render adapter retains its old IDs and adds electric",
-		[AirplaneBuilder.STIK_ID, AirplaneBuilder.STIK_GLOW_61FX_ID, AirplaneBuilder.STIK_GLOW_55AX_ID, AirplaneBuilder.STIK_GLOW_FS64V_ID, "stik-electric-6s", AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.CORSAIR_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID, AirplaneBuilder.X8_ID, "twin-boom-1800", "fast-delta-780"] == Array(Catalog.airplane_flyable_ids()))
+		[AirplaneBuilder.STIK_ID, AirplaneBuilder.STIK_GLOW_61FX_ID, AirplaneBuilder.STIK_GLOW_55AX_ID, AirplaneBuilder.STIK_GLOW_FS64V_ID, "stik-electric-6s", AirplaneBuilder.EXTRA_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.CORSAIR_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.TIMBER_ID, AirplaneBuilder.X8_ID, "twin-boom-1800", "fast-delta-780", "fast-delta-780-6s"] == Array(Catalog.airplane_flyable_ids()))
 	# Step 15: the twin-boom FPV airplane is gearless (hand launch only) and flies the finite pack by default.
 	var twin_entry: Dictionary = Catalog.entry("twin-boom-1800")
 	_check("twin-boom 1800: own visual family, hand launch, no runway, pack by default",
@@ -89,6 +89,11 @@ func _initialize() -> void:
 	_check("fast delta 780: own visual family, hand launch, no runway, pack by default",
 		delta_entry.get("visual_family", "") == "fast-delta-780" and Catalog.hand_launch_supported("fast-delta-780")
 		and not Catalog.runway_supported("fast-delta-780") and Catalog.default_battery_mode("fast-delta-780") == "pack")
+	# Step 17: the 6S speed variant flies the same visual family on its own physics.
+	var speed_entry: Dictionary = Catalog.entry("fast-delta-780-6s")
+	_check("fast delta 780 6S: the Dartwing's visual family, hand launch, no runway, pack by default",
+		speed_entry.get("visual_family", "") == "fast-delta-780" and Catalog.hand_launch_supported("fast-delta-780-6s")
+		and not Catalog.runway_supported("fast-delta-780-6s") and Catalog.default_battery_mode("fast-delta-780-6s") == "pack")
 
 	for id in Catalog.ids():
 		var e := Catalog.entry(id)

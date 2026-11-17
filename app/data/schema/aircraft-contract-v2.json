@@ -180,7 +180,8 @@
         "level_speed"
       ],
       "allowed": [
-        "level_speed"
+        "level_speed",
+        "hand_launch_speed"
       ]
     },
     {
@@ -1523,6 +1524,7 @@
   "quantity_paths": [
     "/reference/*",
     "/start/level_speed",
+    "/start/hand_launch_speed",
     "/balance/*",
     "/inventory/*/mass",
     "/inventory/*/position",

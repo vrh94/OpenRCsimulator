@@ -10239,6 +10239,487 @@
         "basis": "authored_game_policy",
         "evidence": "Authored 2026-11-17 game scenario (MoonRunner X99 policy): $45/hour shop rate; active minutes per affected financial row and one shared setup. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
       }
+    },
+    "fast-delta-780-6s": {
+      "components": [
+        {
+          "id": "wing_main",
+          "quantity": 1,
+          "unit_minor": 4500,
+          "low_unit_minor": 4500,
+          "high_unit_minor": 4500,
+          "physical_inventory_ids": [
+            "wing_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed wing_main unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "fuselage_main",
+          "quantity": 1,
+          "unit_minor": 2500,
+          "low_unit_minor": 2500,
+          "high_unit_minor": 2500,
+          "physical_inventory_ids": [
+            "fuselage_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed fuselage_main unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "fins_main",
+          "quantity": 1,
+          "unit_minor": 800,
+          "low_unit_minor": 800,
+          "high_unit_minor": 800,
+          "physical_inventory_ids": [
+            "fins_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed fins_main unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "motor_main",
+          "quantity": 1,
+          "unit_minor": 6000,
+          "low_unit_minor": 6000,
+          "high_unit_minor": 6000,
+          "physical_inventory_ids": [
+            "motor_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed motor_main unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "propeller_main",
+          "quantity": 1,
+          "unit_minor": 800,
+          "low_unit_minor": 800,
+          "high_unit_minor": 800,
+          "physical_inventory_ids": [
+            "propeller_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed propeller_main unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "esc_main",
+          "quantity": 1,
+          "unit_minor": 9000,
+          "low_unit_minor": 9000,
+          "high_unit_minor": 9000,
+          "physical_inventory_ids": [
+            "esc_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed esc_main unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "battery_main",
+          "quantity": 1,
+          "unit_minor": 11000,
+          "low_unit_minor": 11000,
+          "high_unit_minor": 11000,
+          "physical_inventory_ids": [
+            "battery_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed battery_main unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "fpv_camera",
+          "quantity": 1,
+          "unit_minor": 2500,
+          "low_unit_minor": 2500,
+          "high_unit_minor": 2500,
+          "physical_inventory_ids": [
+            "fpv_camera"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed fpv_camera unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "video_transmitter",
+          "quantity": 1,
+          "unit_minor": 3000,
+          "low_unit_minor": 3000,
+          "high_unit_minor": 3000,
+          "physical_inventory_ids": [
+            "video_transmitter"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed video_transmitter unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        },
+        {
+          "id": "avionics_main",
+          "quantity": 1,
+          "unit_minor": 6000,
+          "low_unit_minor": 6000,
+          "high_unit_minor": 6000,
+          "physical_inventory_ids": [
+            "avionics_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored game allowance (USD minor units), 2026-11-17, for the fast delta 780 6S speed variant (step 17). Per installed avionics_main unit/group; quantity 1. Class-level estimate, no reviewed offer; economic scope only."
+        }
+      ],
+      "zones": [
+        {
+          "source": "hull",
+          "probe_id": "probe_wing_left_tip",
+          "component_ids": [
+            "wing_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_wing_right_tip",
+          "component_ids": [
+            "wing_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_wing_left_tip_te",
+          "component_ids": [
+            "wing_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_wing_right_tip_te",
+          "component_ids": [
+            "wing_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_nose",
+          "component_ids": [
+            "fuselage_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_propeller_bottom",
+          "component_ids": [
+            "propeller_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller_main": 400
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_fin_left_top",
+          "component_ids": [
+            "fins_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fins_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_fin_right_top",
+          "component_ids": [
+            "fins_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fins_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_tail",
+          "component_ids": [
+            "fuselage_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_belly_nose",
+          "component_ids": [
+            "fuselage_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_belly_forward",
+          "component_ids": [
+            "fuselage_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_belly_centre",
+          "component_ids": [
+            "fuselage_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_belly_wing",
+          "component_ids": [
+            "fuselage_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "hull",
+          "probe_id": "probe_belly_aft",
+          "component_ids": [
+            "fuselage_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
+        },
+        {
+          "source": "propeller",
+          "probe_id": "propeller/propulsion_main",
+          "component_ids": [
+            "propeller_main"
+          ],
+          "response": {
+            "kind": "channel_bands",
+            "channel": "depth_m",
+            "clear_below": 0.003,
+            "replace_at": 0.025,
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller_main": 400
+            }
+          },
+          "component_responses": {}
+        }
+      ],
+      "propeller_component_id": "propeller_main",
+      "propeller_inspection_ids": [
+        "motor_main",
+        "fuselage_main"
+      ],
+      "assumptions": [
+        "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
+        "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
+      ],
+      "shared_parent_children": {},
+      "source_hashes": [
+        "725b5b228f5a6c30e02a343c28b3c71b96159399b351e2d8646ae3a42474ff30",
+        "7b95affb007301dd7c5c1acf16caa86ba69b59d1197117c76ece0ce9fb5fc916"
+      ],
+      "construction_class": "foam",
+      "propeller_followups": [
+        {
+          "component_id": "motor_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 10000.0,
+          "replace_speed_mps": 50.0,
+          "replace_rpm": 30000.0,
+          "middle_action": "repair",
+          "service_minor": 1800
+        },
+        {
+          "component_id": "fuselage_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 10000.0,
+          "replace_speed_mps": 50.0,
+          "replace_rpm": 30000.0,
+          "middle_action": "repair",
+          "service_minor": 800
+        }
+      ],
+      "packages": [],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "wing_main": 20,
+          "fuselage_main": 20,
+          "fins_main": 10,
+          "motor_main": 10,
+          "propeller_main": 10,
+          "esc_main": 10,
+          "battery_main": 10,
+          "fpv_camera": 10,
+          "video_transmitter": 10,
+          "avionics_main": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-17 game scenario (MoonRunner X99 policy): $45/hour shop rate; active minutes per affected financial row and one shared setup. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      }
     }
   }
 }

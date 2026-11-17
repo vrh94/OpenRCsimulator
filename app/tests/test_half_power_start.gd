@@ -94,7 +94,14 @@ func run() -> void:
 		fly(a, 2880)
 		# The P-51's thrust line sits 71 mm above its CG: more power first lowers the nose and the height before the speed
 		# builds, so the climb is judged after twelve seconds.
-		check(id + " climbs at full throttle (%.1f m in 12 s)" % (h0 - a.sim.state[2]), a.sim.tick == 2880 and a.sim.state[2] < h0 - 0.5)
+		# Step 17: the 6S speed Dartwing's 30 N pusher thrust acts above its CG; hands-off, full power lowers the nose, it dives
+		# to about 118 m/s and its phugoid passes the start height near 12 s. Judge its full-power energy gain instead.
+		if id == "fast-delta-780-6s":
+			var st: PackedFloat64Array = a.sim.state
+			var gain: float = (h0 - st[2]) * 9.80665 + 0.5 * (Vector3(st[3], st[4], st[5]).length_squared() - v0 * v0)
+			check(id + " gains energy at full throttle (%.0f J/kg in 12 s)" % gain, a.sim.tick == 2880 and gain > 1000.0)
+		else:
+			check(id + " climbs at full throttle (%.1f m in 12 s)" % (h0 - a.sim.state[2]), a.sim.tick == 2880 and a.sim.state[2] < h0 - 0.5)
 		a.reset()
 		a.commands.throttle = 0.25
 		fly(a, 1920)

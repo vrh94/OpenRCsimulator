@@ -1,0 +1,494 @@
+{
+  "format": "openrc-fast-delta-variant v1",
+  "base_inputs": "research/fast-delta-780/FD-01/inputs.json",
+  "variant": {
+    "id": "fast-delta-780-6s",
+    "flying_mass_kg": {
+      "value": 1.42,
+      "unit": "kg",
+      "source": "FD-03: the 6S speed build: d1 airframe, 6S 4000 mAh pack, 2000 Kv speed motor, 200 A ESC, heavier wiring; not weighed"
+    },
+    "mass_range": {
+      "value": [
+        1.25,
+        1.6
+      ],
+      "unit": "kg",
+      "source": "FD-03: 6S speed builds of 0.78 m speed wings with 4000-5000 mAh packs; estimate"
+    },
+    "pack_id": "lipo-6s1p-4000-gea406s60x9gt-est-v1",
+    "pack_label": "6S 4000 mAh (Gens ace G-tech class)",
+    "hand_launch_speed": {
+      "value": 11.0,
+      "unit": "m/s",
+      "source": "FD-03: a hard running overhand throw (about 40 km/h), as heavy 6S speed wings are launched; the shared 6.5 m/s standing throw is below this build's 13 m/s stall and too slow to outrun the propeller torque. Estimate; FD-03 README launch study"
+    },
+    "start_level_speed": {
+      "value": 30.0,
+      "unit": "m/s",
+      "source": "FD-03: slow level reference for the 6S speed build, 2.25 times its 13.2 m/s clean stall. The airborne start trims at 50 % throttle and searches up to 2.5 times this speed; this build flies about 62-70 m/s at half throttle, beyond 2.5 times the base Dartwing's 1.5-times-stall reference"
+    }
+  },
+  "estimates": {
+    "motor_resistance": {
+      "value": 0.012,
+      "unit": "ohm",
+      "source": "FD-03: equivalent winding resistance of a 40-mm 2000 Kv-class 6S speed outrunner (catalogue range 0.008-0.016 ohm; 0.009 ohm is stiffer than the simulator's 240 Hz electric source qualifies); not measured"
+    },
+    "motor_no_load_current": {
+      "value": 2.5,
+      "unit": "A",
+      "source": "FD-03: no-load current of a 40-mm 2000 Kv-class outrunner near 10 V; not measured"
+    },
+    "bus_voltage": {
+      "value": 22.2,
+      "unit": "V",
+      "source": "FD-03: 6S nominal fixed bus (ideal-bus configuration); no sag or depletion"
+    },
+    "rotor_inertia": {
+      "value": 4.5e-05,
+      "unit": "kg·m2",
+      "source": "FD-03: 7x9 pusher propeller, adapter and 40-mm outrunner bell; not measured"
+    }
+  },
+  "inventory_source": "FD-03 component-class mass and box estimates for the 6S speed build of design d1; not weighed",
+  "inventory_replace": [
+    {
+      "id": "motor_main",
+      "name": "40-mm 2000 Kv-class 6S speed outrunner",
+      "mass_kg": 0.2,
+      "position": [
+        0.33,
+        0.0,
+        0.006
+      ],
+      "size": [
+        0.05,
+        0.04,
+        0.04
+      ]
+    },
+    {
+      "id": "propeller_main",
+      "name": "7x9 pusher propeller and adapter",
+      "mass_kg": 0.014,
+      "position": [
+        0.37,
+        0.0,
+        0.006
+      ],
+      "size": [
+        0.015,
+        0.1778,
+        0.015
+      ]
+    },
+    {
+      "id": "esc_main",
+      "name": "200 A 6S ESC with BEC and 10 AWG leads",
+      "mass_kg": 0.11,
+      "position": [
+        0.22,
+        0.0,
+        -0.01
+      ],
+      "size": [
+        0.08,
+        0.04,
+        0.02
+      ]
+    },
+    {
+      "id": "battery_main",
+      "name": "Gens ace G-tech GEA406S60X9GT 6S 4000 mAh",
+      "mass_kg": 0.606,
+      "position": [
+        0.07,
+        0.0,
+        0.0
+      ],
+      "size": [
+        0.162,
+        0.045,
+        0.037
+      ],
+      "energy_source": "lipo"
+    }
+  ],
+  "propulsion": {
+    "motor": {
+      "kv_rpm_per_volt": {
+        "value": 2000,
+        "unit": "rpm/V",
+        "kind": "estimated",
+        "source": "FD-03: chosen so the measured 7x9 holds 100 m/s (360 km/h) in level flight on a fresh 6S 4000 mAh pack under the project's pack law (1900 Kv peaks at 355 km/h; FD-03 README); 40-mm speed outrunner class"
+      }
+    },
+    "propeller": {
+      "diameter": {
+        "value": 0.1778,
+        "unit": "m",
+        "kind": "manual",
+        "source": "FD-03 7x9 pusher propeller, nominal 7 in"
+      },
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.1151
+          ],
+          [
+            0.116,
+            0.1169
+          ],
+          [
+            0.146,
+            0.1163
+          ],
+          [
+            0.177,
+            0.116
+          ],
+          [
+            0.207,
+            0.1157
+          ],
+          [
+            0.24,
+            0.1155
+          ],
+          [
+            0.27,
+            0.1151
+          ],
+          [
+            0.302,
+            0.1149
+          ],
+          [
+            0.331,
+            0.114
+          ],
+          [
+            0.365,
+            0.1134
+          ],
+          [
+            0.393,
+            0.1127
+          ],
+          [
+            0.424,
+            0.1118
+          ],
+          [
+            0.454,
+            0.1113
+          ],
+          [
+            0.486,
+            0.1109
+          ],
+          [
+            0.511,
+            0.1106
+          ],
+          [
+            0.54,
+            0.1104
+          ],
+          [
+            0.57,
+            0.1094
+          ],
+          [
+            0.603,
+            0.1079
+          ],
+          [
+            0.632,
+            0.1064
+          ],
+          [
+            0.664,
+            0.1046
+          ],
+          [
+            0.695,
+            0.1019
+          ],
+          [
+            0.729,
+            0.0996
+          ],
+          [
+            0.761,
+            0.0949
+          ],
+          [
+            0.79,
+            0.092
+          ],
+          [
+            0.819,
+            0.0894
+          ],
+          [
+            0.851,
+            0.0851
+          ],
+          [
+            0.879,
+            0.0822
+          ],
+          [
+            0.907,
+            0.0785
+          ],
+          [
+            0.937,
+            0.0742
+          ],
+          [
+            0.973,
+            0.0687
+          ],
+          [
+            0.996,
+            0.0651
+          ],
+          [
+            1.031,
+            0.0588
+          ],
+          [
+            1.066,
+            0.0514
+          ],
+          [
+            1.095,
+            0.0455
+          ],
+          [
+            1.122,
+            0.0392
+          ],
+          [
+            1.158,
+            0.0323
+          ],
+          [
+            1.181,
+            0.0268
+          ],
+          [
+            1.216,
+            0.0208
+          ],
+          [
+            1.242,
+            0.014
+          ],
+          [
+            1.266,
+            0.0092
+          ],
+          [
+            1.313,
+            0.0014
+          ],
+          [
+            1.333,
+            -0.0012
+          ],
+          [
+            1.38,
+            -0.0083
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC Propeller Data Site Vol. 1, measured APC Sport 7x9 two-blade: static apcsp_7x9_static_2897cm.txt (6792 rpm row; sha256 f90417aef6bd9b207e2e6d017668cec9ebdcfe585e2216221961712380f167cb), tunnel apcsp_7x9_2903cm_6829.txt (sha256 8ca228fbb961486cc1a50468b8d60a18e1c3b72cd4baffa11da799414118b8ea) for J <= 0.603, apcsp_7x9_2904cm_6814.txt (sha256 61347f70ecc23cf21970f0b93dbf035f1ec4b35b2335dfec473cfb3a07144f0a) to J 1.216 and apcsp_7x9_2902cm_6016.txt (sha256 577af85412604636962e0ba46506d2ad9580227b9fb423cf9744d4c053d40946, 6016 rpm) above it to the windmill end; m-selig.ae.illinois.edu/props/volume-1/data/, downloaded 2026-11-17. Borrowed: measured near 6,800 rpm, far below the 30,000+ rpm it turns here; no RPM or Reynolds-number equivalence."
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.1257
+          ],
+          [
+            0.116,
+            0.1224
+          ],
+          [
+            0.146,
+            0.1217
+          ],
+          [
+            0.177,
+            0.1215
+          ],
+          [
+            0.207,
+            0.1209
+          ],
+          [
+            0.24,
+            0.1207
+          ],
+          [
+            0.27,
+            0.1198
+          ],
+          [
+            0.302,
+            0.1187
+          ],
+          [
+            0.331,
+            0.1179
+          ],
+          [
+            0.365,
+            0.1158
+          ],
+          [
+            0.393,
+            0.1146
+          ],
+          [
+            0.424,
+            0.1124
+          ],
+          [
+            0.454,
+            0.1109
+          ],
+          [
+            0.486,
+            0.1103
+          ],
+          [
+            0.511,
+            0.11
+          ],
+          [
+            0.54,
+            0.1098
+          ],
+          [
+            0.57,
+            0.1095
+          ],
+          [
+            0.603,
+            0.1096
+          ],
+          [
+            0.632,
+            0.1085
+          ],
+          [
+            0.664,
+            0.1086
+          ],
+          [
+            0.695,
+            0.1086
+          ],
+          [
+            0.729,
+            0.1085
+          ],
+          [
+            0.761,
+            0.1078
+          ],
+          [
+            0.79,
+            0.1077
+          ],
+          [
+            0.819,
+            0.1071
+          ],
+          [
+            0.851,
+            0.1059
+          ],
+          [
+            0.879,
+            0.1043
+          ],
+          [
+            0.907,
+            0.1032
+          ],
+          [
+            0.937,
+            0.1013
+          ],
+          [
+            0.973,
+            0.0978
+          ],
+          [
+            0.996,
+            0.0956
+          ],
+          [
+            1.031,
+            0.0914
+          ],
+          [
+            1.066,
+            0.0861
+          ],
+          [
+            1.095,
+            0.0807
+          ],
+          [
+            1.122,
+            0.0757
+          ],
+          [
+            1.158,
+            0.0688
+          ],
+          [
+            1.181,
+            0.064
+          ],
+          [
+            1.216,
+            0.0572
+          ],
+          [
+            1.242,
+            0.0495
+          ],
+          [
+            1.266,
+            0.045
+          ],
+          [
+            1.313,
+            0.0368
+          ],
+          [
+            1.333,
+            0.033
+          ],
+          [
+            1.38,
+            0.0254
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC Propeller Data Site Vol. 1, measured APC Sport 7x9 two-blade: static apcsp_7x9_static_2897cm.txt (6792 rpm row; sha256 f90417aef6bd9b207e2e6d017668cec9ebdcfe585e2216221961712380f167cb), tunnel apcsp_7x9_2903cm_6829.txt (sha256 8ca228fbb961486cc1a50468b8d60a18e1c3b72cd4baffa11da799414118b8ea) for J <= 0.603, apcsp_7x9_2904cm_6814.txt (sha256 61347f70ecc23cf21970f0b93dbf035f1ec4b35b2335dfec473cfb3a07144f0a) to J 1.216 and apcsp_7x9_2902cm_6016.txt (sha256 577af85412604636962e0ba46506d2ad9580227b9fb423cf9744d4c053d40946, 6016 rpm) above it to the windmill end; m-selig.ae.illinois.edu/props/volume-1/data/, downloaded 2026-11-17. Borrowed: measured near 6,800 rpm, far below the 30,000+ rpm it turns here; no RPM or Reynolds-number equivalence."
+      }
+    }
+  }
+}

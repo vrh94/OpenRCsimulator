@@ -473,11 +473,16 @@ static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}, layout: D
 	elif planform != "rectangular":
 		errors.append("reference.planform: '%s' is not 'rectangular' or 'tapered'" % planform)
 	var start_speed := 15.0 # the Stik's validated start (D5); other aircraft declare theirs
+	var hand_launch_speed := NAN # step 17: optional per-aircraft throw speed; absent = the session's shared throw
 	if raw.has("start"):
 		var start_node := _dictionary(errors, "start", raw.get("start"))
 		var v = _dq(domain, errors, "start.level_speed", start_node.get("level_speed"), "m/s", 5.0, 60.0)
 		if v != null:
 			start_speed = v
+		if start_node.has("hand_launch_speed"):
+			var throw = _dq(domain, errors, "start.hand_launch_speed", start_node.get("hand_launch_speed"), "m/s", 3.0, 15.0)
+			if throw != null:
+				hand_launch_speed = throw
 	var bal := _dictionary(errors, "balance", raw.get("balance", {}))
 	var plan_cg = _dq(domain, errors, "balance.plan_cg", bal.get("plan_cg"), "m", -2.0, 2.0, 3)
 	_dq(domain, errors, "balance.firewall", bal.get("firewall"), "m", -2.0, 2.0, 3)
@@ -596,6 +601,8 @@ static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}, layout: D
 		crash_hull_components = hull_components,
 		landing_gear = gear,
 	}
+	if is_finite(hand_launch_speed):
+		model.hand_launch_speed = hand_launch_speed # declared only; see FlightSession.hand_launch_speed()
 	return { ok = errors.is_empty(), errors = errors, warnings = warnings, model = model }
 
 

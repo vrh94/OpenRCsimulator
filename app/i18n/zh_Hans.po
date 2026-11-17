@@ -12939,6 +12939,18 @@ msgstr "将总距杆置于 %.0f%%（0° 螺距，当前 %.1f°），然后解锁
 msgid "Bumper camera"
 msgstr "保险杠摄像头"
 
+msgid "Dartwing 780 · Speed 6S"
+msgstr "Dartwing 780 · Speed 6S"
+
+msgid "Dartwing · 6S"
+msgstr "Dartwing · 6S"
+
+msgid "Speed wing · 0.78 m · 6S electric pusher · 360 km/h"
+msgstr "速度飞翼 · 0.78 米 · 6S 电动推进 · 360 km/h"
+
+msgid "Experimental: 6S speed build of the Dartwing 780 with an estimated 2000 Kv drive on a measured 7x9 propeller; holds about 360 km/h level on a fresh pack. Very sensitive at speed; no landing gear (hand launch). Not flight-validated."
+msgstr "实验性：Dartwing 780 的 6S 竞速版本，估算 2000 Kv 动力配实测 7x9 螺旋桨；满电时可保持约 360 km/h 平飞。高速时非常灵敏；无起落架（手抛起飞）。未经飞行验证。"
+
 msgid "Dartwing 780"
 msgstr "Dartwing 780"
 

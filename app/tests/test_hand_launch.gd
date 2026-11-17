@@ -68,7 +68,7 @@ func _support() -> void:
 			offered.append(id)
 		_check(id + " never offers both ground starts", not (Session.hand_launch_aircraft_supported(id) and Session.runway_aircraft_supported(id)))
 		_check(id + " catalog cache agrees", Catalog.hand_launch_supported(id) == Session.hand_launch_aircraft_supported(id))
-	_check("only the gearless X8, twin-boom 1800 and fast delta 780 are hand-launched", offered == PackedStringArray([X8, "twin-boom-1800", "fast-delta-780"]), str(offered))
+	_check("only the gearless X8, twin-boom 1800 and both fast delta 780s are hand-launched", offered == PackedStringArray([X8, "twin-boom-1800", "fast-delta-780", "fast-delta-780-6s"]), str(offered))
 
 
 func _release_geometry(field: Dictionary) -> void:

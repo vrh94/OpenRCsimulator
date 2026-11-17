@@ -13911,6 +13911,18 @@ msgstr "Placez le manche de pas collectif à %.0f%% (pas de 0°, actuellement %.
 msgid "Bumper camera"
 msgstr "Caméra pare-chocs"
 
+msgid "Dartwing 780 · Speed 6S"
+msgstr "Dartwing 780 · Speed 6S"
+
+msgid "Dartwing · 6S"
+msgstr "Dartwing · 6S"
+
+msgid "Speed wing · 0.78 m · 6S electric pusher · 360 km/h"
+msgstr "Aile de vitesse · 0,78 m · propulsion électrique 6S · 360 km/h"
+
+msgid "Experimental: 6S speed build of the Dartwing 780 with an estimated 2000 Kv drive on a measured 7x9 propeller; holds about 360 km/h level on a fresh pack. Very sensitive at speed; no landing gear (hand launch). Not flight-validated."
+msgstr "Expérimental : version vitesse 6S du Dartwing 780 avec une motorisation estimée de 2000 Kv et une hélice 7x9 mesurée ; tient environ 360 km/h en palier sur batterie pleine. Très sensible à haute vitesse ; sans train d'atterrissage (lancer à la main). Non validé en vol."
+
 msgid "Dartwing 780"
 msgstr "Dartwing 780"
 

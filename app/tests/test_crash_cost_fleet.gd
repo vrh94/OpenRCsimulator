@@ -55,7 +55,7 @@ func _initialize() -> void:
 			gear.evaluate_pending()
 			_check(id + " local gear proxy has numeric bill", gear.report.get("known_subtotal_minor", 0) > 0 and gear.report.get("errors", []).is_empty())
 		else:
-			_check(id + " explicit gearless fixture", id in ["moonrunner-x99", "twin-boom-1800", "fast-delta-780"])
+			_check(id + " explicit gearless fixture", id in ["moonrunner-x99", "twin-boom-1800", "fast-delta-780", "fast-delta-780-6s"])
 		var prop_id: String = loaded.dossier.propeller_component_id
 		if prop_id.is_empty():
 			_check(id + " explicit no-propeller installation", bindings.get("rotor_disc", {}).is_empty())
@@ -66,7 +66,7 @@ func _initialize() -> void:
 			prop.observe(_snapshot(1, [Events.strike_event(strike, 1, Hull.law(), bindings)]), bindings, false)
 			prop.evaluate_pending()
 			_check(id + " prop bill with explicit pending scope", prop.report.get("known_subtotal_minor", 0) > 0 and prop.report.get("errors", []).is_empty())
-	_check("all thirteen fixed-wing configurations exercised", route_count == 13)
+	_check("all fourteen fixed-wing configurations exercised", route_count == 14)
 	print("crash cost fleet: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 

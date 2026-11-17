@@ -84,7 +84,7 @@ func _initialize() -> void:
 			var services := 0
 			for follow: Dictionary in loaded.damage_profile.propeller_followups: services += int(follow.service_minor)
 			check(id + " medium prop service scope reconciles", medium.report.get("complete", false) and medium.report.get("total_minor") == price + services)
-	check("all fixed-wing routes enumerated", count == 13)
+	check("all fixed-wing routes enumerated", count == 14)
 	print("game flow: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 

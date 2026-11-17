@@ -12,6 +12,7 @@ One authored design drives physics and model:
 | Step | Script | Writes |
 | --- | --- | --- |
 | FD-01 physics | `FD-01/derive_physics.py [--check]` with `FD-01/inputs.json` | `app/data/aircraft/fast_delta_780.json` (ideal 14.8 V bus), `app/data/aircraft/battery/fast_delta_780_4s_pack.json` (finite 4S 2200 mAh pack, default) |
+| FD-03 6S speed variant | `FD-03/derive_speed.py [--check]` with `FD-03/inputs.json` (overrides of FD-01's inputs) | `app/data/aircraft/fast_delta_780_6s.json` (ideal 22.2 V bus), `app/data/aircraft/battery/fast_delta_780_6s_pack.json` (6S 4000 mAh pack, default) |
 | FD-02 model | `FD-02/build_model.py [--check]` (stdlib only) | `app/assets/aircraft/fast-delta-780/fast_delta_780.glb` (2,086 triangles, with a grey belly skid), `assets/aircraft/fast-delta-780/model-geometry.json`, `app/aircraft/fast_delta_780_geometry.gd` |
 
 Like the Longreach 1800, the model is a separately proved **overlay family**, so the base model and paint registries
@@ -84,3 +85,38 @@ far below the 20,000+ rpm it turns here. Crash-cost lines are allowances with no
 power-off glide L/D between 6 and 15; the hand launch in angle mode (calm air and a 1.5 m/s breeze) and in manual with
 20 % and 50 % up elevator and wing levelling; flight-controller angle and cruise modes; and the built model (two
 elevon hinges, centre body, both fins, propeller).
+
+## FD-03: the 6S speed variant
+
+`fast-delta-780-6s` ("Dartwing 780 · Speed 6S") flies the same airframe, CG and coefficients as FD-01 on a 6S speed
+drive. `FD-03/inputs.json` replaces four inventory items and the drive estimates; FD-01's `derive()` builds the rest.
+
+| Item | Base (FD-01) | Speed 6S (FD-03) |
+| --- | --- | --- |
+| Motor | 35-mm 1800 Kv, 0.032 Ω, 0.105 kg | 40-mm 2000 Kv, 0.012 Ω, 0.20 kg (estimates) |
+| Propeller | measured APC Sport 7x6 | measured APC Sport 7x9 (UIUC Vol. 1, J to 1.38, SHA-256 in `inputs.json`) |
+| ESC | 60 A | 200 A, cutoff 3.0 V/cell |
+| Battery | 4S 2200 mAh class, 0.227 kg | 6S 4000 mAh (existing Gens ace G-tech pack file), 0.606 kg |
+| Flying mass / stall | 0.875 kg / 10.4 m/s | 1.42 kg / 13.2 m/s |
+| Hand-launch throw | shared 6.5 m/s | 11 m/s (`start.hand_launch_speed`) |
+| Start reference (`start.level_speed`) | 15.6 m/s (1.5 × stall) | 30 m/s (2.25 × stall): the 50 % airborne start searches up to 2.5 × this, and this build flies about 63 m/s at half throttle |
+
+How the drive was chosen (in the simulator, not on paper): at 100 m/s the wing needs about 20 N, which the 7x9 gives at
+about 33,000 rpm and 3.1 kW at the shaft. Under the project's pack law a 6S 2200 sags to the cutoff long before that, and
+tops out near 340 km/h; the 6S 4000 holds 1900 Kv at 355 km/h and 2000 Kv at 361 km/h. A 0.009 Ω winding is stiffer than
+the 240 Hz electric source qualifies, so the motor keeps 0.012 Ω. With the default 3.2 V/cell cutoff the loaded pack
+trips the ESC in seconds; speed pilots lower it, so this build uses 3.0 V.
+
+| Result (simulator) | Value |
+| --- | --- |
+| Level, fresh 6S 4000 pack, full throttle | 100.5 m/s (362 km/h), about 197 A, 18.7 V; cutoff after about 50 s |
+| Level, ideal 22.2 V bus | trims to 110 m/s at 93 % throttle; about 112 m/s (400 km/h) at full |
+| Stability at 110 m/s | hands-off pitch-and-roll kick damps within 0.5 s; neutral spiral |
+| Full power from the 50 % start, hands-off | the thrust line above the CG lowers the nose: it dives to about 118 m/s in a long phugoid instead of climbing (it still gains energy) |
+| Hand launch at 11 m/s (fresh pack) | flies with 40 % up elevator and the wings held level at 60 % or full throttle, and in angle mode; 25 % up at 60 % throttle sinks in; the 6.5 m/s throw crashes |
+
+Fly it with low rates or Workshop control travel below 100 %: at 360 km/h a 15 % stick blip rolls it 40° in a fraction
+of a second. Not validated: everything in the base list, plus a propeller map measured at 6,800 rpm turned at 33,000 rpm
+and no structural or flutter limit (the simulator has none).
+
+Evidence: `app/tests/test_fast_delta_780_6s.gd`, 16 checks.

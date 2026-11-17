@@ -12990,6 +12990,18 @@ msgstr "コレクティブスティックを %.0f%%（ピッチ0°、現在 %.1f
 msgid "Bumper camera"
 msgstr "バンパーカメラ"
 
+msgid "Dartwing 780 · Speed 6S"
+msgstr "Dartwing 780 · Speed 6S"
+
+msgid "Dartwing · 6S"
+msgstr "Dartwing · 6S"
+
+msgid "Speed wing · 0.78 m · 6S electric pusher · 360 km/h"
+msgstr "スピードウイング · 0.78 m · 6S 電動プッシャー · 360 km/h"
+
+msgid "Experimental: 6S speed build of the Dartwing 780 with an estimated 2000 Kv drive on a measured 7x9 propeller; holds about 360 km/h level on a fresh pack. Very sensitive at speed; no landing gear (hand launch). Not flight-validated."
+msgstr "実験的: Dartwing 780 の 6S スピード仕様。推定 2000 Kv の動力と実測 7x9 プロペラ。満充電のパックで水平飛行約 360 km/h を維持します。高速では非常に敏感。降着装置なし（ハンドランチ）。飛行検証なし。"
+
 msgid "Dartwing 780"
 msgstr "Dartwing 780"
 

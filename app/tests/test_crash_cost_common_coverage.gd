@@ -42,6 +42,9 @@ const ESSENTIAL = {
 	# Step 16: gearless speed wing; the fins belong to the tail group.
 	"fast-delta-780": {"wing": ["wing_main"], "body": ["fuselage_main"], "tail": ["fins_main"],
 		"propulsion": ["motor_main", "propeller_main"]},
+	# Step 17: the 6S speed variant; same airframe, own drive.
+	"fast-delta-780-6s": {"wing": ["wing_main"], "body": ["fuselage_main"], "tail": ["fins_main"],
+		"propulsion": ["motor_main", "propeller_main"]},
 }
 var checks := 0
 var failures := 0
@@ -58,7 +61,7 @@ func _initialize() -> void:
 	route_ids.sort()
 	var expected_ids := ESSENTIAL.keys()
 	expected_ids.sort()
-	check("exactly thirteen fixed-wing routes are independently listed", route_ids == expected_ids)
+	check("exactly fourteen fixed-wing routes are independently listed", route_ids == expected_ids)
 	for id: String in route_ids:
 		var loaded: Dictionary = Catalog.load_for(id)
 		var physical: Dictionary = Aircraft.load_file(Routes.entry(id).data)

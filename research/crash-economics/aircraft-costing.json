@@ -2784,6 +2784,180 @@
       }
     },
     {
+      "aircraft_id": "fast-delta-780-6s",
+      "status": "independent_partial_inventory_costing",
+      "price_observations": [],
+      "replacement_total_minor": null,
+      "missing": [
+        "No USD offer was reviewed for any part of the fast delta 780 6S speed build (step 17, 2026-11-17): every component line is unpriced, so damage is reported with an incomplete valuation.",
+        "Assembly, flight-controller setup and commissioning labor has no verified basis; no foam repair recipe applies to this aircraft yet."
+      ],
+      "notes": "Independent inventory mapping of the fast delta 780 6S speed variant (FD-03), reviewed 2026-11-17. All installed items are mapped once; the virtual balancing mass is excluded; no prices yet. The finite-pack variant binds to this dossier through the physical signature.",
+      "dossier": {
+        "expected_source_sha256": "725b5b228f5a6c30e02a343c28b3c71b96159399b351e2d8646ae3a42474ff30",
+        "lines": [
+          {
+            "id": "wing_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "wing_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "EPO swept wing panels with spar, elevons and two elevon servos. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "fuselage_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "fuselage_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "EPO centre body, hatch and canopy. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "fins_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "fins_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Two fixed fins. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "motor_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "motor_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "40-mm 2000 Kv-class 6S speed outrunner. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "propeller_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "propeller_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "7x9 pusher propeller and adapter; a propeller strike replaces this line only. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "esc_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "esc_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "200 A 6S ESC with BEC and 10 AWG leads. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "battery_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "battery_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "6S 4000 mAh LiPo flight pack (Gens ace G-tech class). Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "fpv_camera",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "fpv_camera"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "FPV camera and nose mount. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "video_transmitter",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "video_transmitter"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Video transmitter and antenna. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "avionics_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "avionics_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Receiver and flight controller. Unpriced: no offer for this part was reviewed for the fast delta 780 6S speed variant (step 17); valuation stays incomplete rather than borrowing another aircraft's price."
+          },
+          {
+            "id": "final_assembly_and_commissioning",
+            "quantity": 1,
+            "physical_inventory_ids": [],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced assembly, flight-controller setup, balancing and post-crash inspection labor. No transferable allowance assumed; not salvageable."
+          }
+        ],
+        "contact_components": {
+          "probe_wing_left_tip": [
+            "wing_main"
+          ],
+          "probe_wing_right_tip": [
+            "wing_main"
+          ],
+          "probe_wing_left_tip_te": [
+            "wing_main"
+          ],
+          "probe_wing_right_tip_te": [
+            "wing_main"
+          ],
+          "probe_nose": [
+            "fuselage_main",
+            "fpv_camera"
+          ],
+          "probe_propeller_bottom": [
+            "propeller_main",
+            "motor_main"
+          ],
+          "probe_fin_left_top": [
+            "fins_main"
+          ],
+          "probe_fin_right_top": [
+            "fins_main"
+          ],
+          "probe_tail": [
+            "fuselage_main",
+            "motor_main"
+          ],
+          "probe_belly_nose": [
+            "fuselage_main",
+            "fpv_camera"
+          ],
+          "probe_belly_forward": [
+            "fuselage_main"
+          ],
+          "probe_belly_centre": [
+            "fuselage_main",
+            "video_transmitter"
+          ],
+          "probe_belly_wing": [
+            "fuselage_main",
+            "battery_main",
+            "avionics_main"
+          ],
+          "probe_belly_aft": [
+            "fuselage_main",
+            "esc_main",
+            "wing_main"
+          ],
+          "propeller/propulsion_main": [
+            "propeller_main"
+          ]
+        },
+        "propeller_component_id": "propeller_main",
+        "propeller_inspection_ids": [
+          "motor_main",
+          "fuselage_main"
+        ]
+      }
+    },
+    {
       "aircraft_id": "xcell-60-research",
       "status": "unpriced",
       "price_observations": [],

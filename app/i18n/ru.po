@@ -13740,6 +13740,18 @@ msgstr "Установите ручку общего шага на %.0f%% (ша�
 msgid "Bumper camera"
 msgstr "Камера на бампере"
 
+msgid "Dartwing 780 · Speed 6S"
+msgstr "Dartwing 780 · Speed 6S"
+
+msgid "Dartwing · 6S"
+msgstr "Dartwing · 6S"
+
+msgid "Speed wing · 0.78 m · 6S electric pusher · 360 km/h"
+msgstr "Скоростное крыло · 0,78 м · электрический толкающий 6S · 360 км/ч"
+
+msgid "Experimental: 6S speed build of the Dartwing 780 with an estimated 2000 Kv drive on a measured 7x9 propeller; holds about 360 km/h level on a fresh pack. Very sensitive at speed; no landing gear (hand launch). Not flight-validated."
+msgstr "Экспериментально: скоростная версия Dartwing 780 на 6S с расчётным мотором 2000 Kv и измеренным винтом 7x9; на свежем аккумуляторе держит около 360 км/ч в горизонтальном полёте. Очень чувствительна на скорости; без шасси (запуск с руки). Не проверено в полёте."
+
 msgid "Dartwing 780"
 msgstr "Dartwing 780"
 
