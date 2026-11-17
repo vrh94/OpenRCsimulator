@@ -3777,7 +3777,7 @@ func _refresh_recovery_after_conflict() -> void:
 func _describe_customization(base_id: String) -> Dictionary:
 	if AirshipCatalog.is_stock_id(base_id):
 		return AirshipFamily.customization()
-	if base_id in ["moonrunner-x99", "stik-electric-6s", "twin-boom-1800"]:
+	if base_id in ["moonrunner-x99", "stik-electric-6s", "twin-boom-1800", "fast-delta-780"]:
 		var overlay_path := "res://aircraft/customization_overlay.gd"
 		if not ResourceLoader.exists(overlay_path):
 			return {"ok": false, "errors": PackedStringArray(["Overlay customization resolver is unavailable."])}

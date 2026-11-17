@@ -1,0 +1,53 @@
+{
+  "format": "openrc-fast-delta-design v1",
+  "catalog_id": "fast-delta-780",
+  "revision": "d1",
+  "status": "Original OpenRC design (step 16): a fast swept flying wing (delta-planform pusher) in the 0.78 m speed-wing class (Multiplex FunJet Ultra 2 class). Our own parametric outline from the class's published headline figures (span, wing area, flying weight, drive); no kit drawing, CAD, photograph or livery was used.",
+  "class_reference": "Multiplex FunJet ULTRA 2 listings (checked 2026-11-17): span 783 mm, flying weight 875 g, 4S LiPo, ROXXY C35-36 1960 Kv outrunner, 6x5.5 propeller, two HS-65HB servos, about 220 km/h (shop.multiplex-rc.de item 1-01030, lindinger.at); wing area 14.5 dm2 and length 750 mm (skyraccoon.com). Used as class figures only.",
+  "frame": "LE frame [x_aft, y_right, z_up] in metres; D0 = wing root leading edge on the symmetry plane at the wing chord plane",
+  "wing": {
+    "span": 0.78,
+    "root_chord": 0.28,
+    "tip_chord": 0.09,
+    "le_sweep_deg": 35.0,
+    "dihedral_deg": 0.0,
+    "thickness_ratio": 0.09,
+    "reflex_note": "reflexed speed section; the section moment and washout are estimates in FD-01 inputs",
+    "elevon_y": [0.05, 0.37],
+    "elevon_chord_fraction": 0.22
+  },
+  "fuselage": {
+    "stations": [
+      [-0.33, 0.0, 0.0, 0.0],
+      [-0.31, 0.018, -0.02, 0.018],
+      [-0.26, 0.034, -0.034, 0.034],
+      [-0.17, 0.043, -0.04, 0.046],
+      [-0.04, 0.045, -0.04, 0.052],
+      [0.1, 0.042, -0.034, 0.05],
+      [0.22, 0.034, -0.025, 0.045],
+      [0.3, 0.022, -0.016, 0.034],
+      [0.35, 0.012, -0.008, 0.02]
+    ],
+    "stations_note": "[x, half width, bottom z, top z]; a slim centre body with the wing on its chord plane; the motor sits in its tail",
+    "canopy": {"x": [-0.25, -0.06], "half_width": 0.03, "height": 0.028}
+  },
+  "fins": {
+    "y": 0.125,
+    "root_le_x": 0.2,
+    "root_z": 0.006,
+    "height": 0.09,
+    "root_chord": 0.11,
+    "tip_chord": 0.05,
+    "le_sweep_deg": 40.0,
+    "thickness": 0.005
+  },
+  "thrust": {
+    "hub": [0.37, 0.0, 0.006],
+    "propeller_diameter": 0.1778,
+    "downthrust_deg": 0.0,
+    "right_thrust_deg": 0.0
+  },
+  "throws_deg": {"aileron": 12.0, "elevator": 9.0, "elevon": 18.0},
+  "flying_mass_kg": 0.875,
+  "cg_aft_of_root_le_m": 0.142
+}

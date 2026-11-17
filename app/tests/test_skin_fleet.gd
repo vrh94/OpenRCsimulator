@@ -50,7 +50,7 @@ func _run() -> void:
 	var packages := {}
 	for id: String in ids:
 		var spec := Skins.kit(id)
-		if id == "twin-boom-1800":
+		if id in ["twin-boom-1800", "fast-delta-780"]:
 			# Step 15: kits are built in Blender 5.2.2 (tools/skins/build_skin_kits.py); until one is built, custom paint is
 			# refused cleanly and the Workshop's colour slots still apply.
 			check(id + " has no paint kit yet and refuses custom paint", spec.is_empty() and not Skins._base(id).get("ok", true))

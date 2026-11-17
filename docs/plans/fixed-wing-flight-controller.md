@@ -130,6 +130,31 @@ Evidence: `tests/test_twin_boom_1800.gd` 17/17 (generators current, both data fi
 hand launch in calm air and a breeze, FC angle and cruise modes, model hinges and parts). The fleet sweep, the golden
 tapes and the aircraft, economy, Workshop and skin Python suites pass.
 
+## Step 16 (done): Dartwing 780, a FunJet-class fast delta
+
+An original speed wing (`fast-delta-780`, experimental): 0.78 m, 0.875 kg, swept tapered wing with elevons, slim
+centre body with a nose camera, two fixed fins, 4S 1800 Kv pusher, no landing gear (hand launch), top level speed
+about 55 m/s (198 km/h). It is an original design, not a replica: only the class figures (span, area, weight, battery,
+drive, top speed) come from FunJet Ultra 2 retail listings. One authored design file generates the physics (FD-01, a
+textbook build-up on the X8's tailless strip law) and the model (FD-02, the TB-02 stdlib GLB builder adapted to a swept
+wing with elevons). Details, numbers and limits: [research/fast-delta-780](../../research/fast-delta-780/README.md).
+
+- **No flight-physics change.** The airplane uses existing laws and capabilities (`elevon`, `tailless`, `locked_up`,
+  `single_pusher`, `pack_ecm`, `tolerant_hull`). The loader's own tailless consistency solve accepts the coefficients.
+- **No change to the other aircraft.** A separately proved overlay family again; the electric Stik's reviewed paint
+  identity pair in `custom_skin.gd` now names its new current identity (geometry and paint mapping unchanged).
+- **Fleet integration.** Catalog entry (between the Longreach 1800 and the helicopter), hand launch, Workshop
+  descriptor, paint slots, crash economics (partial dossier with unpriced estimated lines and a cost profile),
+  translations and the fleet tests' explicit lists.
+- **Hand launch.** The shared 6.5 m/s throw is below this wing's 10.4 m/s stall: hands off it drops in. With some up
+  elevator and the wings levelled, or in angle mode, it climbs away. This is how real speed wings are launched; the
+  launch logic is unchanged.
+- **Not yet.** No paint kit (it needs Blender 5.2.2). Not flight-validated. The propeller table is a borrowed 7x6.
+
+Evidence: `tests/test_fast_delta_780.gd` 28/28 (generators current, both data files load, the strip model matches
+the coefficients, trims from launch speed to 50 m/s and none at 60 m/s, glide, hand launch in angle mode and in
+manual with up elevator, FC angle and cruise modes, model hinges and parts).
+
 ## Next
 
-- 16: Multiplex FunJet-class fast delta (original design, tailless elevon pusher on the X8 capabilities).
+The plan's steps 12–16 are done; step 11 (shadows) is deferred.

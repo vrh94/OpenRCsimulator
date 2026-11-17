@@ -75,7 +75,7 @@
   ],
   "presentation": {
     "visual_family": "stik-electric-6s",
-    "model_manifest_sha256": "f652b2a92db936fb2224c2e49c8a4ea87a3494f9402d3818ecc379a9077fec18",
+    "model_manifest_sha256": "399e3c0cb5125773f01f9235010bb2e8b3c964e97c3f723eba6624e0a494bb00",
     "scale_root": "airplane"
   }
 }

@@ -164,6 +164,21 @@ const ENTRIES := [
 		battery_data = "res://data/aircraft/battery/twin_boom_1800_4s_pack.json",
 	},
 	{
+		# Step 16 (FD-01/FD-02): an original fast swept flying wing in the FunJet speed-wing class, model and physics
+		# generated from assets/aircraft/fast-delta-780/design.json. Elevons on the tailless law (as the MoonRunner),
+		# pusher, no landing gear (hand launch), EPO tolerant hull.
+		id = "fast-delta-780",
+		visual_family = "fast-delta-780",
+		name = "Dartwing 780",
+		short_name = "Dartwing 780",
+		summary = "Speed wing · 0.78 m · 4S electric pusher",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated.",
+		data = "res://data/aircraft/fast_delta_780.json",
+		# The finite 4S 2200 mAh class pack is the default battery mode.
+		battery_data = "res://data/aircraft/battery/fast_delta_780_4s_pack.json",
+	},
+	{
 		id = "xcell-60-research",
 		vehicle = "rotorcraft",
 		visual_family = "hx-700",

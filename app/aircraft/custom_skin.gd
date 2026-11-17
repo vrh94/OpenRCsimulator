@@ -18,11 +18,11 @@ const STIK_LEGACY_PAINT_IDENTITY := "2ef3a67e9501f9f85c80f795303ac8cd49f3449563d
 const STIK_CURRENT_PAINT_IDENTITY := "1e95c2880ca8cf3a4bf5a8d14f5457ad2e7fbeced0311fe00833ff6eead0a159"
 const EXTRA_LEGACY_PAINT_IDENTITY := "7140c5cd31758a880f955bb13016a300847aee448e24692d2dd1b0cea00478d6"
 const EXTRA_CURRENT_PAINT_IDENTITY := "2be252a5f0be9b31ef647a497b779537062e30f2f62b0dba4e003df8a5ea7d4c"
-# Step 15: registering the twin-boom 1800 overlay changed the shared overlay scripts that the electric Stik's runtime
-# proof hashes, and so its manifest hash and paint identity. Its geometry and paint mapping are unchanged, so the
-# published kit's template stays valid for exactly this pair.
+# Steps 15 and 16: registering the twin-boom 1800 and fast delta 780 overlays changed the shared overlay scripts that
+# the electric Stik's runtime proof hashes, and so its manifest hash and paint identity. Its geometry and paint mapping
+# are unchanged, so the published kit's template stays valid for exactly this pair.
 const ELECTRIC_LEGACY_PAINT_IDENTITY := "1bbbc6972fb9c65b9308f04bdb57926fccd74403c002284584133c424fd0c30a"
-const ELECTRIC_CURRENT_PAINT_IDENTITY := "6f2a959588dc3623501c3aa5a9134fb210d77b2cd37b3e0ab626ca1741f9e107"
+const ELECTRIC_CURRENT_PAINT_IDENTITY := "cb9d76b210e9a827479643be7e1b43d7036d779ee39a63312cce3a8395839111"
 const ROOT := "user://skins/"
 const ARCHIVE_LIMIT := 32 * 1024 * 1024
 const MANIFEST_LIMIT := 64 * 1024

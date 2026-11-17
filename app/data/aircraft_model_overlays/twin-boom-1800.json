@@ -138,7 +138,7 @@
     },
     {
       "path": "assets/aircraft/twin-boom-1800/runtime-proof.json",
-      "sha256": "19d11897fb1cdfe9b7f7beb97194501bb7044ef5089e30ad882de5173a2ebeae",
+      "sha256": "05c703abe09cf3b695447824845faefb2801ba21e561f1c7f386ec5955546d36",
       "hash_mode": "lf_text",
       "role": "overlay_runtime_proof"
     }

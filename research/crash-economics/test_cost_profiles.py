@@ -26,8 +26,8 @@ class CostProfileTests(unittest.TestCase):
     def test_generated_and_registered_modes(self):
         document = build_profiles.build()
         self.assertEqual(build_profiles.render(document), (build_profiles.ROOT / build_profiles.OUTPUT).read_bytes())
-        self.assertEqual(12, len(document["aircraft"]))
-        for aircraft_id in ("stik-electric-6s", "turbo-lumber-evolution", "moonrunner-x99", "twin-boom-1800"):
+        self.assertEqual(13, len(document["aircraft"]))
+        for aircraft_id in ("stik-electric-6s", "turbo-lumber-evolution", "moonrunner-x99", "twin-boom-1800", "fast-delta-780"):
             self.assertEqual(2, len(document["aircraft"][aircraft_id]["source_hashes"]))
 
     def mutate_source(self, mutate, message):

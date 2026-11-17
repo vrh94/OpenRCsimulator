@@ -1,0 +1,1391 @@
+{
+  "format": "openrc-aircraft v2",
+  "physical_identity_version": 1,
+  "id": "fast-delta-780",
+  "description": "EXPERIMENTAL FD-01: original fast swept flying-wing EPO pusher in the 0.78 m speed-wing class (FunJet class figures: 783 mm, 14.5 dm2, 875 g, 4S). Geometry/textbook tailless aerodynamics, estimated inventory, borrowed APC 7x6 propeller map, estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight validated.",
+  "convention_id": "openrc-le-frd-v1",
+  "capabilities": {
+    "controls": "elevon",
+    "gear": "locked_up",
+    "propulsion_layout": "single_pusher",
+    "energy": "fixed_voltage",
+    "damage": "tolerant_hull",
+    "flaps": "not_simulated",
+    "airframe_layout": "tailless"
+  },
+  "frames": {
+    "le_frame": "D0: [x_aft,y_right,z_up] = [model Z,model X,model Y], metres; wing root leading edge on the symmetry plane",
+    "body": "FRD about inventory CG"
+  },
+  "reference": {
+    "wing_area": {
+      "value": 0.1443,
+      "unit": "m2",
+      "kind": "derived",
+      "source": "assets/aircraft/fast-delta-780/design.json (original design d1): straight taper, span x (root + tip) / 2 (class 14.5 dm2)"
+    },
+    "wing_span": {
+      "value": 0.78,
+      "unit": "m",
+      "kind": "manual",
+      "source": "FunJet class span 783 mm (retail listings); design d1 0.78 m"
+    },
+    "mean_chord": {
+      "value": 0.185,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/fast-delta-780/FD-01/derive_physics.py: S/b; MAC 0.2013 m at 0.162 m semi-span"
+    },
+    "aero_reference_point": {
+      "value": [
+        0.142,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/fast-delta-780/FD-01/derive_physics.py: the design CG station on the chord plane; the wing's aerodynamic centre (MAC quarter chord) is at 0.1635 m"
+    },
+    "planform": "tapered",
+    "root_chord": {
+      "value": 0.28,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/aircraft/fast-delta-780/design.json (original design d1)"
+    },
+    "tip_chord": {
+      "value": 0.09,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/aircraft/fast-delta-780/design.json (original design d1)"
+    }
+  },
+  "balance": {
+    "plan_cg": {
+      "value": [
+        0.142,
+        0.0,
+        0.0023680000000000007
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/fast-delta-780/FD-01/derive_physics.py: design longitudinal CG (142 mm aft of the root LE, 8.1 % MAC static margin), inventory-derived lateral/vertical CG"
+    },
+    "firewall": {
+      "value": [
+        0.32,
+        0.0,
+        0.006
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "assets/aircraft/fast-delta-780/design.json (original design d1): motor mount in the centre body's tail"
+    },
+    "configuration": "virtual-balanced-reference-v1",
+    "cg_tolerance": {
+      "value": 0.001,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "FD-01 reference build tolerance"
+    }
+  },
+  "inventory": [
+    {
+      "id": "wing_main",
+      "name": "EPO wing panels, spar, elevons and elevon servos",
+      "mass": {
+        "value": 0.26,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.21,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.2,
+          0.78,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "fuselage_main",
+      "name": "EPO centre body, hatch and canopy",
+      "mass": {
+        "value": 0.13,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.0,
+          0.0,
+          0.005
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.68,
+          0.09,
+          0.09
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "fins_main",
+      "name": "two fins",
+      "mass": {
+        "value": 0.012,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.26,
+          0.0,
+          0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.11,
+          0.25,
+          0.09
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "motor_main",
+      "name": "35-mm 1800 Kv-class outrunner",
+      "mass": {
+        "value": 0.105,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.335,
+          0.0,
+          0.006
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.035,
+          0.035
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "propeller_main",
+      "name": "7x6 pusher propeller and adapter",
+      "mass": {
+        "value": 0.012,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.37,
+          0.0,
+          0.006
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.015,
+          0.1778,
+          0.015
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "esc_main",
+      "name": "60 A ESC with BEC",
+      "mass": {
+        "value": 0.045,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.22,
+          0.0,
+          -0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.06,
+          0.03,
+          0.012
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "battery_main",
+      "name": "4S 2200 mAh battery",
+      "mass": {
+        "value": 0.226875,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.08,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.105,
+          0.035,
+          0.035
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      },
+      "energy_source": "lipo"
+    },
+    {
+      "id": "fpv_camera",
+      "name": "FPV camera and nose mount",
+      "mass": {
+        "value": 0.012,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          -0.3,
+          0.0,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.02,
+          0.02,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "video_transmitter",
+      "name": "video transmitter and antenna",
+      "mass": {
+        "value": 0.015,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.1,
+          0.0,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.03,
+          0.01
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "avionics_main",
+      "name": "receiver and flight controller",
+      "mass": {
+        "value": 0.02,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed"
+      },
+      "position": {
+        "value": [
+          0.12,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; LE frame"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.03,
+          0.015
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed; aligned box inertia envelope"
+      }
+    },
+    {
+      "id": "ballast_reference",
+      "name": "virtual reference-build balancing mass (wiring, connectors, hardware)",
+      "mass": {
+        "value": 0.037124999999999964,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: design flying mass minus the estimated component inventory; NOT measured hardware"
+      },
+      "position": {
+        "value": [
+          -0.03865319865319884,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: residual moment for the design CG; NOT measured ballast"
+      },
+      "size": {
+        "value": [
+          0.06,
+          0.04,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "FD-01 virtual balancing mass envelope (centre body interior)"
+      }
+    }
+  ],
+  "start": {
+    "level_speed": {
+      "value": 15.579307757882894,
+      "unit": "m/s",
+      "kind": "derived",
+      "source": "research/fast-delta-780/FD-01/derive_physics.py: 1.5 times clean 1-g stall (10.4 m/s) at the design mass and estimated CL_max: a firm hand-launch speed for a loaded speed wing"
+    }
+  },
+  "controls": {
+    "surface_ids": {
+      "elevon_left": "surface_elevon_left",
+      "elevon_right": "surface_elevon_right"
+    },
+    "max_throw": {
+      "aileron": {
+        "value": 12.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "assets/aircraft/fast-delta-780/design.json (original design d1): speed-wing roll share of the elevon travel"
+      },
+      "elevator": {
+        "value": 9.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "assets/aircraft/fast-delta-780/design.json (original design d1): speed-wing pitch share of the elevon travel"
+      },
+      "elevon": {
+        "value": 18.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "assets/aircraft/fast-delta-780/design.json (original design d1): full elevon servo travel"
+      }
+    },
+    "servo_full_throw_time": {
+      "value": 0.09,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "FD-01: 9 g digital servo class (about 0.10 s/60 deg) turning the estimated elevon travel; not measured"
+    },
+    "rates": {
+      "normal": {
+        "aileron": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "full mixed throw on the normal rate"
+        },
+        "elevator": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "full mixed throw on the normal rate"
+        },
+        "aileron_expo": {
+          "value": 0.35,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "common speed-wing expo"
+        },
+        "elevator_expo": {
+          "value": 0.35,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "common speed-wing expo"
+        }
+      }
+    }
+  },
+  "aero": {
+    "source": "research/fast-delta-780/FD-01/derive_physics.py: geometry/textbook estimate on the tailless strip law, no identified aerodynamics",
+    "conventions": {
+      "alpha_beta": "rad",
+      "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",
+      "elevator": "per radian of the elevons' symmetric part (δel+δer)/2, positive = trailing edge DOWN (dCm/dElev < 0)",
+      "aileron": "per radian of each elevon's antisymmetric part, positive = trailing edge DOWN; right and left listed separately",
+      "rudder": "none: fixed fins, every rudder term is 0",
+      "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|",
+      "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"
+    },
+    "coefficients": {
+      "CL0": {
+        "value": -0.01924018479681786,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CLa": {
+        "value": 3.520585038426308,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CLq": {
+        "value": 0.674067416981678,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: the simulator's tailless strip law (three equal-area strips per side, Weissinger induced map, stations at the oracle's neutral point); a continuous strip integral gives Cmq -0.89, DATCOM's swept-wing formula about 2.5 times the strip law: uncertain"
+      },
+      "CLde": {
+        "value": 1.275165270048132,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CLda_each": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CD0": {
+        "value": 0.022316008316008315,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CL_minD": {
+        "value": 0.1,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "k_induced": {
+        "value": 0.0967904814990159,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CDda_each": {
+        "value": 0.006,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CDdr": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CDde": {
+        "value": 0.012,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CYb": {
+        "value": -0.21044604164118766,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CYp": {
+        "value": -0.012497960794125367,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CYr": {
+        "value": 0.03490646676050396,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "CYdr": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Clb": {
+        "value": -0.048859217714852465,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Clp": {
+        "value": -0.4361085072600567,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Clr": {
+        "value": 0.046066025466662185,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Clda_right": {
+        "value": -0.15254483964832818,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Clda_left": {
+        "value": 0.15254483964832818,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cldr": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cm0": {
+        "value": 0.01583733460214993,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cma": {
+        "value": -0.2850483125138714,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cmq": {
+        "value": -0.44816224574178126,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: the simulator's tailless strip law (three equal-area strips per side, Weissinger induced map, stations at the oracle's neutral point); a continuous strip integral gives Cmq -0.89, DATCOM's swept-wing formula about 2.5 times the strip law: uncertain"
+      },
+      "Cmde": {
+        "value": -0.6641466491266893,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cmda_each": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cnb": {
+        "value": 0.01745323338025198,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cnp": {
+        "value": -0.022045517739052528,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cnr": {
+        "value": -0.012954763105750115,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cnda_right": {
+        "value": 0.008071031924323542,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cnda_left": {
+        "value": -0.008071031924323542,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      },
+      "Cndr": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: DATCOM/Helmbold swept wing, strip integrals on the tapered swept planform, thin-airfoil elevons, Gilruth body, fin build-up on the design d1 geometry"
+      }
+    },
+    "reference_coefficients": {
+      "CLadot": {
+        "value": 0.0,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: tailless: no tail downwash lag"
+      }
+    },
+    "envelope": {
+      "CL_max": {
+        "value": 0.9,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "FD-01: clean reflexed swept flying wing peak lift, no flaps; unmeasured"
+      },
+      "CL_min": {
+        "value": -0.6,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "FD-01: inverted peak lift of a near-symmetric reflexed section; unmeasured"
+      },
+      "stall_blend_width": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "FD-01: attached-to-flat-plate stall blending width (X8 value)"
+      },
+      "CD90": {
+        "value": 1.185891891891892,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      },
+      "sideslip_blend": {
+        "value": [
+          15,
+          25
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "FD-01 linear-to-sine sideslip blend (fleet value)"
+      }
+    },
+    "surfaces": {
+      "wing_station_incidence": {
+        "value": [
+          0.010404131642133527,
+          0.0011135393285273826,
+          -0.011517670970660912
+        ],
+        "unit": "rad",
+        "kind": "estimated",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: 2.0° linear washout on the strips (root → tip), zero mean"
+      },
+      "body_cy_beta": {
+        "value": -0.1,
+        "unit": "1/rad",
+        "kind": "estimated",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: CYβ minus the fins' side force (slim centre body)"
+      },
+      "body_crossflow_area": {
+        "value": 0.038875200000000006,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: Allen-Perkins crossflow η·c_d·S_side on the design centre-body side area 0.0498 m2"
+      },
+      "wing_body_cl_beta": {
+        "value": -0.042274934463166276,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: Clβ minus the fins' rolling term: the swept wing's dihedral effect at the neutral-elevon cruise lift"
+      },
+      "attached_limit": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "FD-01: local attached flow/oracle boundary, established solver domain"
+      },
+      "tail_local_limit": {
+        "value": 12.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "FD-01: fin attached flow angle limit; provisional"
+      },
+      "tail_stall_end": {
+        "value": 24.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "FD-01: fin flat-plate transition end; provisional"
+      },
+      "tail_CD0": {
+        "value": 0.012,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "FD-01: fin profile drag coefficient; provisional"
+      },
+      "tail_k": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "FD-01: fin induced drag coefficient; provisional"
+      },
+      "tail_CD90": {
+        "value": 1.185891891891892,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+      },
+      "vertical": {
+        "area": {
+          "value": 0.0144,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "assets/aircraft/fast-delta-780/design.json (original design d1): both fins, trapezoids on the wing"
+        },
+        "position": {
+          "value": [
+            0.2652594834029776,
+            0.0,
+            0.0465
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/fast-delta-780/FD-01/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+        },
+        "lift_slope": {
+          "value": 1.1067613756127348,
+          "unit": "1/rad",
+          "kind": "derived",
+          "source": "research/fast-delta-780/FD-01/derive_physics.py: effective slope that carries Cnβ (fins 2.061/rad end-plated, body destabilisation folded in) at the fins' arm"
+        },
+        "control_effectiveness": {
+          "value": 0.0,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/fast-delta-780/FD-01/derive_physics.py: no rudder: fixed fins"
+        },
+        "incidence": {
+          "value": 0.0,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "assets/aircraft/fast-delta-780/design.json (original design d1): fins without toe"
+        }
+      },
+      "tailless": {
+        "station_x": {
+          "value": [
+            0.09624337264537813,
+            0.15628306269104747,
+            0.2379112221953974
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/fast-delta-780/FD-01/derive_physics.py: area-weighted quarter-chord stations of the three equal-area strips (root → tip) on the swept planform"
+        },
+        "elevon_coverage": {
+          "value": [
+            0.4430392160544022,
+            1.0,
+            0.9211727748824793
+          ],
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/fast-delta-780/FD-01/derive_physics.py: elevon share of each strip's area (elevons 0.05-0.37 m)"
+        },
+        "elevon_chord_fraction": {
+          "value": 0.22,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "assets/aircraft/fast-delta-780/design.json (original design d1)"
+        }
+      }
+    }
+  },
+  "propulsion": {
+    "kind": "electric_prop",
+    "motor": {
+      "kv_rpm_per_volt": {
+        "value": 1800,
+        "unit": "rpm/V",
+        "kind": "estimated",
+        "source": "FD-01: design d1 drive, 35-mm 1800 Kv-class outrunner on 4S (the class's 1960 Kv on a 6x5.5 turns about the same power on our 7x6)"
+      },
+      "resistance_scope": "motor_winding_equivalent",
+      "resistance_ohm": {
+        "value": 0.032,
+        "unit": "ohm",
+        "kind": "estimated",
+        "source": "FD-01: equivalent winding resistance of a 35-mm 1800 Kv-class outrunner (catalogue range 0.02-0.045 ohm); not measured"
+      },
+      "no_load_current_a": {
+        "value": 1.6,
+        "unit": "A",
+        "kind": "estimated",
+        "source": "FD-01: no-load current of a 35-mm 1800 Kv-class outrunner near 10 V; not measured"
+      },
+      "no_load_context": {
+        "voltage_v": {
+          "value": 14.8,
+          "unit": "V",
+          "kind": "estimated",
+          "source": "FD-01: 4S nominal fixed bus (ideal-bus configuration); no sag or depletion"
+        },
+        "rpm": {
+          "value": 26547.84,
+          "unit": "rpm",
+          "kind": "derived",
+          "source": "research/fast-delta-780/FD-01/derive_physics.py: Kv·(V − R·I0)"
+        },
+        "temperature_c": {
+          "value": 25.0,
+          "unit": "°C",
+          "kind": "estimated",
+          "source": "FD-01: context only; no thermal model"
+        }
+      }
+    },
+    "battery": {
+      "kind": "fixed_voltage",
+      "voltage_v": {
+        "value": 14.8,
+        "unit": "V",
+        "kind": "estimated",
+        "source": "FD-01: 4S nominal fixed bus (ideal-bus configuration); no sag or depletion"
+      }
+    },
+    "esc": {
+      "kind": "ideal_motoring",
+      "command_mapping": "identity"
+    },
+    "propeller": {
+      "diameter": {
+        "value": 0.1778,
+        "unit": "m",
+        "kind": "manual",
+        "source": "design d1 7x6 pusher propeller, nominal 7 in"
+      },
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.0953
+          ],
+          [
+            0.11,
+            0.0912
+          ],
+          [
+            0.142,
+            0.0906
+          ],
+          [
+            0.172,
+            0.0911
+          ],
+          [
+            0.2,
+            0.0901
+          ],
+          [
+            0.231,
+            0.0903
+          ],
+          [
+            0.263,
+            0.0902
+          ],
+          [
+            0.294,
+            0.0895
+          ],
+          [
+            0.321,
+            0.0884
+          ],
+          [
+            0.355,
+            0.0867
+          ],
+          [
+            0.384,
+            0.0851
+          ],
+          [
+            0.413,
+            0.083
+          ],
+          [
+            0.443,
+            0.0801
+          ],
+          [
+            0.472,
+            0.0772
+          ],
+          [
+            0.497,
+            0.0743
+          ],
+          [
+            0.527,
+            0.0699
+          ],
+          [
+            0.554,
+            0.0662
+          ],
+          [
+            0.583,
+            0.0623
+          ],
+          [
+            0.617,
+            0.0566
+          ],
+          [
+            0.652,
+            0.0499
+          ],
+          [
+            0.682,
+            0.0465
+          ],
+          [
+            0.708,
+            0.0413
+          ],
+          [
+            0.735,
+            0.0369
+          ],
+          [
+            0.769,
+            0.0305
+          ],
+          [
+            0.796,
+            0.0267
+          ],
+          [
+            0.828,
+            0.0231
+          ],
+          [
+            0.853,
+            0.0183
+          ],
+          [
+            0.884,
+            0.0134
+          ],
+          [
+            0.911,
+            0.0093
+          ],
+          [
+            0.943,
+            0.0038
+          ],
+          [
+            0.977,
+            -0.0024
+          ],
+          [
+            1.002,
+            -0.0068
+          ],
+          [
+            1.035,
+            -0.0128
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC Propeller Data Site Vol. 1, measured APC Sport 7x6 two-blade: static apcsp_7x6_static_2930cm.txt (7002 rpm row; sha256 1724b11835bb2de14601f9c7a55b9c805744605f8f20701683d2cf5424ef07bb), tunnel apcsp_7x6_2935cm_7020.txt (sha256 6e41fcc9b42898d2c261390f1cda899435c9d96dca45db1d0c2f96007e9354e6) for J <= 0.583 and apcsp_7x6_2936cm_7021.txt (sha256 68d8a9c9b84a2abaa4e5297895b717a014f3e7931d874239cb2dde5af5cf01ce) above; m-selig.ae.illinois.edu/props/volume-1/data/, downloaded 2026-11-17. Borrowed: no measured 6-inch speed propeller exists in the database; no RPM or Reynolds-number equivalence."
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.0723
+          ],
+          [
+            0.11,
+            0.0707
+          ],
+          [
+            0.142,
+            0.0696
+          ],
+          [
+            0.172,
+            0.069
+          ],
+          [
+            0.2,
+            0.0677
+          ],
+          [
+            0.231,
+            0.067
+          ],
+          [
+            0.263,
+            0.0671
+          ],
+          [
+            0.294,
+            0.0673
+          ],
+          [
+            0.321,
+            0.0673
+          ],
+          [
+            0.355,
+            0.0676
+          ],
+          [
+            0.384,
+            0.0677
+          ],
+          [
+            0.413,
+            0.0675
+          ],
+          [
+            0.443,
+            0.0667
+          ],
+          [
+            0.472,
+            0.0661
+          ],
+          [
+            0.497,
+            0.0654
+          ],
+          [
+            0.527,
+            0.0636
+          ],
+          [
+            0.554,
+            0.0621
+          ],
+          [
+            0.583,
+            0.0606
+          ],
+          [
+            0.617,
+            0.0576
+          ],
+          [
+            0.652,
+            0.0547
+          ],
+          [
+            0.682,
+            0.0528
+          ],
+          [
+            0.708,
+            0.0496
+          ],
+          [
+            0.735,
+            0.0471
+          ],
+          [
+            0.769,
+            0.0433
+          ],
+          [
+            0.796,
+            0.0407
+          ],
+          [
+            0.828,
+            0.0379
+          ],
+          [
+            0.853,
+            0.0347
+          ],
+          [
+            0.884,
+            0.0316
+          ],
+          [
+            0.911,
+            0.0285
+          ],
+          [
+            0.943,
+            0.0243
+          ],
+          [
+            0.977,
+            0.02
+          ],
+          [
+            1.002,
+            0.0166
+          ],
+          [
+            1.035,
+            0.0121
+          ]
+        ],
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "UIUC Propeller Data Site Vol. 1, measured APC Sport 7x6 two-blade: static apcsp_7x6_static_2930cm.txt (7002 rpm row; sha256 1724b11835bb2de14601f9c7a55b9c805744605f8f20701683d2cf5424ef07bb), tunnel apcsp_7x6_2935cm_7020.txt (sha256 6e41fcc9b42898d2c261390f1cda899435c9d96dca45db1d0c2f96007e9354e6) for J <= 0.583 and apcsp_7x6_2936cm_7021.txt (sha256 68d8a9c9b84a2abaa4e5297895b717a014f3e7931d874239cb2dde5af5cf01ce) above; m-selig.ae.illinois.edu/props/volume-1/data/, downloaded 2026-11-17. Borrowed: no measured 6-inch speed propeller exists in the database; no RPM or Reynolds-number equivalence."
+      },
+      "rotating_inertia": {
+        "value": 3e-05,
+        "unit": "kg·m2",
+        "kind": "estimated",
+        "source": "FD-01: 7x6 pusher propeller, adapter and 35-mm outrunner bell; not measured"
+      },
+      "thrust_angles": {
+        "value": [
+          0.0,
+          0.0
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "assets/aircraft/fast-delta-780/design.json (original design d1): motor axis along the body axis"
+      },
+      "thrust_line_offset": {
+        "value": [
+          0.228,
+          0.0,
+          0.0036319999999999994
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/fast-delta-780/FD-01/derive_physics.py: design propeller hub minus inventory CG; pusher aft of the CG"
+      }
+    },
+    "id": "propulsion_main"
+  },
+  "crash_hull": {
+    "value": [
+      [
+        0.2730809399017868,
+        -0.39,
+        0.0
+      ],
+      [
+        0.2730809399017868,
+        0.39,
+        0.0
+      ],
+      [
+        0.3630809399017868,
+        -0.39,
+        0.0
+      ],
+      [
+        0.3630809399017868,
+        0.39,
+        0.0
+      ],
+      [
+        -0.33,
+        0.0,
+        0.0
+      ],
+      [
+        0.37,
+        0.0,
+        -0.0829
+      ],
+      [
+        0.3255189668059552,
+        -0.125,
+        0.096
+      ],
+      [
+        0.3255189668059552,
+        0.125,
+        0.096
+      ],
+      [
+        0.35,
+        0.0,
+        -0.008
+      ],
+      [
+        -0.26,
+        0.0,
+        -0.034
+      ],
+      [
+        -0.17,
+        0.0,
+        -0.04
+      ],
+      [
+        -0.04,
+        0.0,
+        -0.04
+      ],
+      [
+        0.1,
+        0.0,
+        -0.034
+      ],
+      [
+        0.22,
+        0.0,
+        -0.025
+      ]
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "research/fast-delta-780/FD-01/derive_physics.py: design wing tips, nose and belly stations, pusher disc bottom, fin tops, body tail"
+  },
+  "crash_hull_ids": [
+    "probe_wing_left_tip",
+    "probe_wing_right_tip",
+    "probe_wing_left_tip_te",
+    "probe_wing_right_tip_te",
+    "probe_nose",
+    "probe_propeller_bottom",
+    "probe_fin_left_top",
+    "probe_fin_right_top",
+    "probe_tail",
+    "probe_belly_nose",
+    "probe_belly_forward",
+    "probe_belly_centre",
+    "probe_belly_wing",
+    "probe_belly_aft"
+  ],
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "nose",
+    "propeller",
+    "fin_top",
+    "fin_top",
+    "tail_end",
+    "belly",
+    "belly",
+    "belly",
+    "belly",
+    "belly"
+  ],
+  "crash_tolerance": {
+    "terminal_specific_energy": {
+      "value": 12.5,
+      "unit": "J/kg",
+      "kind": "estimated",
+      "source": "EPO foam airframe, the MoonRunner X99's X8-08 estimate (five times the shared 2.5 J/kg); drop tests pending"
+    },
+    "crash_depth": {
+      "value": 0.1,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "a small foam nose can bury about 10 cm in turf (X8-08 estimate scaled)"
+    },
+    "presentation_durability": {
+      "value": 4.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "EPO against balsa/ply crash presentation divisor (X8-08 estimate)"
+    }
+  },
+  "plausibility": {
+    "mass_range": {
+      "value": [
+        0.75,
+        1.05
+      ],
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "FunJet class: flying weight 875 g (retail listings); 3S-4S builds"
+    },
+    "inertia_reference": {
+      "value": [
+        0.013603692198166662,
+        0.019598663364900674,
+        0.03281315465923401
+      ],
+      "unit": "kg·m2",
+      "kind": "derived",
+      "source": "research/fast-delta-780/FD-01/derive_physics.py: same inventory box estimate; self-reference is no independent plausibility evidence"
+    }
+  }
+}

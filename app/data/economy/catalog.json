@@ -4,8 +4,8 @@
   "price_date": "2026-10-25",
   "generated_from": {
     "price_catalog_sha256": "a4b6017efc68b5840d68a4701783f5b8b511d4d85aeb8304104a1dd416c06dea",
-    "aircraft_costing_sha256": "ab6d09ce90a9304c2d9005489d5380d6cf8f364183fca8b4e54083ad7cc9c5d7",
-    "aircraft_catalog_sha256": "10e941259c5dff5350d07c4e1f4652eaad8258920b7baffcc7e66bf63db84ccc",
+    "aircraft_costing_sha256": "9af24eac55bb8d02f5b5f3af9741253c22617778aa30c418a31bc6bfecf87e40",
+    "aircraft_catalog_sha256": "45fbee4499816e17aa03db5abdfbd7d8da431afafbcdb6f365cab2d693a2c21b",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "c8b34bac1aabf0ce74a9c696e8bb65c888b39021f50e350b01c67dd46a4a9708"
   },
@@ -10005,6 +10005,336 @@
           "probe_stabilizer_right_tip",
           "probe_wing_left_tip",
           "probe_wing_right_tip",
+          "propeller/propulsion_main"
+        ]
+      }
+    },
+    {
+      "format": "openrc-aircraft-economics v1",
+      "aircraft_id": "fast-delta-780",
+      "source_sha256": "7a3e973674cb8d64358bccdd3a977188e3313c2449c48f0d41a632ce9782ad89",
+      "currency": "USD",
+      "price_date": "2026-10-25",
+      "valuation_kind": "independent_partial_inventory_costing",
+      "components": [
+        {
+          "id": "wing_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "EPO swept wing panels with spar, elevons and two elevon servos. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "fuselage_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuselage_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "EPO centre body, hatch and canopy. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "fins_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fins_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Two fixed fins. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "motor_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "motor_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "35-mm 1800 Kv-class outrunner. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "propeller_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "propeller_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "7x6 pusher propeller and adapter; a propeller strike replaces this line only. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "esc_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "esc_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "60 A ESC with BEC. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "battery_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "battery_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "4S 2200 mAh LiPo flight pack. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "fpv_camera",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fpv_camera"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "FPV camera and nose mount. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "video_transmitter",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "video_transmitter"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Video transmitter and antenna. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "avionics_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "avionics_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Receiver and flight controller. Unpriced: no offer for this part was reviewed for the original fast delta 780 design (step 16); valuation stays incomplete rather than borrowing another aircraft's price."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced assembly, flight-controller setup, balancing and post-crash inspection labor. No transferable allowance assumed; not salvageable."
+        }
+      ],
+      "exclusions": [
+        {
+          "id": "ballast_reference",
+          "scope": "inventory",
+          "physical_inventory_ids": [
+            "ballast_reference"
+          ],
+          "reason": "Virtual reference-build balancing mass; it is not a purchasable component."
+        }
+      ],
+      "missing": [
+        "No USD offer was reviewed for any part of the original fast delta 780 build (step 16, 2026-11-17): every component line is unpriced, so damage is reported with an incomplete valuation.",
+        "Assembly, flight-controller setup and commissioning labor has no verified basis; no foam repair recipe applies to this aircraft yet.",
+        "No replacement price for economic component: wing_main.",
+        "No replacement price for economic component: fuselage_main.",
+        "No replacement price for economic component: fins_main.",
+        "No replacement price for economic component: motor_main.",
+        "No replacement price for economic component: propeller_main.",
+        "No replacement price for economic component: esc_main.",
+        "No replacement price for economic component: battery_main.",
+        "No replacement price for economic component: fpv_camera.",
+        "No replacement price for economic component: video_transmitter.",
+        "No replacement price for economic component: avionics_main.",
+        "No replacement price for economic component: final_assembly_and_commissioning."
+      ],
+      "complete": false,
+      "contact_components": {
+        "probe_wing_left_tip": [
+          "wing_main"
+        ],
+        "probe_wing_right_tip": [
+          "wing_main"
+        ],
+        "probe_wing_left_tip_te": [
+          "wing_main"
+        ],
+        "probe_wing_right_tip_te": [
+          "wing_main"
+        ],
+        "probe_nose": [
+          "fuselage_main",
+          "fpv_camera"
+        ],
+        "probe_propeller_bottom": [
+          "propeller_main",
+          "motor_main"
+        ],
+        "probe_fin_left_top": [
+          "fins_main"
+        ],
+        "probe_fin_right_top": [
+          "fins_main"
+        ],
+        "probe_tail": [
+          "fuselage_main",
+          "motor_main"
+        ],
+        "probe_belly_nose": [
+          "fuselage_main",
+          "fpv_camera"
+        ],
+        "probe_belly_forward": [
+          "fuselage_main"
+        ],
+        "probe_belly_centre": [
+          "fuselage_main",
+          "video_transmitter"
+        ],
+        "probe_belly_wing": [
+          "fuselage_main",
+          "battery_main",
+          "avionics_main"
+        ],
+        "probe_belly_aft": [
+          "fuselage_main",
+          "esc_main",
+          "wing_main"
+        ],
+        "propeller/propulsion_main": [
+          "propeller_main"
+        ]
+      },
+      "propeller_component_id": "propeller_main",
+      "propeller_inspection_ids": [
+        "motor_main",
+        "fuselage_main"
+      ],
+      "physical_signature": {
+        "inventory": {
+          "wing_main": {
+            "name": "EPO wing panels, spar, elevons and elevon servos",
+            "mass": 0.26,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_main": {
+            "name": "EPO centre body, hatch and canopy",
+            "mass": 0.13,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fins_main": {
+            "name": "two fins",
+            "mass": 0.012,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "motor_main": {
+            "name": "35-mm 1800 Kv-class outrunner",
+            "mass": 0.105,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "propeller_main": {
+            "name": "7x6 pusher propeller and adapter",
+            "mass": 0.012,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "esc_main": {
+            "name": "60 A ESC with BEC",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "battery_main": {
+            "name": "4S 2200 mAh battery",
+            "mass": 0.226875,
+            "mass_unit": "kg",
+            "energy_source": "lipo"
+          },
+          "fpv_camera": {
+            "name": "FPV camera and nose mount",
+            "mass": 0.012,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "video_transmitter": {
+            "name": "video transmitter and antenna",
+            "mass": 0.015,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "avionics_main": {
+            "name": "receiver and flight controller",
+            "mass": 0.02,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "ballast_reference": {
+            "name": "virtual reference-build balancing mass (wiring, connectors, hardware)",
+            "mass": 0.037124999999999964,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "electric_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "probe_belly_aft",
+          "probe_belly_centre",
+          "probe_belly_forward",
+          "probe_belly_nose",
+          "probe_belly_wing",
+          "probe_fin_left_top",
+          "probe_fin_right_top",
+          "probe_nose",
+          "probe_propeller_bottom",
+          "probe_tail",
+          "probe_wing_left_tip",
+          "probe_wing_left_tip_te",
+          "probe_wing_right_tip",
+          "probe_wing_right_tip_te",
           "propeller/propulsion_main"
         ]
       }

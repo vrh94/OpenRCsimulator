@@ -41,17 +41,17 @@ radio support and physics are unchanged. Everything is set under **Settings → 
 | **Units** | Metric by default in every language. |
 | **Controllers** | DJI FPV Remote Controller 3 recognised as a radio (USB `2ca3:1021`, "DJI Virtual Joystick"); calibrated radios also drive the RC trucks; helicopter HUD names the keyboard key for every unassigned helicopter action. |
 | **RC truck views** | Onboard FPV camera (3) and bumper camera (Shift+3) on the Bisonte MT8 and MONSTER CAR 2. |
-| **Aircraft** | **Longreach 1800**, an original long-range twin-boom FPV airplane in the Skyhunter 1800 class (see below). |
+| **Aircraft** | **Longreach 1800**, an original long-range twin-boom FPV airplane in the Skyhunter 1800 class, and **Dartwing 780**, an original fast flying wing in the FunJet class (see below). |
 
 The step-by-step history is in the commit log (`FPV-1` … `FPV-10`, `UNITS-1`, `RADIO-DJI-1`, `FC-1` … `FC-4`,
-`Step 15`, `HELI-RADIO-1`, `RADIO-CAR-1`, `CAR-VIEW-1`) and in [the flight-controller plan](docs/plans/fixed-wing-flight-controller.md).
+`Step 15`, `Step 16`, `HELI-RADIO-1`, `RADIO-CAR-1`, `CAR-VIEW-1`) and in [the flight-controller plan](docs/plans/fixed-wing-flight-controller.md).
 
-**Not in this version yet:** a fast FunJet-class delta (next step), ArduPilot SITL, multiplayer, and a packaged
+**Not in this version yet:** ArduPilot SITL, multiplayer, and a packaged
 release of the fork. Shadows that look square in some interactive flights are an open issue.
 
 ## Aircraft
 
-Home offers **nine fixed-wing airplanes and one helicopter**. The Ugly Stick (glow) is the reference model; all
+Home offers **ten fixed-wing airplanes and one helicopter**. The Ugly Stick (glow) is the reference model; all
 others are **experimental**. Click a name for its guide, controls and modelling limits.
 
 | Aircraft | Type | Notes |
@@ -65,6 +65,7 @@ others are **experimental**. Click a name for its guide, controls and modelling 
 | [Turbo Lumber Evolution](docs/TIMBER-INTEGRATION-PLAN.md) | High-wing STOL · 1.55 m · 4S electric | Fixed wheels. |
 | [MoonRunner X99](tools/aircraft/moonrunner/README.md) | EPO flying wing · 2.12 m · 6S electric pusher | Elevons, no gear: hand launch or airborne start. |
 | [Longreach 1800](research/twin-boom-1800/README.md) | Twin-boom FPV · 1.80 m · 4S electric pusher | **New in this fork.** Original design (not a replica) in the Skyhunter 1800 class: pod with nose camera, carbon booms, H-tail, hand launch, 4S 5000 mAh pack. Physics and 3D model come from one design file; numbers are estimates, not flight-validated; no paint kit yet. |
+| [Dartwing 780](research/fast-delta-780/README.md) | Speed wing · 0.78 m · 4S electric pusher | **New in this fork.** Original design (not a replica) in the FunJet class: swept wing with elevons, two fins, about 200 km/h level top speed, 4S 2200 mAh pack, hand launch (hold some up elevator and level the wings, or use angle mode). Physics and 3D model come from one design file; numbers are estimates, not flight-validated; no paint kit yet. |
 | [RC Helicopter Research Trainer](docs/HELICOPTER.md) | X-Cell .60 physics · HX-700 visual | Ground-pad or hover start; see the [radio start sequence](docs/HELICOPTER.md). |
 
 Three O.S. glow installations of the Stik remain technical specimens ([glow engines](docs/GLOW-ENGINES.md)).

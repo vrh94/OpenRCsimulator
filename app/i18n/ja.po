@@ -12989,3 +12989,12 @@ msgstr "コレクティブスティックを %.0f%%（ピッチ0°、現在 %.1f
 
 msgid "Bumper camera"
 msgstr "バンパーカメラ"
+
+msgid "Dartwing 780"
+msgstr "Dartwing 780"
+
+msgid "Speed wing · 0.78 m · 4S electric pusher"
+msgstr "スピード全翼機 · 0.78 m · 4S電動プッシャー"
+
+msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
+msgstr "実験的: 教科書的な空力と推定電動駆動によるオリジナルの高速全翼機設計。着陸装置なし（手投げ発進）、丈夫なフォーム機体。飛行検証なし。"

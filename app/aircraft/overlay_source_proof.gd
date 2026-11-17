@@ -38,19 +38,33 @@ const TWIN_BOOM_SOURCE_PATHS := [
 	"res://aircraft/overlay_source_proof.gd",
 ]
 
+const FAST_DELTA_FAMILY := "fast-delta-780"
+const FAST_DELTA_PROOF_SOURCE := "assets/aircraft/fast-delta-780/runtime-proof.json"
+const FAST_DELTA_SOURCE_PATHS := [
+	"assets/aircraft/fast-delta-780/customization-bindings.json",
+	"assets/aircraft/fast-delta-780/model-bindings.json",
+	"res://aircraft/customization_overlay.gd",
+	"res://aircraft/model_manifest.gd",
+	"res://aircraft/model_overlay_registry.gd",
+	"res://aircraft/model_registry.gd",
+	"res://aircraft/overlay_source_proof.gd",
+]
+
 static func source_paths(family: String) -> Array:
 	if family == "moonrunner-x99": return SOURCE_PATHS
 	if family == ELECTRIC_FAMILY: return ELECTRIC_SOURCE_PATHS
 	if family == TWIN_BOOM_FAMILY: return TWIN_BOOM_SOURCE_PATHS
+	if family == FAST_DELTA_FAMILY: return FAST_DELTA_SOURCE_PATHS
 	return []
 
 static func _proof_source(family: String) -> String:
 	if family == ELECTRIC_FAMILY: return ELECTRIC_PROOF_SOURCE
 	if family == TWIN_BOOM_FAMILY: return TWIN_BOOM_PROOF_SOURCE
+	if family == FAST_DELTA_FAMILY: return FAST_DELTA_PROOF_SOURCE
 	return PROOF_SOURCE
 
 static func _proof_format(family: String) -> String:
-	if family == ELECTRIC_FAMILY or family == TWIN_BOOM_FAMILY: return "openrc-%s-overlay-source-proof" % family
+	if family in [ELECTRIC_FAMILY, TWIN_BOOM_FAMILY, FAST_DELTA_FAMILY]: return "openrc-%s-overlay-source-proof" % family
 	return FORMAT
 
 static func verify(manifest: Dictionary, family: String = "moonrunner-x99") -> Dictionary:

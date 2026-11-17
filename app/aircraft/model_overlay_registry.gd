@@ -3,7 +3,7 @@ extends RefCounted
 const BaseRegistry := preload("res://aircraft/model_registry.gd")
 const SourceProof := preload("res://aircraft/overlay_source_proof.gd")
 const FAMILY := "moonrunner-x99" # Historical public constant.
-const FAMILIES := ["moonrunner-x99", "stik-electric-6s", "twin-boom-1800"]
+const FAMILIES := ["moonrunner-x99", "stik-electric-6s", "twin-boom-1800", "fast-delta-780"]
 const DIRECTORY := "res://data/aircraft_model_overlays"
 const PATH := DIRECTORY + "/" + FAMILY + ".json"
 

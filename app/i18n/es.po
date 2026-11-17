@@ -12530,3 +12530,12 @@ msgstr "Pon la palanca de paso colectivo al %.0f%% (0° de paso, ahora %.1f°), 
 
 msgid "Bumper camera"
 msgstr "Cámara de parachoques"
+
+msgid "Dartwing 780"
+msgstr "Dartwing 780"
+
+msgid "Speed wing · 0.78 m · 4S electric pusher"
+msgstr "Ala rápida · 0,78 m · propulsor eléctrico 4S"
+
+msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
+msgstr "Experimental: diseño original de ala volante rápida con aerodinámica de manual y motorización eléctrica estimada; sin tren de aterrizaje (lanzamiento a mano), fuselaje de espuma más resistente. Sin validación en vuelo."

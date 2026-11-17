@@ -54,7 +54,7 @@
   ],
   "presentation": {
     "visual_family": "twin-boom-1800",
-    "model_manifest_sha256": "ee2be88280ca76fd06495594e7baa3f605f532a189ea518bdb8add4b27a8a080",
+    "model_manifest_sha256": "f5f75536b5bf52932a5bebdb9d8808f688e7ec0302a890c3852da11594095651",
     "scale_root": "airplane"
   }
 }

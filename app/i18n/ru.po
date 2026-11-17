@@ -13739,3 +13739,12 @@ msgstr "Установите ручку общего шага на %.0f%% (ша�
 
 msgid "Bumper camera"
 msgstr "Камера на бампере"
+
+msgid "Dartwing 780"
+msgstr "Dartwing 780"
+
+msgid "Speed wing · 0.78 m · 4S electric pusher"
+msgstr "Скоростное летающее крыло · 0,78 м · 4S электро, толкающий винт"
+
+msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
+msgstr "Экспериментальный: оригинальная конструкция скоростного летающего крыла с учебной аэродинамикой и оценочным электроприводом; без шасси (запуск с руки), прочный пенопластовый планер. Не проверено в полёте."

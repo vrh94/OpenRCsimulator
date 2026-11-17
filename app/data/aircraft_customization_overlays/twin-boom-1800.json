@@ -7,7 +7,7 @@
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "twin-boom-1800",
-      "model_manifest_sha256": "ee2be88280ca76fd06495594e7baa3f605f532a189ea518bdb8add4b27a8a080",
+      "model_manifest_sha256": "f5f75536b5bf52932a5bebdb9d8808f688e7ec0302a890c3852da11594095651",
       "paint_slots": [
         {
           "id": "body",
@@ -336,7 +336,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "b95273ea9209950c0be8bbc75e31797d0256d520f1901b53a6191ebce4e5cf97"
+      "slots_sha256": "a0ca58020cd9eca281cf8e2e95c645ee68ecedbe037d0b7e597e5bd9915a7bf9"
     }
   ]
 }

@@ -12938,3 +12938,12 @@ msgstr "将总距杆置于 %.0f%%（0° 螺距，当前 %.1f°），然后解锁
 
 msgid "Bumper camera"
 msgstr "保险杠摄像头"
+
+msgid "Dartwing 780"
+msgstr "Dartwing 780"
+
+msgid "Speed wing · 0.78 m · 4S electric pusher"
+msgstr "高速飞翼 · 0.78 m · 4S 电动推进"
+
+msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
+msgstr "实验性：原创高速飞翼设计，采用教科书空气动力学和估算的电动动力；无起落架（手抛起飞），更耐用的泡沫机身。未经飞行验证。"

@@ -13,7 +13,7 @@ var checks := 0
 var failures := 0
 
 func _initialize() -> void:
-	_check("closed family list", Overlays.FAMILIES == ["moonrunner-x99", ELECTRIC, "twin-boom-1800"])
+	_check("closed family list", Overlays.FAMILIES == ["moonrunner-x99", ELECTRIC, "twin-boom-1800", "fast-delta-780"])
 	_check("model and overlay registries use the same closed set", Registry.OVERLAY_FAMILIES == Overlays.FAMILIES)
 	_check("unknown model is refused", not Overlays.describe("unknown").get("ok", false))
 	var model: Dictionary = Registry.describe(ELECTRIC)

@@ -13883,3 +13883,12 @@ msgstr "Pitch-Knüppel auf %.0f%% stellen (0° Pitch, jetzt %.1f°), dann scharf
 
 msgid "Bumper camera"
 msgstr "Stoßstangenkamera"
+
+msgid "Dartwing 780"
+msgstr "Dartwing 780"
+
+msgid "Speed wing · 0.78 m · 4S electric pusher"
+msgstr "Speed-Nurflügel · 0,78 m · 4S-Elektro-Druckantrieb"
+
+msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
+msgstr "Experimentell: eigenes schnelles Nurflügel-Design mit Lehrbuch-Aerodynamik und geschätztem Elektroantrieb; kein Fahrwerk (Handstart), robustere Schaumzelle. Nicht flugerprobt."

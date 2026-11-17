@@ -157,13 +157,15 @@ func _fleet_labels(path: String, expected_id: String) -> void:
 			sides_ok = false
 		if name.ends_with("_wing_tip") and absf(y) < 0.45 * span:
 			tips_ok = false
-		# X8-04/05: a tailless airframe's fins are its winglets at the span ends, and a pusher's engine sits aft.
-		if tailless and name == "fin_top":
-			if absf(y) < 0.45 * span:
-				tips_ok = false
+		# Steps 15/16: twin fins and twin booms (the twin-boom's fins and boom ends, the fast delta's fins) sit off the
+		# centreline as a mirrored pair; a single fin or tail stays on it. X8-04/05: a pusher's engine sits aft, and so do
+		# its propeller and spinner.
+		if name in ["fin_top", "tail_end"] and absf(y) > 0.05 * span:
+			if not _mirrored(hull, names, i):
+				centre_ok = false
 		elif CENTRELINE.has(name) and absf(y) > 0.05 * span:
 			centre_ok = false
-		if pusher and name == "engine":
+		if pusher and name in ["engine", "propeller", "spinner"]:
 			if x >= 0.0:
 				fore_aft_ok = false
 		elif TAIL.has(name) and x >= 0.0 or FORWARD.has(name) and x <= 0.0:
@@ -183,6 +185,15 @@ func _fleet_labels(path: String, expected_id: String) -> void:
 	_check("%s fin top is the highest hull point" % id, tailless and not has.has("fin_top") or has.has("fin_top") and fin_z < other_z)
 	_check("%s canopy names sit above and belly names below the CG" % id, vertical_ok)
 	_check("%s names both wing tips" % id, has.has("left_wing_tip") and has.has("right_wing_tip"))
+
+
+## Whether hull point i has a same-named partner mirrored across the centreline (within 1 mm).
+func _mirrored(hull: PackedFloat64Array, names: PackedStringArray, i: int) -> bool:
+	for j in names.size():
+		if j != i and names[j] == names[i] and absf(hull[3 * j] - hull[3 * i]) < 0.001 \
+				and absf(hull[3 * j + 1] + hull[3 * i + 1]) < 0.001 and absf(hull[3 * j + 2] - hull[3 * i + 2]) < 0.001:
+			return true
+	return false
 
 
 func _loader_rejects() -> void:

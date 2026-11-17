@@ -13765,3 +13765,12 @@ msgstr "Porta lo stick del collettivo al %.0f%% (passo 0°, ora %.1f°), poi arm
 
 msgid "Bumper camera"
 msgstr "Telecamera paraurti"
+
+msgid "Dartwing 780"
+msgstr "Dartwing 780"
+
+msgid "Speed wing · 0.78 m · 4S electric pusher"
+msgstr "Tuttala veloce · 0,78 m · elica spingente elettrica 4S"
+
+msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
+msgstr "Sperimentale: progetto originale di tuttala veloce con aerodinamica da manuale e motorizzazione elettrica stimata; senza carrello (lancio a mano), cellula in schiuma più robusta. Non validato in volo."

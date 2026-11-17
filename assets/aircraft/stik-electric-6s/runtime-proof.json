@@ -20,15 +20,15 @@
     },
     {
       "path": "res://aircraft/model_overlay_registry.gd",
-      "sha256": "3393621842166a09aababc570854c41e36f48b91bdb0a31b784406db83842e9e"
+      "sha256": "93866ffa9ac277ef07b1e9c23899938f77156475cc5608ef8df0dbcd54f20885"
     },
     {
       "path": "res://aircraft/model_registry.gd",
-      "sha256": "2a589c1037bcd59193b05b329c8470c95c3225f6a5d8cbb04cc8a2450969ccb6"
+      "sha256": "9c947ce49cf8b88b46b3b3efd72beb5403c4586675c43e9e4842d7c63a0e977d"
     },
     {
       "path": "res://aircraft/overlay_source_proof.gd",
-      "sha256": "368a959d6dc6635ba0a7df9d05f198cd8926263164adb1ceafcb124d34c0916b"
+      "sha256": "74bf0588eec790af2fcf194a77019f078c1231593e77e65b16d6304081a1a104"
     }
   ]
 }

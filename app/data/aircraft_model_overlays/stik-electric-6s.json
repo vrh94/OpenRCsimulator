@@ -129,7 +129,7 @@
     },
     {
       "path": "assets/aircraft/stik-electric-6s/runtime-proof.json",
-      "sha256": "d1bdf030f5a864eb5d7b7de57c7e8a59adec42ae2e40a597248514bffcc3701a",
+      "sha256": "06acfb1fd70acdaccb205b46aa28363132b8325183c36c2127b637faf2767c2e",
       "hash_mode": "lf_text",
       "role": "overlay_runtime_proof"
     }

@@ -146,7 +146,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertFalse(dossier["complete"], aircraft_id)
             self.assertTrue(dossier["missing"], aircraft_id)
             if aircraft_id in {"gp-extra-300s-60", "turbo-lumber-evolution", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx",
-                               "f4u-corsair-250", "moonrunner-x99", "stik-electric-6s", "twin-boom-1800"}:
+                               "f4u-corsair-250", "moonrunner-x99", "stik-electric-6s", "twin-boom-1800", "fast-delta-780"}:
                 continue
             self.assertEqual(dossier["components"], [], aircraft_id)
             self.assertEqual(dossier["propeller_component_id"], "", aircraft_id)

@@ -13777,3 +13777,12 @@ msgstr "Coloque o manche do coletivo em %.0f%% (passo 0°, agora %.1f°), depois
 
 msgid "Bumper camera"
 msgstr "Câmera do para-choque"
+
+msgid "Dartwing 780"
+msgstr "Dartwing 780"
+
+msgid "Speed wing · 0.78 m · 4S electric pusher"
+msgstr "Asa voadora rápida · 0,78 m · propulsão elétrica 4S"
+
+msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
+msgstr "Experimental: projeto original de asa voadora rápida com aerodinâmica de livro-texto e motorização elétrica estimada; sem trem de pouso (lançamento à mão), estrutura de espuma mais resistente. Não validado em voo."

@@ -12,6 +12,7 @@ FAMILIES = {
     "moonrunner-x99": ("assets/aircraft/moonrunner-x99-overlay", "openrc-moonrunner-overlay-source-proof"),
     "stik-electric-6s": ("assets/aircraft/stik-electric-6s", "openrc-stik-electric-6s-overlay-source-proof"),
     "twin-boom-1800": ("assets/aircraft/twin-boom-1800", "openrc-twin-boom-1800-overlay-source-proof"),
+    "fast-delta-780": ("assets/aircraft/fast-delta-780", "openrc-fast-delta-780-overlay-source-proof"),
 }
 COMMON_PATHS = (
     "res://aircraft/customization_overlay.gd",

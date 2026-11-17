@@ -23,6 +23,7 @@ const ELECTRIC := "stik-electric-6s"
 const HELI := "xcell-60-research"
 const X8 := "moonrunner-x99"
 const TWIN_BOOM := "twin-boom-1800"
+const FAST_DELTA := "fast-delta-780"
 
 var _failures := 0
 var ui: RefCounted
@@ -173,7 +174,15 @@ func _run() -> void:
 		and app.home_scene.airplane.aircraft_id == TWIN_BOOM and home.aircraft_name_label.text == "Longreach 1800"
 		and home.aircraft_count_label.text == _aircraft_counter(TWIN_BOOM),
 		"%s / %s / %s / %s" % [home.aircraft_id, home.start_choice, home.aircraft_status_label.text, home.aircraft_count_label.text])
-	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before the twin-boom.
+	# Step 16: the fast delta 780 follows the twin-boom; gearless, it starts by hand.
+	await ui.tap(KEY_ENTER)
+	await _preview(app)
+	_check("fast delta 780: shown, experimental, Fly enabled, starts by hand", home.aircraft_id == FAST_DELTA and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental") and home.start_choice == "hand_launch"
+		and app.home_scene.airplane.aircraft_id == FAST_DELTA and home.aircraft_name_label.text == "Dartwing 780"
+		and home.aircraft_count_label.text == _aircraft_counter(FAST_DELTA),
+		"%s / %s / %s / %s" % [home.aircraft_id, home.start_choice, home.aircraft_status_label.text, home.aircraft_count_label.text])
+	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before the speed wing.
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("helicopter is last in the catalog with the HX-700 preview and pad start",
@@ -207,7 +216,10 @@ func _run() -> void:
 	_check("previous through the RC vehicles reaches the last helicopter", home.aircraft_id == HELI and home.activity_id.is_empty(), home.selected_id())
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("previous from the helicopter returns to the twin-boom 1800", home.aircraft_id == TWIN_BOOM, home.aircraft_id)
+	_check("previous from the helicopter returns to the fast delta 780", home.aircraft_id == FAST_DELTA, home.aircraft_id)
+	await ui.tap(KEY_ENTER)
+	await _preview(app)
+	_check("previous again: the twin-boom 1800", home.aircraft_id == TWIN_BOOM, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("previous again: the X8", home.aircraft_id == X8, home.aircraft_id)

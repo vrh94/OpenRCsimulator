@@ -23,7 +23,7 @@ func _test_catalog_descriptors() -> void:
 	var entries: Array = Catalog.airplane_flyable_entries()
 	var expected_ids := ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t",
 		"stik-glow-fs64v-4t", "stik-electric-6s", "gp-extra-300s-60", "p51d-mustang-120",
-		"f4u-corsair-250", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "moonrunner-x99", "twin-boom-1800"]
+		"f4u-corsair-250", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "moonrunner-x99", "twin-boom-1800", "fast-delta-780"]
 	var actual_ids := []
 	for entry: Dictionary in entries: actual_ids.append(str(entry.get("id", "")))
 	expected_ids.sort()

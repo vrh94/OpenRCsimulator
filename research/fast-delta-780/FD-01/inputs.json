@@ -1,0 +1,633 @@
+{
+ "format": "openrc-fast-delta-inputs v1",
+ "estimates": {
+  "section_slope_factor": {
+   "value": 0.9,
+   "unit": "1",
+   "source": "FD-01: Helmbold/DATCOM section slope factor kappa for a thin reflexed foam section (fleet practice, TT-07)"
+  },
+  "control_efficiency": {
+   "value": 0.8,
+   "unit": "1",
+   "source": "FD-01: thin-airfoil flap effectiveness correction for taped foam elevon hinges (fleet practice, TT-07)"
+  },
+  "wing_zero_lift_angle": {
+   "value": -0.009,
+   "unit": "rad",
+   "source": "FD-01: reflexed speed section (near-symmetric camber, MH-45/Eppler-reflex class about -0.5 deg); unmeasured"
+  },
+  "wing_section_moment": {
+   "value": 0.004,
+   "unit": "1",
+   "source": "FD-01: reflexed flying-wing section moment about its aerodynamic centre (slightly positive, MH-45 class); unmeasured"
+  },
+  "washout_deg": {
+   "value": 2.0,
+   "unit": "deg",
+   "source": "FD-01: geometric washout root to tip of a fast flying wing (typical 1-3 deg); applied as zero-mean strip incidence"
+  },
+  "fuselage_munk_factor": {
+   "value": 0.6,
+   "unit": "1/rad",
+   "source": "FD-01: Gilruth/Munk fuselage pitch destabilisation factor Kf (0.0105 per deg for a centre body whose wing root sits near 45 % of its length), per radian"
+  },
+  "fuselage_yaw_factor": {
+   "value": 0.05,
+   "unit": "1/rad",
+   "source": "FD-01: DATCOM body yaw destabilisation K_N·K_Rl for a slim centre body, per radian; unmeasured"
+  },
+  "fin_endplate_factor": {
+   "value": 1.6,
+   "unit": "1",
+   "source": "FD-01: the wing surface end-plates each fin's root (image effect) on its geometric aspect ratio"
+  },
+  "fin_pressure_ratio": {
+   "value": 0.95,
+   "unit": "1",
+   "source": "FD-01: fin dynamic-pressure/sidewash ratio; fins outside the pusher slipstream"
+  },
+  "skin_drag_coefficient": {
+   "value": 0.014,
+   "unit": "1",
+   "source": "FD-01: skin/form drag coefficient of a smooth thin foam speed wing and slim body at RC Reynolds number; provisional build-up"
+  },
+  "excrescence_drag_area": {
+   "value": 0.0012,
+   "unit": "m2",
+   "source": "FD-01: camera, canopy step, servo horns, motor and hinge-line drag area; provisional"
+  },
+  "span_efficiency": {
+   "value": 0.78,
+   "unit": "1",
+   "source": "FD-01: Oswald efficiency of a swept tapered flying wing with washout"
+  },
+  "minimum_drag_lift": {
+   "value": 0.1,
+   "unit": "1",
+   "source": "FD-01: near-symmetric reflexed section minimum-drag lift coefficient"
+  },
+  "control_drag_elevon": {
+   "value": 0.012,
+   "unit": "1",
+   "source": "FD-01: elevon deflection drag per radian (as the X8 estimate)"
+  },
+  "control_drag_roll": {
+   "value": 0.006,
+   "unit": "1",
+   "source": "FD-01: antisymmetric elevon drag per radian per surface (as the X8 estimate)"
+  },
+  "adverse_yaw_factor": {
+   "value": 0.3,
+   "unit": "1",
+   "source": "FD-01: differential profile/induced elevon adverse-yaw estimate (fleet practice)"
+  },
+  "CL_max": {
+   "value": 0.9,
+   "unit": "1",
+   "source": "FD-01: clean reflexed swept flying wing peak lift, no flaps; unmeasured"
+  },
+  "CL_min": {
+   "value": -0.6,
+   "unit": "1",
+   "source": "FD-01: inverted peak lift of a near-symmetric reflexed section; unmeasured"
+  },
+  "stall_blend_width": {
+   "value": 8.0,
+   "unit": "deg",
+   "source": "FD-01: attached-to-flat-plate stall blending width (X8 value)"
+  },
+  "attached_limit": {
+   "value": 8.0,
+   "unit": "deg",
+   "source": "FD-01: local attached flow/oracle boundary, established solver domain"
+  },
+  "tail_local_limit": {
+   "value": 12.0,
+   "unit": "deg",
+   "source": "FD-01: fin attached flow angle limit; provisional"
+  },
+  "tail_stall_end": {
+   "value": 24.0,
+   "unit": "deg",
+   "source": "FD-01: fin flat-plate transition end; provisional"
+  },
+  "tail_CD0": {
+   "value": 0.012,
+   "unit": "1",
+   "source": "FD-01: fin profile drag coefficient; provisional"
+  },
+  "tail_k": {
+   "value": 0.08,
+   "unit": "1",
+   "source": "FD-01: fin induced drag coefficient; provisional"
+  },
+  "crossflow_drag": {
+   "value": 1.2,
+   "unit": "1",
+   "source": "FD-01: body crossflow drag coefficient (Allen-Perkins, as the X8)"
+  },
+  "crossflow_efficiency": {
+   "value": 0.65,
+   "unit": "1",
+   "source": "FD-01: finite-length crossflow efficiency eta for a slender body (as the X8)"
+  },
+  "motor_resistance": {
+   "value": 0.032,
+   "unit": "ohm",
+   "source": "FD-01: equivalent winding resistance of a 35-mm 1800 Kv-class outrunner (catalogue range 0.02-0.045 ohm); not measured"
+  },
+  "motor_no_load_current": {
+   "value": 1.6,
+   "unit": "A",
+   "source": "FD-01: no-load current of a 35-mm 1800 Kv-class outrunner near 10 V; not measured"
+  },
+  "bus_voltage": {
+   "value": 14.8,
+   "unit": "V",
+   "source": "FD-01: 4S nominal fixed bus (ideal-bus configuration); no sag or depletion"
+  },
+  "winding_temperature": {
+   "value": 25.0,
+   "unit": "°C",
+   "source": "FD-01: context only; no thermal model"
+  },
+  "rotor_inertia": {
+   "value": 3e-05,
+   "unit": "kg·m2",
+   "source": "FD-01: 7x6 pusher propeller, adapter and 35-mm outrunner bell; not measured"
+  },
+  "servo_full_throw_time": {
+   "value": 0.09,
+   "unit": "s",
+   "source": "FD-01: 9 g digital servo class (about 0.10 s/60 deg) turning the estimated elevon travel; not measured"
+  }
+ },
+ "inventory": [
+  {
+   "id": "wing_main",
+   "name": "EPO wing panels, spar, elevons and elevon servos",
+   "mass_kg": 0.26,
+   "position": [
+    0.21,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.2,
+    0.78,
+    0.02
+   ]
+  },
+  {
+   "id": "fuselage_main",
+   "name": "EPO centre body, hatch and canopy",
+   "mass_kg": 0.13,
+   "position": [
+    0.0,
+    0.0,
+    0.005
+   ],
+   "size": [
+    0.68,
+    0.09,
+    0.09
+   ]
+  },
+  {
+   "id": "fins_main",
+   "name": "two fins",
+   "mass_kg": 0.012,
+   "position": [
+    0.26,
+    0.0,
+    0.05
+   ],
+   "size": [
+    0.11,
+    0.25,
+    0.09
+   ]
+  },
+  {
+   "id": "motor_main",
+   "name": "35-mm 1800 Kv-class outrunner",
+   "mass_kg": 0.105,
+   "position": [
+    0.335,
+    0.0,
+    0.006
+   ],
+   "size": [
+    0.04,
+    0.035,
+    0.035
+   ]
+  },
+  {
+   "id": "propeller_main",
+   "name": "7x6 pusher propeller and adapter",
+   "mass_kg": 0.012,
+   "position": [
+    0.37,
+    0.0,
+    0.006
+   ],
+   "size": [
+    0.015,
+    0.1778,
+    0.015
+   ]
+  },
+  {
+   "id": "esc_main",
+   "name": "60 A ESC with BEC",
+   "mass_kg": 0.045,
+   "position": [
+    0.22,
+    0.0,
+    -0.01
+   ],
+   "size": [
+    0.06,
+    0.03,
+    0.012
+   ]
+  },
+  {
+   "id": "battery_main",
+   "name": "4S 2200 mAh battery",
+   "mass_kg": 0.226875,
+   "position": [
+    0.08,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.105,
+    0.035,
+    0.035
+   ],
+   "energy_source": "lipo"
+  },
+  {
+   "id": "fpv_camera",
+   "name": "FPV camera and nose mount",
+   "mass_kg": 0.012,
+   "position": [
+    -0.3,
+    0.0,
+    0.01
+   ],
+   "size": [
+    0.02,
+    0.02,
+    0.02
+   ]
+  },
+  {
+   "id": "video_transmitter",
+   "name": "video transmitter and antenna",
+   "mass_kg": 0.015,
+   "position": [
+    0.1,
+    0.0,
+    0.03
+   ],
+   "size": [
+    0.04,
+    0.03,
+    0.01
+   ]
+  },
+  {
+   "id": "avionics_main",
+   "name": "receiver and flight controller",
+   "mass_kg": 0.02,
+   "position": [
+    0.12,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.04,
+    0.03,
+    0.015
+   ]
+  }
+ ],
+ "inventory_source": "FD-01 component-class mass and box estimates for the d1 design; stations from assets/aircraft/fast-delta-780/design.json; not weighed",
+ "propulsion": {
+  "kind": "electric_prop",
+  "motor": {
+   "kv_rpm_per_volt": {
+    "value": 1800,
+    "unit": "rpm/V",
+    "kind": "estimated",
+    "source": "FD-01: design d1 drive, 35-mm 1800 Kv-class outrunner on 4S (the class's 1960 Kv on a 6x5.5 turns about the same power on our 7x6)"
+   },
+   "resistance_scope": "motor_winding_equivalent"
+  },
+  "battery": {
+   "kind": "fixed_voltage"
+  },
+  "esc": {
+   "kind": "ideal_motoring",
+   "command_mapping": "identity"
+  },
+  "propeller": {
+   "diameter": {
+    "value": 0.1778,
+    "unit": "m",
+    "kind": "manual",
+    "source": "design d1 7x6 pusher propeller, nominal 7 in"
+   },
+   "ct_table": {
+    "value": [
+     [
+      0.0,
+      0.0953
+     ],
+     [
+      0.11,
+      0.0912
+     ],
+     [
+      0.142,
+      0.0906
+     ],
+     [
+      0.172,
+      0.0911
+     ],
+     [
+      0.2,
+      0.0901
+     ],
+     [
+      0.231,
+      0.0903
+     ],
+     [
+      0.263,
+      0.0902
+     ],
+     [
+      0.294,
+      0.0895
+     ],
+     [
+      0.321,
+      0.0884
+     ],
+     [
+      0.355,
+      0.0867
+     ],
+     [
+      0.384,
+      0.0851
+     ],
+     [
+      0.413,
+      0.083
+     ],
+     [
+      0.443,
+      0.0801
+     ],
+     [
+      0.472,
+      0.0772
+     ],
+     [
+      0.497,
+      0.0743
+     ],
+     [
+      0.527,
+      0.0699
+     ],
+     [
+      0.554,
+      0.0662
+     ],
+     [
+      0.583,
+      0.0623
+     ],
+     [
+      0.617,
+      0.0566
+     ],
+     [
+      0.652,
+      0.0499
+     ],
+     [
+      0.682,
+      0.0465
+     ],
+     [
+      0.708,
+      0.0413
+     ],
+     [
+      0.735,
+      0.0369
+     ],
+     [
+      0.769,
+      0.0305
+     ],
+     [
+      0.796,
+      0.0267
+     ],
+     [
+      0.828,
+      0.0231
+     ],
+     [
+      0.853,
+      0.0183
+     ],
+     [
+      0.884,
+      0.0134
+     ],
+     [
+      0.911,
+      0.0093
+     ],
+     [
+      0.943,
+      0.0038
+     ],
+     [
+      0.977,
+      -0.0024
+     ],
+     [
+      1.002,
+      -0.0068
+     ],
+     [
+      1.035,
+      -0.0128
+     ]
+    ],
+    "unit": "1",
+    "kind": "borrowed",
+    "source": "UIUC Propeller Data Site Vol. 1, measured APC Sport 7x6 two-blade: static apcsp_7x6_static_2930cm.txt (7002 rpm row; sha256 1724b11835bb2de14601f9c7a55b9c805744605f8f20701683d2cf5424ef07bb), tunnel apcsp_7x6_2935cm_7020.txt (sha256 6e41fcc9b42898d2c261390f1cda899435c9d96dca45db1d0c2f96007e9354e6) for J <= 0.583 and apcsp_7x6_2936cm_7021.txt (sha256 68d8a9c9b84a2abaa4e5297895b717a014f3e7931d874239cb2dde5af5cf01ce) above; m-selig.ae.illinois.edu/props/volume-1/data/, downloaded 2026-11-17. Borrowed: no measured 6-inch speed propeller exists in the database; no RPM or Reynolds-number equivalence."
+   },
+   "cp_table": {
+    "value": [
+     [
+      0.0,
+      0.0723
+     ],
+     [
+      0.11,
+      0.0707
+     ],
+     [
+      0.142,
+      0.0696
+     ],
+     [
+      0.172,
+      0.069
+     ],
+     [
+      0.2,
+      0.0677
+     ],
+     [
+      0.231,
+      0.067
+     ],
+     [
+      0.263,
+      0.0671
+     ],
+     [
+      0.294,
+      0.0673
+     ],
+     [
+      0.321,
+      0.0673
+     ],
+     [
+      0.355,
+      0.0676
+     ],
+     [
+      0.384,
+      0.0677
+     ],
+     [
+      0.413,
+      0.0675
+     ],
+     [
+      0.443,
+      0.0667
+     ],
+     [
+      0.472,
+      0.0661
+     ],
+     [
+      0.497,
+      0.0654
+     ],
+     [
+      0.527,
+      0.0636
+     ],
+     [
+      0.554,
+      0.0621
+     ],
+     [
+      0.583,
+      0.0606
+     ],
+     [
+      0.617,
+      0.0576
+     ],
+     [
+      0.652,
+      0.0547
+     ],
+     [
+      0.682,
+      0.0528
+     ],
+     [
+      0.708,
+      0.0496
+     ],
+     [
+      0.735,
+      0.0471
+     ],
+     [
+      0.769,
+      0.0433
+     ],
+     [
+      0.796,
+      0.0407
+     ],
+     [
+      0.828,
+      0.0379
+     ],
+     [
+      0.853,
+      0.0347
+     ],
+     [
+      0.884,
+      0.0316
+     ],
+     [
+      0.911,
+      0.0285
+     ],
+     [
+      0.943,
+      0.0243
+     ],
+     [
+      0.977,
+      0.02
+     ],
+     [
+      1.002,
+      0.0166
+     ],
+     [
+      1.035,
+      0.0121
+     ]
+    ],
+    "unit": "1",
+    "kind": "borrowed",
+    "source": "UIUC Propeller Data Site Vol. 1, measured APC Sport 7x6 two-blade: static apcsp_7x6_static_2930cm.txt (7002 rpm row; sha256 1724b11835bb2de14601f9c7a55b9c805744605f8f20701683d2cf5424ef07bb), tunnel apcsp_7x6_2935cm_7020.txt (sha256 6e41fcc9b42898d2c261390f1cda899435c9d96dca45db1d0c2f96007e9354e6) for J <= 0.583 and apcsp_7x6_2936cm_7021.txt (sha256 68d8a9c9b84a2abaa4e5297895b717a014f3e7931d874239cb2dde5af5cf01ce) above; m-selig.ae.illinois.edu/props/volume-1/data/, downloaded 2026-11-17. Borrowed: no measured 6-inch speed propeller exists in the database; no RPM or Reynolds-number equivalence."
+   }
+  }
+ },
+ "conventions": {
+  "alpha_beta": "rad",
+  "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",
+  "elevator": "per radian of the elevons' symmetric part (δel+δer)/2, positive = trailing edge DOWN (dCm/dElev < 0)",
+  "aileron": "per radian of each elevon's antisymmetric part, positive = trailing edge DOWN; right and left listed separately",
+  "rudder": "none: fixed fins, every rudder term is 0",
+  "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|",
+  "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"
+ }
+}

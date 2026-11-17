@@ -143,7 +143,7 @@ func _test_profiles_for_catalog_fleet() -> void:
 				_test_moonrunner_unreviewed_hull(pack_path, pack.model, pack_bindings,
 					Profiles.resolve(aircraft_id, pack.model, pack_bindings))
 			continue
-		if aircraft_id == "twin-boom-1800":
+		if aircraft_id in ["twin-boom-1800", "fast-delta-780"]:
 			_test_gearless_unreviewed(aircraft_id, model, bindings, profile)
 			continue
 		if aircraft_id in UNREVIEWED_WHEEL_IDS:

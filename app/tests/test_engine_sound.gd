@@ -19,6 +19,7 @@ const EXPECTED_AIRCRAFT_BLADE_COUNTS := {
 	"turbo-lumber-evolution": 3,
 	"moonrunner-x99": 2, # X8-09: APC 12x6E(P) two-blade pusher
 	"twin-boom-1800": 2, # TB-01: 11x7 two-blade pusher (borrowed APC 11x7 tables)
+	"fast-delta-780": 2, # FD-01: 7x6 two-blade pusher (borrowed APC Sport 7x6 tables)
 }
 
 class LegacySessionStub extends Node:
