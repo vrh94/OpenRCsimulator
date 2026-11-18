@@ -13016,3 +13016,87 @@ msgstr "スピード全翼機 · 0.78 m · 4S電動プッシャー"
 
 msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
 msgstr "実験的: 教科書的な空力と推定電動駆動によるオリジナルの高速全翼機設計。着陸装置なし（手投げ発進）、丈夫なフォーム機体。飛行検証なし。"
+
+msgid "Springs, damping and grip are in Tune truck; the experiment uses them too."
+msgstr "スプリング、ダンピング、グリップは「トラックの調整」にあります。実験でも使われます。"
+
+msgid "Tune truck"
+msgstr "トラックの調整"
+
+msgid "Hide tuning"
+msgstr "調整を隠す"
+
+msgid "Saved for this truck. Taller gearing gives more top speed and less punch. The stability assist eases the throttle and steering to stop spins, roll-overs and tall wheelies."
+msgstr "このトラック用に保存されます。ハイギアにすると最高速度が上がり、加速は弱くなります。安定アシストはスロットルとステアリングを抑え、スピン、横転、高いウィリーを防ぎます。"
+
+msgid "Gearing"
+msgstr "ギア比"
+
+msgid "Steering lock"
+msgstr "切れ角"
+
+msgid "Brakes"
+msgstr "ブレーキ"
+
+msgid "Springs"
+msgstr "スプリング"
+
+msgid "Damping"
+msgstr "ダンピング"
+
+msgid "Tire grip"
+msgstr "タイヤグリップ"
+
+msgid "Throttle limit"
+msgstr "スロットル制限"
+
+msgid "Stability assist"
+msgstr "安定アシスト"
+
+msgid "Gearing %s"
+msgstr "ギア比 %s"
+
+msgid "Steering lock %s"
+msgstr "切れ角 %s"
+
+msgid "Brakes %s"
+msgstr "ブレーキ %s"
+
+msgid "Springs %s"
+msgstr "スプリング %s"
+
+msgid "Damping %s"
+msgstr "ダンピング %s"
+
+msgid "Tire grip %s"
+msgstr "タイヤグリップ %s"
+
+msgid "%d km/h no-load"
+msgstr "無負荷 %d km/h"
+
+msgid "Throttle limit %d %%"
+msgstr "スロットル制限 %d %%"
+
+msgid "Stability assist off"
+msgstr "安定アシスト オフ"
+
+msgid "Stability assist %d %%"
+msgstr "安定アシスト %d %%"
+
+msgid "Apply tuning"
+msgstr "調整を適用"
+
+msgid "Tuning was not applied."
+msgstr "調整は適用されませんでした。"
+
+msgid "Tuning applied. Run restarted."
+msgstr "調整を適用しました。走行をやり直します。"
+
+msgid "Saved for this truck."
+msgstr "このトラック用に保存しました。"
+
+msgid "Gearing %s · Steering %s · Brakes %s"
+msgstr "ギア比 %s · ステアリング %s · ブレーキ %s"
+
+msgid "The saved tuning could not be applied: %s"
+msgstr "保存された調整を適用できませんでした: %s"

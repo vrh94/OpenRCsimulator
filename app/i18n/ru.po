@@ -13766,3 +13766,87 @@ msgstr "Скоростное летающее крыло · 0,78 м · 4S эле
 
 msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
 msgstr "Экспериментальный: оригинальная конструкция скоростного летающего крыла с учебной аэродинамикой и оценочным электроприводом; без шасси (запуск с руки), прочный пенопластовый планер. Не проверено в полёте."
+
+msgid "Springs, damping and grip are in Tune truck; the experiment uses them too."
+msgstr "Пружины, демпфирование и сцепление находятся в «Настройке машины»; эксперимент тоже их использует."
+
+msgid "Tune truck"
+msgstr "Настройка машины"
+
+msgid "Hide tuning"
+msgstr "Скрыть настройку"
+
+msgid "Saved for this truck. Taller gearing gives more top speed and less punch. The stability assist eases the throttle and steering to stop spins, roll-overs and tall wheelies."
+msgstr "Сохраняется для этой машины. Более длинная передача даёт больше максимальной скорости и меньше разгона. Помощник стабилизации уменьшает газ и руль, чтобы предотвратить развороты, опрокидывания и высокие вилли."
+
+msgid "Gearing"
+msgstr "Передача"
+
+msgid "Steering lock"
+msgstr "Угол поворота колёс"
+
+msgid "Brakes"
+msgstr "Тормоза"
+
+msgid "Springs"
+msgstr "Пружины"
+
+msgid "Damping"
+msgstr "Демпфирование"
+
+msgid "Tire grip"
+msgstr "Сцепление шин"
+
+msgid "Throttle limit"
+msgstr "Ограничение газа"
+
+msgid "Stability assist"
+msgstr "Помощник стабилизации"
+
+msgid "Gearing %s"
+msgstr "Передача %s"
+
+msgid "Steering lock %s"
+msgstr "Угол поворота колёс %s"
+
+msgid "Brakes %s"
+msgstr "Тормоза %s"
+
+msgid "Springs %s"
+msgstr "Пружины %s"
+
+msgid "Damping %s"
+msgstr "Демпфирование %s"
+
+msgid "Tire grip %s"
+msgstr "Сцепление шин %s"
+
+msgid "%d km/h no-load"
+msgstr "%d км/ч без нагрузки"
+
+msgid "Throttle limit %d %%"
+msgstr "Ограничение газа %d %%"
+
+msgid "Stability assist off"
+msgstr "Помощник стабилизации выключен"
+
+msgid "Stability assist %d %%"
+msgstr "Помощник стабилизации %d %%"
+
+msgid "Apply tuning"
+msgstr "Применить настройку"
+
+msgid "Tuning was not applied."
+msgstr "Настройка не применена."
+
+msgid "Tuning applied. Run restarted."
+msgstr "Настройка применена. Заезд перезапущен."
+
+msgid "Saved for this truck."
+msgstr "Сохранено для этой машины."
+
+msgid "Gearing %s · Steering %s · Brakes %s"
+msgstr "Передача %s · Руль %s · Тормоза %s"
+
+msgid "The saved tuning could not be applied: %s"
+msgstr "Не удалось применить сохранённую настройку: %s"

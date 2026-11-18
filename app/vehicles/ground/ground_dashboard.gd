@@ -4,9 +4,12 @@ extends CanvasLayer
 const UiTheme = preload("res://ui/ui_theme.gd")
 const Plot = preload("res://vehicles/ground/telemetry_plot.gd")
 const Prompts = preload("res://ui/controller_prompts.gd")
+const TruckTuning = preload("res://vehicles/ground/truck_tuning.gd")
 signal action_requested(action: String)
 signal mode_selected(index: int)
 signal experiment_requested(knobs: Dictionary)
+## Step 19: the garage's Tune truck panel asks to apply (and save) these values; see vehicles/ground/truck_tuning.gd.
+signal tuning_requested(values: Dictionary)
 signal spawn_selected(id: String)
 signal controller_selected(device_id: int)
 
@@ -64,6 +67,13 @@ var spawn_ids: Array = []
 var lab: VBoxContainer
 var gauges: Label
 var sliders := {}
+var tuning_button: Button
+var tuning: VBoxContainer
+var tuning_result: Label
+## Stock no-load ground speed (km/h) of an electric truck for the gearing readout; 0 hides it (nitro).
+var free_speed_kmh := 0.0
+var _slider_labels := {}
+var _slider_formats := {}
 var root_control: Control
 var plot: Control
 var _es := false
@@ -284,17 +294,13 @@ func _ready() -> void:
 	column.add_child(lab)
 	lab.add_child(_label(words("Reset applies the experiment", "El experimento reinicia la sesión"), 15))
 	_slider("gravity_scale", words("Gravity", "Gravedad"), 0.0, 2.0, 1.0)
-	_slider("grip_scale", words("Grip", "Agarre"), 0.15, 2.0, 1.0)
-	_slider("spring_scale", words("Springs", "Resortes"), 0.5, 2.0, 1.0)
-	_slider("damper_scale", words("Damping", "Amortiguación"), 0.25, 2.0, 1.0)
 	_slider("ballast_kg", words("Ballast · kg", "Lastre · kg"), 0.0, 1.5, 0.0)
 	_slider("ballast_height_m", words("Ballast height · m", "Altura del lastre · m"), 0.03, 0.35, 0.15)
+	var lab_note := _label(tr("Springs, damping and grip are in Tune truck; the experiment uses them too."), 14)
+	lab_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lab.add_child(lab_note)
 	var apply := _button(words("Apply experiment", "Aplicar experimento"), "")
-	apply.pressed.connect(func():
-		var knobs := {}
-		for key in sliders:
-			knobs[key] = sliders[key].value
-		experiment_requested.emit(knobs))
+	apply.pressed.connect(func(): experiment_requested.emit(current_experiment()))
 	lab.add_child(apply)
 	lab_result = _label("", int(round(15.0 * UiTheme.text_scale)))
 	lab_result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -302,6 +308,7 @@ func _ready() -> void:
 	lab.add_child(lab_result)
 	# Experiments belong next to the mode and reset controls, ahead of utilities.
 	column.move_child(lab, row.get_index() + 1)
+	_build_tuning(column, lab.get_index() + 1)
 	column.add_child(_button(words("Return to Home", "Volver al inicio"), "home"))
 	var qualification := _label(words("Estimated physics parameters. Record runs to compare experiments.", "Parámetros físicos estimados. Graba las pruebas para comparar experimentos."), 14)
 	qualification.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -413,10 +420,10 @@ func _button(text: String, action: String) -> Button:
 		button.pressed.connect(func(): action_requested.emit(action))
 	return button
 
-func _slider(key: String, title: String, low: float, high: float, initial: float) -> void:
+func _slider(key: String, title: String, low: float, high: float, initial: float, parent: Control = null, format := Callable()) -> void:
 	var row := HBoxContainer.new()
 	row.custom_minimum_size.y = 32
-	lab.add_child(row)
+	(lab if parent == null else parent).add_child(row)
 	var label := _label(title + "  %.2f" % initial, 14)
 	label.custom_minimum_size.x = 172
 	row.add_child(label)
@@ -429,9 +436,106 @@ func _slider(key: String, title: String, low: float, high: float, initial: float
 	slider.max_value = high
 	slider.step = 0.01
 	slider.value = initial
-	slider.value_changed.connect(func(value: float): label.text = title + "  %.2f" % value)
+	if format.is_valid():
+		label.text = format.call(initial)
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		slider.value_changed.connect(func(value: float): label.text = format.call(value))
+		_slider_labels[key] = label
+		_slider_formats[key] = format
+	else:
+		slider.value_changed.connect(func(value: float): label.text = title + "  %.2f" % value)
 	row.add_child(slider)
 	sliders[key] = slider
+
+
+## Step 19: the Tune truck panel. Its values are saved per truck and applied when the truck loads.
+func _build_tuning(column: VBoxContainer, index: int) -> void:
+	tuning_button = _button(tr("Tune truck"), "")
+	tuning_button.name = "GroundTuneTruck"
+	tuning_button.pressed.connect(func(): show_tuning(not tuning.visible))
+	column.add_child(tuning_button)
+	column.move_child(tuning_button, index)
+	tuning = VBoxContainer.new()
+	tuning.name = "GroundTuning"
+	tuning.visible = false
+	column.add_child(tuning)
+	column.move_child(tuning, index + 1)
+	var about := _label(tr("Saved for this truck. Taller gearing gives more top speed and less punch. The stability assist eases the throttle and steering to stop spins, roll-overs and tall wheelies."), 14)
+	about.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tuning.add_child(about)
+	var times := func(name: String) -> Callable:
+		return func(value: float) -> String: return tr(name) % ("×%.2f" % value)
+	var settings: Dictionary = TruckTuning.SETTINGS
+	_slider("gear_scale", tr("Gearing"), settings.gear_scale.min, settings.gear_scale.max, 1.0, tuning, _gearing_text)
+	_slider("steer_scale", tr("Steering lock"), settings.steer_scale.min, settings.steer_scale.max, 1.0, tuning, times.call("Steering lock %s"))
+	_slider("brake_scale", tr("Brakes"), settings.brake_scale.min, settings.brake_scale.max, 1.0, tuning, times.call("Brakes %s"))
+	_slider("spring_scale", tr("Springs"), settings.spring_scale.min, settings.spring_scale.max, 1.0, tuning, times.call("Springs %s"))
+	_slider("damper_scale", tr("Damping"), settings.damper_scale.min, settings.damper_scale.max, 1.0, tuning, times.call("Damping %s"))
+	_slider("grip_scale", tr("Tire grip"), settings.grip_scale.min, settings.grip_scale.max, 1.0, tuning, times.call("Tire grip %s"))
+	_slider("throttle_limit", tr("Throttle limit"), settings.throttle_limit.min, settings.throttle_limit.max, 1.0, tuning,
+		func(value: float) -> String: return tr("Throttle limit %d %%") % roundi(value * 100.0))
+	_slider("stability", tr("Stability assist"), settings.stability.min, settings.stability.max, 0.0, tuning,
+		func(value: float) -> String: return tr("Stability assist off") if value <= 0.0 else tr("Stability assist %d %%") % roundi(value * 100.0))
+	var buttons := HBoxContainer.new()
+	var apply := _button(tr("Apply tuning"), "")
+	apply.name = "ApplyGroundTuning"
+	apply.pressed.connect(func(): tuning_requested.emit(current_tuning()))
+	buttons.add_child(apply)
+	var stock := _button(tr("Stock"), "")
+	stock.name = "StockGroundTuning"
+	stock.pressed.connect(func():
+		set_tuning(TruckTuning.stock())
+		tuning_requested.emit(current_tuning()))
+	buttons.add_child(stock)
+	tuning.add_child(buttons)
+	tuning_result = _label("", int(round(15.0 * UiTheme.text_scale)))
+	tuning_result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tuning_result.visible = false
+	tuning.add_child(tuning_result)
+
+
+func _gearing_text(value: float) -> String:
+	var text: String = tr("Gearing %s") % ("×%.2f" % value)
+	if free_speed_kmh > 0.0:
+		text += " · " + tr("%d km/h no-load") % roundi(free_speed_kmh * value)
+	return text
+
+
+func show_tuning(shown: bool) -> void:
+	tuning.visible = shown
+	tuning_button.text = tr("Hide tuning") if shown else tr("Tune truck")
+
+
+## The tune the panel shows (every TruckTuning setting).
+func current_tuning() -> Dictionary:
+	var values := {}
+	for key: String in TruckTuning.SETTINGS:
+		values[key] = float(sliders[key].value)
+	return TruckTuning.sanitize(values)
+
+
+func set_tuning(values: Dictionary) -> void:
+	var clean := TruckTuning.sanitize(values)
+	for key: String in clean:
+		sliders[key].set_value_no_signal(clean[key])
+		if _slider_labels.has(key):
+			_slider_labels[key].text = _slider_formats[key].call(clean[key])
+
+
+## The session experiment for the panel's tune and the lab's gravity and ballast.
+func current_experiment() -> Dictionary:
+	var lab_values := {}
+	for key: String in TruckTuning.LAB_NEUTRAL:
+		lab_values[key] = float(sliders[key].value)
+	return TruckTuning.experiment(current_tuning(), lab_values)
+
+
+func show_tuning_result(applied: bool, saved: bool) -> void:
+	tuning_result.visible = true
+	if not applied:
+		tuning_result.text = tr("Tuning was not applied.")
+	else:
+		tuning_result.text = tr("Tuning applied. Run restarted.") + ("\n" + tr("Saved for this truck.") if saved else "")
 
 func set_menu(shown: bool) -> void:
 	menu_visible = shown
@@ -572,6 +676,9 @@ func _experiment_lines(settings: Dictionary) -> Array[String]:
 	lines.append(tr("Gravity %s · Grip %s") % [_exact_number(settings.gravity_scale), _exact_number(settings.grip_scale)])
 	lines.append(tr("Springs %s · Damping %s") % [_exact_number(settings.spring_scale), _exact_number(settings.damper_scale)])
 	lines.append(tr("Ballast %s kg · Height %s m") % [_exact_number(settings.ballast_kg), _exact_number(settings.ballast_height_m)])
+	if settings.has("gear_scale") or settings.has("steer_scale") or settings.has("brake_scale"):
+		lines.append(tr("Gearing %s · Steering %s · Brakes %s") % [_exact_number(settings.get("gear_scale", 1.0)),
+			_exact_number(settings.get("steer_scale", 1.0)), _exact_number(settings.get("brake_scale", 1.0))])
 	return lines
 
 

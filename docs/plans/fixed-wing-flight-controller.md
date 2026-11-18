@@ -184,7 +184,25 @@ Evidence: `tests/test_fast_delta_780_6s.gd` 16/16. Details: [FD-03](../../resear
 - Evidence: `app/tests/test_x_maxx.gd`, 20 checks (generators, published figures, rig against data and GLB, paints,
   roster, sag and clearance, top speed, steady corners).
 
+## Step 19 (done): truck tuning
+
+- Garage › **Tune truck** on every RC truck, saved per truck in `user://ground_tuning.json`
+  (`vehicles/ground/truck_tuning.gd`) and applied when the truck loads: gearing, steering lock, brakes, springs,
+  damping, tire grip, throttle limit and stability assist. Apply restarts the run like a Physics lab experiment; Stock
+  returns to the stock data.
+- The physical settings are the session's experiment knobs: `VehicleData.with_experiment` takes optional
+  `gear_scale` (electric no-load speed x g and wheel torque / g; nitro gear ratio / g), `steer_scale` and `brake_scale`,
+  present only when changed, so stock setups and old checkpoints keep their identity. Checkpoints and recordings carry
+  the tune. The lab keeps gravity and ballast; springs, damping and grip moved to the tuning panel.
+- Driver aids (`vehicles/ground/driver_aids.gd`) act on the commands at 240 Hz before the tick, from the read-only
+  state: a throttle limit and a stability assist (yaw-rate excess, a 0.7 g steering ceiling at speed, roll past
+  10 degrees, wheel spin, wheelies past 20 degrees). The truck physics is unchanged; recordings keep the commands the
+  truck received.
+- Evidence: `app/tests/test_truck_tuning.gd`, 20 checks (store, data keys and identity, nitro gearing, X-Maxx top speed
+  76 to 88 km/h at x1.2, throttle limit, full-throttle full-lock launch on the course: 162 degrees of roll without the
+  assist, 6 with it, steady corner unchanged, garage load/apply/save/stock).
+
 ## Next
 
-The plan's steps 12–18 are done; step 11 (shadows) is deferred. Planned next (user decisions 2026-11-17): truck
-tuning, a user mod folder, and a Triglav National Park landscape with solid terrain (Planica/Tamar).
+The plan's steps 12–19 are done; step 11 (shadows) is deferred. Planned next (user decisions 2026-11-17): a user mod
+folder, and a Triglav National Park landscape with solid terrain (Planica/Tamar).

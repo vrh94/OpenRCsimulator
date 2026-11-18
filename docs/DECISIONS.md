@@ -361,6 +361,17 @@ grant is not in this repository; the replica's
 Revisit if the grant does not cover public source, forks or binaries: rename the
 catalog entry and keep the generic shape.
 
+### Truck driver aids act on the commands, not the physics
+
+**Step 19, 2026-11-18.** The truck tuning screen's throttle limit and stability assist
+(a TSM-like aid) change the driver's commands before the fixed tick, from the read-only
+state, like a radio end point or a receiver gyro; they do not add forces to the truck
+dynamics. Recordings keep the commands the truck received, so replays stay exact, and the
+physical tuning (gearing, steering lock, brakes, springs, damping, grip) goes through the
+existing experiment path so checkpoints carry it
+([plan](plans/fixed-wing-flight-controller.md#step-19-done-truck-tuning)). Revisit if an
+assist needs wheel-level braking (true torque vectoring), which would be a physics change.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

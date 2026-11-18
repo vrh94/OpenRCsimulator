@@ -45,7 +45,17 @@ constant voltage; it has no battery sag or ESC heat (the aircraft have those, th
 | Full throttle, airfield grass | 77 km/h in 10 s |
 | Full throttle, practice course | 84 km/h; it wheelies about 55 degrees at launch on the grippy course, as the real truck does on 8S |
 | Steady corners (6 m/s at 40 % steering, 4 m/s at full lock, 9 m/s at 20 %) | upright, about 6 degrees of body roll |
-| Full throttle with the wheel turned | the tires spin, it spins out and can roll over: feather the throttle in turns. The real 8S truck relies on Traxxas Stability Management (TSM) here, which the simulator does not model yet |
+| Full throttle with the wheel turned | the tires spin, it spins out and can roll over: feather the throttle in turns. The real 8S truck relies on Traxxas Stability Management (TSM) here; the garage's stability assist (Step 19, below) plays that part |
+
+## Tuning it in the garage (Step 19)
+
+Garage › **Tune truck** sets gearing (x0.7–1.3 of the stock no-load speed; the wheel torque falls by the same factor),
+steering lock, brakes, springs, damping, tire grip, a throttle limit and the stability assist, saved per truck in
+`user://ground_tuning.json`. The stability assist works on the commands, not the physics: it steers against a yaw
+beyond what the steering asks for, caps the steering at about 0.7 g of turn at speed, steers out of a body roll past
+10 degrees, and eases the throttle for wheel spin and wheelies past 20 degrees. With it at 100 %, full throttle and full
+steering from a standstill on the practice course stays upright (6 degrees of roll) instead of rolling over
+(`app/tests/test_truck_tuning.gd`).
 
 ## Modding it
 

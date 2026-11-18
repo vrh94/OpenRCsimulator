@@ -13804,3 +13804,87 @@ msgstr "Asa voadora rápida · 0,78 m · propulsão elétrica 4S"
 
 msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
 msgstr "Experimental: projeto original de asa voadora rápida com aerodinâmica de livro-texto e motorização elétrica estimada; sem trem de pouso (lançamento à mão), estrutura de espuma mais resistente. Não validado em voo."
+
+msgid "Springs, damping and grip are in Tune truck; the experiment uses them too."
+msgstr "Molas, amortecimento e aderência ficam em Ajustar carro; o experimento também os usa."
+
+msgid "Tune truck"
+msgstr "Ajustar carro"
+
+msgid "Hide tuning"
+msgstr "Ocultar ajustes"
+
+msgid "Saved for this truck. Taller gearing gives more top speed and less punch. The stability assist eases the throttle and steering to stop spins, roll-overs and tall wheelies."
+msgstr "Salvo para este carro. Uma relação mais longa dá mais velocidade máxima e menos arrancada. A assistência de estabilidade alivia o acelerador e a direção para evitar rodopios, capotamentos e empinadas altas."
+
+msgid "Gearing"
+msgstr "Relação"
+
+msgid "Steering lock"
+msgstr "Ângulo de direção"
+
+msgid "Brakes"
+msgstr "Freios"
+
+msgid "Springs"
+msgstr "Molas"
+
+msgid "Damping"
+msgstr "Amortecimento"
+
+msgid "Tire grip"
+msgstr "Aderência dos pneus"
+
+msgid "Throttle limit"
+msgstr "Limite de acelerador"
+
+msgid "Stability assist"
+msgstr "Assistência de estabilidade"
+
+msgid "Gearing %s"
+msgstr "Relação %s"
+
+msgid "Steering lock %s"
+msgstr "Ângulo de direção %s"
+
+msgid "Brakes %s"
+msgstr "Freios %s"
+
+msgid "Springs %s"
+msgstr "Molas %s"
+
+msgid "Damping %s"
+msgstr "Amortecimento %s"
+
+msgid "Tire grip %s"
+msgstr "Aderência dos pneus %s"
+
+msgid "%d km/h no-load"
+msgstr "%d km/h sem carga"
+
+msgid "Throttle limit %d %%"
+msgstr "Limite de acelerador %d %%"
+
+msgid "Stability assist off"
+msgstr "Assistência de estabilidade desligada"
+
+msgid "Stability assist %d %%"
+msgstr "Assistência de estabilidade %d %%"
+
+msgid "Apply tuning"
+msgstr "Aplicar ajustes"
+
+msgid "Tuning was not applied."
+msgstr "Os ajustes não foram aplicados."
+
+msgid "Tuning applied. Run restarted."
+msgstr "Ajustes aplicados. Percurso reiniciado."
+
+msgid "Saved for this truck."
+msgstr "Salvo para este carro."
+
+msgid "Gearing %s · Steering %s · Brakes %s"
+msgstr "Relação %s · Direção %s · Freios %s"
+
+msgid "The saved tuning could not be applied: %s"
+msgstr "Não foi possível aplicar os ajustes salvos: %s"

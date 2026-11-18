@@ -94,6 +94,12 @@ const NONNEGATIVE_FIELDS := [
 	"droop_stop_damping_n_s_per_m",
 ]
 const KNOB_KEYS := ["gravity_scale", "grip_scale", "spring_scale", "damper_scale", "ballast_kg", "ballast_height_m"]
+## Step 19 truck tuning: optional experiment keys, present only when changed from stock (1.0), so a setup without them
+## keeps the identity it had before. gear_scale > 1 is taller gearing: the electric no-load wheel speed rises and the
+## current-limited wheel torque falls by the same factor (a nitro truck's gear ratio is divided by it);
+## steer_scale and brake_scale multiply the steering lock and the brake torque.
+const TUNING_KEYS := ["gear_scale", "steer_scale", "brake_scale"]
+const TUNING_RANGES := {"gear_scale": [0.7, 1.3], "steer_scale": [0.5, 1.3], "brake_scale": [0.25, 2.0]}
 
 
 static func load_default() -> Dictionary:
@@ -257,9 +263,11 @@ static func with_experiment(base_loaded: Dictionary, knobs: Dictionary) -> Dicti
 	var errors := PackedStringArray()
 	if not bool(base_loaded.get("ok", false)) or not base_loaded.get("model") is Dictionary:
 		return _result(PackedStringArray(["Experiment requires a successfully loaded base vehicle"]))
-	_exact_keys(knobs, KNOB_KEYS, "experiment", errors)
+	_exact_keys(_without(knobs, TUNING_KEYS), KNOB_KEYS, "experiment", errors)
 	var settings: Dictionary = {}
-	for key: String in KNOB_KEYS:
+	for key: String in KNOB_KEYS + TUNING_KEYS:
+		if key in TUNING_KEYS and not knobs.has(key):
+			continue
 		var value: Variant = knobs.get(key)
 		if not _number(value):
 			errors.append("experiment.%s must be a finite number" % key)
@@ -273,6 +281,9 @@ static func with_experiment(base_loaded: Dictionary, knobs: Dictionary) -> Dicti
 	_check_range(settings.damper_scale, 0.25, 2.0, "damper_scale", errors)
 	_check_range(settings.ballast_kg, 0.0, 1.5, "ballast_kg", errors)
 	_check_range(settings.ballast_height_m, 0.03, 0.35, "ballast_height_m", errors)
+	for key: String in TUNING_KEYS:
+		if settings.has(key):
+			_check_range(settings[key], TUNING_RANGES[key][0], TUNING_RANGES[key][1], key, errors)
 	if not errors.is_empty():
 		return _result(errors)
 	var identity_in: Variant = base_loaded.get("identity")
@@ -309,6 +320,16 @@ static func with_experiment(base_loaded: Dictionary, knobs: Dictionary) -> Dicti
 	model.suspension_damping_n_s_per_m = float(model.suspension_damping_n_s_per_m) * settings.damper_scale
 	model.bump_stop_damping_n_s_per_m = float(model.bump_stop_damping_n_s_per_m) * settings.damper_scale
 	model.droop_stop_damping_n_s_per_m = float(model.droop_stop_damping_n_s_per_m) * settings.damper_scale
+	var gear: float = settings.get("gear_scale", 1.0)
+	if model.get("powertrain") is Dictionary:
+		model.powertrain.gear_ratio = float(model.powertrain.gear_ratio) / gear
+	else:
+		model.drive_torque_fade_rad_s = float(model.drive_torque_fade_rad_s) * gear
+		model.drive_torque_per_wheel_nm = float(model.drive_torque_per_wheel_nm) / gear
+	model.max_steer_angle_rad = float(model.max_steer_angle_rad) * settings.get("steer_scale", 1.0)
+	model.brake_torque_per_wheel_nm = float(model.brake_torque_per_wheel_nm) * settings.get("brake_scale", 1.0)
+	if model.max_steer_angle_rad >= PI * 0.5:
+		return _result(PackedStringArray(["experiment.steer_scale would turn the wheels past 90 degrees"]))
 	var x_from_datum: PackedFloat64Array = datum.corner_x_datum_frd_m
 	var y_from_datum: PackedFloat64Array = datum.corner_y_datum_frd_m
 	var corner_x := PackedFloat64Array()
@@ -577,6 +598,14 @@ static func _validate_geometry_source(raw: Variant, errors: PackedStringArray) -
 		errors.append("geometry_source.asset_frame is unsupported")
 	if raw.get("physics_frame") != {"forward": "+X", "right": "+Y", "down": "+Z"}:
 		errors.append("geometry_source.physics_frame is unsupported")
+
+
+static func _without(data: Dictionary, keys: Array) -> Dictionary:
+	var kept := {}
+	for key in data:
+		if not key in keys:
+			kept[key] = data[key]
+	return kept
 
 
 static func _exact_keys(data: Dictionary, allowed: Array, path: String, errors: PackedStringArray) -> void:

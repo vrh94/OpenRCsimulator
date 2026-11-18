@@ -45,6 +45,8 @@ const FpvLens = preload("res://render/camera/fpv_lens.gd")
 const CameraSettings = preload("res://render/camera/camera_settings.gd")
 const DisplayPreferences = preload("res://app_state/display_preferences.gd")
 const Preferences = preload("res://app_state/preferences.gd")
+const TruckTuning = preload("res://vehicles/ground/truck_tuning.gd")
+const DriverAids = preload("res://vehicles/ground/driver_aids.gd")
 ## RADIO-CAR-1: a radio's elevator stick inside this share of its travel is neutral (no drive, no reverse).
 const RADIO_DRIVE_NEUTRAL := 0.04
 
@@ -161,6 +163,10 @@ var _focused := true
 var _sound: AudioStreamPlayer3D
 var _nitro_sound: NitroAudio
 var checkpoint_path := "user://rcv/checkpoint.json"
+## Step 19: where the per-truck tunes are saved (tests point it elsewhere); the active tune and its driver aids.
+var tuning_path: String = TruckTuning.PATH
+var tuning: Dictionary = TruckTuning.stock()
+var driver_aids := DriverAids.new()
 var _checkpoint := {}
 var _checkpoint_backup_path := ""
 var _jump_time := -1.0
@@ -310,6 +316,8 @@ func _ready() -> void:
 	dashboard.mode_selected.connect(_select_mode)
 	dashboard.experiment_requested.connect(_experiment)
 	dashboard.spawn_selected.connect(_select_spawn)
+	dashboard.tuning_requested.connect(apply_tuning)
+	_load_saved_tuning()
 	_capture_initial_spawn()
 	session.event_added.connect(_event)
 	session.faulted.connect(func(reason: String):
@@ -532,6 +540,8 @@ func _physics_process(_delta: float) -> void:
 	var controls := _read_controls()
 	if scripted_controls.is_valid():
 		controls = scripted_controls.call(session.tick)
+	elif driver_aids.active() and not session.paused:
+		controls = driver_aids.apply(controls, session.state_snapshot(), session.fixed_dt())
 	_last_controls = controls
 	if not controls.get("armed", false) and not session.paused:
 		open_garage()
@@ -1337,6 +1347,8 @@ func _after_reset() -> void:
 	if _vehicle_entry.get("nitro", false): visual["engine_phase_rad"] = 0.0
 	_previous = _snapshot.duplicate()
 	_model = session.model_snapshot()
+	driver_aids.configure(_model)
+	if _vehicle_entry.get("nitro", false): visual["gear_ratio"] = float(_model.powertrain.gear_ratio)
 	_effects_time_s = session.time_s()
 	if _effects != null: _effects.reset()
 	if _wet_effects != null: _wet_effects.reset()
@@ -1375,6 +1387,51 @@ func _experiment(knobs: Dictionary) -> void:
 			dashboard.show_checkpoint_inspection(CheckpointReview.inspect(session, _checkpoint, checkpoint_path))
 	else:
 		dashboard.message(session.load_error, session.load_error)
+
+## Step 19: the saved tune for this truck, applied before the first drive (a stock tune changes nothing).
+func _load_saved_tuning() -> void:
+	dashboard.free_speed_kmh = TruckTuning.free_speed_kmh(session.model_snapshot())
+	tuning = TruckTuning.load_for(vehicle_id, tuning_path)
+	dashboard.set_tuning(tuning)
+	_set_driver_aids()
+	if not TruckTuning.physical_is_stock(tuning):
+		if session.set_experiment(TruckTuning.experiment(tuning)):
+			_model = session.model_snapshot()
+			if _vehicle_entry.get("nitro", false): visual["gear_ratio"] = float(_model.powertrain.gear_ratio)
+		else:
+			dashboard.message(tr("The saved tuning could not be applied: %s") % session.load_error, tr("The saved tuning could not be applied: %s") % session.load_error)
+	driver_aids.configure(_model)
+
+
+func _set_driver_aids() -> void:
+	driver_aids.throttle_limit = float(tuning.throttle_limit)
+	driver_aids.stability = float(tuning.stability)
+
+
+## Applies the Tune truck panel's values (restarting the run, like an experiment) and saves them for this truck.
+func apply_tuning(values: Dictionary) -> bool:
+	if _departure_guard_active: return false
+	if not _finish_recording():
+		dashboard.show_tuning_result(false, false)
+		return false
+	var clean := TruckTuning.sanitize(values)
+	var knobs: Dictionary = dashboard.current_experiment()
+	var neutral_lab := is_equal_approx(float(knobs.gravity_scale), 1.0) and float(knobs.ballast_kg) == 0.0
+	var applied: bool = session.clear_experiment() if TruckTuning.physical_is_stock(clean) and neutral_lab \
+		else session.set_experiment(knobs)
+	if not applied:
+		dashboard.show_tuning_result(false, false)
+		dashboard.message(session.load_error, session.load_error)
+		return false
+	tuning = clean
+	_set_driver_aids()
+	var saved := TruckTuning.save_for(vehicle_id, tuning, tuning_path)
+	_after_reset()
+	dashboard.show_tuning_result(true, saved)
+	var message := tr("Tuning applied. Run restarted.")
+	dashboard.message(message, message)
+	return true
+
 
 func _event(event: Dictionary) -> void:
 	_lens_event(event)

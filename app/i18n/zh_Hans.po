@@ -12965,3 +12965,87 @@ msgstr "高速飞翼 · 0.78 m · 4S 电动推进"
 
 msgid "Experimental: original fast flying-wing design with textbook aerodynamics and an estimated electric drive; no landing gear (hand launch), tougher foam airframe. Not flight-validated."
 msgstr "实验性：原创高速飞翼设计，采用教科书空气动力学和估算的电动动力；无起落架（手抛起飞），更耐用的泡沫机身。未经飞行验证。"
+
+msgid "Springs, damping and grip are in Tune truck; the experiment uses them too."
+msgstr "弹簧、阻尼和抓地力在“调校卡车”中；实验也会使用它们。"
+
+msgid "Tune truck"
+msgstr "调校卡车"
+
+msgid "Hide tuning"
+msgstr "隐藏调校"
+
+msgid "Saved for this truck. Taller gearing gives more top speed and less punch. The stability assist eases the throttle and steering to stop spins, roll-overs and tall wheelies."
+msgstr "为这辆卡车保存。更高的齿比带来更高的极速和更弱的加速。稳定辅助会减小油门和转向，以防止打转、翻车和过高的抬头。"
+
+msgid "Gearing"
+msgstr "齿比"
+
+msgid "Steering lock"
+msgstr "转向角"
+
+msgid "Brakes"
+msgstr "刹车"
+
+msgid "Springs"
+msgstr "弹簧"
+
+msgid "Damping"
+msgstr "阻尼"
+
+msgid "Tire grip"
+msgstr "轮胎抓地力"
+
+msgid "Throttle limit"
+msgstr "油门限制"
+
+msgid "Stability assist"
+msgstr "稳定辅助"
+
+msgid "Gearing %s"
+msgstr "齿比 %s"
+
+msgid "Steering lock %s"
+msgstr "转向角 %s"
+
+msgid "Brakes %s"
+msgstr "刹车 %s"
+
+msgid "Springs %s"
+msgstr "弹簧 %s"
+
+msgid "Damping %s"
+msgstr "阻尼 %s"
+
+msgid "Tire grip %s"
+msgstr "轮胎抓地力 %s"
+
+msgid "%d km/h no-load"
+msgstr "空载 %d km/h"
+
+msgid "Throttle limit %d %%"
+msgstr "油门限制 %d %%"
+
+msgid "Stability assist off"
+msgstr "稳定辅助关闭"
+
+msgid "Stability assist %d %%"
+msgstr "稳定辅助 %d %%"
+
+msgid "Apply tuning"
+msgstr "应用调校"
+
+msgid "Tuning was not applied."
+msgstr "调校未应用。"
+
+msgid "Tuning applied. Run restarted."
+msgstr "调校已应用。本次运行已重新开始。"
+
+msgid "Saved for this truck."
+msgstr "已为这辆卡车保存。"
+
+msgid "Gearing %s · Steering %s · Brakes %s"
+msgstr "齿比 %s · 转向 %s · 刹车 %s"
+
+msgid "The saved tuning could not be applied: %s"
+msgstr "无法应用已保存的调校：%s"

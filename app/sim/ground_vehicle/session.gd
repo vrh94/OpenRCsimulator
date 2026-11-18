@@ -350,6 +350,14 @@ func set_experiment(parameters: Dictionary) -> bool:
 	return prepare(changed, _course_result, _base_vehicle_result, pose_up_delta_m)
 
 
+## Returns to the stock vehicle data (Step 19: a tune set back to stock), under the same conditions as an experiment.
+func clear_experiment() -> bool:
+	if not prepared or not paused or recording:
+		load_error = "vehicle experiments require a prepared, paused session with recording stopped"
+		return false
+	return prepare(_base_vehicle_result, _course_result, _base_vehicle_result, 0.0)
+
+
 func fixed_dt() -> float:
 	return DT
 
