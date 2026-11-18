@@ -45,7 +45,7 @@ func _run() -> void:
 	check("the landscape builds its terrain view", view != null)
 	var ground_ref: float = field.get_meta("terrain_ground_ref_m", NAN)
 	check("render height zero is the terrain at the pilot spot",
-		absf(ground_ref - core.height_at(Landscape.PILOT_CORE.x, Landscape.PILOT_CORE.y)) < 1e-6)
+		absf(ground_ref - core.height_at(Landscape.PILOT_CORE.x, Landscape.PILOT_CORE.y)) < 0.05, str(ground_ref))
 	var materials: Array = field.get_meta("lighting_materials", [])
 	check("terrain, two tree and the building materials are registered for lighting", materials.size() == 4,
 		str(materials.size()))

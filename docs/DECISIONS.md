@@ -383,6 +383,19 @@ the baked 16-bit grids by one shared quadtree tile, so no terrain mesh is built 
 release if GURS does not confirm CC BY 4.0 for the LiDAR products: the fallback is ARSO terrain with procedural
 colour, trees and massing.
 
+### Solid terrain is a provider keyed by the field's surface tables
+
+TG-05/06: the Triglav field's ground is the surveyed terrain for every vehicle. The provider
+(`app/physics/terrain_dem.gd`) is registered in `physics/ground_terrain.gd` against the exact surface tables built
+from a field with a `terrain` block, so every existing contact law (tyres, skids, truck wheels, blimp, airframe) gets
+height and slope through the samplers it already calls, and every flat field samples bit-for-bit as before. Airframe
+contact keeps its flat-ground laws and runs them in the tangent plane of the terrain under the aircraft
+(`physics/terrain_frame.gd`); the flight model is unchanged. Helicopter pads are levelled platforms because the pad
+start requires exactly flat support. The pilot spot moved from the Tamar meadow (6–7 % slope; 2 of 10 airplanes can
+park there) to a level meadow on the Rateče plain (10 of 10). Native kernels refuse terrain fields. Revisit when the
+native kernels gain a ground provider, or if a field needs terrain without baked grids
+([plan](plans/triglav-planica-tamar.md), [evidence](../research/triglav/README.md#solid-terrain-tg-05-tg-06)).
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

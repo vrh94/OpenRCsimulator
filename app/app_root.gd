@@ -771,7 +771,8 @@ func _install_home(setup: Dictionary) -> void:
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.airship_skin_id = selected_airship_skin
 	home.ground_skins = (preferences.get("vehicle_skins", {}) as Dictionary).duplicate()
-	home.runway_available = home_scene.field.get("id", "") == "default"
+	home.runway_available = _runway_available(home_scene.field)
+	home.natural_random_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
 	home.set_battery_mode(preferences.get("battery_mode", Preferences.DEFAULTS.battery_mode))
@@ -2815,7 +2816,7 @@ func open_natural_random(from: Control = null) -> void:
 			return
 	if not screens.is_top("home") or flight != null:
 		return
-	if not home.runway_available:
+	if not home.natural_random_available:
 		return # UI-34d (UI-30 AS-6): the briefing draws its own airplane; only the field limits it
 	var briefing := NaturalRandomScreen.new()
 	briefing.fly_requested.connect(start_flight)
@@ -4073,6 +4074,11 @@ func _rebuild_home_scene_staged() -> void:
 		quit_app()
 
 
+## The runway start is offered on the Club field and on solid-terrain fields that author their own strip (TG-04).
+static func _runway_available(field: Dictionary) -> bool:
+	return field.get("id", "") == "default" or (field.has("terrain") and not str(field.get("runway", "")).is_empty())
+
+
 ## Landscape changes create a fresh Home world; a running flight keeps its accepted field and contacts.
 ## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
 ## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
@@ -4100,7 +4106,8 @@ func set_landscape(id: String) -> bool:
 		landscape_id = old_id
 		field_path = old_path
 		return false
-	home.runway_available = checked.field.get("id", "") == "default"
+	home.runway_available = _runway_available(checked.field)
+	home.natural_random_available = checked.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not checked.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(id)
 	home.reapply_start_preference()

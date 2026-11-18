@@ -2,7 +2,8 @@
 extends "res://physics/hull_contact.gd"
 
 
-static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary = {}, time_s: float = 0.0) -> Dictionary:
+static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary = {}, time_s: float = 0.0,
+		_surfaces := PackedFloat64Array()) -> Dictionary:
 	if disc.is_empty():
 		return {depth = -INF, point_ned = PackedFloat64Array()}
 	if (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)) or not is_finite(time_s):

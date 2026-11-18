@@ -8,6 +8,10 @@ extends RefCounted
 
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const GroundSupport := preload("res://physics/ground_support.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
+const TerrainDem := preload("res://physics/terrain_dem.gd")
+## TG-06: a rotorpad on solid terrain is levelled to the datum, so its surveyed ground must lie this close to it.
+const PAD_LEVEL_LIMIT_M := 0.5
 
 const FORMAT := "openrc-surfaces v1"
 const DEFAULT_PATH := "res://data/ground/surface_friction.json"
@@ -98,8 +102,10 @@ static func build(table: Dictionary, field: Dictionary) -> Dictionary:
 	var support := GroundSupport.prepare_legacy(rects, regions)
 	if not support.ok:
 		errors.append("ground support registry: " + str(support.reason))
+	# TG-05: a field with baked terrain grids is solid real ground; every sampler given these rects follows it.
+	var terrain_identity := _register_terrain(field, rects, errors) if errors.is_empty() else ""
 	return { ok = errors.is_empty(), errors = errors, rects = rects if errors.is_empty() else PackedFloat64Array(),
-		regions = regions if errors.is_empty() else [] }
+		regions = regions if errors.is_empty() else [], terrain_identity = terrain_identity }
 
 
 ## Keep historical field IDs accepted even when their observational namespace
@@ -128,4 +134,37 @@ static func build_airframe(table: Dictionary, field: Dictionary) -> Dictionary:
 		if not (str(s.get("type", "")) in TYPES):
 			errors.append("field surface '%s': type '%s' has no friction data" % [s.get("id", "?"), s.get("type", "")])
 	rects.append_array(PackedFloat64Array([-INF, INF, -INF, INF, table[OUTSIDE].airframe_friction]))
+	if errors.is_empty():
+		_register_terrain(field, rects, errors)
 	return { ok = errors.is_empty(), errors = errors, rects = rects if errors.is_empty() else PackedFloat64Array() }
+
+
+## TG-05: a field whose `terrain` block names baked grids is solid real ground; every law given `rects` follows it.
+## Returns the terrain's identity ("" for a flat field) and appends any loading error.
+static func _register_terrain(field: Dictionary, rects: PackedFloat64Array, errors: PackedStringArray) -> String:
+	var terrain: Dictionary = field.get("terrain", {})
+	if terrain.is_empty():
+		return ""
+	var dem: RefCounted = TerrainDem.load_cached(str(terrain.get("core", "")), str(terrain.get("ring", "")),
+		float(terrain.get("origin_east", NAN)), float(terrain.get("origin_north", NAN)))
+	if not dem.ok():
+		errors.append("terrain: " + str(dem.error))
+		return ""
+	var pads := PackedFloat64Array()
+	for surface in field.get("surfaces", []):
+		if str(surface.get("type", "")) != "rotorpad":
+			continue
+		var half_n := float(surface.width_north_south) / 2.0
+		var half_e := float(surface.length_east_west) / 2.0
+		var north := float(surface.center_north)
+		var east := float(surface.center_east)
+		pads.append_array(PackedFloat64Array([north - half_n, north + half_n, east - half_e, east + half_e]))
+		# The pad is levelled to the datum; it must stand where the surveyed ground is close to it.
+		for corner: Vector2 in [Vector2(-half_n, -half_e), Vector2(-half_n, half_e), Vector2(half_n, -half_e), Vector2(half_n, half_e)]:
+			if absf(float(dem.sample(north + corner.x, east + corner.y)[0])) > PAD_LEVEL_LIMIT_M:
+				errors.append("terrain: rotorpad '%s' lies more than %.1f m from the datum" % [surface.get("id", "?"), PAD_LEVEL_LIMIT_M])
+				return ""
+	if not GroundTerrain.register_dem(rects, dem, pads):
+		errors.append("terrain: these surfaces already carry another terrain")
+		return ""
+	return dem.identity

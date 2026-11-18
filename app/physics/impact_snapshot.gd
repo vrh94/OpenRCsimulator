@@ -8,6 +8,7 @@ const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const HullCrossing = preload("res://physics/hull_crossing.gd")
 const Ground = preload("res://physics/ground_contact.gd")
+const Terrain = preload("res://physics/ground_terrain.gd")
 
 
 class Snapshot:
@@ -45,14 +46,20 @@ class Snapshot:
 
 ## First penetrating point in data order, preserving the existing detector's exact expression.
 ## This order is deterministic, but does not establish which point touched first within a tick.
+## TG-06: `surfaces` selects the field's solid terrain, if any; points are then graded against it.
 static func hull_contact(s: PackedFloat64Array, tick: int, hull: PackedFloat64Array,
-		previous: PackedFloat64Array = PackedFloat64Array()) -> Snapshot:
+		previous: PackedFloat64Array = PackedFloat64Array(), surfaces := PackedFloat64Array()) -> Snapshot:
 	var out: Snapshot = _start(s, tick, "hull_contact")
 	var q: PackedFloat64Array = RB._att(s)
+	var solid: bool = Terrain.dem_for(surfaces) != null
 	for i in range(0, hull.size(), 3):
 		var down: float = 2.0 * (q[1] * q[3] - q[0] * q[2]) * hull[i] + 2.0 * (q[2] * q[3] + q[0] * q[1]) * hull[i + 1] \
 			+ (1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2])) * hull[i + 2]
-		if s[RB.POS + 2] + down >= 0.0:
+		var ground_down := 0.0
+		if solid:
+			var point := M.add(RB._slice3(s, RB.POS), M.q_rotate(q, hull.slice(i, i + 3)))
+			ground_down = -float(Terrain.solid_sample(surfaces, point[0], point[1])[0])
+		if s[RB.POS + 2] + down >= ground_down:
 			out.point_index = i / 3
 			out.body_point = hull.slice(i, i + 3)
 			_hull_kinematics(out, s, q)

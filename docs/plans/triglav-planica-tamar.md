@@ -2,8 +2,10 @@
 
 Owner decisions of 2026-11-17: a landscape of Triglavski narodni park, solid real terrain (ground contact follows the
 elevation model; this is a terrain change, not a flight-model change), centred on the Planica/Tamar valley. Status:
-**in progress**: TG-01, TG-02 and TG-03 done ([research/triglav](../../research/triglav/README.md),
-`app/landscapes/triglav_tamar/`); the landscape is not listed in the catalog until solid terrain (21b) lands. Steps are 21a (data and visuals) and 21b (solid terrain contact).
+**in progress**: TG-01 to TG-06 done ([research/triglav](../../research/triglav/README.md),
+`app/landscapes/triglav_tamar/`, `app/physics/terrain_dem.gd`); the landscape is in the catalog with solid terrain for
+airplanes, helicopters, multirotors, the blimp and the RC trucks. Open: TG-07 (trees and buildings are not solid yet)
+and the 1080p frame-time captures of TG-08. Steps are 21a (data and visuals) and 21b (solid terrain contact).
 
 ## Owner decisions (2026-11-18)
 
@@ -53,8 +55,10 @@ quantized products the game needs are committed, each well under the repository'
   the atmosphere, so air density is right for the altitude.
 
 **Pilot spots.**
-- Tamar meadow south of the hut: the default, flat grass at about 1100 m.
-- The outrun of the Planica ski-flying hills.
+- Tamar meadow south of the hut was the first choice, but it falls 6–7 % everywhere: only 2 of 10 airplanes can park
+  there at idle. The pilot stands instead on a level hay meadow on the Rateče plain at the mouth of the Planica valley
+  (849.7 m), with a 100 × 12 m strip 24 m south and a levelled helicopter pad between them.
+- Later: the outrun of the Planica ski-flying hills.
 
 **21a, data and visuals.**
 - TG-01 fetch and pin: downloads the listed tiles into the cache, checks hashes and writes `sources.json` with
@@ -73,23 +77,25 @@ quantized products the game needs are committed, each well under the repository'
   - buildings: every GKOT roof region rebuilt from its 1 m roof grid (footprint, roof shape, walls), roofs coloured
     from the photo;
   - `tests/test_triglav_landscape.gd`.
-- TG-04 field and catalog:
+- TG-04 field and catalog (done; the credits entry follows with the release notes):
   - `field.json`, with surfaces for the meadow;
   - an entry in `landscapes/catalog.gd`, so Home and Settings list it beside Club field and Green paradise;
   - attribution in the credits.
 
 **21b, solid terrain contact.**
-- TG-05 a DEM provider in `physics/ground_terrain.gd`:
+- TG-05 a DEM provider in `physics/ground_terrain.gd` (done: `physics/terrain_dem.gd`):
   - It returns height and slope from the baked grid, with bicubic interpolation so the slope is continuous.
   - It is composed under the field's surfaces the way the lake basin is.
   - `max_height` covers the DEM's highest point, so the airborne skip test stays conservative.
   - The flight model is untouched; only the ground under it changes.
-- TG-06 wire every session that samples terrain to the provider:
+- TG-06 wire every session that samples terrain to the provider (done: the provider follows the field's surface
+  tables, airframe contact runs in the terrain's tangent plane, helicopter pads are levelled platforms):
   - airplanes (gear, hull, ground effect, ground start);
   - helicopters, multirotors and the RC trucks.
   - The AI companions are qualified on Club field only and refuse other fields as before.
 - TG-07 collision for trees and buildings through the existing scenery collision world.
-- TG-08 tests:
+- TG-08 tests (`tests/test_triglav_terrain.gd` covers the provider, a hull inside a mountainside, an airplane parked and
+  rolling on the strip, a truck driving the meadow and the helicopter pad; frame-time captures remain):
   - the provider against the baked grid;
   - landing and take-off on the sloped meadow;
   - a truck driving the valley road;
@@ -110,6 +116,7 @@ quantized products the game needs are committed, each well under the repository'
   - Rendering: needs LOD; the existing scenery budgets apply.
 - **Data age.** The core's bare earth, photo, trees and buildings are from the 2024–25 survey; ARSO's 2014–15 model
   fills only the ground under dense canopy.
-- **Atmosphere at altitude.** The field is about 1120 m up, but the v1 scenario catalog pins
-  `field_elevation_m` to sea level (`scenarios/scenario_config.gd`). Wiring the real elevation into the atmosphere
-  is part of TG-06 and needs the owner's approval, because it changes air density for every vehicle there.
+- **Atmosphere at altitude.** The pilot spot is 850 m up, but the v1 scenario catalog pins `field_elevation_m` to
+  sea level (`scenarios/scenario_config.gd`), so the Triglav field flies in sea-level air (about 8 % denser than at
+  850 m). Wiring the real elevation in changes air density for every vehicle there and waits for the owner's
+  decision. Wind and height-above-ground readouts use the datum at the pilot spot.

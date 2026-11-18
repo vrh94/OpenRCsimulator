@@ -56,7 +56,10 @@ const TREE_CARD_MAX_HORIZONTAL_RADIUS_M: float = 15.0 # Estimated visible card e
 const TREE_FLIGHT_CORRIDOR_HALF_WIDTH_M: float = 35.0 # Estimated approach and low-flight clearance.
 const MAX_PILOT_HORIZONTAL_COORDINATE_M: float = 1000000.0 # Keeps absolute tree coordinates stable for render/hash bounds.
 const ROOT_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects"]
-const ROOT_ALLOWED_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects", "flight_cues", "rotorcraft_pad"]
+const ROOT_ALLOWED_KEYS: Array[String] = ["format", "id", "runway", "pilot", "surfaces", "objects", "flight_cues", "rotorcraft_pad", "terrain"]
+## TG-05: optional solid terrain. `core` and `ring` are res:// paths of `openrc-heightfield v1` headers; `origin_east`
+## and `origin_north` are the grids' absolute coordinates (m) of the field's NED origin. Field north is grid north.
+const TERRAIN_KEYS: Array[String] = ["core", "ring", "origin_east", "origin_north"]
 const FLIGHT_CUE_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "pole_height", "length", "throat_diameter", "tail_diameter"]
 const PILOT_STATION_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "width", "depth", "height"]
 const FLIGHTLINE_BARRIER_KEYS: Array[String] = ["id", "type", "collides", "north", "east", "width", "height", "gap_width"]
@@ -261,9 +264,28 @@ static func validate(raw: Variant) -> Dictionary:
 	}
 	if root.has("flight_cues"):
 		normalized_field["flight_cues"] = normalized_flight_cues
+	if root.has("terrain"):
+		var terrain: Dictionary = _validate_terrain(errors, root.get("terrain"))
+		if not errors.is_empty():
+			return {"ok": false, "errors": errors, "field": {}}
+		normalized_field["terrain"] = terrain
 	if root.has("rotorcraft_pad"):
 		normalized_field["rotorcraft_pad"] = normalized_rotorcraft_pad
 	return {"ok": true, "errors": errors, "field": normalized_field}
+
+
+static func _validate_terrain(errors: PackedStringArray, node: Variant) -> Dictionary:
+	var terrain: Dictionary = _object(errors, "terrain", node)
+	_check_keys(errors, "terrain", terrain, TERRAIN_KEYS, TERRAIN_KEYS)
+	var result := {}
+	for key: String in ["core", "ring"]:
+		var path: String = _read_string(errors, "terrain." + key, terrain.get(key), true)
+		if not path.is_empty() and (not path.begins_with("res://") or not path.ends_with(".json") or ".." in path):
+			errors.append("terrain.%s: expected a res:// path to a heightfield header (.json)" % key)
+		result[key] = path
+	result.origin_east = _quantity_or_zero(errors, "terrain.origin_east", terrain.get("origin_east"), true)
+	result.origin_north = _quantity_or_zero(errors, "terrain.origin_north", terrain.get("origin_north"), true)
+	return result
 
 
 static func _validate_rotorcraft_pad(

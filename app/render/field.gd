@@ -102,6 +102,9 @@ class _BuildContext:
 ## `rc_track`: the airplane flight's RC-TRACK circuit (scenery/rc_track_option.gd), or {} for none.
 static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = [],
 		rc_track: Dictionary = {}) -> Node3D:
+	var landscape := _terrain_landscape(field, lighting)
+	if landscape != null:
+		return landscape
 	var context := _BuildContext.new(field, lighting, extra_grass_exclusions, rc_track)
 	while context.phase != _BuildPhase.DONE:
 		var started_usec: int = Time.get_ticks_usec()
@@ -115,8 +118,25 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 
 
 ## Staged builder: each callback labels and gates the next chunk. Returning false frees the detached partial field.
+## TG-06: a field with solid terrain (a `terrain` block) is drawn by its own landscape adapter, so every vehicle
+## scene that builds its field here (trucks, multirotors, the blimp) shows the ground its physics drives on.
+## Loaded at run time: the landscape catalog's adapters themselves build fields here.
+static func _terrain_landscape(field: Dictionary, lighting: Dictionary) -> Node3D:
+	if not field.has("terrain"):
+		return null
+	var catalog: Script = load("res://landscapes/catalog.gd")
+	var id := str(field.get("id", ""))
+	if not catalog.has(id):
+		push_error("field '%s' has terrain but no landscape adapter draws it" % id)
+		return null
+	return catalog.build(id, field, lighting)
+
+
 static func build_staged(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = [],
 		checkpoint: Callable = Callable(), rc_track: Dictionary = {}) -> Node3D:
+	var landscape := _terrain_landscape(field, lighting)
+	if landscape != null:
+		return landscape
 	var context := _BuildContext.new(field, lighting, extra_grass_exclusions, rc_track)
 	while context.phase != _BuildPhase.DONE:
 		var selection_started_usec: int = Time.get_ticks_usec()

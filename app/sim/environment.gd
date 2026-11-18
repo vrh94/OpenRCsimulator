@@ -178,6 +178,9 @@ func identity() -> Dictionary:
 	}
 	if not terrain_overlay.is_empty():
 		summary.rc_track = Track.identity(terrain_overlay)
+	var dem: RefCounted = Terrain.dem_for(surfaces)
+	if dem != null:
+		summary.terrain = dem.identity # TG-06: solid real terrain under these surfaces
 	return summary
 
 

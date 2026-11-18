@@ -3149,7 +3149,7 @@ func _session_after_input() -> bool:
 				# Only a flight that goes on can lose its propeller: a crash freezes the checkpoint untouched.
 				_check_prop_strike()
 		elif touches_ground(sim.state):
-			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
+			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous, ground_surfaces))
 		elif gear_collapsed(sim.state):
 			_crash(_gear_limit_impact(sim.state))
 	return physics_enabled and not sim.paused and sim.fault_reason.is_empty() \
@@ -3305,7 +3305,7 @@ func _external_number_is_in_range(value: Variant, minimum: float, maximum: float
 func _check_prop_strike() -> void:
 	if not prop_strike.is_empty() or not engine_running or _prop_disc.is_empty() or sim.aux[AUX_RPM] < HullContact.STRIKE_MIN_RPM:
 		return
-	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt())
+	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt(), airframe_surfaces)
 	if float(disc.depth) <= 0.0:
 		return
 	var q := RB._att(sim.state)
@@ -3364,11 +3364,15 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 		return false
 	var hull: PackedFloat64Array = aircraft.model.crash_hull
 	var q := PackedFloat64Array([s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3]])
+	var solid: bool = GroundTerrain.dem_for(ground_surfaces) != null # TG-06: solid terrain on this field
 	for i in range(0, hull.size(), 3):
 		# down component of R(q)·p: third row of the body→NED rotation matrix
 		var down := 2.0 * (q[1] * q[3] - q[0] * q[2]) * hull[i] + 2.0 * (q[2] * q[3] + q[0] * q[1]) * hull[i + 1] \
 			+ (1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2])) * hull[i + 2]
 		var ground_down: float = 0.0
+		if solid:
+			var point: PackedFloat64Array = M.add(RB._slice3(s, RB.POS), M.q_rotate(q, hull.slice(i, i + 3)))
+			ground_down = -float(GroundTerrain.solid_sample(ground_surfaces, point[0], point[1])[0])
 		if not _lake.is_empty():
 			var world_point: PackedFloat64Array = M.add(RB._slice3(s, RB.POS), M.q_rotate(q, hull.slice(i, i + 3)))
 			var point_north: float = world_point[0]
@@ -3476,7 +3480,7 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 	var ground_fraction := INF
 	# E3d1: with soft hull contacts the ground pushes back through the loads; the tick check decides crashes.
 	if not soft_hull_contacts and touches_ground(candidate):
-		ground_hit = ImpactSnapshot.hull_contact(candidate, next_tick, aircraft.model.crash_hull, previous)
+		ground_hit = ImpactSnapshot.hull_contact(candidate, next_tick, aircraft.model.crash_hull, previous, ground_surfaces)
 		if ground_hit.point_index >= 0:
 			ground_fraction = ground_hit.crossing.fraction if ground_hit.crossing != null and ground_hit.crossing.available else 0.0
 	# RC-TRACK: the circuit's raised dirt is solid ground for the hull. Flat ground and scenery keep same-tick ties.
@@ -3754,7 +3758,7 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 	# Observe only: the frozen flight keeps its original engine/rotor/checkpoint state.
 	if cost_observations_enabled and soft_hull_contacts and impact.trigger != "water" and engine_running \
 		and prop_strike.is_empty() and not _prop_disc.is_empty() and sim.aux[AUX_RPM] >= HullContact.STRIKE_MIN_RPM:
-		var disc := HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt())
+		var disc := HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt(), airframe_surfaces)
 		if float(disc.depth) > 0.0:
 			var strike := {tick = sim.tick, rpm = sim.aux[AUX_RPM], point_ned = disc.point_ned,
 				velocity_ned = M.q_rotate(RB._att(sim.state), RB._slice3(sim.state, RB.VEL))}
@@ -3881,6 +3885,11 @@ func _reset_airborne_candidate(release := PackedFloat64Array(), release_throttle
 			trim_euler[1], trim_euler[2])
 		for axis: int in 4:
 			initial[RB.ATT + axis] = spawned_attitude[axis]
+	if initial.size() == RB.SIZE and not thrown:
+		# TG-06: on solid terrain the start altitude is above the ground under the start, not the datum.
+		var under: PackedFloat64Array = GroundTerrain.solid_sample(ground_surfaces, initial[RB.POS], initial[RB.POS + 1])
+		if not under.is_empty():
+			initial[RB.POS + 2] -= under[0]
 	if _has_valid_start() and not weather_is_calm() and not thrown:
 		var attitude: PackedFloat64Array = M.quat(initial[RB.ATT], initial[RB.ATT + 1], initial[RB.ATT + 2], initial[RB.ATT + 3])
 		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), _initial_wind(initial.slice(RB.POS, RB.POS + 3)))

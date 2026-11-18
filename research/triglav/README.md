@@ -64,13 +64,44 @@ docstring of `fetch_gkot.py`); `fetch_dem.py` and `bake_terrain.py` need only th
   bare earth and at least 12 m², each a 1 m grid of roof heights over its lowest ground. The landscape rebuilds real
   footprints and roof shapes from them.
 
-## Validation (2026-11-18)
+## Validation (2026-11-18, final bake from all 62 GKOT sheets)
 
 | Point | Baked | Published |
 | --- | --- | --- |
-| Dom v Tamarju (46.44605 N, 13.71341 E) | 1108.1 m | 1108 m |
-| Rateče | 864.5 m | about 870 m |
-| Planica Nordic Centre (approximate point) | 953.8 m | about 930 m (user-submitted route data) |
+| Dom v Tamarju (46.44605 N, 13.71341 E) | 1107.8 m | 1108 m |
+| Rateče | 864.3 m | about 870 m |
+| Planica Nordic Centre (approximate point) | 953.2 m | about 930 m (user-submitted route data) |
+| Pilot spot, Rateče meadow (D96/TM E 401524, N 151124) | 849.7 m | — |
 
-The core spans 793 m (the Sava valley floor at its east edge, towards Kranjska Gora) to 2379 m (the ridge at its south
-edge). No height was clamped.
+- The core spans 793 m (the Sava valley floor at its east edge, towards Kranjska Gora) to 2379 m (the ridge at its
+  south edge). No height was clamped.
+- GKOT ground covers 89.8 % of the core's nodes; ARSO 2014–15 plus a smooth offset field fills the rest, mostly under
+  dense canopy. Where both exist, GKOT minus ARSO has a median of −0.24 m (5th and 95th percentiles −1.08 m and
+  +0.56 m).
+- Products: 715,290 trees (375,853 conifers), 1,516 buildings with 324,202 roof cells, and an 8192 px photo that is
+  real for 91.3 % of the core (the rest is Italy, outside the survey).
+
+## Solid terrain (TG-05, TG-06)
+
+- `app/physics/terrain_dem.gd` reads the two grids named by the field's `terrain` block
+  (`app/landscapes/triglav_tamar/field.json`). Inside the core it interpolates a Catmull-Rom bicubic patch with
+  analytic slopes, so wheels and skids see a continuous slope; near the core edge it blends into the ring's bilinear
+  surface over 96 m, as the renderer does. Heights are interpolated as integer offsets from a nearby node and returned
+  relative to the pilot spot, so they carry no rounding from the 850 m absolute height (the start solvers resolve
+  1e-11 m/s²). A sample costs about 7 µs on an M1 Max.
+- `app/physics/ground_terrain.gd` registers the provider against the surface tables built from that field. Every
+  contact law given those tables adds the terrain under its usual microrelief; every other field samples exactly as
+  before. The airborne skip bound covers the highest point (1529 m above the pilot).
+- Airframe contact (`hull_contact.gd`) runs its flat-ground laws in the tangent plane of the terrain under the
+  aircraft (`terrain_frame.gd`), so belly, wingtip and propeller contacts push along the real slope normal.
+- A helicopter pad is a levelled platform: inside its rectangle the ground is the datum, blending into the meadow
+  over 2 m; the field refuses a pad more than 0.5 m from the datum. The landscape draws the platform and its banks.
+- On a terrain field a runway start lines up facing uphill along the strip, and the start solver is seeded on the
+  ground under the threshold, tilted to its slope.
+- The native kernels know flat fields only and refuse terrain fields, which fly the GDScript stage.
+
+**The pilot spot.** The Tamar meadow falls 6–7 % to the north everywhere; on that slope only 2 of the 10 runway-start
+airplanes could be parked at idle (the cross-slope unloads one wheel below its static hold). No clear, level ground
+lies nearer the valleys than the Rateče plain, so the pilot stands on an open hay meadow there, at the mouth of the
+Planica valley: a 100 × 12 m strip 24 m south of the pilot is level within 0.3 % along and 1.5 % across, and all 10
+airplanes start, park and take off from it.

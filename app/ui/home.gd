@@ -95,6 +95,8 @@ var start_choice: String = "runway"
 var _airplane_start_preference: String = "runway"
 var _rotorcraft_start_preference: String = "runway"
 var runway_available: bool = true
+## Natural Random generates its scenarios on the Club field only (independent of the runway start, TG-04).
+var natural_random_available: bool = true
 var rotorcraft_pad_available: bool = true
 var landscape_id: String = Landscapes.DEFAULT_ID
 var landscape_button: Button
@@ -1547,8 +1549,8 @@ func set_landscape(id: String) -> void:
 
 func _update_landscape_activities() -> void:
 	# UI-34d (UI-30 AS-6): Natural Random draws its own airplane, so only the field limits it.
-	natural_random_button.disabled = not runway_available
-	natural_random_button.tooltip_text = tr("Natural Random requires Club field.") if not runway_available else ""
+	natural_random_button.disabled = not natural_random_available
+	natural_random_button.tooltip_text = tr("Natural Random requires Club field.") if not natural_random_available else ""
 
 
 ## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.

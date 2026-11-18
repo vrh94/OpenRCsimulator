@@ -35,6 +35,18 @@ const TAU := 6.2831853071795864769
 static var _checked_table := PackedFloat64Array()
 static var _checked_table_valid := true
 static var _checked_table_mutex := Mutex.new()
+## TG-05: solid real terrain. A field whose `terrain` block names baked grids (data/field_loader.gd) registers its
+## provider (physics/terrain_dem.gd) against the surface table built from it (physics/ground_surfaces.gd). Every
+## sampler given that exact table adds the provider's height and slope under the microrelief; any other table, and
+## the empty flat fixture, sample exactly as before. Tables compare by value, as above.
+static var _dem_tables: Array[PackedFloat64Array] = []
+static var _dem_providers: Array[RefCounted] = []
+static var _dem_pads: Array[PackedFloat64Array] = []
+## A rotorpad is a levelled platform: inside its rectangle the solid terrain is the datum itself (height and slope
+## exactly zero, as the flat-pad helicopter start requires), blending into the surveyed ground over PAD_BLEND_M.
+const PAD_BLEND_M := 2.0
+static var _dem_count := 0
+static var _dem_mutex := Mutex.new()
 
 
 ## Outward NED unit normal for a height field expressed positive UP. Lake bed
@@ -65,6 +77,8 @@ static func sample_validated(north: float, east: float, surfaces: PackedFloat64A
 	if not is_finite(north) or not is_finite(east):
 		return PackedFloat64Array([NAN, NAN, NAN])
 	var base: PackedFloat64Array = _sample_microrelief_validated(north, east, surfaces)
+	if _dem_count > 0:
+		base = _compose_dem(base, north, east, surfaces)
 	return _compose_lake(base, north, east, lake)
 
 
@@ -81,7 +95,102 @@ static func sample_profiled(north: float, east: float, surfaces: PackedFloat64Ar
 	for amplitude: float in relief_m:
 		if not is_finite(amplitude) or amplitude < 0.0 or amplitude > RELIEF_ROUGH_M:
 			return PackedFloat64Array([NAN, NAN, NAN])
-	return _compose_lake(_sample_microrelief_validated(north, east, surfaces, relief_m), north, east, lake)
+	var base: PackedFloat64Array = _sample_microrelief_validated(north, east, surfaces, relief_m)
+	if _dem_count > 0:
+		base = _compose_dem(base, north, east, surfaces)
+	return _compose_lake(base, north, east, lake)
+
+
+## Registers `dem` as the solid terrain under `surfaces` (a tyre table, or the airframe table of
+## physics/hull_contact.gd), with the field's levelled pads (rows of north_min, north_max, east_min, east_max).
+## Re-registering the same terrain is accepted; another terrain for an equal table is refused, so one table never
+## means two terrains.
+static func register_dem(surfaces: PackedFloat64Array, dem: RefCounted, pads := PackedFloat64Array()) -> bool:
+	if surfaces.is_empty() or dem == null or not dem.ok() or pads.size() % 4 != 0:
+		return false
+	_dem_mutex.lock()
+	for i in _dem_tables.size():
+		if _dem_tables[i] == surfaces:
+			var same: bool = _dem_providers[i].identity == dem.identity and _dem_pads[i] == pads
+			_dem_mutex.unlock()
+			return same
+	_dem_tables.append(surfaces.duplicate())
+	_dem_providers.append(dem)
+	_dem_pads.append(pads.duplicate())
+	_dem_count = _dem_tables.size()
+	_dem_mutex.unlock()
+	return true
+
+
+## The solid terrain registered under `surfaces`, or null.
+static func dem_for(surfaces: PackedFloat64Array) -> RefCounted:
+	if _dem_count == 0 or surfaces.is_empty():
+		return null
+	var found: RefCounted = null
+	_dem_mutex.lock()
+	for i in _dem_tables.size():
+		if _dem_tables[i] == surfaces:
+			found = _dem_providers[i]
+			break
+	_dem_mutex.unlock()
+	return found
+
+
+## [height_up_m, dh/dnorth, dh/deast] of the solid terrain under `surfaces` (pads levelled, no microrelief),
+## or empty on a flat field.
+static func solid_sample(surfaces: PackedFloat64Array, north: float, east: float) -> PackedFloat64Array:
+	if _dem_count == 0 or surfaces.is_empty():
+		return PackedFloat64Array()
+	var dem: RefCounted = null
+	var pads := PackedFloat64Array()
+	_dem_mutex.lock()
+	for i in _dem_tables.size():
+		if _dem_tables[i] == surfaces:
+			dem = _dem_providers[i]
+			pads = _dem_pads[i]
+			break
+	_dem_mutex.unlock()
+	if dem == null:
+		return PackedFloat64Array()
+	var ground: PackedFloat64Array = dem.sample(north, east)
+	for i in range(0, pads.size(), 4):
+		var on_n := _pad_axis(north, pads[i], pads[i + 1])
+		var on_e := _pad_axis(east, pads[i + 2], pads[i + 3])
+		var mask: float = on_n[0] * on_e[0]
+		if mask <= 0.0:
+			continue
+		var keep := 1.0 - mask
+		var mask_n: float = on_n[1] * on_e[0]
+		var mask_e: float = on_n[0] * on_e[1]
+		ground = PackedFloat64Array([ground[0] * keep, ground[1] * keep - ground[0] * mask_n,
+			ground[2] * keep - ground[0] * mask_e])
+	return ground
+
+
+## [weight, d weight / d value]: 1 inside [low, high], falling smoothly to 0 at PAD_BLEND_M outside it.
+static func _pad_axis(value: float, low: float, high: float) -> PackedFloat64Array:
+	var outside := 0.0
+	var direction := 0.0
+	if value < low:
+		outside = low - value
+		direction = -1.0
+	elif value > high:
+		outside = value - high
+		direction = 1.0
+	if outside >= PAD_BLEND_M:
+		return PackedFloat64Array([0.0, 0.0])
+	if outside <= 0.0:
+		return PackedFloat64Array([1.0, 0.0])
+	var t := outside / PAD_BLEND_M
+	return PackedFloat64Array([1.0 - t * t * (3.0 - 2.0 * t), -6.0 * t * (1.0 - t) / PAD_BLEND_M * direction])
+
+
+static func _compose_dem(base: PackedFloat64Array, north: float, east: float,
+		surfaces: PackedFloat64Array) -> PackedFloat64Array:
+	var ground := solid_sample(surfaces, north, east)
+	if ground.is_empty():
+		return base
+	return PackedFloat64Array([base[0] + ground[0], base[1] + ground[1], base[2] + ground[2]])
 
 
 static func _compose_lake(base: PackedFloat64Array, north: float, east: float,
@@ -211,6 +320,10 @@ static func max_height(surfaces: PackedFloat64Array) -> float:
 static func max_height_validated(surfaces: PackedFloat64Array) -> float:
 	if surfaces.is_empty():
 		return 0.0
+	if _dem_count > 0:
+		var dem: RefCounted = dem_for(surfaces)
+		if dem != null:
+			return RELIEF_ROUGH_M + maxf(float(dem.max_up_m), 0.0)
 	return RELIEF_ROUGH_M
 
 

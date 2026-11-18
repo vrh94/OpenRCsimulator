@@ -12,6 +12,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const EffectiveMass := preload("res://physics/effective_mass.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
+const TerrainFrame := preload("res://physics/terrain_frame.gd")
 
 ## GP-10b: append only for lake-enabled session identities; the no-lake law() stays unchanged.
 const LAKE_NORMAL_LAW := "positive-down-bank-gradient-normal-v2"
@@ -106,11 +107,19 @@ static func prop_disc(propulsion: Dictionary) -> Dictionary:
 
 ## E3d2: depth (m, positive below the field) of the disc's lowest point at state `s`, and that point in NED. The lowest
 ## point is the hub plus the radius along the ground-down direction projected onto the disc plane.
-static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary = {}, time_s: float = 0.0) -> Dictionary:
+## TG-06: `surfaces` (the airframe or tyre table) selects the field's solid terrain, if it has one.
+static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary, lake: Dictionary = {}, time_s: float = 0.0,
+		surfaces := PackedFloat64Array()) -> Dictionary:
 	if disc.is_empty():
 		return {depth = -INF, point_ned = PackedFloat64Array()}
 	if (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)) or not is_finite(time_s):
 		return {depth = NAN, point_ned = PackedFloat64Array()}
+	var frame := _terrain_frame({surfaces = surfaces}, s)
+	if not frame.is_empty():
+		var framed := prop_disc_depth(TerrainFrame.state(frame, s), disc, {}, time_s)
+		if not framed.point_ned.is_empty():
+			framed.point_ned = TerrainFrame.point_to_ned(frame, framed.point_ned)
+		return framed
 	var down := _down_row(s)
 	var a: PackedFloat64Array = disc.axis
 	var along := down[0] * a[0] + down[1] * a[1] + down[2] * a[2]
@@ -202,6 +211,9 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 	if geometry.is_empty() or not bool(geometry.get("geometry_only", false)) \
 			or not geometry.has("points") or not geometry.has("reach"):
 		return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
+	var frame := _terrain_frame(geometry, s)
+	if not frame.is_empty():
+		s = TerrainFrame.state(frame, s)
 	if s.size() != RB.SIZE or not _finite_array(s) or -s[RB.POS + 2] > float(geometry.reach):
 		if s.size() != RB.SIZE or not _finite_array(s):
 			return {ok = false, loads = PackedFloat64Array(), reason = "invalid_rigid_body_state"}
@@ -304,6 +316,8 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 	var prepared := {points = hull, stiffness = stiffness, damping = damping,
 		reach = float(geometry.reach), mass = float(properties.mass_kg), inertia = properties.inertia,
 		surfaces = geometry.get("surfaces", PackedFloat64Array())}
+	if not frame.is_empty():
+		prepared["terrain_framed"] = true
 	if geometry.has("lake"):
 		prepared["lake"] = geometry.lake
 		prepared["lake_bounds_ne_m"] = geometry.get("lake_bounds_ne_m", PackedFloat64Array())
@@ -322,6 +336,9 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 	elif diagnostics_out is Dictionary:
 		diagnostics_out.clear()
 		diagnostics_out.merge({available = true, reason = "", rows = []})
+	var frame := _terrain_frame(prepared, s)
+	if not frame.is_empty():
+		s = TerrainFrame.state(frame, s)
 	if prepared.is_empty() or -s[RB.POS + 2] > float(prepared.reach):
 		return PackedFloat64Array()
 	var hull: PackedFloat64Array = prepared.points
@@ -424,6 +441,10 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 ## (CRASH_DEPTH_M by default) crashes too. Returns {index, rule, specific_j_per_kg,
 ## normal_speed_mps, depth_m}.
 static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepared: Dictionary) -> Dictionary:
+	var frame := _terrain_frame(prepared, s)
+	if not frame.is_empty() and previous.size() == s.size():
+		previous = TerrainFrame.state(frame, previous)
+		s = TerrainFrame.state(frame, s)
 	var none := {index = -1, rule = "", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = 0.0}
 	# CR-22c: runs every tick; nothing can touch above the hull's reach, and points in the air cost no allocation.
 	if prepared.is_empty() or previous.size() != s.size() or -s[RB.POS + 2] > float(prepared.reach):
@@ -485,6 +506,10 @@ static func terminal_at_properties(previous: PackedFloat64Array, s: PackedFloat6
 		+ q_before[2] * q_before[2] + q_before[3] * q_before[3]
 	if not is_finite(previous_q_norm_squared) or absf(previous_q_norm_squared - 1.0) > 1.0e-9:
 		return {ok = false, event = none, reason = "invalid_previous_attitude"}
+	var frame := _terrain_frame(geometry, s)
+	if not frame.is_empty():
+		previous = TerrainFrame.state(frame, previous)
+		s = TerrainFrame.state(frame, s)
 	if -s[RB.POS + 2] > float(geometry.reach):
 		return {ok = true, event = none, reason = ""}
 	var hull: PackedFloat64Array = geometry.points
@@ -535,6 +560,18 @@ static func terminal_at_properties(previous: PackedFloat64Array, s: PackedFloat6
 ## Presentation feed: every hull point touching after the step previous → s, as {index, new, depth_m,
 ## normal_speed_mps (into the ground, from `previous`), slide_speed_mps, point_ned}. Empty in the air.
 static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepared: Dictionary) -> Array:
+	var frame := _terrain_frame(prepared, s)
+	if not frame.is_empty() and previous.size() == s.size():
+		var framed := {}
+		framed.merge(prepared)
+		framed["terrain_framed"] = true
+		var records := contacts(TerrainFrame.state(frame, previous), TerrainFrame.state(frame, s), framed)
+		for record: Dictionary in records:
+			if record.has("point_ned"):
+				record.point_ned = TerrainFrame.point_to_ned(frame, record.point_ned)
+			if record.has("velocity_ned"):
+				record.velocity_ned = TerrainFrame.vector_to_ned(frame, record.velocity_ned)
+		return records
 	var out: Array = []
 	if prepared.is_empty() or previous.size() != s.size() or -s[RB.POS + 2] > float(prepared.reach):
 		return out
@@ -728,6 +765,17 @@ static func _lake_contact_record(previous: PackedFloat64Array, s: PackedFloat64A
 	return {index = point_index, new = depth_before <= 0.0, depth_m = depth,
 		normal_speed_mps = normal_rate, slide_speed_mps = M.norm(tangent_now),
 		point_ned = point_now, velocity_ned = velocity_now, normal_ned = normal}
+
+
+## TG-06: the tangent-plane frame of the field's solid terrain under `s`, or {} on flat fields (and for a state
+## already expressed in it), so every flat-ground law here runs unchanged in that frame.
+static func _terrain_frame(prepared: Dictionary, s: PackedFloat64Array) -> Dictionary:
+	if prepared.is_empty() or bool(prepared.get("terrain_framed", false)) or s.size() != RB.SIZE:
+		return {}
+	if not is_finite(s[RB.POS]) or not is_finite(s[RB.POS + 1]):
+		return {}
+	var ground := Terrain.solid_sample(prepared.get("surfaces", PackedFloat64Array()), s[RB.POS], s[RB.POS + 1])
+	return {} if ground.is_empty() else TerrainFrame.at(ground, s[RB.POS], s[RB.POS + 1])
 
 
 static func _point_ned(s: PackedFloat64Array, body_point: PackedFloat64Array) -> PackedFloat64Array:

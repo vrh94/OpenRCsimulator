@@ -3,6 +3,7 @@ extends RefCounted
 const ADAPTERS: Array = [
 	preload("res://landscapes/club_field/landscape.gd"),
 	preload("res://landscapes/green_paradise/landscape.gd"),
+	preload("res://landscapes/triglav_tamar/landscape.gd"),
 ]
 
 const DEFAULT_ID: String = "club_field"

@@ -223,6 +223,10 @@ func stage_stats() -> Dictionary:
 func prepare(session: Node) -> Dictionary:
 	_prepared = false
 	if _installed: return _refuse("uninstall before preparing again")
+	# TG-06: the native kernels know flat fields and lakes only; a field with solid terrain flies the GDScript stage.
+	if session.get("ground_surfaces") is PackedFloat64Array \
+			and Wheels.Terrain.dem_for(session.ground_surfaces) != null:
+		return _refuse("native stages do not support solid terrain fields")
 	_macos_domain_context = {}
 	_macos_automatic_marker = {}
 	var is_macos := OS.get_name() == "macOS"

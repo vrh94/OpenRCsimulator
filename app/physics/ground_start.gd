@@ -8,6 +8,7 @@ const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
+const TerrainDem := preload("res://physics/terrain_dem.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const GroundWheels := preload("res://physics/ground_wheels.gd")
@@ -35,11 +36,20 @@ const LINEUP := 3.0
 
 ## The start spot at a runway end, facing along the runway. `field` is a loaded field (FieldLoader); east_bound starts
 ## at the west end heading east. Returns { ok, north, east, heading (rad, 0 = north, π/2 = east), message }.
+## TG-06: on a field with solid terrain the line-up faces uphill along the runway, so idle thrust works against the
+## slope and the wheels' static hold keeps the parked airplane in place.
 static func threshold(field: Dictionary, east_bound := true, lineup := LINEUP) -> Dictionary:
 	for s in field.get("surfaces", []):
 		if s.get("type", "") == "runway":
 			var half: float = float(s.length_east_west) / 2.0
 			var center_east: float = s.center_east
+			var terrain: Dictionary = field.get("terrain", {})
+			if not terrain.is_empty():
+				var dem: RefCounted = TerrainDem.load_cached(str(terrain.core), str(terrain.ring),
+					float(terrain.origin_east), float(terrain.origin_north))
+				if dem.ok():
+					var north: float = s.center_north
+					east_bound = dem.sample(north, center_east + half)[0] >= dem.sample(north, center_east - half)[0]
 			return { ok = true, north = float(s.center_north), east = center_east - half + lineup if east_bound else center_east + half - lineup,
 				heading = PI / 2.0 if east_bound else -PI / 2.0, message = "" }
 	return { ok = false, north = 0.0, east = 0.0, heading = 0.0, message = "field has no runway" }
@@ -93,6 +103,14 @@ static func solve(model: Dictionary, surfaces: PackedFloat64Array, north: float,
 	if not support_pose.is_empty():
 		pose[3] = float(support_pose.roll)
 		pose[4] = float(support_pose.pitch)
+	# TG-06: on solid terrain, seed on the ground under the spot and tilted to its slope (flat fields are unchanged).
+	var ground: PackedFloat64Array = GroundTerrain.solid_sample(surfaces, north, east)
+	if not ground.is_empty():
+		var along: float = ground[1] * cos(heading) + ground[2] * sin(heading)
+		var right: float = -ground[1] * sin(heading) + ground[2] * cos(heading)
+		pose[2] -= ground[0]
+		pose[3] -= atan(right)
+		pose[4] += atan(along)
 	var seed_q := _quat(pose)
 	var rest_state_at: Callable = func(x: PackedFloat64Array) -> PackedFloat64Array:
 		var local_rotation := _rotation_increment(PackedFloat64Array([x[1], x[2], 0.0]))

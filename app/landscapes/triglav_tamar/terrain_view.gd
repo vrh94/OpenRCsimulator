@@ -37,6 +37,9 @@ func setup(core_grid: RefCounted, ring_grid: RefCounted, terrain_material: Shade
 	pilot_core = pilot
 	ground_ref_m = ground_ref
 	_root_origin = Vector2(CORE_SIZE_M / 2.0 - ROOT_SIZE_M / 2.0, CORE_SIZE_M / 2.0 - ROOT_SIZE_M / 2.0)
+	# The grids' nodes lie at odd metres of the core frame (1 + 2i); shift the tree by 1 m so 2 m tiles put their
+	# vertices on the nodes and draw exactly the heights the physics (physics/terrain_dem.gd) interpolates.
+	_root_origin += Vector2(1.0, 1.0)
 	_mesh = build_tile_mesh()
 	update_for(Vector3(0.0, 2.0, 0.0))
 

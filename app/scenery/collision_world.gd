@@ -135,7 +135,6 @@ static func _build_uncached(field: Dictionary, scenery: Dictionary, lights: Dict
 	var input_error: String = _input_shape_error(field, scenery, lights)
 	if not input_error.is_empty():
 		return _failure(input_error)
-	var errors := PackedStringArray()
 	var proxies: Array[Dictionary] = []
 	var support_surfaces := SupportSurfaces.build(scenery)
 	_add_field_trees(proxies, field)
@@ -143,6 +142,29 @@ static func _build_uncached(field: Dictionary, scenery: Dictionary, lights: Dict
 	_add_scenery(proxies, scenery, support_surfaces, parked_info)
 	_add_lights(proxies, lights)
 	_add_rc_track(proxies, rc_track)
+	return _finalize(proxies)
+
+
+## TG-07: a world from a landscape's own obstacles (box_proxy, capsule_proxy), for landscapes whose scenery comes
+## from survey data rather than the field's scenery groups.
+static func from_proxies(proxies: Array[Dictionary]) -> Dictionary:
+	return _finalize(proxies)
+
+
+## A box obstacle centred at (north, east, down) NED, for from_proxies.
+static func box_proxy(proxies: Array[Dictionary], id: String, kind: String, part: String, response: String,
+		north: float, east: float, down: float, width: float, height: float, length: float, heading_deg: float) -> void:
+	_add_box_at_down(proxies, id, kind, part, response, north, east, down, width, height, length, heading_deg)
+
+
+## A vertical capsule obstacle centred at (north, east, down) NED, for from_proxies.
+static func capsule_proxy(proxies: Array[Dictionary], id: String, kind: String, part: String, response: String,
+		north: float, east: float, down: float, radius: float, half_length: float) -> void:
+	_add_capsule(proxies, id, kind, part, response, north, east, down, radius, half_length)
+
+
+static func _finalize(proxies: Array[Dictionary]) -> Dictionary:
+	var errors := PackedStringArray()
 	_assign_damage_profiles(proxies)
 	proxies.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.id) < str(b.id))
 	for proxy: Dictionary in proxies:

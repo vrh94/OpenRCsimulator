@@ -49,6 +49,9 @@ static func tick(session: Node, inputs: PackedFloat64Array) -> Dictionary:
 static func prepare(session: Node, native: Object) -> Dictionary:
 	if not is_instance_valid(session.environment) or not session.environment.lake.is_empty():
 		return {ok = false, error = "native helicopter terrain does not support lakes"}
+	if session.get("ground_surfaces") is PackedFloat64Array \
+			and preload("res://physics/ground_terrain.gd").dem_for(session.ground_surfaces) != null:
+		return {ok = false, error = "native helicopter terrain does not support solid terrain fields"}
 	var weather := weather_snapshot(session)
 	if weather.is_empty(): return {ok = false, error = "helicopter weather provider differs from the supported session"}
 	return native.prepare_heli_stage(snapshot(session), weather)

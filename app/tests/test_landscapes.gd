@@ -12,6 +12,7 @@ const Lighting = preload("res://render/time_of_day_lighting.gd")
 const UiDriver = preload("res://tests/ui_driver.gd")
 var prefs_path := "user://test_landscapes-%d.cfg" % OS.get_process_id()
 const GREEN := "green_paradise"
+const TRIGLAV := "triglav_tamar"
 var failures := 0
 var checks := 0
 var ui: RefCounted
@@ -36,7 +37,7 @@ func check(label: String, passed: bool) -> void:
 func _run() -> void:
 	TranslationServer.set_locale("en")
 	DirAccess.remove_absolute(prefs_path)
-	check("Club field remains first and default", Landscapes.DEFAULT_ID == "club_field" and Landscapes.ids() == ["club_field", GREEN])
+	check("Club field remains first and default", Landscapes.DEFAULT_ID == "club_field" and Landscapes.ids() == ["club_field", GREEN, TRIGLAV])
 	check("unknown IDs do not resolve", not Landscapes.has("missing") and Landscapes.entry("missing").is_empty())
 	check("missing preferences retain Club field", Preferences.load_from(prefs_path).landscape == Landscapes.DEFAULT_ID)
 	for invalid: Variant in ["missing", 7, true]:
@@ -93,6 +94,13 @@ func _run() -> void:
 
 	app.home.landscape_button.grab_focus()
 	await ui.tap(KEY_ENTER)
+	check("keyboard switches Home to Triglav", app.landscape_id == TRIGLAV and app.home_scene.field.id == TRIGLAV)
+	check("Triglav offers its strip for the runway start", app.home.runway_available)
+	check("Triglav explains the unavailable Natural Random activity", app.home.natural_random_button.disabled)
+	await _fly_and_return(app, TRIGLAV)
+
+	app.home.landscape_button.grab_focus()
+	await ui.tap(KEY_ENTER)
 	check("keyboard switches back to Club", app.landscape_id == Landscapes.DEFAULT_ID and app.home_scene.field.id == "default")
 	check("Club restores Natural Random availability", not app.home.natural_random_button.disabled)
 	await _capture("club-home.png")
@@ -134,10 +142,15 @@ func _fly_and_return(app: Node, id: String, helicopter := false) -> void:
 	check(id + " flight loads", flight != null and flight.startup_error.is_empty() and flight.session.is_flyable())
 	if flight == null:
 		return
-	check(id + " flight shares the selected field", flight.landscape_id == id and flight.field.id == ("default" if id == Landscapes.DEFAULT_ID else GREEN))
+	check(id + " flight shares the selected field", flight.landscape_id == id and flight.field.id == _field_id(id))
 	var green: bool = id == GREEN
 	var rendered: Node = flight.get_node("Field")
-	check(id + " visual and physical worlds agree", (rendered.get_child_count() == 1 and flight.session._collision_world.is_empty()) if green else rendered.get_node_or_null("Scenery") != null and not flight.session._collision_world.is_empty())
+	var agree: bool = rendered.get_node_or_null("Scenery") != null and not flight.session._collision_world.is_empty()
+	if green:
+		agree = rendered.get_child_count() == 1 and flight.session._collision_world.is_empty()
+	elif id == TRIGLAV:
+		agree = rendered.get_node_or_null("Terrain") != null and not flight.session._collision_world.is_empty()
+	check(id + " visual and physical worlds agree", agree)
 	app.set_landscape(Landscapes.DEFAULT_ID if green else GREEN)
 	check("active flight cannot change landscape", flight.landscape_id == id and app.landscape_id == id)
 	flight.session.resume()
@@ -165,7 +178,11 @@ func _fly_and_return(app: Node, id: String, helicopter := false) -> void:
 	app.open_pause()
 	app.end_flight()
 	await ui.settle()
-	check(id + " returns to matching Home", app.flight == null and app.home.landscape_id == id and app.home_scene.field.id == ("default" if id == Landscapes.DEFAULT_ID else GREEN))
+	check(id + " returns to matching Home", app.flight == null and app.home.landscape_id == id and app.home_scene.field.id == _field_id(id))
+
+
+func _field_id(id: String) -> String:
+	return "default" if id == Landscapes.DEFAULT_ID else id
 
 
 func _capture(filename: String) -> void:

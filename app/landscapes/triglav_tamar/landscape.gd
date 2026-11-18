@@ -1,30 +1,32 @@
 extends RefCounted
 ## Step 21 (TG-03): the Planica and Tamar valleys in Triglav National Park from the national LiDAR and orthophoto
 ## (docs/plans/triglav-planica-tamar.md, research/triglav/README.md). The render origin is the pilot spot on the
-## Tamar meadow; render x is grid east, render z grid south (D96/TM grid north is 0.94 degrees east of true north here).
+## Rateče plain; render x is grid east, render z grid south (D96/TM grid north is 0.94 degrees east of true north here).
 
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Heightfield = preload("res://landscapes/triglav_tamar/heightfield.gd")
+const TerrainDem = preload("res://physics/terrain_dem.gd")
 const TerrainView = preload("res://landscapes/triglav_tamar/terrain_view.gd")
 const Trees = preload("res://landscapes/triglav_tamar/trees.gd")
 const Buildings = preload("res://landscapes/triglav_tamar/buildings.gd")
+const Obstacles = preload("res://landscapes/triglav_tamar/obstacles.gd")
 const TERRAIN_SHADER = preload("res://landscapes/triglav_tamar/terrain.gdshader")
 
 const ID: String = "triglav_tamar"
 const DISPLAY_NAME: String = "Triglav: Planica and Tamar"
 const FIELD_PATH: String = "res://landscapes/triglav_tamar/field.json"
 const ROOT := "res://landscapes/triglav_tamar/"
-## The pilot spot in the core frame (metres east and north of D96/TM E 399000, N 144000): the middle of the Tamar
-## meadow, 140 m north of Dom v Tamarju (D96/TM E 401136, N 146098), where GKOT shows no tree or roof within 30 m
-## and the ground slopes less than 4 degrees.
-const PILOT_CORE := Vector2(2136.0, 2098.0)
+## The pilot spot in the core frame (metres east and north of D96/TM E 399000, N 144000): an open hay meadow on the
+## Rateče plain at the mouth of the Planica valley (D96/TM E 401524, N 151124), the nearest level, tree-free ground
+## to the valleys (the Tamar meadow falls 6-7 %, too steep for parked models at idle). Matches field.json.
+const PILOT_CORE := Vector2(2524.0, 7124.0)
 const PHOTO_PATH := ROOT + "photo/ortho.jpg"
 const COVERAGE_PATH := ROOT + "photo/coverage.png"
 ## CC0 (assets/landscape/mountains/LICENSES.md): brightness detail on the near ground.
 const NEAR_DETAIL_PATH := "res://assets/landscape/mountains/aerial_grass_rock_diff_1k.jpg"
 
 
-static func build(_field: Dictionary, lighting: Dictionary = {}) -> Node3D:
+static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	var result := Node3D.new()
 	result.name = "Field"
 	var core: RefCounted = Heightfield.load_grid(ROOT + "terrain/core.json")
@@ -34,7 +36,10 @@ static func build(_field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 		result.set_meta("lighting_materials", [] as Array[ShaderMaterial])
 		result.set_meta("lighting_snapshot", lighting.duplicate(true))
 		return result
-	var ground_ref: float = core.height_at(PILOT_CORE.x, PILOT_CORE.y)
+	# Render height zero is the physics datum (physics/terrain_dem.gd), so drawn and solid ground coincide.
+	var dem: RefCounted = TerrainDem.load_cached(ROOT + "terrain/core.json", ROOT + "terrain/ring.json",
+		Heightfield.CORE_ORIGIN_EAST_M + PILOT_CORE.x, Heightfield.CORE_ORIGIN_NORTH_M + PILOT_CORE.y)
+	var ground_ref: float = dem.ground_ref_m if dem.ok() else core.height_at(PILOT_CORE.x, PILOT_CORE.y)
 	var material := terrain_material(core, ring, ground_ref)
 	Atmosphere.update_ground_material(material, lighting)
 	var view: Node3D = TerrainView.new()
@@ -54,10 +59,56 @@ static func build(_field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 			Atmosphere.update_ground_material(part_material, lighting)
 			materials.append(part_material)
 		result.set_meta("%s_count" % str(part.node.name).to_lower(), part.count)
+	if dem.ok():
+		for surface: Dictionary in field.get("surfaces", []):
+			if str(surface.get("type", "")) == "rotorpad":
+				result.add_child(pad_platform(surface, dem))
 	result.set_meta("lighting_materials", materials)
 	result.set_meta("lighting_snapshot", lighting.duplicate(true))
 	result.set_meta("terrain_ground_ref_m", ground_ref)
 	return result
+
+
+## The helicopter pad as the physics has it (physics/ground_terrain.gd PAD_BLEND_M): a platform levelled to the
+## datum, its grass banks running down to the surveyed ground over the blend width.
+static func pad_platform(surface: Dictionary, dem: RefCounted) -> MeshInstance3D:
+	const BLEND := 2.0
+	var north := float(surface.center_north)
+	var east := float(surface.center_east)
+	var half_n := float(surface.width_north_south) / 2.0
+	var half_e := float(surface.length_east_west) / 2.0
+	var top: Array[Vector3] = []
+	var foot: Array[Vector3] = []
+	for corner: Vector2 in [Vector2(1, -1), Vector2(1, 1), Vector2(-1, 1), Vector2(-1, -1)]:  # NW, NE, SE, SW
+		var n := north + corner.x * half_n
+		var e := east + corner.y * half_e
+		top.append(Vector3(e, 0.0, -n))
+		var fn := north + corner.x * (half_n + BLEND)
+		var fe := east + corner.y * (half_e + BLEND)
+		foot.append(Vector3(fe, float(dem.sample(fn, fe)[0]) - 0.05, -fn))
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	tool.set_color(Color(0.42, 0.40, 0.36))
+	for i: int in [0, 1, 2, 0, 2, 3]:
+		tool.add_vertex(top[i])
+	tool.set_color(Color(0.22, 0.27, 0.12))
+	for side in 4:
+		var a := top[side]
+		var b := top[(side + 1) % 4]
+		var c := foot[(side + 1) % 4]
+		var d := foot[side]
+		for v: Vector3 in [a, d, b, b, d, c]:
+			tool.add_vertex(v)
+	tool.generate_normals()
+	var material := StandardMaterial3D.new()
+	material.vertex_color_use_as_albedo = true
+	material.roughness = 1.0
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var node := MeshInstance3D.new()
+	node.name = "HelicopterPad"
+	node.mesh = tool.commit()
+	node.material_override = material
+	return node
 
 
 static func terrain_material(core: RefCounted, ring: RefCounted, ground_ref: float) -> ShaderMaterial:
@@ -85,5 +136,11 @@ static func terrain_material(core: RefCounted, ring: RefCounted, ground_ref: flo
 	return material
 
 
+## TG-07: the surveyed trees and buildings near the pilot as solid obstacles (obstacles.gd).
 static func collision_world(_field: Dictionary) -> Dictionary:
-	return {ok = true, world = {}, errors = PackedStringArray()}
+	var dem: RefCounted = TerrainDem.load_cached(ROOT + "terrain/core.json", ROOT + "terrain/ring.json",
+		Heightfield.CORE_ORIGIN_EAST_M + PILOT_CORE.x, Heightfield.CORE_ORIGIN_NORTH_M + PILOT_CORE.y)
+	if not dem.ok():
+		return {ok = false, world = {}, errors = PackedStringArray(["triglav_tamar: terrain grids are unreadable"])}
+	return Obstacles.build(ROOT + "vegetation/trees.bin.gz", ROOT + "buildings/buildings.bin.gz", PILOT_CORE,
+		dem.ground_ref_m)

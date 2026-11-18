@@ -1,0 +1,240 @@
+{
+  "format": "openrc-field v1",
+  "id": "triglav_tamar",
+  "runway": "strip",
+  "pilot": {
+    "id": "pilot",
+    "north": {
+      "value": 0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "An open hay meadow on the Rateče plain at the mouth of the Planica valley, north of the Planica road; GURS GKOT 2023-25 shows no tree within 70 m (research/triglav/README.md)."
+    },
+    "east": {
+      "value": 0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "An open hay meadow on the Rateče plain at the mouth of the Planica valley, north of the Planica road; GURS GKOT 2023-25 shows no tree within 70 m (research/triglav/README.md)."
+    },
+    "down": {
+      "value": 0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "On the terrain: the field datum is the GKOT ground under the pilot."
+    },
+    "eye_height": {
+      "value": 1.7,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "The simulator's usual standing eye height."
+    }
+  },
+  "surfaces": [
+    {
+      "id": "rough",
+      "type": "rough",
+      "center_north": {
+        "value": 0,
+        "unit": "m",
+        "kind": "derived",
+        "source": "Centred on the pilot."
+      },
+      "center_east": {
+        "value": 0,
+        "unit": "m",
+        "kind": "derived",
+        "source": "Centred on the pilot."
+      },
+      "length_east_west": {
+        "value": 24000,
+        "unit": "m",
+        "kind": "derived",
+        "source": "The terrain ring's extent (24 km)."
+      },
+      "width_north_south": {
+        "value": 24000,
+        "unit": "m",
+        "kind": "derived",
+        "source": "The terrain ring's extent (24 km)."
+      }
+    },
+    {
+      "id": "strip",
+      "type": "runway",
+      "center_north": {
+        "value": -24,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "A simulator take-off strip on the meadow, 24 m south of the pilot: 100 m east-west, 12 m wide, 65 m from the nearest GKOT tree crown, level within 0.3 % along and 1.5 % across. The real meadow is unmarked hay."
+      },
+      "center_east": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "A simulator take-off strip on the meadow, 24 m south of the pilot: 100 m east-west, 12 m wide, 65 m from the nearest GKOT tree crown, level within 0.3 % along and 1.5 % across. The real meadow is unmarked hay."
+      },
+      "length_east_west": {
+        "value": 100,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "A simulator take-off strip on the meadow, 24 m south of the pilot: 100 m east-west, 12 m wide, 65 m from the nearest GKOT tree crown, level within 0.3 % along and 1.5 % across. The real meadow is unmarked hay."
+      },
+      "width_north_south": {
+        "value": 12,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "A simulator take-off strip on the meadow, 24 m south of the pilot: 100 m east-west, 12 m wide, 65 m from the nearest GKOT tree crown, level within 0.3 % along and 1.5 % across. The real meadow is unmarked hay."
+      }
+    },
+    {
+      "id": "helicopter-pad-surface",
+      "type": "rotorpad",
+      "center_north": {
+        "value": -12.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Triglav field layout: the helicopter pad on the meadow between the pilot and the strip; simulator placement, not surveyed."
+      },
+      "center_east": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Triglav field layout: the helicopter pad on the meadow between the pilot and the strip; simulator placement, not surveyed."
+      },
+      "length_east_west": {
+        "value": 6.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "HELI-20a simulator pad footprint estimate; accommodates the authored rotor envelope and clearance margin, not a real-world standard."
+      },
+      "width_north_south": {
+        "value": 6.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "HELI-20a simulator pad footprint estimate; accommodates the authored rotor envelope and clearance margin, not a real-world standard."
+      }
+    }
+  ],
+  "objects": [],
+  "rotorcraft_pad": {
+    "id": "triglav-helicopter-pad",
+    "north": {
+      "value": -12.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Triglav field layout: the helicopter pad on the meadow between the pilot and the strip; simulator placement, not surveyed."
+    },
+    "east": {
+      "value": 0.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Triglav field layout: the helicopter pad on the meadow between the pilot and the strip; simulator placement, not surveyed."
+    },
+    "heading": {
+      "value": 1.5707963267948966,
+      "unit": "rad",
+      "kind": "derived",
+      "source": "HELI-20a candidate nose-east heading in NED coordinates; normalized by the field loader."
+    },
+    "surface_id": "helicopter-pad-surface",
+    "material": "rotorpad",
+    "clearance_margin": {
+      "value": 0.75,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-20a explicit simulator placement margin around the modeled aircraft envelope; not a real-world separation standard."
+    },
+    "aircraft_envelopes": [
+      {
+        "aircraft_id": "xcell-60-research",
+        "radius": {
+          "value": 1.25,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a conservative radial envelope around the loaded main and tail discs and four skids; estimated model geometry, not a measured safety radius."
+        },
+        "max_takeoff_tilt": {
+          "value": 0.35,
+          "unit": "rad",
+          "kind": "estimated",
+          "source": "HELI-20a layout envelope for initial lift-off; spherical reach is orientation-independent and the value is not a qualified flight limit."
+        }
+      }
+    ],
+    "keepouts": [
+      {
+        "id": "fixedwing-east-start",
+        "north": {
+          "value": -24.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Triglav strip: the fixed-wing start at the strip's east end (the line-up faces uphill, west); layout record, not surveyed."
+        },
+        "east": {
+          "value": 47.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Triglav strip: the fixed-wing start at the strip's east end (the line-up faces uphill, west); layout record, not surveyed."
+        },
+        "length_east_west": {
+          "value": 16.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a broad visual aircraft clearance box; estimated, not a collision model."
+        },
+        "width_north_south": {
+          "value": 8.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a broad visual aircraft clearance box; estimated, not a collision model."
+        },
+        "source": "Fixed-wing start at the strip's east threshold; broad estimated visual keepout, not an enabled contact body."
+      },
+      {
+        "id": "fixedwing-west-start",
+        "north": {
+          "value": -24.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Triglav strip: the strip's west threshold; layout record, not surveyed."
+        },
+        "east": {
+          "value": -47.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Triglav strip: the strip's west threshold; layout record, not surveyed."
+        },
+        "length_east_west": {
+          "value": 16.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a broad visual aircraft clearance box; estimated, not a collision model."
+        },
+        "width_north_south": {
+          "value": 8.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a broad visual aircraft clearance box; estimated, not a collision model."
+        },
+        "source": "The strip's west threshold; broad estimated visual keepout, not an enabled contact body."
+      }
+    ],
+    "provenance": "Triglav field layout: the pad stands on the Rateče meadow 12 m south of the pilot, between the pilot and the strip, nose east. Footprint, aircraft envelope, clearance margin and keepouts are the default field's simulator estimates, not measured geometry or RC safety standards. The rotorpad is a zero-relief support patch on the surveyed terrain."
+  },
+  "terrain": {
+    "core": "res://landscapes/triglav_tamar/terrain/core.json",
+    "ring": "res://landscapes/triglav_tamar/terrain/ring.json",
+    "origin_east": {
+      "value": 401524,
+      "unit": "m",
+      "kind": "derived",
+      "source": "D96/TM (EPSG:3794) east of the pilot spot."
+    },
+    "origin_north": {
+      "value": 151124,
+      "unit": "m",
+      "kind": "derived",
+      "source": "D96/TM (EPSG:3794) north of the pilot spot."
+    }
+  }
+}
