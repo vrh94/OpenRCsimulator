@@ -2,7 +2,8 @@
 
 Owner decisions of 2026-11-17: a landscape of Triglavski narodni park, solid real terrain (ground contact follows the
 elevation model; this is a terrain change, not a flight-model change), centred on the Planica/Tamar valley. Status:
-**in progress**: TG-01 and TG-02 done ([research/triglav](../../research/triglav/README.md)). Steps are 21a (data and visuals) and 21b (solid terrain contact).
+**in progress**: TG-01, TG-02 and TG-03 done ([research/triglav](../../research/triglav/README.md),
+`app/landscapes/triglav_tamar/`); the landscape is not listed in the catalog until solid terrain (21b) lands. Steps are 21a (data and visuals) and 21b (solid terrain contact).
 
 ## Owner decisions (2026-11-18)
 
@@ -11,6 +12,8 @@ elevation model; this is a terrain change, not a flight-model change), centred o
 - Ground look from the **real aerial orthophoto** (2023–25 survey). Its licence is checked before a public release,
   with procedural shading as the fallback.
 - **RC trucks drive the Triglav terrain too** (in 21b).
+- The photo, trees, buildings and newer bare earth come from the GURS 2023–25 **classified point cloud (GKOT)**,
+  all 64 sheets of the core, fetched through the public viewer with a headless browser (owner request, 2026-11-18).
 
 ## The place
 
@@ -60,13 +63,16 @@ quantized products the game needs are committed, each well under the repository'
   900–2650 m.
 - TG-02 validation: the hut at 1108 m, the Nordic Centre, the Jalovec summit, and a smooth seam between core and ring.
   It writes a `--check` mode like the other generators.
-- TG-03 landscape adapter `landscapes/triglav_tamar/`:
-  - chunked terrain meshes with distance LOD and skirts;
-  - procedural materials from slope, altitude and curvature (meadow, larch and spruce forest, scree, rock, snow),
-    using the CC0 aerial photos already in the repo;
-  - trees placed from the canopy-height model (or OpenStreetMap forest areas if the canopy data's licence is not
-    confirmed);
-  - the hut, the Planica hills and the road as simple massing models.
+- TG-03 landscape adapter `landscapes/triglav_tamar/` (done):
+  - terrain: a quadtree of one shared 64 × 64 tile with skirts, placed by transform; the vertex shader reads the
+    2 m core (tiles up to 6 m spacing) or the 16 m ring from RG8 textures, so the CPU never builds terrain meshes;
+  - colour from the GKOT true orthophoto inside the core, procedural alpine shading (forest, alpine grass, limestone)
+    outside it and where the photo is filled; haze as in the ground shader, without its flat-ground rim;
+  - trees: every detected crown, as low-poly spruce and broadleaf instances in 250 m chunks, tinted from the photo,
+    drawn to 1.5 km;
+  - buildings: every GKOT roof region rebuilt from its 1 m roof grid (footprint, roof shape, walls), roofs coloured
+    from the photo;
+  - `tests/test_triglav_landscape.gd`.
 - TG-04 field and catalog:
   - `field.json`, with surfaces for the meadow;
   - an entry in `landscapes/catalog.gd`, so Home and Settings list it beside Club field and Green paradise;
@@ -98,9 +104,12 @@ quantized products the game needs are committed, each well under the repository'
   ([Triglav National Park on drones](https://oko.bohinj.si/en/program/drones-in-protected-areas/)). The landscape's
   description will say so: the simulator is the place to fly there freely.
 - **Size and speed.**
-  - Download: about 450 MB of raw tiles (cached, not committed).
+  - Download: 1.6 GB of ARSO tiles and about 40 GB of GKOT sheets (cached under `tmp/`, never committed).
   - Committed products: about 10–20 MB.
   - Physics: the provider's lookup is O(1) per wheel or contact point.
   - Rendering: needs LOD; the existing scenery budgets apply.
-- **Data age.** The DMR1 survey is from 2014–15; the 2023–25 survey would show the newer Planica Nordic Centre
-  buildings.
+- **Data age.** The core's bare earth, photo, trees and buildings are from the 2024–25 survey; ARSO's 2014–15 model
+  fills only the ground under dense canopy.
+- **Atmosphere at altitude.** The field is about 1120 m up, but the v1 scenario catalog pins
+  `field_elevation_m` to sea level (`scenarios/scenario_config.gd`). Wiring the real elevation into the atmosphere
+  is part of TG-06 and needs the owner's approval, because it changes air density for every vehicle there.

@@ -339,4 +339,9 @@
 
 /app/landscapes/triglav_tamar/terrain/*.u16.gz binary
 /app/landscapes/triglav_tamar/terrain/*.json text eol=lf
+/app/landscapes/triglav_tamar/vegetation/*.bin.gz binary
+/app/landscapes/triglav_tamar/buildings/*.bin.gz binary
+/app/landscapes/triglav_tamar/photo/*.jpg binary
+/app/landscapes/triglav_tamar/photo/*.png binary
+/app/landscapes/triglav_tamar/*/*.json text eol=lf
 /research/triglav/sources.json text eol=lf

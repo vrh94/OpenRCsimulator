@@ -372,6 +372,17 @@ existing experiment path so checkpoints carry it
 ([plan](plans/fixed-wing-flight-controller.md#step-19-done-truck-tuning)). Revisit if an
 assist needs wheel-level braking (true torque vectoring), which would be a physics change.
 
+### The Triglav landscape is built from the 2023–25 classified point cloud
+
+**Step 21 (TG-01b to TG-03), 2026-11-18.** The Planica/Tamar landscape takes its bare earth, true orthophoto,
+trees and buildings from one source, the GURS cyclic laser scan's classified point cloud (GKOT), so they agree with
+each other; ARSO's 2014–15 terrain model only fills ground under dense canopy. The terrain is drawn on the GPU from
+the baked 16-bit grids by one shared quadtree tile, so no terrain mesh is built on the CPU and the physics provider
+(TG-05) can read the same grids. Raw sheets (about 40 GB) stay in `tmp/`; only reduced products are committed
+([plan](plans/triglav-planica-tamar.md), [pipeline](../research/triglav/README.md)). Revisit before a public
+release if GURS does not confirm CC BY 4.0 for the LiDAR products: the fallback is ARSO terrain with procedural
+colour, trees and massing.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

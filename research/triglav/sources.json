@@ -14,7 +14,8 @@
  },
  "attribution": [
   "Digital terrain model DMR1 (LiDAR, 1 m): Ministry of the Environment and Spatial Planning, Slovenian Environment Agency (ARSO)",
-  "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles"
+  "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles",
+  "Cyclic laser scanning of Slovenia 2023-2025 (CLSS), classified point cloud GKOT: Surveying and Mapping Authority of the Republic of Slovenia (GURS), CC BY 4.0"
  ],
  "licence_note": "ARSO: free to use, modify and reuse with the credit above (ARSO statement recorded by opendem.info); confirm with ARSO before a public release. SRTM: public domain.",
  "arso_dmr1": [
@@ -405,6 +406,513 @@
    "url": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N46/N46E013.hgt.gz",
    "bytes": 15367765,
    "sha256": "476ac43deaceb30721b8c0ff4a04f5fec37bad9a64c8dc78f23a537305cc724a"
+  }
+ ],
+ "clss_gkot": [
+  {
+   "sheet": "399_151",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "400_151",
+   "name": "GKOT_400_151.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_400_151.laz",
+   "bytes": 315166834,
+   "sha256": "6f261ffbf8bf9d2ce99ce832f6d5176822cc6a35e93f6f0974f2fa55786ec44e",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "401_151",
+   "name": "GKOT_401_151.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_401_151.laz",
+   "bytes": 470341321,
+   "sha256": "a4eb5bbf9de5fe3205296a769a11f62d2f60e73c8ecf3dba50552130e331a42d",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "402_151",
+   "name": "GKOT_402_151.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_402_151.laz",
+   "bytes": 747688557,
+   "sha256": "be8a4157e26cd78409c93b977670f163b1db031afb26140f2cecc23104df3d3d",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "403_151",
+   "name": "GKOT_403_151.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_403_151.laz",
+   "bytes": 720380198,
+   "sha256": "48108de4f273d7e4214b0996cafd1ad4fdb06b85494117d0f495a3a6c745db98",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "404_151",
+   "name": "GKOT_404_151.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_404_151.laz",
+   "bytes": 513376165,
+   "sha256": "47a76c73336933422d2d9deea5acd08e125e751d71a68fa0926ee8eaeee6036f",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "405_151",
+   "name": "GKOT_405_151.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_405_151.laz",
+   "bytes": 627970501,
+   "sha256": "054c5808941a3f65d19ce10e5a5a5673be67ca1f0c0b6d344e946b5440e0cab9",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "406_151",
+   "name": "GKOT_406_151.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_406_151.laz",
+   "bytes": 734667312,
+   "sha256": "795743d85381516ebf71c0d7b320c16bb38f3ac94eb95be61b70dbd589d55dc7",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "399_150",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "400_150",
+   "name": "GKOT_400_150.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_400_150.laz",
+   "bytes": 430149813,
+   "sha256": "a242ba16eff48592eec973e45256b9cb11f3bb7f164acd4b70635fa1db659b67",
+   "fetched": "2026-11-18",
+   "note": "downloaded by the owner through the viewer (macOS download metadata names this URL)"
+  },
+  {
+   "sheet": "401_150",
+   "name": "GKOT_401_150.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_401_150.laz",
+   "bytes": 530449590,
+   "sha256": "84bd262de0b99014025b7e48668ab9e0140a16264903872ad937e79e80363f15",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "402_150",
+   "name": "GKOT_402_150.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_402_150.laz",
+   "bytes": 497771164,
+   "sha256": "2d4baedce5910b3e022a806e66d9ed9bcc3c13246a285dd826944842fcd71919",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "403_150",
+   "name": "GKOT_403_150.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_403_150.laz",
+   "bytes": 549695964,
+   "sha256": "72301f9bca235abaa5e3f60665b659b846c3c2d8f1fc20480b93b6eb17c3fe3b",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "404_150",
+   "name": "GKOT_404_150.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_404_150.laz",
+   "bytes": 667376273,
+   "sha256": "4d218daacc5d7eb6458e683d49cde856898aafe87b45bd3fd9f0ad082405d985",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "405_150",
+   "name": "GKOT_405_150.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_405_150.laz",
+   "bytes": 578611262,
+   "sha256": "3f29041f8d87b402829ba40a7f901ede9a6d6e01a91f1ebb2cf70a2a06b0b28f",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "406_150",
+   "name": "GKOT_406_150.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_406_150.laz",
+   "bytes": 482546483,
+   "sha256": "5d831d21073011d566adc0b840863f4273fe44a3c90ec63fc9233b3b0db5fd77",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "399_149",
+   "name": "GKOT_399_149.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_399_149.laz",
+   "bytes": 287261389,
+   "sha256": "536f6f5aebb0eb9e8bbdee298eb96f366a136887ca1732e937740dfd6def2e44",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "400_149",
+   "name": "GKOT_400_149.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_400_149.laz",
+   "bytes": 636590061,
+   "sha256": "c06430394d37576ae3d0d5fd9b0a38485b8d74bdfef88229cab8b6158af26e5d",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "401_149",
+   "name": "GKOT_401_149.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_401_149.laz",
+   "bytes": 481092212,
+   "sha256": "189e35a8bdc8ca990f050a8a3e1d1a966f44984427219ab2f92739c2a9f2b528",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "402_149",
+   "name": "GKOT_402_149.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_402_149.laz",
+   "bytes": 648315482,
+   "sha256": "134dcbbe267b33140d5013f2acbe66d462f57106c118c0c91f894793852b4193",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "403_149",
+   "name": "GKOT_403_149.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_403_149.laz",
+   "bytes": 1153006743,
+   "sha256": "7c7d8e6d12c791324e78f9ce665b50ff7ce4029b25c6d4682e8f50a5bdcfe56b",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "404_149",
+   "name": "GKOT_404_149.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_404_149.laz",
+   "bytes": 1232199691,
+   "sha256": "79a628d4083331c978b02506dc9d9e8b3e7d538b96103e57a82c6f5991fd7ef6",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "405_149",
+   "name": "GKOT_405_149.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_405_149.laz",
+   "bytes": 857063002,
+   "sha256": "d9a4368af5f9168c1265e1612c226d1ec692ff010447d7087c003934dde58e03",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "406_149",
+   "name": "GKOT_406_149.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_406_149.laz",
+   "bytes": 484079943,
+   "sha256": "7845c8a770f87313a763a2b88b21e7391125f88f6f5bfb639bccaa695c5ab9b3",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "399_148",
+   "name": "GKOT_399_148.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_399_148.laz",
+   "bytes": 309918388,
+   "sha256": "1fbe9b430069844e2efdb98737b9c8ea9746c03e4013b5f0db18944108776953",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "400_148",
+   "name": "GKOT_400_148.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_400_148.laz",
+   "bytes": 553105862,
+   "sha256": "47f3f655735ed0ec4342eb85de8d19311bc0ccd47c1fba59cb1e15cdd3572d9b",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "401_148",
+   "name": "GKOT_401_148.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_401_148.laz",
+   "bytes": 735283811,
+   "sha256": "d363a93f7de923f81c690b9d9b4bb6dd608e3affad9de2de425253223f6346b9",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "402_148",
+   "name": "GKOT_402_148.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_402_148.laz",
+   "bytes": 921799899,
+   "sha256": "5beb7278cc6f79f9f05ec0a66e4ab52ca4550f16647cb38dd305fc41804f75c0",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "403_148",
+   "name": "GKOT_403_148.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_403_148.laz",
+   "bytes": 1416994486,
+   "sha256": "02c20efefd6f2e80755f7684e86e20e73d95362162ec552546011a2eba895402",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "404_148",
+   "name": "GKOT_404_148.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_404_148.laz",
+   "bytes": 1323064985,
+   "sha256": "4406497641d5c94d0d53925f92f26acab195ccd534fc556c499ac447b771caf6",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "405_148",
+   "name": "GKOT_405_148.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_405_148.laz",
+   "bytes": 844946688,
+   "sha256": "875abb0ed3190335a82258b7c4873baa2d5f495dcafede98f77786aa7f3c2e07",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "406_148",
+   "name": "GKOT_406_148.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_406_148.laz",
+   "bytes": 523368267,
+   "sha256": "097ce948cc75b72472e4ee4e18d9e8e69d37fd735edba2d22dc1804faeb79caf",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "399_147",
+   "name": "GKOT_399_147.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_399_147.laz",
+   "bytes": 240075229,
+   "sha256": "5df1f09f467a61c9ceaf22423fc2b7175251563653df602aebf5b3d78021f18b",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "400_147",
+   "name": "GKOT_400_147.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_400_147.laz",
+   "bytes": 367686223,
+   "sha256": "0f6a3536cd87581304c0c393cfb821177f20d3d1e5e62c7e62cef1ff5dd818ce",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "401_147",
+   "name": "GKOT_401_147.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_401_147.laz",
+   "bytes": 701865038,
+   "sha256": "0003dae0c909516d572c2370fe3d40e92a23b77f17dffcdb58770de3fa6efee2",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "402_147",
+   "name": "GKOT_402_147.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_402_147.laz",
+   "bytes": 831450831,
+   "sha256": "1c289e7b4e916e1cbb44116bd08cd99cf8bf36c3c2a07581abe1ed4b18c5b677",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "403_147",
+   "name": "GKOT_403_147.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_403_147.laz",
+   "bytes": 968788097,
+   "sha256": "4aec7b3e4987270151dfbe3d32100a86b454821636aaab708438467cec551eb2",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "404_147",
+   "name": "GKOT_404_147.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_404_147.laz",
+   "bytes": 950661440,
+   "sha256": "d4ec2ba76d7a64dae1d694ed8d9e9baf89e680a3a0b62d7334b56c41e5134b9c",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "405_147",
+   "name": "GKOT_405_147.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_405_147.laz",
+   "bytes": 770324046,
+   "sha256": "83343660b6733c51ec022cccba84635c5b3bac1393c855d82bedb09606836fcb",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "406_147",
+   "name": "GKOT_406_147.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_406_147.laz",
+   "bytes": 515286680,
+   "sha256": "670fabbd097f41a724bb8df6d32e835c0860121404aa1a744d875a7d229dc0df",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "399_146",
+   "name": "GKOT_399_146.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_399_146.laz",
+   "bytes": 216338115,
+   "sha256": "7450e92e516af341048bb8dc02e3e8018b5f00da17078296d420836470c0c306",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "400_146",
+   "name": "GKOT_400_146.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_400_146.laz",
+   "bytes": 355015565,
+   "sha256": "9308caacf8b87fd7faabc8cb89f297056e4c058a2e2b5b99a1fbbc4fc986b995",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "401_146",
+   "name": "GKOT_401_146.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_401_146.laz",
+   "bytes": 594165678,
+   "sha256": "931a57ee0f4df17d738c56ac682055f77155c79b613e26c2571115634b5fd4ec",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "402_146",
+   "name": "GKOT_402_146.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_402_146.laz",
+   "bytes": 846679934,
+   "sha256": "0806b2e7085284b76b3ea9a09f43af794499cf69636695e9348b3a8585b127f9",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "403_146",
+   "name": "GKOT_403_146.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_403_146.laz",
+   "bytes": 704533487,
+   "sha256": "4d575028f9c9e6886a8746305f9c14d9755d33cdf2eae7ed89f399ef7a2c41ec",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "404_146",
+   "name": "GKOT_404_146.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_404_146.laz",
+   "bytes": 518386983,
+   "sha256": "c90782831f0676590e0750d09528007970e02b09af6271009ed069ffaa664bab",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "405_146",
+   "name": "GKOT_405_146.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_405_146.laz",
+   "bytes": 664509948,
+   "sha256": "623763855d8f9938fa1605ccd3591b9da8c9a056b24a4ae7aa11417773beb8ec",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "406_146",
+   "name": "GKOT_406_146.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_406_146.laz",
+   "bytes": 545203567,
+   "sha256": "2ef41ced11456b4ad963e80b5faa77c95e803e991e72730a6c55f7e2f5d7ea66",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "399_145",
+   "name": "GKOT_399_145.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_399_145.laz",
+   "bytes": 297537364,
+   "sha256": "f640fdcda52104735e45959bc9a898567876d1baf5b5fdfc044b4d126917e2e5",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "400_145",
+   "name": "GKOT_400_145.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_400_145.laz",
+   "bytes": 504372932,
+   "sha256": "9754c968d50fef4745b254d19b3c9fe6fa456f6ac6536e5f0c93b320a53963b3",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "401_145",
+   "name": "GKOT_401_145.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_401_145.laz",
+   "bytes": 592055719,
+   "sha256": "590defb005041e3f3cc6bff2e92e995c11a89d343b8c67d1986c30ba09479944",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "402_145",
+   "name": "GKOT_402_145.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_402_145.laz",
+   "bytes": 550152019,
+   "sha256": "e0d9c729e01ae97d9320b4a48bd34526af1c3fecbbb698760e6a43c38effced9",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "403_145",
+   "name": "GKOT_403_145.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_403_145.laz",
+   "bytes": 423459541,
+   "sha256": "546db09530b8f7debb9919c39ac98788c8084d08c04a8f4772773dd5eb91cd88",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "404_145",
+   "name": "GKOT_404_145.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_404_145.laz",
+   "bytes": 642121386,
+   "sha256": "6c86ffe7fc9492c2ca5ed5eab96cf9261e40654fb96db7be15e1219942c5aa18",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "405_145",
+   "name": "GKOT_405_145.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_405_145.laz",
+   "bytes": 599658200,
+   "sha256": "d2a30e2ced4e414e89562bc55cffbea946d96e2ea0594c0c37286b75e9c89f37",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "406_145",
+   "name": "GKOT_406_145.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_406_145.laz",
+   "bytes": 732897856,
+   "sha256": "771b8ff5629e68258544c7ef0b975c0ed3489d1e9ed24d50f6b61bd0cd2fcb68",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "399_144",
+   "name": "GKOT_399_144.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_399_144.laz",
+   "bytes": 443373523,
+   "sha256": "e04d155985114500f0b65160cf8b80235493ad865f6da039b20d81eb9addfc5c",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "400_144",
+   "name": "GKOT_400_144.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_400_144.laz",
+   "bytes": 568325079,
+   "sha256": "639fe5a1430ab337cfe8e8eb2d32c848baa592a59f2181e5a06c98a91f7bc8a7",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "401_144",
+   "name": "GKOT_401_144.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_401_144.laz",
+   "bytes": 480114453,
+   "sha256": "c664667603295d5b3ac0bc0a0300d19d7e01ccf8c94f327eba8afedbb9583fcc",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "402_144",
+   "name": "GKOT_402_144.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_402_144.laz",
+   "bytes": 380519266,
+   "sha256": "f82e44f733bec21c4435f92c7d1ea0722e27caefc723a427f1727370960d6bb9",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "403_144",
+   "name": "GKOT_403_144.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_403_144.laz",
+   "bytes": 523953171,
+   "sha256": "60a3bc3402fe8244ef0bd9b2a42877314a4113941947a13db59a4fbd3ca5322b",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "404_144",
+   "name": "GKOT_404_144.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_404_144.laz",
+   "bytes": 680741155,
+   "sha256": "039dad7067009ff11f60dfdcb3246dd515351f81dea26572a1ee0a6ff306c162",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "405_144",
+   "name": "GKOT_405_144.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_405_144.laz",
+   "bytes": 424545879,
+   "sha256": "2bbe2bef2950c13609ea058739cfc85623a39b409f4797e4a992ca9d69981340",
+   "fetched": "2026-11-18"
+  },
+  {
+   "sheet": "406_144",
+   "name": "GKOT_406_144.laz",
+   "url": "https://assets.flycom.si/clss/raw/04-jesenice/zls/gkot/GKOT_406_144.laz",
+   "bytes": 617618256,
+   "sha256": "a7a3d100ebb1358404ce9fe636e3ee35de0d2a0d8cca53ad747972d373175782",
+   "fetched": "2026-11-18"
   }
  ]
 }

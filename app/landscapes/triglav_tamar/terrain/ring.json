@@ -1,7 +1,7 @@
 {
  "format": "openrc-heightfield v1",
  "name": "ring",
- "crs": "D96/TM (EPSG:3794); grid north; heights in metres above the Slovenian height datum (ARSO DMR1)",
+ "crs": "D96/TM (EPSG:3794); grid north; heights in metres above the Slovenian height datum (GKOT ground, ARSO DMR1 fill)",
  "columns": 1500,
  "rows": 1500,
  "origin_east_m": 391008.0,
@@ -15,10 +15,11 @@
  "max_m": 2647.969,
  "clamped_nodes": 206402,
  "data": "ring.u16.gz",
- "data_sha256": "24f274e184ed49b9d415b960e8218c9afacb8ce5857aa131fefd6cee0efb2dbb",
+ "data_sha256": "63f6cc85c115a4f2319cc4072b5deecb1e3d6332588fba26dd5430b7fd7a17bc",
  "sources": [
   "Digital terrain model DMR1 (LiDAR, 1 m): Ministry of the Environment and Spatial Planning, Slovenian Environment Agency (ARSO)",
-  "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles"
+  "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles",
+  "Cyclic laser scanning of Slovenia 2023-2025 (CLSS), classified point cloud GKOT: Surveying and Mapping Authority of the Republic of Slovenia (GURS), CC BY 4.0"
  ],
  "generator": "research/triglav/TG-02/bake_terrain.py",
  "core_cells": {

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """TG-02: bake the Triglav (Planica/Tamar) height grids from the TG-01 sources.
 
-- core: 8 x 8 km, 4000 x 4000 nodes at 2 m, each the mean of a 2 x 2 block of ARSO DMR1 1 m samples. Node (i, j) sits
-  at D96/TM E = CORE_E0 + 2 i + 0.5, N = CORE_N0 + 2 j + 0.5 (row j = 0 is the south edge). Tiles ARSO does not serve
-  (Italy) are filled from SRTM, shifted by the mean LiDAR - SRTM offset along the hole's edge.
+- core: 8 x 8 km, 4000 x 4000 nodes at 2 m. Node (i, j) sits at D96/TM E = CORE_E0 + 2 i + 0.5,
+  N = CORE_N0 + 2 j + 0.5 (row j = 0 is the south edge). Each node is the mean of the ground points of the GURS CLSS
+  2023-25 survey (GKOT class 2, rasterised by raster_gkot.py) in its 2 x 2 m cell. Cells without ground points
+  (dense canopy) take the ARSO DMR1 2014-15 value (mean of 2 x 2 1 m samples) plus a smooth GKOT - ARSO offset field,
+  so no step appears. Where neither survey has data (Italy), SRTM fills, shifted by the mean LiDAR - SRTM offset
+  along the hole's edge. Without the GKOT cache the core is ARSO + SRTM alone.
 - ring: 24 x 24 km around the core centre, 1500 x 1500 nodes at 16 m, from SRTM (bilinear, projected to D96/TM)
   outside the core and from the core inside it. Visual only.
 
@@ -27,6 +30,7 @@ import numpy as np
 
 REPO = Path(__file__).resolve().parents[3]
 CACHE = REPO / "tmp/triglav"
+GKOT_RASTER = CACHE / "gkot_raster"
 SOURCES = REPO / "research/triglav/sources.json"
 OUT = REPO / "app/landscapes/triglav_tamar/terrain"
 
@@ -103,6 +107,44 @@ def load_core_1m(pins: dict) -> np.ndarray:
     return core
 
 
+def push_pull(values: np.ndarray, valid: np.ndarray) -> np.ndarray:
+    """Smoothly fill a 2D field where `valid` is False from the valid values (push-pull pyramid)."""
+    levels = [(np.where(valid, values, 0.0), valid.astype(np.float64))]
+    while min(levels[-1][1].shape) > 1:
+        v, w = levels[-1]
+        h, wd = (w.shape[0] // 2) * 2, (w.shape[1] // 2) * 2
+        levels.append((v[:h, :wd].reshape(h // 2, 2, wd // 2, 2).sum(axis=(1, 3)),
+                       w[:h, :wd].reshape(h // 2, 2, wd // 2, 2).sum(axis=(1, 3))))
+    field = levels[-1][0] / np.maximum(levels[-1][1], 1e-9)
+    for v, w in reversed(levels[:-1]):
+        up = np.repeat(np.repeat(field, 2, axis=0), 2, axis=1)
+        full = np.pad(up, ((0, v.shape[0] - up.shape[0]), (0, v.shape[1] - up.shape[1])), mode="edge")
+        field = np.where(w > 0, v / np.maximum(w, 1e-9), full)
+    return field
+
+
+def load_gkot_ground_2m():
+    """GKOT ground at 2 m (rows south to north), NaN where a 2 x 2 m cell has no ground point; None without the cache."""
+    side = CORE_KM * 500
+    names = [f"{e}_{n}" for n in range(CORE_N0 // 1000, CORE_N0 // 1000 + CORE_KM)
+             for e in range(CORE_E0 // 1000, CORE_E0 // 1000 + CORE_KM)]
+    present = [name for name in names if (GKOT_RASTER / f"{name}.npz").exists()]
+    if not present:
+        return None, []
+    total = np.zeros((side, side))
+    count = np.zeros((side, side))
+    for name in present:
+        e, n = (int(v) for v in name.split("_"))
+        g = np.load(GKOT_RASTER / f"{name}.npz")["ground"][::-1].astype(np.float64)   # south to north
+        valid = np.isfinite(g)
+        r0 = (n - CORE_N0 // 1000) * 500
+        c0 = (e - CORE_E0 // 1000) * 500
+        total[r0:r0 + 500, c0:c0 + 500] = np.where(valid, g, 0.0).reshape(500, 2, 500, 2).sum(axis=(1, 3))
+        count[r0:r0 + 500, c0:c0 + 500] = valid.reshape(500, 2, 500, 2).sum(axis=(1, 3))
+    with np.errstate(invalid="ignore", divide="ignore"):
+        return np.where(count > 0, total / count, np.nan), present
+
+
 def bake_core(pins: dict, srtm, srtm_size):
     core1 = load_core_1m(pins)
     side = CORE_KM * 1000
@@ -123,8 +165,22 @@ def bake_core(pins: dict, srtm, srtm_size):
         core1[north, east] = fill + offset
     else:
         offset = 0.0
-    core2 = core1.reshape(side // 2, 2, side // 2, 2).mean(axis=(1, 3))
-    return core2, {"filled_1m_samples": filled, "fill_offset_m": round(offset, 3)}
+    arso2 = core1.reshape(side // 2, 2, side // 2, 2).mean(axis=(1, 3))
+    info = {"filled_1m_samples": filled, "fill_offset_m": round(offset, 3)}
+    gkot2, sheets = load_gkot_ground_2m()
+    if gkot2 is None:
+        return arso2, info
+    # ARSO only where ARSO itself is LiDAR (not its SRTM fill) counts for the offset field.
+    arso_lidar = ~holes.reshape(side // 2, 2, side // 2, 2).any(axis=(1, 3))
+    have = np.isfinite(gkot2)
+    both = have & arso_lidar
+    offset_field = push_pull(gkot2 - arso2, both)
+    core2 = np.where(have, gkot2, arso2 + offset_field)
+    diff = (gkot2 - arso2)[both]
+    info.update({"gkot_sheets": len(sheets), "gkot_ground_nodes": round(float(have.mean()), 4),
+                 "gkot_minus_arso_median_m": round(float(np.median(diff)), 3),
+                 "gkot_minus_arso_p05_p95_m": [round(float(v), 3) for v in np.percentile(diff, [5, 95])]})
+    return core2, info
 
 
 def bake_ring(core2, srtm, srtm_size):
@@ -170,7 +226,7 @@ def bake():
         header = {
             "format": FORMAT,
             "name": name,
-            "crs": "D96/TM (EPSG:3794); grid north; heights in metres above the Slovenian height datum (ARSO DMR1)",
+            "crs": "D96/TM (EPSG:3794); grid north; heights in metres above the Slovenian height datum (GKOT ground, ARSO DMR1 fill)",
             "columns": int(grid.shape[1]),
             "rows": int(grid.shape[0]),
             "origin_east_m": float(origin[0]),
