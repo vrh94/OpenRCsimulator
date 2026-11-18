@@ -205,4 +205,5 @@ Evidence: `tests/test_fast_delta_780_6s.gd` 16/16. Details: [FD-03](../../resear
 ## Next
 
 The plan's steps 12–19 are done; step 11 (shadows) is deferred. Planned next (user decisions 2026-11-17): a user mod
-folder, and a Triglav National Park landscape with solid terrain (Planica/Tamar).
+folder, and a Triglav National Park landscape with solid terrain (Planica/Tamar): see the
+[Step 21 plan](triglav-planica-tamar.md).
