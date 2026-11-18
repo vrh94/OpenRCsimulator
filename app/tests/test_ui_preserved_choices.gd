@@ -84,10 +84,8 @@ func _run() -> void:
 	app.set_aircraft(Catalog.DEFAULT_ID)
 	app.set_start_choice("runway")
 	await ui.settle()
-	var green := ""
-	for id: String in Landscapes.ids():
-		if id != app.landscape_id:
-			green = id
+	var green := "green_paradise" # the catalog's landscape without a runway (Triglav has its own strip)
+	_check("the runway-less landscape is listed", Landscapes.has(green) and green != app.landscape_id)
 	app.set_landscape(green)
 	await ui.settle()
 	_check("a landscape without a runway shows the in-the-air start", app.home.start_choice == "airborne")
