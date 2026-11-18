@@ -12,11 +12,11 @@
     "res://ai/companions/profile_loader.gd": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
     "res://ai/companions/seed_allocator.gd": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
     "res://ai/companions/static_trajectory.gd": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
-    "res://app_root.gd": "d501f1b06bb94784bcc4ed5c299b74cd9d7e24524cc3f4a85272ba162291d647",
-    "res://data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+    "res://app_root.gd": "6132294048194d721c954a314dbdfa7e289f28fd6108528856181c6499d030d3",
+    "res://data/field_loader.gd": "e9e1c1a10b21ec809625d5caeb33414b90a125d3ffc530953827702f68cc26f8",
     "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
     "res://main.gd": "358ed86f49b0c3a78d5e6ed5e1a9b1ceba31b2c8ed44bd52c819aace55df7d50",
-    "res://scenery/collision_world.gd": "9eeae928cec7038a8fa5e1a154ff0e79c97553f462339a80b54e08895227c34a",
+    "res://scenery/collision_world.gd": "0ed67337f2620e68785e7bf07dbc181a20feeffa5900498e804f6677f69811a1",
     "res://workshop/strict_json.gd": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
   }
 }
