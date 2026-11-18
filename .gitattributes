@@ -336,3 +336,7 @@
 /app/render/frame_generation*.gd.uid text eol=lf
 /app/tests/test_frame_generation*.gd text eol=lf
 /app/tests/test_frame_generation*.gd.uid text eol=lf
+
+/app/landscapes/triglav_tamar/terrain/*.u16.gz binary
+/app/landscapes/triglav_tamar/terrain/*.json text eol=lf
+/research/triglav/sources.json text eol=lf

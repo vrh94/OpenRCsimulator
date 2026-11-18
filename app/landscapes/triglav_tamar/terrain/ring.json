@@ -1,0 +1,30 @@
+{
+ "format": "openrc-heightfield v1",
+ "name": "ring",
+ "crs": "D96/TM (EPSG:3794); grid north; heights in metres above the Slovenian height datum (ARSO DMR1)",
+ "columns": 1500,
+ "rows": 1500,
+ "origin_east_m": 391008.0,
+ "origin_north_m": 136008.0,
+ "spacing_m": 16.0,
+ "row_order": "south to north; column order west to east; node (0, 0) at the origin",
+ "encoding": "gzip of little-endian uint16; height_m = base_m + value * step_m",
+ "base_m": 600.0,
+ "step_m": 0.03125,
+ "min_m": 600.0,
+ "max_m": 2647.969,
+ "clamped_nodes": 206402,
+ "data": "ring.u16.gz",
+ "data_sha256": "24f274e184ed49b9d415b960e8218c9afacb8ce5857aa131fefd6cee0efb2dbb",
+ "sources": [
+  "Digital terrain model DMR1 (LiDAR, 1 m): Ministry of the Environment and Spatial Planning, Slovenian Environment Agency (ARSO)",
+  "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles"
+ ],
+ "generator": "research/triglav/TG-02/bake_terrain.py",
+ "core_cells": {
+  "east_first": 500,
+  "north_first": 500,
+  "east_count": 500,
+  "north_count": 500
+ }
+}

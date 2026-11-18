@@ -2,7 +2,15 @@
 
 Owner decisions of 2026-11-17: a landscape of Triglavski narodni park, solid real terrain (ground contact follows the
 elevation model; this is a terrain change, not a flight-model change), centred on the Planica/Tamar valley. Status:
-**planned, not implemented.** Steps are 21a (data and visuals) and 21b (solid terrain contact).
+**in progress**: TG-01 and TG-02 done ([research/triglav](../../research/triglav/README.md)). Steps are 21a (data and visuals) and 21b (solid terrain contact).
+
+## Owner decisions (2026-11-18)
+
+- Triglav before the mod folder (step 20 follows).
+- Playable core **8 × 8 km at 2 m**: the Tamar meadow, the Planica valley to Rateče and the ridges either side.
+- Ground look from the **real aerial orthophoto** (2023–25 survey). Its licence is checked before a public release,
+  with procedural shading as the fallback.
+- **RC trucks drive the Triglav terrain too** (in 21b).
 
 ## The place
 

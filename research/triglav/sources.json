@@ -1,0 +1,410 @@
+{
+ "format": "openrc-terrain-sources v1",
+ "region": "Planica/Tamar, Triglav National Park, Slovenia",
+ "crs": "ARSO tiles: D96/TM (EPSG:3794), heights in metres; SRTM: WGS84 geographic, 1 arc-second",
+ "core_d96tm_km": {
+  "east": [
+   399,
+   406
+  ],
+  "north": [
+   144,
+   151
+  ]
+ },
+ "attribution": [
+  "Digital terrain model DMR1 (LiDAR, 1 m): Ministry of the Environment and Spatial Planning, Slovenian Environment Agency (ARSO)",
+  "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles"
+ ],
+ "licence_note": "ARSO: free to use, modify and reuse with the credit above (ARSO statement recorded by opendem.info); confirm with ARSO before a public release. SRTM: public domain.",
+ "arso_dmr1": [
+  {
+   "name": "TM1_399_144.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_399_144.asc",
+   "bytes": 28000000,
+   "sha256": "bacafc7178b89480a2b9347d7e6cc74d184fa273d30209858ef50e07f7634230"
+  },
+  {
+   "name": "TM1_400_144.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_400_144.asc",
+   "bytes": 28000000,
+   "sha256": "db55e9e0b8a13855cae5c184aee591049bccac0670c2f93a310554e7a0ba34ef"
+  },
+  {
+   "name": "TM1_401_144.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_401_144.asc",
+   "bytes": 28000000,
+   "sha256": "bb9b43d5d4792fdb5c0409efc7b10a3ac5ca314a8073debde1ed4c606052be1e"
+  },
+  {
+   "name": "TM1_402_144.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_402_144.asc",
+   "bytes": 28000000,
+   "sha256": "141bf7de2e21901f8a5896ff1afde6b6a411ecb5754b0f8fc739301273759a8d"
+  },
+  {
+   "name": "TM1_403_144.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_403_144.asc",
+   "bytes": 28000000,
+   "sha256": "1bbca9beaf462bc5e5187a7f207b522fc2cd290a4d01e4eea99d3c9c43274eaa"
+  },
+  {
+   "name": "TM1_404_144.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_404_144.asc",
+   "bytes": 28000000,
+   "sha256": "ce747b3fc5653957abad9d45c23b23137323e6cfd8b630b8eb3d645568121cf5"
+  },
+  {
+   "name": "TM1_405_144.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_405_144.asc",
+   "bytes": 28000000,
+   "sha256": "e436e1106ad04813cdc8053655b035b8db939b0343a47cfa39677d172f0e4352"
+  },
+  {
+   "name": "TM1_406_144.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_406_144.asc",
+   "bytes": 28000000,
+   "sha256": "fefffec6bd4bf0bca2b47c28b40d1ce87155c08a255d9ce0e3803827da2682bd"
+  },
+  {
+   "name": "TM1_399_145.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_399_145.asc",
+   "bytes": 28000000,
+   "sha256": "5712971c09a79b9ab05dc03a358c911e91bf36dfc8fbdc51b46898fa4abb679e"
+  },
+  {
+   "name": "TM1_400_145.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_400_145.asc",
+   "bytes": 28000000,
+   "sha256": "7131fd00a65e34c4f3876f8662d8abbe72729d681867005ab459f49e677b7edd"
+  },
+  {
+   "name": "TM1_401_145.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_401_145.asc",
+   "bytes": 28000000,
+   "sha256": "ebbc7695cb276280a8bff7158156a0c1fe542e4103bdb0184e64347ae199c41a"
+  },
+  {
+   "name": "TM1_402_145.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_402_145.asc",
+   "bytes": 28000000,
+   "sha256": "3f9e12f516f76269130e0e2a3269eaf12af0200e245626a3055b69f45e73e762"
+  },
+  {
+   "name": "TM1_403_145.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_403_145.asc",
+   "bytes": 28000000,
+   "sha256": "24d25b62a02d3881e3734474ae6aaf443957f31b977bc30c8e642d321f1def9b"
+  },
+  {
+   "name": "TM1_404_145.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_404_145.asc",
+   "bytes": 28000000,
+   "sha256": "f531e085cef2af64888a531f439bc2be50937e4a41ccbeb3be448834e7d6a1bb"
+  },
+  {
+   "name": "TM1_405_145.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_405_145.asc",
+   "bytes": 27982057,
+   "sha256": "152f31cb30d6a21b7bcb3899127e350478e1e3ac900d21372c11ce9ff2b52a17"
+  },
+  {
+   "name": "TM1_406_145.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_406_145.asc",
+   "bytes": 27572224,
+   "sha256": "890c4fbf5073d181f8a143b34760920969b544258ef287e290b1fceb23e76165"
+  },
+  {
+   "name": "TM1_399_146.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_399_146.asc",
+   "bytes": 28000000,
+   "sha256": "f3839992521ad891c21b195fe40372256a7673a91615bbdc501c5f6bd9f6cff7"
+  },
+  {
+   "name": "TM1_400_146.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_400_146.asc",
+   "bytes": 28000000,
+   "sha256": "1e34d7bc081dd453498f14f07292c7773c93424a9f7deae9ff97e954be43c257"
+  },
+  {
+   "name": "TM1_401_146.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_401_146.asc",
+   "bytes": 28000000,
+   "sha256": "f5a4ec52118149d10a4f2ef13f620ddf8e98376a8c2180a58099eee5e0434ff1"
+  },
+  {
+   "name": "TM1_402_146.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_402_146.asc",
+   "bytes": 28000000,
+   "sha256": "97976f24ca112126c1c0a77b5ce9fc51ad77d6427c158e9dbb8a0f71bf5bd354"
+  },
+  {
+   "name": "TM1_403_146.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_403_146.asc",
+   "bytes": 28000000,
+   "sha256": "f818384db5940192e6569d5306f50045d3ebb65e4ae2436fec7a51be8142ce71"
+  },
+  {
+   "name": "TM1_404_146.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_404_146.asc",
+   "bytes": 28000000,
+   "sha256": "d77e5c9c3f0fe04e5f3026d970adc416db3b65b01eaec58173e9176692afb4c9"
+  },
+  {
+   "name": "TM1_405_146.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_405_146.asc",
+   "bytes": 27996231,
+   "sha256": "91199e16480016acaf7abd273ca3f6894314801211c93ae9e48f1dd381fcd6cc"
+  },
+  {
+   "name": "TM1_406_146.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_406_146.asc",
+   "bytes": 27420575,
+   "sha256": "daa4290572d31be4844905d425cd3c9866d147127c38b39cf3c202a04f853ac5"
+  },
+  {
+   "name": "TM1_399_147.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_399_147.asc",
+   "bytes": 28000000,
+   "sha256": "bf341c0fb24b3ba43d5aebc7555995350ac113bfa61764b9e492389c38f1a059"
+  },
+  {
+   "name": "TM1_400_147.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_400_147.asc",
+   "bytes": 28000000,
+   "sha256": "e653a8edf6ee678da2373d5f31765e0ed4e74b0dd9d9e61a137acbc2e598d80a"
+  },
+  {
+   "name": "TM1_401_147.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_401_147.asc",
+   "bytes": 28000000,
+   "sha256": "fa108f548d5f39931b40f123db03dff71a4c0c51ebcac5d96997319f4c081038"
+  },
+  {
+   "name": "TM1_402_147.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_402_147.asc",
+   "bytes": 28000000,
+   "sha256": "f23d66c6b453fa3f9d5199fb1a789f723ac7f943fa817b8e7851f332e197454f"
+  },
+  {
+   "name": "TM1_403_147.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_403_147.asc",
+   "bytes": 28000000,
+   "sha256": "34b6c7e4bc824fe66f11604343ff4152fe7819189729f8fca597fff6528080d6"
+  },
+  {
+   "name": "TM1_404_147.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_404_147.asc",
+   "bytes": 27999293,
+   "sha256": "bd831c365c785709ac4b49cfc5ffe97c04627c80a9d2b5d8acdf9dc0f20f9234"
+  },
+  {
+   "name": "TM1_405_147.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_405_147.asc",
+   "bytes": 27990497,
+   "sha256": "0867ec0c6851ee3213c3f4b712286b0809138e4d35afa2a6b1b245573e3f2eb0"
+  },
+  {
+   "name": "TM1_406_147.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_406_147.asc",
+   "bytes": 27191132,
+   "sha256": "78b9e45f79dbe83b70b290368fae3e3d6e9b37bc15a016b699a6e6cf00bc2e21"
+  },
+  {
+   "name": "TM1_399_148.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_399_148.asc",
+   "bytes": 28000000,
+   "sha256": "3069052bf84d4ae27c02ade36ff76b89db06785119749b306b91456f43cac2c7"
+  },
+  {
+   "name": "TM1_400_148.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_400_148.asc",
+   "bytes": 28000000,
+   "sha256": "d71b6a5cc7909e589de87b32194fd9d1cafa7d4cf166c9f0b662a3270f03253b"
+  },
+  {
+   "name": "TM1_401_148.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_401_148.asc",
+   "bytes": 27784153,
+   "sha256": "64f2fa8454c6940cd7985931b0f7294de7b762824948d2d452917163efcfde95"
+  },
+  {
+   "name": "TM1_402_148.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_402_148.asc",
+   "bytes": 27935893,
+   "sha256": "ee4b377d8867cc6537c84fca29f9a516441b984ce757b6aa1a3153056278f90d"
+  },
+  {
+   "name": "TM1_403_148.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_403_148.asc",
+   "bytes": 28000000,
+   "sha256": "1521ba3210bf5f8cfead6605733f7962aebd40e728a3abea07310752ac86089c"
+  },
+  {
+   "name": "TM1_404_148.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_404_148.asc",
+   "bytes": 27921972,
+   "sha256": "dd8d26beea37c5279fe8dbc2282189e8aaca359173ef013dbbd7b3f0e6a6f6c4"
+  },
+  {
+   "name": "TM1_405_148.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_405_148.asc",
+   "bytes": 27639266,
+   "sha256": "b2c3fb57f21479831bc3b6a80ed55c8908337f26f9f047b2b1101b6e3496558b"
+  },
+  {
+   "name": "TM1_406_148.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_37/D96TM/TM1_406_148.asc",
+   "bytes": 27063067,
+   "sha256": "76f8d13a1d3059499ae0458fcfd253583089f0e031acd19ff1705e2a863f4caa"
+  },
+  {
+   "name": "TM1_399_149.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_399_149.asc",
+   "bytes": 28000000,
+   "sha256": "40023f87043cc81d4a17cae120297dd2672f7e07f00357bf30389267149a3721"
+  },
+  {
+   "name": "TM1_400_149.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_400_149.asc",
+   "bytes": 28000000,
+   "sha256": "7447424ad3e4f791c5ff8ce3f9a18abd59049e4838c8ba1b0aeda9e809d7f810"
+  },
+  {
+   "name": "TM1_401_149.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_401_149.asc",
+   "bytes": 27675087,
+   "sha256": "72ced28a56bfbf9e651f270b3b06141ad4b186f451884ee7416d868441291777"
+  },
+  {
+   "name": "TM1_402_149.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_402_149.asc",
+   "bytes": 27495498,
+   "sha256": "07e9b9bb00cf59f84f348f366fa2e1c18e8ce412337c2cfc7207e4051eee1c78"
+  },
+  {
+   "name": "TM1_403_149.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_403_149.asc",
+   "bytes": 27998899,
+   "sha256": "74a09eb5295db12676e20c557f14090ad36bb9622160df32d724028435dd836b"
+  },
+  {
+   "name": "TM1_404_149.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_404_149.asc",
+   "bytes": 28000000,
+   "sha256": "f854b0739ea9f2cc9bb5c1be6bff1130d08961e6318eb8f9816b61068ae32d14"
+  },
+  {
+   "name": "TM1_405_149.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_405_149.asc",
+   "bytes": 27818399,
+   "sha256": "135308aa03ab455240c5c9fe7d858b8bf245ee2e482b8569d4144cb9f89ebe0f"
+  },
+  {
+   "name": "TM1_406_149.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_406_149.asc",
+   "bytes": 27011719,
+   "sha256": "5cb2042646313f823f2a2d7a24c62943063cb1396171fdf7d61a565d0d08a4e4"
+  },
+  {
+   "name": "TM1_399_150.asc",
+   "absent": "no ARSO block serves this tile (outside Slovenia)"
+  },
+  {
+   "name": "TM1_400_150.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_400_150.asc",
+   "bytes": 27554602,
+   "sha256": "4b5b4a5db38127879847ea9ead16e6725f1468e87c4f908346e1c53c48ba8e50"
+  },
+  {
+   "name": "TM1_401_150.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_401_150.asc",
+   "bytes": 27354576,
+   "sha256": "17cb62f69130eb304f75e98cd063e7418e2ccb3f2df6638347f6e4181da37d5e"
+  },
+  {
+   "name": "TM1_402_150.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_402_150.asc",
+   "bytes": 27033527,
+   "sha256": "1b7864d16df3b9cd165184d3f611f6b3f290606da1674d4ac3da29f3243c891b"
+  },
+  {
+   "name": "TM1_403_150.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_403_150.asc",
+   "bytes": 27077143,
+   "sha256": "816481b22b9252ce36f880a3f47b14aef99fee49c7aadad25f4e117a8b767096"
+  },
+  {
+   "name": "TM1_404_150.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_404_150.asc",
+   "bytes": 27335070,
+   "sha256": "cdfd44da1163b6bebc165fd6c593627aaae8b8265532332751d2a16bac499cad"
+  },
+  {
+   "name": "TM1_405_150.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_405_150.asc",
+   "bytes": 27088620,
+   "sha256": "1fe60c4fdb7c6437f2734077838b7db24b1909f4872ce1fc1354befebdbbf387"
+  },
+  {
+   "name": "TM1_406_150.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_406_150.asc",
+   "bytes": 27000000,
+   "sha256": "4c78cdd7c0579287fae17c67cc574753b7b84867aa0489f5374f4fbeefbe42db"
+  },
+  {
+   "name": "TM1_399_151.asc",
+   "absent": "no ARSO block serves this tile (outside Slovenia)"
+  },
+  {
+   "name": "TM1_400_151.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_400_151.asc",
+   "bytes": 27000000,
+   "sha256": "7c5eb229d57ece5c40e03432318a424ceef8fa99b822fa9e5a8b64126fe39b48"
+  },
+  {
+   "name": "TM1_401_151.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_401_151.asc",
+   "bytes": 27003172,
+   "sha256": "5abf5a34fab3e73fcc1599fa6b6d452aaf7bd9444e881954fadf1004155ed174"
+  },
+  {
+   "name": "TM1_402_151.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_402_151.asc",
+   "bytes": 27300745,
+   "sha256": "3a086ba16d352f276d43308c7658f25acccd3fc750fbd13f36129d962615a99b"
+  },
+  {
+   "name": "TM1_403_151.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_403_151.asc",
+   "bytes": 27470388,
+   "sha256": "2b1ce5c66ccaec540f23a0511954da552a76995416495ec0f3a718bb499bdecc"
+  },
+  {
+   "name": "TM1_404_151.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_404_151.asc",
+   "bytes": 27119176,
+   "sha256": "193c851b35aa148a1120a05dfbc664b3a3d8f443160a4d95337d7a54440d6b0c"
+  },
+  {
+   "name": "TM1_405_151.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_405_151.asc",
+   "bytes": 27266823,
+   "sha256": "f0c565c0452f76f4b08f2b071a1323a9e11b60fb41266bb68d42a59942751bf9"
+  },
+  {
+   "name": "TM1_406_151.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_31/D96TM/TM1_406_151.asc",
+   "bytes": 27596862,
+   "sha256": "64b50a4065a36d63277893c86da39ce05467dd7d740212a69cc4bc8ebf2f2ad4"
+  }
+ ],
+ "srtm": [
+  {
+   "name": "N46E013.hgt.gz",
+   "url": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N46/N46E013.hgt.gz",
+   "bytes": 15367765,
+   "sha256": "476ac43deaceb30721b8c0ff4a04f5fec37bad9a64c8dc78f23a537305cc724a"
+  }
+ ]
+}
