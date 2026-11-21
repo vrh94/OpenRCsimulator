@@ -105,3 +105,27 @@ airplanes could be parked at idle (the cross-slope unloads one wheel below its s
 lies nearer the valleys than the Rateče plain, so the pilot stands on an open hay meadow there, at the mouth of the
 Planica valley: a 100 × 12 m strip 24 m south of the pilot is level within 0.3 % along and 1.5 % across, and all 10
 airplanes start, park and take off from it.
+
+## Frame time (TG-08, 2026-11-21)
+
+The production airplane activity hosted by `tools/smoke/benchmark_flight.gd`: Ugly Stik airborne at 120 m, chase view,
+1920 × 1080 window kept on top, vsync off, 8 s warm-up, 30 s sample. Apple M1 Max, Metal, Godot 4.8-beta2. Every
+interval drew a frame, and no run crashed or paused. One run each, so differences of about 1 ms are within run-to-run
+noise.
+
+| Field, Scene detail | p50 ms | p95 ms | p99 ms | Mean fps | Physics µs per tick |
+| --- | --- | --- | --- | --- | --- |
+| Triglav, Low (trees 600 m) | 4.94 | 8.27 | 11.59 | 181 | 1066 |
+| Triglav, High (trees 1500 m) | 4.39 | 7.15 | 12.52 | 199 | 1037 |
+| Triglav, Extreme (trees 2500 m) | 5.05 | 7.32 | 8.46 | 185 | 1087 |
+| Club field, High (reference) | 3.62 | 6.80 | 9.07 | 259 | 684 |
+
+With vsync on (the default), Triglav at High holds the 120 Hz display: p50 8.32 ms, p95 9.05 ms.
+
+- Triglav costs about 1 ms per frame more than the Club field at the median. Tree range barely matters on this GPU,
+  so Scene detail mainly protects weaker GPUs.
+- Physics costs about 50 % more per tick (1.04 against 0.68 ms). Native kernels refuse terrain fields, so Triglav
+  runs the GDScript reference backend. At 240 Hz that is a quarter of one core, and the simulation kept real time
+  (8,883 ticks in 37.0 s).
+- An occluded window draws almost nothing on macOS; the first attempt reported "window_not_drawable" and was
+  discarded. Keep the window visible (`--always-on-top`) and check `render_progress.status == "observed"`.

@@ -2,10 +2,11 @@
 
 Owner decisions of 2026-11-17: a landscape of Triglavski narodni park, solid real terrain (ground contact follows the
 elevation model; this is a terrain change, not a flight-model change), centred on the Planica/Tamar valley. Status:
-**in progress**: TG-01 to TG-06 done ([research/triglav](../../research/triglav/README.md),
-`app/landscapes/triglav_tamar/`, `app/physics/terrain_dem.gd`); the landscape is in the catalog with solid terrain for
-airplanes, helicopters, multirotors, the blimp and the RC trucks. Open: TG-07 (trees and buildings are not solid yet)
-and the 1080p frame-time captures of TG-08. Steps are 21a (data and visuals) and 21b (solid terrain contact).
+**done** (2026-11-21): TG-01 to TG-08 ([research/triglav](../../research/triglav/README.md),
+`app/landscapes/triglav_tamar/`, `app/physics/terrain_dem.gd`, `app/physics/field_air.gd`). The landscape is in the
+catalog with solid terrain and solid trees and buildings near the pilot for airplanes, helicopters, multirotors, the
+blimp and the RC trucks; everything that flies there flies in the air at the field's height. Licence confirmation with ARSO and GURS remains before a public
+release. Steps are 21a (data and visuals) and 21b (solid terrain contact).
 
 ## Owner decisions (2026-11-18)
 
@@ -98,12 +99,13 @@ quantized products the game needs are committed, each well under the repository'
   carries the whole inventory). Settings > Graphics > Scene detail sets how far they are drawn (trees 600, 1000, 1500
   or 2500 m; buildings 2, 3, 4 or 6 km).
 - TG-08 tests (`tests/test_triglav_terrain.gd` covers the provider, a hull inside a mountainside, an airplane parked and
-  rolling on the strip, a truck driving the meadow and the helicopter pad; frame-time captures remain):
+  rolling on the strip, a truck driving the meadow, the helicopter pad, obstacles and the field air; frame times at
+  1080p are in [research/triglav](../../research/triglav/README.md#frame-time-tg-08-2026-11-21)):
   - the provider against the baked grid;
   - landing and take-off on the sloped meadow;
   - a truck driving the valley road;
   - a crash into a slope;
-  - frame-time captures at 1080p.
+  - frame-time captures at 1080p (done: p50 4.4 ms, p95 7.2 ms at High on an M1 Max, vsync off).
 
 ## Risks and notes
 
