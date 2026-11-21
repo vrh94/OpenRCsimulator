@@ -18,6 +18,7 @@ const Reference := preload("res://ui/controls_reference.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const FieldAir := preload("res://physics/field_air.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
@@ -97,6 +98,8 @@ var _rotorcraft_start_preference: String = "runway"
 var runway_available: bool = true
 ## Natural Random generates its scenarios on the Club field only (independent of the runway start, TG-04).
 var natural_random_available: bool = true
+## Triglav: metres above sea level of the selected field; its flights fly in that air (physics/field_air.gd).
+var field_elevation_m: float = 0.0
 var rotorcraft_pad_available: bool = true
 var landscape_id: String = Landscapes.DEFAULT_ID
 var landscape_button: Button
@@ -2007,42 +2010,44 @@ func _update_weather_text() -> void:
 	if weather_button == null:
 		return
 	var parts := PackedStringArray()
-	var spatial: bool = weather_config.get("format") == WeatherSettings.SPATIAL_FORMAT
-	var speed := float(weather_config.speed_mps)
-	var gust := float(weather_config.gust_mps)
-	var gust_up := float(weather_config.gust_up_mps)
-	var turbulence := WeatherSettings.has_turbulence(weather_config)
+	# The air the flight flies in: on a surveyed field, the selection at the field's height.
+	var shown_weather: Dictionary = FieldAir.at_elevation(weather_config, field_elevation_m)
+	var spatial: bool = shown_weather.get("format") == WeatherSettings.SPATIAL_FORMAT
+	var speed := float(shown_weather.speed_mps)
+	var gust := float(shown_weather.gust_mps)
+	var gust_up := float(shown_weather.gust_up_mps)
+	var turbulence := WeatherSettings.has_turbulence(shown_weather)
 	if speed > 0.0:
-		var wind_text := tr("%s m/s from %03.0f°") % [String.num(speed, 1), float(weather_config.from_deg)]
+		var wind_text := tr("%s m/s from %03.0f°") % [String.num(speed, 1), float(shown_weather.from_deg)]
 		parts.append(wind_text)
 	if gust > 0.0:
 		parts.append(tr("gust %s m/s") % String.num(gust, 1))
 	if gust_up != 0.0:
 		parts.append(tr("up %s m/s") % String.num(gust_up, 1))
 	if turbulence:
-		var rms: Array = weather_config.turbulence_rms_mps
+		var rms: Array = shown_weather.turbulence_rms_mps
 		parts.append(tr("Turbulence RMS N/E/Up: %s / %s / %s m/s; tau %s s; seed %s") % [
 			String.num(float(rms[0]), 1), String.num(float(rms[1]), 1), String.num(float(rms[2]), 1),
-			String.num(float(weather_config.turbulence_tau_s), 1), str(int(weather_config.turbulence_seed)),
+			String.num(float(shown_weather.turbulence_tau_s), 1), str(int(shown_weather.turbulence_seed)),
 		])
-	if weather_config.get("format", "") in [WeatherSettings.ATMOSPHERE_FORMAT, WeatherSettings.COLUMN_FORMAT, WeatherSettings.SPATIAL_FORMAT]:
-		if WeatherSettings.has_vertical_atmosphere(weather_config):
-			var column_air: Dictionary = WeatherSettings.atmosphere(weather_config)
+	if shown_weather.get("format", "") in [WeatherSettings.ATMOSPHERE_FORMAT, WeatherSettings.COLUMN_FORMAT, WeatherSettings.SPATIAL_FORMAT]:
+		if WeatherSettings.has_vertical_atmosphere(shown_weather):
+			var column_air: Dictionary = WeatherSettings.atmosphere(shown_weather)
 			if column_air.get("ok", false):
 				var atmosphere_summary: String = tr("Standard atmosphere")
 				parts.append(tr("Standard ISA at field %s m · density %s kg/m³") % [
-					String.num(float(weather_config.field_elevation_m), 1),
+					String.num(float(shown_weather.field_elevation_m), 1),
 					String.num(float(column_air.rho_kgm3), 3),
 				])
-		elif WeatherSettings.has_atmosphere(weather_config):
-			var air: Dictionary = WeatherSettings.atmosphere(weather_config)
+		elif WeatherSettings.has_atmosphere(shown_weather):
+			var air: Dictionary = WeatherSettings.atmosphere(shown_weather)
 			if air.get("ok", false):
 				var atmosphere_summary: String = tr("Thin air") if float(air.rho_kgm3) < 1.225 else tr("Custom air")
 				parts.append(tr("Field %s m · %s °C · QNH %s hPa · RH %s%% · density %s kg/m³ · density altitude %s m") % [
-					String.num(float(weather_config.field_elevation_m), 1),
-					String.num(float(weather_config.temperature_c), 1),
-					String.num(float(weather_config.qnh_hpa), 1),
-					String.num(float(weather_config.relative_humidity_pct), 0),
+					String.num(float(shown_weather.field_elevation_m), 1),
+					String.num(float(shown_weather.temperature_c), 1),
+					String.num(float(shown_weather.qnh_hpa), 1),
+					String.num(float(shown_weather.relative_humidity_pct), 0),
 					String.num(float(air.rho_kgm3), 3),
 					String.num(float(air.density_altitude_m), 0),
 				])
@@ -2057,7 +2062,7 @@ func _update_weather_text() -> void:
 	if compact and maxf(speed, maxf(gust, absf(gust_up))) > 0.0:
 		weather_brief = "%s m/s" % String.num(maxf(speed, maxf(gust, absf(gust_up))), 1)
 	elif speed > 0.0:
-		weather_brief = tr("%s m/s · %03.0f°") % [String.num(speed, 1), float(weather_config.from_deg)]
+		weather_brief = tr("%s m/s · %03.0f°") % [String.num(speed, 1), float(shown_weather.from_deg)]
 	elif gust > 0.0:
 		weather_brief = tr("Gust %s m/s") % String.num(gust, 1)
 	elif gust_up > 0.0:
@@ -2065,7 +2070,7 @@ func _update_weather_text() -> void:
 	elif gust_up < 0.0:
 		weather_brief = tr("Downdraft %s m/s") % String.num(absf(gust_up), 1)
 	if spatial:
-		var profile: Dictionary = weather_config.spatial_wind.profile
+		var profile: Dictionary = shown_weather.spatial_wind.profile
 		weather_brief = tr("Spatial wind") + " · %.1f m/s" % float(profile.reference_speed_mps)
 		parts.append(tr("Reference: %.1f m/s FROM %03.0f° at %.0f m AGL") % [
 			float(profile.reference_speed_mps), float(profile.reference_from_deg), float(profile.reference_height_agl_m),
@@ -2081,7 +2086,7 @@ func _update_weather_text() -> void:
 	var weather_help: String = tr("Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density.")
 	if spatial:
 		weather_help = tr("Spatial wind varies with position and height. This flat-field model is experimental.")
-	var standard_column_active: bool = WeatherSettings.has_vertical_atmosphere(weather_config)
+	var standard_column_active: bool = WeatherSettings.has_vertical_atmosphere(shown_weather)
 	if standard_column_active:
 		weather_help += "\n" + tr("Standard dry ISA density varies with geometric altitude from −500 to 11,000 m. This is a reference profile, not measured weather.")
 	var helicopter_weather_eligible: bool = not turbulence and not standard_column_active and not spatial

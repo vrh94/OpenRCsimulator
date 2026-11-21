@@ -7,6 +7,7 @@ extends RefCounted
 ## a disposable session. Its `ok` means "assessed"; `available` means the requested start
 ## committed without substitution. A committed scratch reset never publishes a live trial.
 
+const FieldAir := preload("res://physics/field_air.gd")
 const R := preload("res://workshop/creator/result.gd")
 const CreatorBytes := preload("res://workshop/creator/bytes.gd")
 const AcceptedCandidate := preload("res://workshop/creator/accepted_candidate.gd")
@@ -222,7 +223,7 @@ static func check_start(trial: Dictionary, normalized_field: Dictionary, weather
 		var field_reason: String = str(session.surface_error)
 		session.free()
 		return _failure("The selected field could not be installed: " + field_reason, start_choice, field_id, started_usec)
-	if not session.setup_weather(weather.config):
+	if not session.setup_weather(FieldAir.weather(weather.config, normalized_field)):
 		var weather_reason: String = str(session.weather_error)
 		session.free()
 		return _failure("The weather could not be installed: " + weather_reason, start_choice, field_id, started_usec)

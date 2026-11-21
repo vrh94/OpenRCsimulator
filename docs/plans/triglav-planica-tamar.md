@@ -51,8 +51,8 @@ quantized products the game needs are committed, each well under the repository'
 **Extent.**
 - Playable core: 4 × 4 km at 2 m spacing, from 16 DMR1 tiles averaged 2 × 2 (about 4 M samples).
 - Visual-only ring: about 24 × 24 km at 16–32 m, from DMR1 decimated inside Slovenia and SRTM beyond.
-- The field origin is the pilot spot. Heights are stored relative to it, and the field's elevation (about 1100 m) feeds
-  the atmosphere, so air density is right for the altitude.
+- The field origin is the pilot spot. Heights are stored relative to it, and the field's elevation (849.7 m at the
+  Rateče meadow) feeds the atmosphere, so air density is right for the altitude (done 2026-11-21).
 
 **Pilot spots.**
 - Tamar meadow south of the hut was the first choice, but it falls 6–7 % everywhere: only 2 of 10 airplanes can park
@@ -77,10 +77,10 @@ quantized products the game needs are committed, each well under the repository'
   - buildings: every GKOT roof region rebuilt from its 1 m roof grid (footprint, roof shape, walls), roofs coloured
     from the photo;
   - `tests/test_triglav_landscape.gd`.
-- TG-04 field and catalog (done; the credits entry follows with the release notes):
+- TG-04 field and catalog (done):
   - `field.json`, with surfaces for the meadow;
   - an entry in `landscapes/catalog.gd`, so Home and Settings list it beside Club field and Green paradise;
-  - attribution in the credits.
+  - attribution in the credits (done: `app/landscapes/triglav_tamar/CREDITS.md`, linked from the field credits).
 
 **21b, solid terrain contact.**
 - TG-05 a DEM provider in `physics/ground_terrain.gd` (done: `physics/terrain_dem.gd`):
@@ -93,7 +93,10 @@ quantized products the game needs are committed, each well under the repository'
   - airplanes (gear, hull, ground effect, ground start);
   - helicopters, multirotors and the RC trucks.
   - The AI companions are qualified on Club field only and refuse other fields as before.
-- TG-07 collision for trees and buildings through the existing scenery collision world.
+- TG-07 collision for trees and buildings through the existing scenery collision world (done:
+  `landscapes/triglav_tamar/obstacles.gd`; trees and buildings within 600 m of the pilot are solid, since a flight log
+  carries the whole inventory). Settings > Graphics > Scene detail sets how far they are drawn (trees 600, 1000, 1500
+  or 2500 m; buildings 2, 3, 4 or 6 km).
 - TG-08 tests (`tests/test_triglav_terrain.gd` covers the provider, a hull inside a mountainside, an airplane parked and
   rolling on the strip, a truck driving the meadow and the helicopter pad; frame-time captures remain):
   - the provider against the baked grid;
@@ -116,7 +119,8 @@ quantized products the game needs are committed, each well under the repository'
   - Rendering: needs LOD; the existing scenery budgets apply.
 - **Data age.** The core's bare earth, photo, trees and buildings are from the 2024–25 survey; ARSO's 2014–15 model
   fills only the ground under dense canopy.
-- **Atmosphere at altitude.** The pilot spot is 850 m up, but the v1 scenario catalog pins `field_elevation_m` to
-  sea level (`scenarios/scenario_config.gd`), so the Triglav field flies in sea-level air (about 8 % denser than at
-  850 m). Wiring the real elevation in changes air density for every vehicle there and waits for the owner's
-  decision. Wind and height-above-ground readouts use the datum at the pilot spot.
+- **Atmosphere at altitude** (owner decision 2026-11-21, done). The field flies in the air at its 849.7 m pilot spot:
+  1.128 kg/m³, 7.9 % thinner than sea level (`app/physics/field_air.gd`, [decision](../DECISIONS.md)). The default
+  air becomes the standard atmosphere there; custom air keeps its temperature, QNH and humidity at the field's
+  elevation. Home's conditions line shows the air flown. Natural Random stays on Club field (its v1 catalog pins sea
+  level). Wind and height-above-ground readouts use the datum at the pilot spot.

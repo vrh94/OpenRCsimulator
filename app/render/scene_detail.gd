@@ -1,5 +1,6 @@
 ## VQ-06b: the Scene detail preset. One saved choice maps onto existing knobs: the scenery prop tier
-## (SC-24), which field trees render in 3D (L8a-R1), worn-path turf and the viewport's mesh LOD threshold.
+## (SC-24), which field trees render in 3D (L8a-R1), worn-path turf, the viewport's mesh LOD threshold and how far
+## a real-terrain landscape draws its surveyed trees and buildings.
 ## Prop selection also determines ornament collision at the next world build (LU-05).
 ## Existing sessions keep their installed collision world; field-tree collision is unchanged.
 ## Precedence: --scene_detail=<level> after --, then OPENRC_SCENE_DETAIL, then the player's saved
@@ -26,11 +27,17 @@ const MOBILE_MARKERS: Array[String] = ["adreno", "mali", "powervr", "tegra"]
 # of the runway as seen from the pilot (0 = cards only; 180 = the whole near ring).
 # mesh_lod_threshold_px: Godot's per-viewport LOD error; 1 px is its perceptually lossless default.
 # worn_path_turf: L9b-R3 field-texture blending; lower presets skip its binding and shader samples.
+# landscape_tree_range_m / landscape_building_range_m: how far the surveyed trees and buildings of a real-terrain
+# landscape (Triglav, landscapes/triglav_tamar/) are drawn; past it the aerial photo shows them. High is TG-03's range.
 const PROFILES := {
-	"low": {"scenery_quality": "low", "field_tree_half_angle_deg": 0.0, "mesh_lod_threshold_px": 4.0, "worn_path_turf": false},
-	"medium": {"scenery_quality": "balanced", "field_tree_half_angle_deg": 0.0, "mesh_lod_threshold_px": 2.0, "worn_path_turf": false},
-	"high": {"scenery_quality": "high", "field_tree_half_angle_deg": 60.0, "mesh_lod_threshold_px": 1.0, "worn_path_turf": true},
-	"extreme": {"scenery_quality": "high", "field_tree_half_angle_deg": 180.0, "mesh_lod_threshold_px": 1.0, "worn_path_turf": true},
+	"low": {"scenery_quality": "low", "field_tree_half_angle_deg": 0.0, "mesh_lod_threshold_px": 4.0, "worn_path_turf": false,
+		"landscape_tree_range_m": 600.0, "landscape_building_range_m": 2000.0},
+	"medium": {"scenery_quality": "balanced", "field_tree_half_angle_deg": 0.0, "mesh_lod_threshold_px": 2.0, "worn_path_turf": false,
+		"landscape_tree_range_m": 1000.0, "landscape_building_range_m": 3000.0},
+	"high": {"scenery_quality": "high", "field_tree_half_angle_deg": 60.0, "mesh_lod_threshold_px": 1.0, "worn_path_turf": true,
+		"landscape_tree_range_m": 1500.0, "landscape_building_range_m": 4000.0},
+	"extreme": {"scenery_quality": "high", "field_tree_half_angle_deg": 180.0, "mesh_lod_threshold_px": 1.0, "worn_path_turf": true,
+		"landscape_tree_range_m": 2500.0, "landscape_building_range_m": 6000.0},
 }
 
 static var _preference := ""

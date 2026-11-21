@@ -10,6 +10,8 @@ const Scenery := preload("res://scenery/scenery.gd")
 const Field := preload("res://render/field.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Treeline := preload("res://render/treeline.gd")
+const TriglavTrees := preload("res://landscapes/triglav_tamar/trees.gd")
+const TriglavBuildings := preload("res://landscapes/triglav_tamar/buildings.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const PREFS := "user://test_scene_detail_display.cfg"
 
@@ -52,12 +54,17 @@ func _test_levels() -> void:
 		if not previous.is_empty():
 			_check("%s never costs less than the level below" % level,
 				float(profile.mesh_lod_threshold_px) <= float(previous.mesh_lod_threshold_px)
-				and float(profile.field_tree_half_angle_deg) >= float(previous.field_tree_half_angle_deg))
+				and float(profile.field_tree_half_angle_deg) >= float(previous.field_tree_half_angle_deg)
+				and float(profile.landscape_tree_range_m) > float(previous.landscape_tree_range_m)
+				and float(profile.landscape_building_range_m) > float(previous.landscape_building_range_m))
 		previous = profile
 	_check("scenery tiers rise with the preset", qualities == ["low", "balanced", "high", "high"], str(qualities))
 	_check("High keeps the L8a-R1 front trees and Godot's lossless LOD threshold",
 		SceneDetail.PROFILES.high.field_tree_half_angle_deg == Treeline.DETAIL_HALF_ANGLE_DEG
 		and SceneDetail.PROFILES.high.mesh_lod_threshold_px == 1.0)
+	_check("High keeps TG-03's Triglav tree and building ranges",
+		SceneDetail.PROFILES.high.landscape_tree_range_m == TriglavTrees.DEFAULT_RANGE_M
+		and SceneDetail.PROFILES.high.landscape_building_range_m == TriglavBuildings.DEFAULT_RANGE_M)
 	SceneDetail.set_preference("medium")
 	_check("the saved choice selects the level", SceneDetail.level() == "medium")
 	_check("the saved choice sets the scenery tier", Scenery.options().quality == "balanced")

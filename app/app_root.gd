@@ -50,6 +50,7 @@ const FlightSession := preload("res://sim/flight_session.gd")
 const CreatorTrial := preload("res://workshop/creator/trial.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const FieldAir := preload("res://physics/field_air.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
@@ -773,6 +774,7 @@ func _install_home(setup: Dictionary) -> void:
 	home.ground_skins = (preferences.get("vehicle_skins", {}) as Dictionary).duplicate()
 	home.runway_available = _runway_available(home_scene.field)
 	home.natural_random_available = home_scene.field.get("id", "") == "default"
+	home.field_elevation_m = FieldAir.elevation_m(home_scene.field)
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
 	home.set_battery_mode(preferences.get("battery_mode", Preferences.DEFAULTS.battery_mode))
@@ -4108,6 +4110,7 @@ func set_landscape(id: String) -> bool:
 		return false
 	home.runway_available = _runway_available(checked.field)
 	home.natural_random_available = checked.field.get("id", "") == "default"
+	home.field_elevation_m = FieldAir.elevation_m(checked.field)
 	home.rotorcraft_pad_available = not checked.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(id)
 	home.reapply_start_preference()

@@ -1,5 +1,13 @@
 # Landscape Upgrade Credits
 
+## Step 21 Triglav: Planica and Tamar (2026-11-21)
+
+The Triglav landscape's terrain, trees, buildings and aerial photo derive from **GURS cyclic laser scanning
+2023–2025** (CC BY 4.0, *Contains data of the Surveying and Mapping Authority of the Republic of Slovenia*) and
+**ARSO LiDAR DMR1 2014–15** (*Ministry of the Environment and Spatial Planning, Slovenian Environment Agency*), with an
+SRTM far ring (U.S. Geological Survey; Mapzen Terrain Tiles, public domain). Full table and changes:
+[landscapes/triglav_tamar/CREDITS.md](../../landscapes/triglav_tamar/CREDITS.md).
+
 ## LU-16-R1 downloaded mountain relief (2026-10-20)
 
 Club field's mountain backdrop now derives from **SRTM data courtesy of the

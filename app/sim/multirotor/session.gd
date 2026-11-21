@@ -23,6 +23,7 @@ const ActuatorMap := preload("res://physics/multirotor/actuator_map.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
 const WindFieldLaw := preload("res://physics/wind_field.gd")
+const FieldAir := preload("res://physics/field_air.gd")
 const WindSettings := preload("res://physics/wind_config.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const Track := preload("res://sim/race/track.gd")
@@ -208,7 +209,8 @@ func _build(field: Dictionary, requested: Dictionary) -> Dictionary:
 	var weather_raw := WindSettings.defaults()
 	weather_raw.speed_mps = wind_speed
 	weather_raw.from_deg = fposmod(float(opts.wind_from_deg), 360.0)
-	var built_weather := WindFieldLaw.build(weather_raw)
+	# Triglav: a surveyed field flies in the air at its real height (physics/field_air.gd).
+	var built_weather := WindFieldLaw.build(FieldAir.weather(weather_raw, field))
 	if not built_weather.ok:
 		return _refused("; ".join(built_weather.errors))
 	var surfaces := PackedFloat64Array()

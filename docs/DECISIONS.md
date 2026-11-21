@@ -396,6 +396,17 @@ park there) to a level meadow on the Rateče plain (10 of 10). Native kernels re
 native kernels gain a ground provider, or if a field needs terrain without baked grids
 ([plan](plans/triglav-planica-tamar.md), [evidence](../research/triglav/README.md#solid-terrain-tg-05-tg-06)).
 
+### A surveyed field flies in the air at its real height
+
+Owner decision 2026-11-21: the Triglav field uses the air density of its 850 m pilot spot (1.128 kg/m³, 7.9 % below
+sea level). `app/physics/field_air.gd` takes the field's elevation from its terrain (the surveyed ground under the
+origin) and applies it where a launch hands weather to a session (airplane, helicopter, multirotor, blimp, Workshop
+trials), so flight logs record the air actually flown. The default reference air becomes the standard atmosphere at
+the field (uniform, ISA temperature, 1013.25 hPa, dry), which every vehicle class admits; a custom choice keeps its
+temperature, QNH and humidity; a standard column starts at the field. Flat fields are unchanged, and the pilot's
+saved weather is never rewritten. Revisit if a field needs its own measured climate, or if rotorcraft qualify the
+vertical column.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

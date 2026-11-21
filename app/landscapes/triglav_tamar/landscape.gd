@@ -10,6 +10,7 @@ const TerrainView = preload("res://landscapes/triglav_tamar/terrain_view.gd")
 const Trees = preload("res://landscapes/triglav_tamar/trees.gd")
 const Buildings = preload("res://landscapes/triglav_tamar/buildings.gd")
 const Obstacles = preload("res://landscapes/triglav_tamar/obstacles.gd")
+const SceneDetail = preload("res://render/scene_detail.gd")
 const TERRAIN_SHADER = preload("res://landscapes/triglav_tamar/terrain.gdshader")
 
 const ID: String = "triglav_tamar"
@@ -48,9 +49,12 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	view.setup(core, ring, material, PILOT_CORE, ground_ref)
 	var materials: Array[ShaderMaterial] = [material]
 	var photo: Texture2D = material.get_shader_parameter("photo") as Texture2D
+	# Settings > Graphics > Scene detail sets how far the surveyed trees and buildings are drawn.
+	var detail: Dictionary = SceneDetail.profile()
 	for part: Dictionary in [
-		Trees.build(ROOT + "vegetation/trees.bin.gz", photo, PILOT_CORE, ground_ref),
-		Buildings.build(ROOT + "buildings/buildings.bin.gz", photo, PILOT_CORE, ground_ref),
+		Trees.build(ROOT + "vegetation/trees.bin.gz", photo, PILOT_CORE, ground_ref, float(detail.landscape_tree_range_m)),
+		Buildings.build(ROOT + "buildings/buildings.bin.gz", photo, PILOT_CORE, ground_ref,
+			float(detail.landscape_building_range_m)),
 	]:
 		if not str(part.error).is_empty():
 			push_warning("triglav_tamar: " + str(part.error))

@@ -151,6 +151,11 @@ func _fly_and_return(app: Node, id: String, helicopter := false) -> void:
 	elif id == TRIGLAV:
 		agree = rendered.get_node_or_null("Terrain") != null and not flight.session._collision_world.is_empty()
 	check(id + " visual and physical worlds agree", agree)
+	if not helicopter:
+		# Owner decision 2026-11-21: Triglav flies in the air at its 850 m height; the flat fields keep sea level.
+		var rho: float = flight.session.environment.air_density(0.0)
+		print("%s air density %.4f kg/m3" % [id, rho])
+		check(id + " air density matches the field height", rho < 1.14 and rho > 1.11 if id == TRIGLAV else rho == 1.225)
 	app.set_landscape(Landscapes.DEFAULT_ID if green else GREEN)
 	check("active flight cannot change landscape", flight.landscape_id == id and app.landscape_id == id)
 	flight.session.resume()

@@ -21,6 +21,11 @@ const Collision = preload("res://sim/scenery_collision.gd")
 const AircraftData = preload("res://physics/aircraft_data.gd")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const FieldAir = preload("res://physics/field_air.gd")
+const WindConfig = preload("res://physics/wind_config.gd")
+const Atmosphere = preload("res://physics/atmosphere.gd")
+const HeliSession = preload("res://sim/helicopter_flight_session.gd")
+const QuadSession = preload("res://sim/multirotor/session.gd")
 const FIELD := "res://landscapes/triglav_tamar/field.json"
 const AIRCRAFT := "res://data/aircraft/jensen_ugly_stik_60.json"
 
@@ -195,6 +200,7 @@ func _run() -> void:
 	_helicopter(field, dem)
 	_obstacles(field, dem)
 	_air_start(field, dem)
+	_air(field, dem)
 	_finish()
 
 
@@ -376,6 +382,50 @@ func _air_start(field: Dictionary, dem: RefCounted) -> void:
 		if not s.crash.is_empty(): break
 	check("five seconds of trimmed flight from the air start stay clear", s.crash.is_empty(), str(s.crash))
 	s.queue_free()
+
+
+## Owner decision 2026-11-21: the Triglav field flies in the air at its real height (physics/field_air.gd).
+func _air(field: Dictionary, dem: RefCounted) -> void:
+	var elevation := FieldAir.elevation_m(field)
+	print("field elevation %.1f m" % elevation)
+	check("the field elevation is the surveyed ground under the pilot", absf(elevation - dem.ground_ref_m) <= 0.05
+		and elevation > 800.0 and elevation < 900.0, str(elevation))
+	var flat: Dictionary = FieldLoader.load_from().field
+	check("a flat field keeps sea-level air", FieldAir.elevation_m(flat) == 0.0
+		and var_to_bytes(FieldAir.weather(WindConfig.defaults(), flat)) == var_to_bytes(WindConfig.defaults()))
+	var calm: Dictionary = FieldAir.weather(WindConfig.defaults(), field)
+	var checked: Dictionary = WindConfig.validate(calm)
+	var air: Dictionary = WindConfig.atmosphere(checked.config) if checked.ok else {}
+	var isa: Dictionary = Atmosphere.standard_column(elevation)
+	print("calm reference air on Triglav: rho %.4f kg/m3 (ISA %.4f), density altitude %.0f m" % [
+		float(air.get("rho_kgm3", NAN)), float(isa.rho_kgm3), float(air.get("density_altitude_m", NAN))])
+	check("the default air becomes the standard atmosphere at the field", checked.ok
+		and absf(float(air.rho_kgm3) - float(isa.rho_kgm3)) < 0.001 and absf(float(air.density_altitude_m) - elevation) < 15.0,
+		str(checked.errors))
+	check("the wind of the choice is kept", float(calm.speed_mps) == 0.0 and not WindConfig.has_turbulence(calm))
+	check("the field air is idempotent", var_to_bytes(FieldAir.weather(calm, field)) == var_to_bytes(calm))
+	var hot: Dictionary = FieldAir.weather(WindConfig.preset("hot-high"), field)
+	check("a custom choice keeps its temperature and takes the field elevation", float(hot.temperature_c) == 35.0
+		and float(hot.field_elevation_m) == elevation)
+	var column: Dictionary = FieldAir.weather(WindConfig.preset("standard-column"), field)
+	check("a standard column starts at the field elevation", WindConfig.validate(column).ok
+		and float(column.field_elevation_m) == elevation)
+
+	var plane: Node = Flight.new()
+	plane.setup(AIRCRAFT)
+	root.add_child(plane)
+	var plane_ok: bool = plane.set_field(field) and plane.setup_weather(calm)
+	check("the airplane flies in the field air", plane_ok and absf(plane.environment.air_density(0.0) - float(isa.rho_kgm3)) < 0.001,
+		plane.weather_error)
+	plane.queue_free()
+	check("the helicopter admits the field air", bool(HeliSession.validate_weather_selection(calm).ok),
+		str(HeliSession.validate_weather_selection(calm).error))
+	var quad: Node = QuadSession.new()
+	root.add_child(quad)
+	var quad_ok: bool = quad.prepare(field, {start = "air", altitude_m = 10.0})
+	check("the FPV quad flies in the field air", quad_ok and absf(quad.environment.air_density(0.0) - float(isa.rho_kgm3)) < 0.001,
+		str(quad.get("load_error")))
+	quad.queue_free()
 
 
 func _pose(north: float, east: float, down: float) -> PackedFloat64Array:

@@ -13,6 +13,7 @@ const MainRotor = preload("res://physics/rotorcraft/main_rotor.gd")
 const Math3D = preload("res://physics/math3d.gd")
 const World = preload("res://render/world/world.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const FieldAir = preload("res://physics/field_air.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
 const Frames = preload("res://render/frames.gd")
 const PilotCamera = preload("res://render/pilot_camera.gd")
@@ -161,7 +162,10 @@ func _ready() -> void:
  var requested_start: String=str(args.get("start","airborne" if args.has("trace") or args.has("capture") or args.has("alt") or not field.has("rotorcraft_pad") else start_choice))
  if not session.set_start_choice(requested_start): _refuse(session.start_error); return
  if args.has("alt") and session.start_choice=="ground": _refuse("Altitude applies only to the airborne helicopter start."); return
- if not weather_config.is_empty() and not session.setup_weather(weather_config): _refuse(session.weather_error); return
+ # Triglav: a surveyed field flies in the air at its real height (physics/field_air.gd), also for direct routes
+ # that bring no weather of their own.
+ var flown_weather: Dictionary=weather_config if not weather_config.is_empty() or FieldAir.elevation_m(field)==0.0 else FieldAir.WindConfig.defaults()
+ if not flown_weather.is_empty() and not session.setup_weather(FieldAir.weather(flown_weather,field)): _refuse(session.weather_error); return
  if args.has("alt"): session.set_start_altitude(float(args.alt))
  add_child(session)
  recorder=Recorder.new(session.sim,session.trace_controls)

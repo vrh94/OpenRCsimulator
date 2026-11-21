@@ -11,6 +11,7 @@ var frametimes_route: String = ""
 
 const Spec := preload("res://spec.gd")
 const Scripted := preload("res://sim/scripted.gd")
+const FieldAir := preload("res://physics/field_air.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const CreatorVisual := preload("res://workshop/creator/visual_builder.gd")
@@ -1233,7 +1234,8 @@ func _prepare_flight() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
-	if not session.setup_weather(conditions.config):
+	# Triglav: a surveyed field flies in the air at its real height (physics/field_air.gd).
+	if not session.setup_weather(FieldAir.weather(conditions.config, field)):
 		startup_error = session.weather_error
 		session.free()
 		session = null

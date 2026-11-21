@@ -2,6 +2,7 @@
 class_name WorkshopStartQualification
 extends RefCounted
 
+const FieldAir := preload("res://physics/field_air.gd")
 const Session := preload("res://sim/flight_session.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
@@ -53,7 +54,7 @@ static func qualify(frozen_trial: Dictionary, normalized_field: Dictionary, weat
 		session.free()
 		return _failure("selected field could not be installed: " + field_reason, start_choice,
 			field_id, started_usec, {"aircraft_id": aircraft_id})
-	if not session.setup_weather(checked_weather.config):
+	if not session.setup_weather(FieldAir.weather(checked_weather.config, normalized_field)):
 		var weather_reason: String = str(session.weather_error)
 		session.free()
 		return _failure("weather could not be installed: " + weather_reason, start_choice,

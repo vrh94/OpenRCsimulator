@@ -80,6 +80,10 @@ func _run() -> void:
 	for chunk: Node in field.get_node("Trees").get_children():
 		instances += (chunk as MultiMeshInstance3D).multimesh.instance_count
 	check("tree chunks hold every record once", instances == int(trees_header.count), str(instances))
+	var detail: Dictionary = preload("res://render/scene_detail.gd").profile()
+	var chunk0: GeometryInstance3D = field.get_node("Trees").get_child(0)
+	check("Scene detail sets the tree draw range", chunk0.visibility_range_end == float(detail.landscape_tree_range_m),
+		str(chunk0.visibility_range_end))
 	check("baked ground under trees matches the core within 0.5 m",
 		absf(first_ground - core.height_at(first_east, first_north)) < 0.5)
 
