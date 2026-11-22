@@ -13,6 +13,7 @@ const SkyControls := preload("res://ui/sky_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
+const FieldAir := preload("res://physics/field_air.gd")
 
 signal applied(config: Dictionary)
 signal cancelled
@@ -122,10 +123,14 @@ var _compact_chrome: bool = false
 var _diagnostic: Dictionary = {}
 var _inline_error: Label
 var _diagnostic_generation := 0
+## Surveyed elevation of the selected field (physics/field_air.gd); 0.0 on a flat field. A surveyed field flies at
+## its own height, so the elevation box shows that height read-only and the saved value is kept for flat fields.
+var field_elevation_m: float = 0.0
 
 
-func _init(initial_config: Variant = null, initial_lighting_config: Variant = null, initial_night_options: Variant = null, initial_sky_config: Variant = null) -> void:
+func _init(initial_config: Variant = null, initial_lighting_config: Variant = null, initial_night_options: Variant = null, initial_sky_config: Variant = null, selected_field_elevation_m: float = 0.0) -> void:
 	name = "WeatherDialog"
+	field_elevation_m = selected_field_elevation_m
 	layer = LAYER
 	var checked: Dictionary = WeatherSettings.validate(initial_config if initial_config != null else WeatherSettings.defaults())
 	_base_config = checked.config.duplicate(true) if checked.ok else WeatherSettings.defaults()
@@ -666,7 +671,7 @@ func _on_atmosphere_field_changed(_text: String, _key: String) -> void:
 	if _setting_fields:
 		return
 	var mode: String = _selected_atmosphere_mode()
-	if mode == "reference" or (mode == "standard_column" and _key != "field_elevation_m"):
+	if not _atmosphere_key_active(mode, _key):
 		return
 	if atmosphere_sliders.has(_key):
 		_sync_slider_from_text(atmosphere_sliders[_key], _text)
@@ -686,7 +691,12 @@ func _update_atmosphere_controls() -> void:
 	var standard_column: bool = mode == "standard_column"
 	for key: String in ATMOSPHERE_EDITED_KEYS:
 		var edit: LineEdit = atmosphere_inputs[key]
-		var active: bool = custom or (standard_column and key == "field_elevation_m")
+		var active: bool = _atmosphere_key_active(mode, key)
+		if key == "field_elevation_m" and field_elevation_m != 0.0:
+			var was_setting: bool = _setting_fields
+			_setting_fields = true
+			edit.text = _format_number(field_elevation_m)
+			_setting_fields = was_setting
 		edit.editable = active
 		edit.modulate = Color.WHITE if active else Color(0.72, 0.76, 0.75, 1.0)
 		var slider: HSlider = atmosphere_sliders[key]
@@ -699,12 +709,27 @@ func _update_atmosphere_controls() -> void:
 		slider.focus_mode = Control.FOCUS_ALL if active else Control.FOCUS_NONE
 		slider.mouse_filter = Control.MOUSE_FILTER_STOP if active else Control.MOUSE_FILTER_IGNORE
 		slider.modulate = Color.WHITE if active else Color(0.72, 0.76, 0.75, 1.0)
-	if custom:
+	if field_elevation_m != 0.0:
+		var height: String = String.num(field_elevation_m, 1)
+		if custom:
+			atmosphere_note.text = tr("This field flies at its surveyed height, %s m. Your temperature, pressure and humidity apply there.") % height
+		elif standard_column:
+			atmosphere_note.text = tr("This field flies at its surveyed height, %s m. Standard dry ISA density varies with geometric altitude from there.") % height
+		else:
+			atmosphere_note.text = tr("This field flies at its surveyed height, %s m: reference air becomes the standard atmosphere there.") % height
+	elif custom:
 		atmosphere_note.text = tr("Custom field conditions set the modeled air density for this flight.")
 	elif standard_column:
 		atmosphere_note.text = tr("Standard dry ISA density varies with geometric altitude from −500 to 11,000 m. This is a reference profile, not measured weather.")
 	else:
 		atmosphere_note.text = tr("Reference air keeps the modeled density at 1.225 kg/m³.")
+
+
+## Whether the pilot edits `key` in atmosphere `mode`. A surveyed field sets its own elevation.
+func _atmosphere_key_active(mode: String, key: String) -> bool:
+	if key == "field_elevation_m" and field_elevation_m != 0.0:
+		return false
+	return mode == "custom" or (mode == "standard_column" and key == "field_elevation_m")
 
 
 func _update_atmosphere_preview() -> void:
@@ -714,7 +739,7 @@ func _update_atmosphere_preview() -> void:
 	var changes: Dictionary = { "atmosphere_mode": mode }
 	for key: String in ATMOSPHERE_EDITED_KEYS:
 		var edit: LineEdit = atmosphere_inputs[key]
-		var active: bool = mode == "custom" or (mode == "standard_column" and key == "field_elevation_m")
+		var active: bool = _atmosphere_key_active(mode, key)
 		if not active:
 			changes[key] = _atmosphere_source_config[key]
 		else:
@@ -723,7 +748,7 @@ func _update_atmosphere_preview() -> void:
 		or mode == "standard_column"
 	var draft: Dictionary = WeatherSettings.upgrade_column(_base_config, changes) if keep_column \
 		else WeatherSettings.upgrade_atmosphere(_base_config, changes)
-	var air: Dictionary = WeatherSettings.atmosphere(draft)
+	var air: Dictionary = WeatherSettings.atmosphere(FieldAir.at_elevation(draft, field_elevation_m))
 	if not air.get("ok", false):
 		atmosphere_preview.text = tr("Density preview is unavailable until all field values are valid.")
 		return
@@ -870,7 +895,7 @@ func _on_apply() -> void:
 		var atmosphere_changes: Dictionary = {"atmosphere_mode": mode}
 		for key: String in ATMOSPHERE_EDITED_KEYS:
 			var edit: LineEdit = atmosphere_inputs[key]
-			var active: bool = mode == "custom" or (mode == "standard_column" and key == "field_elevation_m")
+			var active: bool = _atmosphere_key_active(mode, key)
 			if not active:
 				atmosphere_changes[key] = _atmosphere_source_config[key]
 			elif edit.text == String(_initial_atmosphere_text[key]):
@@ -955,7 +980,7 @@ func _first_invalid_field() -> Dictionary:
 					return _issue(1, key, edit, TURBULENCE_LABELS[key], "number", [spec.min, spec.max])
 	var mode := _selected_atmosphere_mode()
 	for key: String in ATMOSPHERE_EDITED_KEYS:
-		if not (mode == "custom" or (mode == "standard_column" and key == "field_elevation_m")): continue
+		if not _atmosphere_key_active(mode, key): continue
 		var edit: LineEdit = atmosphere_inputs[key]
 		var spec: Dictionary = SLIDER_SPECS[key]
 		if not edit.text.is_valid_float() or not is_finite(edit.text.to_float()) \

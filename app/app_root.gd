@@ -3858,6 +3858,7 @@ func open_weather(from: Control = null) -> void:
 		preferences.get("lighting_config", TimeOfDay.defaults()),
 		_night_options_from_preferences(),
 		preferences.get("sky_config", SkyConfig.defaults()),
+		home.field_elevation_m,
 	)
 	weather_dialog.applied.connect(_on_weather_applied)
 	weather_dialog.cancelled.connect(close_weather)

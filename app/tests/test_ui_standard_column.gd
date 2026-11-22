@@ -132,8 +132,41 @@ func _run() -> void:
 		str(_accepted_config))
 	v4_dialog.queue_free()
 	await ui.settle()
+	await _surveyed_field(source_v3)
 	print("all standard-column UI checks passed" if _failures == 0 else "%d standard-column UI checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
+
+
+## Triglav: a surveyed field flies at its own height, so the elevation box is read-only, shows that height and the
+## saved value is kept for flat fields.
+func _surveyed_field(source: Dictionary) -> void:
+	var saved: Dictionary = source.duplicate(true)
+	saved.field_elevation_m = 300.0
+	var dialog: CanvasLayer = WeatherDialog.new(saved, null, null, null, 849.7) as CanvasLayer
+	dialog.applied.connect(_on_applied)
+	root.add_child(dialog)
+	await ui.settle()
+	dialog.tab_container.current_tab = 2
+	await ui.settle()
+	var field_edit: LineEdit = dialog.atmosphere_inputs["field_elevation_m"]
+	for index: int in [1, 2, 0]:
+		_set_mode(dialog, index)
+		_check("surveyed field: elevation is read-only in mode %d" % index, not field_edit.editable
+			and dialog.atmosphere_sliders["field_elevation_m"].focus_mode == Control.FOCUS_NONE
+			and field_edit.text == "849.7", field_edit.text)
+		_check("surveyed field: note names the surveyed height in mode %d" % index,
+			dialog.atmosphere_note.text.contains("849.7 m"), dialog.atmosphere_note.text)
+	_check("surveyed field: reference air previews the standard atmosphere at the field",
+		dialog.atmosphere_preview.text.contains("1.128"), dialog.atmosphere_preview.text)
+	_set_mode(dialog, 1)
+	dialog.atmosphere_inputs["temperature_c"].text = "20"
+	dialog._on_atmosphere_field_changed("20", "temperature_c")
+	dialog._on_apply()
+	_check("surveyed field: apply keeps the saved elevation for flat fields",
+		float(_accepted_config.get("field_elevation_m", -1.0)) == 300.0
+		and float(_accepted_config.get("temperature_c", -1.0)) == 20.0, str(_accepted_config))
+	dialog.queue_free()
+	await ui.settle()
 
 
 func _set_mode(dialog: CanvasLayer, index: int) -> void:
