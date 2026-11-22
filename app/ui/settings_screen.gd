@@ -110,6 +110,7 @@ var _flag_animation_picker: OptionButton
 ## LENS-01: one OptionButton per lens preference, by DisplayPreferences key.
 var _lens_pickers: Dictionary = {}
 var _birds_picker: OptionButton
+var _visibility_picker: OptionButton
 var _runway_meadow_picker: OptionButton
 var _rc_track_picker: OptionButton
 var _shadow_group_button: Button
@@ -369,6 +370,16 @@ func _build() -> void:
 	_rc_track_picker.item_selected.connect(_rc_track_selected)
 	_add_row(display_page, "RC circuit", _rc_track_picker)
 	_refresh_rc_track_captions()
+	# Option 7b: the haze's visual range, presentation only; it applies from the next flight. Like RC circuit it has its
+	# own row here: the Graphics page has no height left at 1080p, and a shared row wraps its captions.
+	_visibility_picker = OptionButton.new()
+	_visibility_picker.name = "Visibility"
+	for level: String in DisplayPreferences.VISIBILITY_LEVELS:
+		_visibility_picker.add_item(_choice_caption("visibility", level))
+		_visibility_picker.set_item_metadata(_visibility_picker.item_count - 1, level)
+	_visibility_picker.item_selected.connect(_visibility_selected)
+	_add_row(display_page, "Visibility", _visibility_picker)
+	_set_localized_tooltip(_visibility_picker, "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight.")
 	display_page.add_child(_label("Display and graphics changes have a 15-second safety timer.", "SecondaryLabel", true))
 
 	display_page.add_child(_label("Window sizes fit the available desktop. Fullscreen uses the desktop resolution.", "SecondaryLabel", true))
@@ -412,6 +423,7 @@ func _build() -> void:
 	_flag_animation_picker.item_selected.connect(_flag_animation_selected)
 	_add_row(graphics_page, "Flag animation", _flag_animation_picker)
 	_set_localized_tooltip(_flag_animation_picker, "Automatic follows Scene detail. Changes apply immediately.")
+	_set_localized_tooltip(_visibility_picker, "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight.")
 	# SC-BIRD (birds-sky-life plan D2): presentation only and live; birds fly away or arrive instead of popping.
 	_birds_picker = OptionButton.new()
 	_birds_picker.name = "Birds"
@@ -1144,6 +1156,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"flag_animation": return {"auto": tr("Automatic"), "static": tr("Static"), "basic": tr("Basic"),
 			"detailed": tr("Detailed")}.get(value, str(value))
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
+		"visibility": return {"default": tr("Normal"), "hazy": tr("Hazy"), "clear": tr("Clear air")}.get(value, str(value))
 		"runway_meadow": return {off = tr("Off"), on = tr("On")}.get(value, str(value))
 		"rc_track":
 			if value == RcTrackOption.AUTO:
@@ -1411,7 +1424,7 @@ func _trial_preview_ready() -> bool:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "visibility", "runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -1563,6 +1576,11 @@ func _birds_selected(index: int) -> void:
 	_on_presentation_option_changed()
 
 
+func _visibility_selected(index: int) -> void:
+	_draft.visibility = str(_visibility_picker.get_item_metadata(index))
+	_on_presentation_option_changed()
+
+
 func _runway_meadow_selected(index: int) -> void:
 	_draft.runway_meadow = str(_runway_meadow_picker.get_item_metadata(index))
 	_on_presentation_option_changed()
@@ -1699,6 +1717,7 @@ func _sync_controls() -> void:
 	for key: String in _lens_pickers:
 		_select_metadata(_lens_pickers[key], _draft.get(key, DisplayPreferences.DEFAULTS[key]))
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
+	_select_metadata(_visibility_picker, _draft.get("visibility", DisplayPreferences.DEFAULTS.visibility))
 	_select_metadata(_runway_meadow_picker, _draft.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow))
 	_refresh_rc_track_captions()
 	_select_metadata(_rc_track_picker, _draft.get("rc_track", DisplayPreferences.DEFAULTS.rc_track))
@@ -2019,7 +2038,7 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_visibility_picker, "visibility"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],

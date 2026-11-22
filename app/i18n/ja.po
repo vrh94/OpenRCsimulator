@@ -13155,3 +13155,16 @@ msgstr "近づいて、かすめて、突き抜けて飛べる高くそびえる
 
 msgid "Kamnik: Duplica airstrip"
 msgstr "カムニク：ドゥプリツァ飛行場"
+
+msgid "Visibility"
+msgstr "視程"
+
+
+msgid "Hazy"
+msgstr "かすみ"
+
+msgid "Clear air"
+msgstr "澄んだ空気"
+
+msgid "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight."
+msgstr "もやを通してどこまで見えるか：正常 23 km、かすみ 12 km、澄んだ空気 40 km。澄んだ空気では、カムニクから見るリュブリャナのような遠くの山や街がずっとはっきり見えます。変わるのは映像だけで、機体が飛ぶ空気は変わりません。次のフライトから適用されます。"

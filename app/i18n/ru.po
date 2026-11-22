@@ -13904,3 +13904,16 @@ msgstr "Высокие кучевые облака, к которым можно
 
 msgid "Kamnik: Duplica airstrip"
 msgstr "Камник: аэродром Дуплица"
+
+msgid "Visibility"
+msgstr "Видимость"
+
+
+msgid "Hazy"
+msgstr "Дымка"
+
+msgid "Clear air"
+msgstr "Чистый воздух"
+
+msgid "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight."
+msgstr "Насколько далеко видно сквозь дымку: обычная 23 км, дымка 12 км, чистый воздух 40 км. Чистый воздух делает далёкие горы и города, например Любляну из Камника, гораздо отчётливее. Меняется только изображение, но не воздух, в котором летит самолёт. Применяется со следующего полёта."

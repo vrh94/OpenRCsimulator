@@ -1981,6 +1981,8 @@ func _apply_presentation(config: Dictionary) -> void:
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
 	BirdDirector.set_preference(str(config.get("birds", DisplayPreferences.DEFAULTS.birds)))
+	# Option 7b: the haze's visual range; it applies from the next flight (Atmosphere.apply_visibility_preference).
+	Atmosphere.set_visibility_preference(str(config.get("visibility", DisplayPreferences.DEFAULTS.visibility)))
 	FlagQuality.set_preference(str(config.get("flag_animation", "auto")))
 	# LENS-01: a running flight (airplane, helicopter or FPV quad) rebuilds its lens stack at once; presentation only.
 	var lens_changed: bool = LensSettings.validate(config) != LensSettings.preference()

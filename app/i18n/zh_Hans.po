@@ -13105,3 +13105,16 @@ msgstr "高耸的积云，可以飞上去、贴边掠过并穿越而过。它们
 
 msgid "Kamnik: Duplica airstrip"
 msgstr "卡姆尼克：杜普利察机场"
+
+msgid "Visibility"
+msgstr "能见度"
+
+
+msgid "Hazy"
+msgstr "薄雾"
+
+msgid "Clear air"
+msgstr "空气清澈"
+
+msgid "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight."
+msgstr "透过雾霭能看多远：正常 23 公里，薄雾 12 公里，空气清澈 40 公里。空气清澈时，远处的山峦和城市（例如从卡姆尼克望向卢布尔雅那）会清晰得多。只改变画面，从不改变飞行器所处的空气。从下一次飞行起生效。"

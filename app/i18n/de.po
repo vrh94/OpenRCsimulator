@@ -14048,3 +14048,16 @@ msgstr "Hoch aufragende Cumuluswolken, zu denen du hinauffliegen, an denen du en
 
 msgid "Kamnik: Duplica airstrip"
 msgstr "Kamnik: Flugplatz Duplica"
+
+msgid "Visibility"
+msgstr "Sichtweite"
+
+
+msgid "Hazy"
+msgstr "Dunstig"
+
+msgid "Clear air"
+msgstr "Klare Luft"
+
+msgid "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight."
+msgstr "Wie weit man durch den Dunst sieht: Normal 23 km, Dunstig 12 km, Klare Luft 40 km. Klare Luft zeigt ferne Berge und Städte, etwa Ljubljana von Kamnik aus, viel deutlicher. Nur das Bild ändert sich, nie die Luft, in der das Flugzeug fliegt. Gilt ab dem nächsten Flug."

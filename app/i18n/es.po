@@ -12701,3 +12701,16 @@ msgstr "Cúmulos altos a los que puedes subir, rozar y atravesar volando. Sus ba
 
 msgid "Kamnik: Duplica airstrip"
 msgstr "Kamnik: aeródromo de Duplica"
+
+msgid "Visibility"
+msgstr "Visibilidad"
+
+
+msgid "Hazy"
+msgstr "Brumosa"
+
+msgid "Clear air"
+msgstr "Aire limpio"
+
+msgid "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight."
+msgstr "Hasta dónde se ve a través de la bruma: Normal 23 km, Brumosa 12 km, Aire limpio 40 km. Aire limpio muestra montañas y ciudades lejanas, como Liubliana desde Kamnik, con mucha más claridad. Solo cambia la imagen, nunca el aire en el que vuela la aeronave. Se aplica en el próximo vuelo."

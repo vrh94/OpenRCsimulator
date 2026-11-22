@@ -13930,3 +13930,16 @@ msgstr "Cumuli torreggianti fino a cui salire, da sfiorare e da attraversare in 
 
 msgid "Kamnik: Duplica airstrip"
 msgstr "Kamnik: aviosuperficie di Duplica"
+
+msgid "Visibility"
+msgstr "Visibilità"
+
+
+msgid "Hazy"
+msgstr "Foschia"
+
+msgid "Clear air"
+msgstr "Aria limpida"
+
+msgid "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight."
+msgstr "Quanto lontano si vede attraverso la foschia: Normale 23 km, Foschia 12 km, Aria limpida 40 km. Aria limpida mostra molto più nitidamente montagne e città lontane, come Lubiana da Kamnik. Cambia solo l'immagine, mai l'aria in cui vola l'aereo. Si applica dal prossimo volo."

@@ -60,6 +60,10 @@ const KOSCHMIEDER := 3.912
 ## L7 artistic weather presets, metres of meteorological visibility; default preserves L2 calibration.
 const VISIBILITY_PRESETS: Dictionary = {"default": 23000.0, "hazy": 12000.0, "clear": 40000.0}
 static var visibility_m: float = _visibility_from_args()
+## Settings -> Graphics -> Visibility (display.cfg "visibility"); empty until the app passes it. A `--visibility=` command
+## line argument wins. It takes effect when the next world is built (World.build), so the sky, the fog and every haze
+## material of a running flight always share one value.
+static var _visibility_preference := ""
 
 
 static func _visibility_from_args() -> float:
@@ -382,6 +386,26 @@ static func disc_direction(lighting: Dictionary = {}) -> Vector3:
 	var disc: Dictionary = lighting.duplicate()
 	disc.sun_elevation_deg = lighting.disc_elevation_deg
 	return sun_direction(disc)
+
+
+## Store the Settings choice (default, hazy or clear); unknown values mean default.
+static func set_visibility_preference(preset: String) -> void:
+	_visibility_preference = preset if VISIBILITY_PRESETS.has(preset) else "default"
+
+
+## Called by World before it builds a world: adopt the stored Settings choice unless the command line chose one.
+static func apply_visibility_preference() -> void:
+	if _visibility_preference.is_empty() or _visibility_given_on_command_line():
+		return
+	visibility_m = Spec.ATMOSPHERE.visibility_m if _visibility_preference == "default" \
+		else float(VISIBILITY_PRESETS[_visibility_preference])
+
+
+static func _visibility_given_on_command_line() -> bool:
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--visibility="):
+			return true
+	return false
 
 
 ## Haze extinction coefficient β (1/m) from the visual range.

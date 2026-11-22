@@ -13942,3 +13942,16 @@ msgstr "Cúmulos altos até os quais você pode subir, passar rente e atravessar
 
 msgid "Kamnik: Duplica airstrip"
 msgstr "Kamnik: pista de Duplica"
+
+msgid "Visibility"
+msgstr "Visibilidade"
+
+
+msgid "Hazy"
+msgstr "Enevoada"
+
+msgid "Clear air"
+msgstr "Ar limpo"
+
+msgid "How far you can see through the haze: Normal 23 km, Hazy 12 km, Clear air 40 km. Clear air shows distant mountains and cities, such as Ljubljana from Kamnik, much more clearly. Only the picture changes, never the air the aircraft flies in. Applies at the next flight."
+msgstr "Até onde se enxerga através da névoa: Normal 23 km, Enevoada 12 km, Ar limpo 40 km. Ar limpo mostra montanhas e cidades distantes, como Liubliana vista de Kamnik, com muito mais nitidez. Só a imagem muda, nunca o ar em que a aeronave voa. Aplica-se no próximo voo."

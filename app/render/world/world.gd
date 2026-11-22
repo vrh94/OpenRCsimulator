@@ -355,6 +355,7 @@ static func build_staged(parent: Node, field: Dictionary, build_field := Callabl
 
 static func _new_build_context(parent: Node, field: Dictionary, build_field: Callable, conditions: Dictionary,
 		lighting: Dictionary, night_options: Dictionary) -> Dictionary:
+	Atmosphere.apply_visibility_preference() # Settings -> Graphics -> Visibility, from the next world on
 	return {
 		"parent": parent,
 		"field": field,

@@ -35,6 +35,9 @@ const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"
 const FLAG_ANIMATIONS: Array[String] = ["auto", "static", "basic", "detailed"]
 # SC-BIRD (birds-sky-life plan D2): mirrors scenery/birds/bird_director.gd PREFERENCES (test_birds.gd keeps them equal).
 const BIRD_LEVELS: Array[String] = ["off", "few", "normal", "many"]
+# Option 7b: the visual range of the haze; mirrors render/atmosphere.gd VISIBILITY_PRESETS (test_visibility_setting.gd
+# keeps them equal). Presentation only: it never changes the simulated air.
+const VISIBILITY_LEVELS: Array[String] = ["default", "hazy", "clear"]
 const LIGHTING_QUALITY_LEVELS: Array[String] = ["low", "standard", "high"]
 # L11a-R3: runway meadow plant colonies; mirrors scenery/runway_meadow.gd PREFERENCES.
 const RUNWAY_MEADOW_LEVELS: Array[String] = ["off", "on"]
@@ -52,6 +55,7 @@ const DEFAULTS := {
 	"scene_detail": "auto",
 	"flag_animation": "auto",
 	"birds": "normal",
+	"visibility": "default",
 	"runway_meadow": "on",
 	"rc_track": "auto",
 	"shadow_quality": ShadowSettings.DEFAULTS.shadow_quality,
@@ -130,7 +134,7 @@ const DEFAULTS := {
 	"lens_clear_centre": LensSettings.DEFAULTS.lens_clear_centre,
 }
 const OPTIONAL_KEYS: Array[String] = [
-	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction",
+	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "visibility", "runway_meadow", "rc_track", "reconstruction",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
 	"fsr2_sharpness", "nvidia_reflex",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
@@ -268,6 +272,7 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
 	raw.flag_animation = cfg.get_value("graphics", "flag_animation", DEFAULTS.flag_animation)
 	raw.birds = cfg.get_value("graphics", "birds", DEFAULTS.birds)
+	raw.visibility = cfg.get_value("graphics", "visibility", DEFAULTS.visibility)
 	raw.runway_meadow = cfg.get_value("graphics", "runway_meadow", DEFAULTS.runway_meadow)
 	raw.rc_track = cfg.get_value("graphics", "rc_track", DEFAULTS.rc_track)
 	raw.opaque_panels = cfg.get_value("accessibility", "opaque_panels", DEFAULTS.opaque_panels)
@@ -345,6 +350,7 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
 	cfg.set_value("graphics", "flag_animation", checked.config.flag_animation)
 	cfg.set_value("graphics", "birds", checked.config.birds)
+	cfg.set_value("graphics", "visibility", checked.config.visibility)
 	cfg.set_value("graphics", "runway_meadow", checked.config.runway_meadow)
 	cfg.set_value("graphics", "rc_track", checked.config.rc_track)
 	cfg.set_value("accessibility", "opaque_panels", checked.config.opaque_panels)
@@ -403,6 +409,9 @@ static func validate(raw: Variant) -> Dictionary:
 	var birds: Variant = raw.get("birds", DEFAULTS.birds)
 	if typeof(birds) != TYPE_STRING or birds not in BIRD_LEVELS:
 		errors.append("birds must be off, few, normal or many")
+	var visibility: Variant = raw.get("visibility", DEFAULTS.visibility)
+	if typeof(visibility) != TYPE_STRING or visibility not in VISIBILITY_LEVELS:
+		errors.append("visibility must be default, hazy or clear")
 	var runway_meadow: Variant = raw.get("runway_meadow", DEFAULTS.runway_meadow)
 	if typeof(runway_meadow) != TYPE_STRING or runway_meadow not in RUNWAY_MEADOW_LEVELS:
 		errors.append("runway_meadow must be off or on")
@@ -446,6 +455,7 @@ static func validate(raw: Variant) -> Dictionary:
 		"scene_detail": scene_detail,
 		"flag_animation": flag_animation,
 		"birds": birds,
+		"visibility": visibility,
 		"runway_meadow": runway_meadow,
 		"rc_track": rc_track,
 		"ui_scale": float(raw.ui_scale),

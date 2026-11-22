@@ -29,7 +29,8 @@ The pipeline is the Triglav one ([research/triglav/README.md](../triglav/README.
   1300 m). Tree records use the same base (`TREE_GROUND_BASE_M`).
 - The camera far plane is 36 km on this landscape (`CAMERA_FAR_M`), so the ring's mountains are not clipped.
   How clearly they show depends on the sky's visibility: at the default 23 km meteorological visibility the Alps
-  at 20 km keep about 3 % contrast, so they appear as a faint skyline; a clear sky shows them well.
+  at 20 km keep about 3 % contrast, so they appear as a faint skyline; Settings → Display → Visibility → Clear air
+  (40 km) shows them, and Ljubljana's skyline at 17 km, with about three times the contrast.
 
 ## The airstrip (field)
 
