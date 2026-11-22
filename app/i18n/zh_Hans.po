@@ -13045,3 +13045,54 @@ msgstr "齿比 %s · 转向 %s · 刹车 %s"
 
 msgid "The saved tuning could not be applied: %s"
 msgstr "无法应用已保存的调校：%s"
+
+msgid "Gimbal controls"
+msgstr "云台控制"
+
+msgid "Click Detect or a button, then use that control on your radio. Esc cancels."
+msgstr "点击“检测”或某个按钮，然后在遥控器上使用该控件。Esc 取消。"
+
+msgid "Click, then turn the knob or move the slider you want for this. The flight sticks are never used."
+msgstr "点击后，转动你想用的旋钮或推动滑杆。飞行摇杆永远不会被使用。"
+
+msgid "Click, then press the radio button or flip the switch you want for this."
+msgstr "点击后，按下你想用的遥控器按钮或拨动开关。"
+
+msgid "Press a radio button…"
+msgstr "请按遥控器按钮…"
+
+msgid "Move it now…"
+msgstr "请现在拨动…"
+
+msgid "Gimbal pan left button"
+msgstr "云台左转按钮"
+
+msgid "Gimbal pan right button"
+msgstr "云台右转按钮"
+
+msgid "Gimbal tilt up button"
+msgstr "云台上仰按钮"
+
+msgid "Gimbal tilt down button"
+msgstr "云台下俯按钮"
+
+msgid "Gimbal centre button"
+msgstr "云台回中按钮"
+
+msgid "Gimbal buttons"
+msgstr "云台按钮"
+
+msgid "Move: the camera turns while you hold a button and stays where you leave it; the centre button brings it back. Look: the camera points to the end of its travel while you hold a button and returns when you let go, handy on a two-position switch."
+msgstr "移动：按住按钮时相机转动，松开后停在原处；回中按钮让它回正。看：按住按钮时相机指向行程尽头，松开后回正，适合两段开关。"
+
+msgid "Move and stay"
+msgstr "移动并保持"
+
+msgid "Look while held"
+msgstr "按住时观看"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "通道行程尽头或按钮使平移舵机向每侧转动的角度。"
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "通道行程尽头或按钮使俯仰舵机向每侧转动的角度。"

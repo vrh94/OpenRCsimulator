@@ -13095,3 +13095,54 @@ msgstr "ギア比 %s · ステアリング %s · ブレーキ %s"
 
 msgid "The saved tuning could not be applied: %s"
 msgstr "保存された調整を適用できませんでした: %s"
+
+msgid "Gimbal controls"
+msgstr "ジンバル操作"
+
+msgid "Click Detect or a button, then use that control on your radio. Esc cancels."
+msgstr "［検出］またはボタンをクリックし、送信機のその操作部を使います。Esc で取り消し。"
+
+msgid "Click, then turn the knob or move the slider you want for this. The flight sticks are never used."
+msgstr "クリックしてから、使いたいノブを回すかスライダーを動かします。操縦スティックは使われません。"
+
+msgid "Click, then press the radio button or flip the switch you want for this."
+msgstr "クリックしてから、使いたい送信機のボタンを押すかスイッチを切り替えます。"
+
+msgid "Press a radio button…"
+msgstr "送信機のボタンを押してください…"
+
+msgid "Move it now…"
+msgstr "今動かしてください…"
+
+msgid "Gimbal pan left button"
+msgstr "ジンバル左パンボタン"
+
+msgid "Gimbal pan right button"
+msgstr "ジンバル右パンボタン"
+
+msgid "Gimbal tilt up button"
+msgstr "ジンバル上チルトボタン"
+
+msgid "Gimbal tilt down button"
+msgstr "ジンバル下チルトボタン"
+
+msgid "Gimbal centre button"
+msgstr "ジンバル中央ボタン"
+
+msgid "Gimbal buttons"
+msgstr "ジンバルボタン"
+
+msgid "Move: the camera turns while you hold a button and stays where you leave it; the centre button brings it back. Look: the camera points to the end of its travel while you hold a button and returns when you let go, handy on a two-position switch."
+msgstr "移動：ボタンを押している間カメラが回り、離した位置に留まります。中央ボタンで戻ります。見る：ボタンを押している間カメラが可動範囲の端を向き、離すと戻ります。2 ポジションスイッチに便利です。"
+
+msgid "Move and stay"
+msgstr "移動して保持"
+
+msgid "Look while held"
+msgstr "押している間だけ見る"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "チャンネルの端またはボタンでパンサーボが左右それぞれに回る量。"
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "チャンネルの端またはボタンでチルトサーボが上下それぞれに回る量。"

@@ -14014,3 +14014,54 @@ msgstr "Rapport %s · Direction %s · Freins %s"
 
 msgid "The saved tuning could not be applied: %s"
 msgstr "Les réglages enregistrés n’ont pas pu être appliqués : %s"
+
+msgid "Gimbal controls"
+msgstr "Commandes de la nacelle"
+
+msgid "Click Detect or a button, then use that control on your radio. Esc cancels."
+msgstr "Cliquez sur Détecter ou sur un bouton, puis utilisez cette commande sur votre radio. Échap annule."
+
+msgid "Click, then turn the knob or move the slider you want for this. The flight sticks are never used."
+msgstr "Cliquez, puis tournez le potentiomètre ou déplacez le curseur voulu. Les manches de vol ne sont jamais utilisés."
+
+msgid "Click, then press the radio button or flip the switch you want for this."
+msgstr "Cliquez, puis appuyez sur le bouton de la radio ou basculez l'interrupteur voulu."
+
+msgid "Press a radio button…"
+msgstr "Appuyez sur un bouton de la radio…"
+
+msgid "Move it now…"
+msgstr "Bougez-le maintenant…"
+
+msgid "Gimbal pan left button"
+msgstr "Bouton panoramique gauche de la nacelle"
+
+msgid "Gimbal pan right button"
+msgstr "Bouton panoramique droite de la nacelle"
+
+msgid "Gimbal tilt up button"
+msgstr "Bouton inclinaison haut de la nacelle"
+
+msgid "Gimbal tilt down button"
+msgstr "Bouton inclinaison bas de la nacelle"
+
+msgid "Gimbal centre button"
+msgstr "Bouton centrage de la nacelle"
+
+msgid "Gimbal buttons"
+msgstr "Boutons de la nacelle"
+
+msgid "Move: the camera turns while you hold a button and stays where you leave it; the centre button brings it back. Look: the camera points to the end of its travel while you hold a button and returns when you let go, handy on a two-position switch."
+msgstr "Déplacer : la caméra tourne tant que vous maintenez un bouton et reste où vous la laissez ; le bouton de centrage la ramène. Regarder : la caméra pointe au bout de sa course tant que vous maintenez un bouton et revient quand vous le relâchez, pratique sur un interrupteur à deux positions."
+
+msgid "Move and stay"
+msgstr "Déplacer et rester"
+
+msgid "Look while held"
+msgstr "Regarder en maintenant"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Jusqu'où le servo panoramique tourne de chaque côté en bout de course de la voie ou avec les boutons."
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Jusqu'où le servo d'inclinaison tourne de chaque côté en bout de course de la voie ou avec les boutons."

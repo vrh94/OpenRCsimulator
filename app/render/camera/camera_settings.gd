@@ -32,6 +32,10 @@ const FPV_GIMBAL_AXES: Array[int] = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 const FPV_GIMBAL_PAN_TRAVELS: Array[int] = FpvHead.PAN_TRAVELS
 const FPV_GIMBAL_TILT_TRAVELS: Array[int] = FpvHead.TILT_TRAVELS
 const FPV_GIMBAL_SPEEDS: Array[String] = FpvHead.SERVO_SPEED_NAMES
+## GIMBAL-2: radio buttons for the gimbal (camera_fpv_gimbal_<role>_button, 0-based joystick buttons, -1 none) and
+## what holding one does (move: turn and stay; look: point while held).
+const FPV_GIMBAL_BUTTON_ROLES: Array[String] = FpvHead.BUTTON_ROLES
+const FPV_GIMBAL_BUTTON_MODES: Array[String] = FpvHead.BUTTON_MODES
 ## FPV-6: the fixed-wing OSD style and its elements (render/overlays/fpv_osd_model.gd).
 const FPV_OSD_STYLES: Array[String] = FpvOsdModel.STYLES
 const FPV_OSD_ELEMENTS: Array[String] = FpvOsdModel.ELEMENTS
@@ -83,6 +87,12 @@ const DEFAULTS := {
 	"camera_fpv_gimbal_speed": "medium",
 	"camera_fpv_gimbal_invert_pan": false,
 	"camera_fpv_gimbal_invert_tilt": false,
+	"camera_fpv_gimbal_pan_left_button": -1,
+	"camera_fpv_gimbal_pan_right_button": -1,
+	"camera_fpv_gimbal_tilt_up_button": -1,
+	"camera_fpv_gimbal_tilt_down_button": -1,
+	"camera_fpv_gimbal_centre_button": -1,
+	"camera_fpv_gimbal_button_mode": "move",
 	"camera_fpv_osd": FpvOsdModel.DEFAULT_STYLE,
 	"camera_fpv_osd_elements": FpvOsdModel.DEFAULT_ELEMENTS,
 	"camera_fpv_link": VideoLink.DEFAULT_MODE,
@@ -129,7 +139,7 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 	for pair: Array in [["camera_fpv_head_tracking", FPV_HEAD_TRACKING], ["camera_fpv_gimbal_speed", FPV_GIMBAL_SPEEDS],
 			["camera_fpv_osd", FPV_OSD_STYLES], ["camera_fpv_link", FPV_LINKS], ["camera_fc_switch_low", FC_MODES],
 			["camera_fc_switch_mid", FC_MODES], ["camera_fc_switch_high", FC_MODES], ["camera_fc_rc_link", FC_RC_LINKS],
-			["camera_fpv_rx_antenna", FPV_RX_ANTENNAS]]:
+			["camera_fpv_rx_antenna", FPV_RX_ANTENNAS], ["camera_fpv_gimbal_button_mode", FPV_GIMBAL_BUTTON_MODES]]:
 		var choice: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(choice) != TYPE_STRING or choice not in (pair[1] as Array):
 			out.append("%s must be one of %s" % [pair[0], ", ".join(pair[1])])
@@ -139,6 +149,11 @@ static func errors(raw: Dictionary) -> PackedStringArray:
 		var number: Variant = raw.get(pair[0], DEFAULTS[pair[0]])
 		if typeof(number) != TYPE_INT or number not in (pair[1] as Array):
 			out.append("%s must be one of the offered values" % pair[0])
+	for role: String in FPV_GIMBAL_BUTTON_ROLES:
+		var key := "camera_fpv_gimbal_%s_button" % role
+		var button: Variant = raw.get(key, DEFAULTS[key])
+		if typeof(button) != TYPE_INT or int(button) < -1 or int(button) >= FpvHead.BUTTONS:
+			out.append("%s must be a radio button number (0–%d) or -1" % [key, FpvHead.BUTTONS - 1])
 	for key: String in ["camera_fpv_gimbal_invert_pan", "camera_fpv_gimbal_invert_tilt", "camera_fc_video_rth", "camera_fc_battery_rth"]:
 		if typeof(raw.get(key, DEFAULTS[key])) != TYPE_BOOL:
 			out.append("%s must be a boolean" % key)
@@ -190,6 +205,12 @@ static func normalized(raw: Dictionary) -> Dictionary:
 		"camera_fpv_gimbal_speed": str(raw.get("camera_fpv_gimbal_speed", DEFAULTS.camera_fpv_gimbal_speed)),
 		"camera_fpv_gimbal_invert_pan": bool(raw.get("camera_fpv_gimbal_invert_pan", DEFAULTS.camera_fpv_gimbal_invert_pan)),
 		"camera_fpv_gimbal_invert_tilt": bool(raw.get("camera_fpv_gimbal_invert_tilt", DEFAULTS.camera_fpv_gimbal_invert_tilt)),
+		"camera_fpv_gimbal_pan_left_button": int(raw.get("camera_fpv_gimbal_pan_left_button", -1)),
+		"camera_fpv_gimbal_pan_right_button": int(raw.get("camera_fpv_gimbal_pan_right_button", -1)),
+		"camera_fpv_gimbal_tilt_up_button": int(raw.get("camera_fpv_gimbal_tilt_up_button", -1)),
+		"camera_fpv_gimbal_tilt_down_button": int(raw.get("camera_fpv_gimbal_tilt_down_button", -1)),
+		"camera_fpv_gimbal_centre_button": int(raw.get("camera_fpv_gimbal_centre_button", -1)),
+		"camera_fpv_gimbal_button_mode": str(raw.get("camera_fpv_gimbal_button_mode", DEFAULTS.camera_fpv_gimbal_button_mode)),
 		"camera_fpv_osd": str(raw.get("camera_fpv_osd", DEFAULTS.camera_fpv_osd)),
 		"camera_fpv_osd_elements": _osd_elements(raw.get("camera_fpv_osd_elements", DEFAULTS.camera_fpv_osd_elements)),
 		"camera_fpv_link": str(raw.get("camera_fpv_link", DEFAULTS.camera_fpv_link)),

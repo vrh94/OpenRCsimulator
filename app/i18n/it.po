@@ -13870,3 +13870,54 @@ msgstr "Rapporto %s · Sterzo %s · Freni %s"
 
 msgid "The saved tuning could not be applied: %s"
 msgstr "Impossibile applicare le regolazioni salvate: %s"
+
+msgid "Gimbal controls"
+msgstr "Comandi del gimbal"
+
+msgid "Click Detect or a button, then use that control on your radio. Esc cancels."
+msgstr "Fai clic su Rileva o su un pulsante, poi usa quel comando sulla radio. Esc annulla."
+
+msgid "Click, then turn the knob or move the slider you want for this. The flight sticks are never used."
+msgstr "Fai clic, poi gira la manopola o muovi lo slider che vuoi usare. Gli stick di volo non vengono mai usati."
+
+msgid "Click, then press the radio button or flip the switch you want for this."
+msgstr "Fai clic, poi premi il pulsante della radio o sposta l'interruttore che vuoi usare."
+
+msgid "Press a radio button…"
+msgstr "Premi un pulsante della radio…"
+
+msgid "Move it now…"
+msgstr "Muovilo ora…"
+
+msgid "Gimbal pan left button"
+msgstr "Pulsante gimbal panoramica sinistra"
+
+msgid "Gimbal pan right button"
+msgstr "Pulsante gimbal panoramica destra"
+
+msgid "Gimbal tilt up button"
+msgstr "Pulsante gimbal inclinazione su"
+
+msgid "Gimbal tilt down button"
+msgstr "Pulsante gimbal inclinazione giù"
+
+msgid "Gimbal centre button"
+msgstr "Pulsante gimbal centro"
+
+msgid "Gimbal buttons"
+msgstr "Pulsanti del gimbal"
+
+msgid "Move: the camera turns while you hold a button and stays where you leave it; the centre button brings it back. Look: the camera points to the end of its travel while you hold a button and returns when you let go, handy on a two-position switch."
+msgstr "Muovi: la telecamera ruota mentre tieni premuto un pulsante e resta dove la lasci; il pulsante centro la riporta indietro. Guarda: la telecamera punta a fine corsa mentre tieni premuto un pulsante e torna quando lo rilasci, comodo su un interruttore a due posizioni."
+
+msgid "Move and stay"
+msgstr "Muovi e resta"
+
+msgid "Look while held"
+msgstr "Guarda tenendo premuto"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Quanto ruota il servo di panoramica da ogni lato a fine corsa del canale o con i pulsanti."
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Quanto ruota il servo di inclinazione da ogni lato a fine corsa del canale o con i pulsanti."

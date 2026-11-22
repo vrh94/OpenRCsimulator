@@ -22,6 +22,7 @@ const FieldLoader = preload("res://data/field_loader.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const ControllerService := preload("res://input/controller_service.gd")
+const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerSetup := preload("res://ui/controller_setup.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const ControllerPrompts := preload("res://ui/controller_prompts.gd")
@@ -1873,6 +1874,10 @@ func open_settings(from: Control = null) -> void:
 	settings.route_requested.connect(func(route: String, opener: Control) -> void:
 		if route == "controls": open_controls(opener)
 		elif route == "about": open_help(opener))
+	# GIMBAL-2: gimbal controls are captured from the selected flight radio, never on its flight axes.
+	settings.gimbal_radio = func() -> Dictionary:
+		var id: int = controllers.registry.selected_device_id("flight") if controllers != null else -1
+		return {device = id, reserved = SmokeAux.flight_axes(controllers.profile_for_device(id)) if id >= 0 else []}
 	settings.set_graphics_restart_available(_can_restart_graphics())
 	settings.graphics_restart_requested.connect(_request_graphics_restart)
 	screens.push("settings", settings, from)

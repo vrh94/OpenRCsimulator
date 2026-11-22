@@ -13844,3 +13844,54 @@ msgstr "Передача %s · Руль %s · Тормоза %s"
 
 msgid "The saved tuning could not be applied: %s"
 msgstr "Не удалось применить сохранённую настройку: %s"
+
+msgid "Gimbal controls"
+msgstr "Управление подвесом"
+
+msgid "Click Detect or a button, then use that control on your radio. Esc cancels."
+msgstr "Нажмите «Определить» или кнопку, затем используйте этот орган управления на пульте. Esc — отмена."
+
+msgid "Click, then turn the knob or move the slider you want for this. The flight sticks are never used."
+msgstr "Нажмите, затем поверните крутилку или сдвиньте ползунок, который хотите использовать. Полётные стики не используются."
+
+msgid "Click, then press the radio button or flip the switch you want for this."
+msgstr "Нажмите, затем нажмите кнопку пульта или переключите тумблер, который хотите использовать."
+
+msgid "Press a radio button…"
+msgstr "Нажмите кнопку пульта…"
+
+msgid "Move it now…"
+msgstr "Сдвиньте сейчас…"
+
+msgid "Gimbal pan left button"
+msgstr "Кнопка подвеса: поворот влево"
+
+msgid "Gimbal pan right button"
+msgstr "Кнопка подвеса: поворот вправо"
+
+msgid "Gimbal tilt up button"
+msgstr "Кнопка подвеса: наклон вверх"
+
+msgid "Gimbal tilt down button"
+msgstr "Кнопка подвеса: наклон вниз"
+
+msgid "Gimbal centre button"
+msgstr "Кнопка подвеса: центр"
+
+msgid "Gimbal buttons"
+msgstr "Кнопки подвеса"
+
+msgid "Move: the camera turns while you hold a button and stays where you leave it; the centre button brings it back. Look: the camera points to the end of its travel while you hold a button and returns when you let go, handy on a two-position switch."
+msgstr "Двигать: камера поворачивается, пока вы держите кнопку, и остаётся там, где вы её оставили; кнопка центра возвращает её. Смотреть: камера смотрит в конец хода, пока вы держите кнопку, и возвращается, когда вы её отпускаете, — удобно на двухпозиционном тумблере."
+
+msgid "Move and stay"
+msgstr "Двигать и оставлять"
+
+msgid "Look while held"
+msgstr "Смотреть, пока держите"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Насколько серво поворота отклоняется в каждую сторону в конце хода канала или кнопками."
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Насколько серво наклона отклоняется в каждую сторону в конце хода канала или кнопками."

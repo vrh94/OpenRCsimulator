@@ -13988,3 +13988,54 @@ msgstr "Übersetzung %s · Lenkung %s · Bremsen %s"
 
 msgid "The saved tuning could not be applied: %s"
 msgstr "Die gespeicherte Abstimmung konnte nicht angewendet werden: %s"
+
+msgid "Gimbal controls"
+msgstr "Gimbal-Steuerung"
+
+msgid "Click Detect or a button, then use that control on your radio. Esc cancels."
+msgstr "Klicke auf Erkennen oder eine Taste und bediene dann das Element an deiner Fernsteuerung. Esc bricht ab."
+
+msgid "Click, then turn the knob or move the slider you want for this. The flight sticks are never used."
+msgstr "Klicke und drehe dann den Drehknopf oder bewege den Schieber, den du dafür willst. Die Steuerknüppel werden nie verwendet."
+
+msgid "Click, then press the radio button or flip the switch you want for this."
+msgstr "Klicke und drücke dann die Fernsteuerungstaste oder lege den Schalter um, den du dafür willst."
+
+msgid "Press a radio button…"
+msgstr "Drücke eine Fernsteuerungstaste…"
+
+msgid "Move it now…"
+msgstr "Jetzt bewegen…"
+
+msgid "Gimbal pan left button"
+msgstr "Gimbal-Taste Schwenken links"
+
+msgid "Gimbal pan right button"
+msgstr "Gimbal-Taste Schwenken rechts"
+
+msgid "Gimbal tilt up button"
+msgstr "Gimbal-Taste Neigen hoch"
+
+msgid "Gimbal tilt down button"
+msgstr "Gimbal-Taste Neigen runter"
+
+msgid "Gimbal centre button"
+msgstr "Gimbal-Taste Mitte"
+
+msgid "Gimbal buttons"
+msgstr "Gimbal-Tasten"
+
+msgid "Move: the camera turns while you hold a button and stays where you leave it; the centre button brings it back. Look: the camera points to the end of its travel while you hold a button and returns when you let go, handy on a two-position switch."
+msgstr "Bewegen: Die Kamera dreht sich, solange du eine Taste hältst, und bleibt dort stehen; die Mitte-Taste holt sie zurück. Schauen: Die Kamera zeigt ans Ende ihres Wegs, solange du eine Taste hältst, und kehrt beim Loslassen zurück, praktisch an einem Zweistufenschalter."
+
+msgid "Move and stay"
+msgstr "Bewegen und stehen lassen"
+
+msgid "Look while held"
+msgstr "Schauen beim Halten"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Wie weit das Schwenkservo am Ende des Kanalwegs oder mit den Tasten zu jeder Seite dreht."
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Wie weit das Neigeservo am Ende des Kanalwegs oder mit den Tasten zu jeder Seite dreht."

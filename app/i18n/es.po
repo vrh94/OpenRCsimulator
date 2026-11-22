@@ -12641,3 +12641,54 @@ msgstr "Relación %s · Dirección %s · Frenos %s"
 
 msgid "The saved tuning could not be applied: %s"
 msgstr "No se pudieron aplicar los ajustes guardados: %s"
+
+msgid "Gimbal controls"
+msgstr "Controles del gimbal"
+
+msgid "Click Detect or a button, then use that control on your radio. Esc cancels."
+msgstr "Pulsa Detectar o un botón y luego usa ese control en tu emisora. Esc cancela."
+
+msgid "Click, then turn the knob or move the slider you want for this. The flight sticks are never used."
+msgstr "Pulsa y luego gira el potenciómetro o mueve el deslizador que quieras para esto. Los sticks de vuelo nunca se usan."
+
+msgid "Click, then press the radio button or flip the switch you want for this."
+msgstr "Pulsa y luego presiona el botón de la emisora o mueve el interruptor que quieras para esto."
+
+msgid "Press a radio button…"
+msgstr "Presiona un botón de la emisora…"
+
+msgid "Move it now…"
+msgstr "Muévelo ahora…"
+
+msgid "Gimbal pan left button"
+msgstr "Botón de giro a la izquierda del gimbal"
+
+msgid "Gimbal pan right button"
+msgstr "Botón de giro a la derecha del gimbal"
+
+msgid "Gimbal tilt up button"
+msgstr "Botón de inclinación arriba del gimbal"
+
+msgid "Gimbal tilt down button"
+msgstr "Botón de inclinación abajo del gimbal"
+
+msgid "Gimbal centre button"
+msgstr "Botón de centrado del gimbal"
+
+msgid "Gimbal buttons"
+msgstr "Botones del gimbal"
+
+msgid "Move: the camera turns while you hold a button and stays where you leave it; the centre button brings it back. Look: the camera points to the end of its travel while you hold a button and returns when you let go, handy on a two-position switch."
+msgstr "Mover: la cámara gira mientras mantienes un botón y se queda donde la dejas; el botón de centrado la devuelve. Mirar: la cámara apunta al final de su recorrido mientras mantienes un botón y vuelve al soltarlo, útil con un interruptor de dos posiciones."
+
+msgid "Move and stay"
+msgstr "Mover y quedarse"
+
+msgid "Look while held"
+msgstr "Mirar mientras se mantiene"
+
+msgid "How far the pan servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Cuánto gira el servo de giro hacia cada lado al final del recorrido del canal o con los botones."
+
+msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
+msgstr "Cuánto gira el servo de inclinación hacia cada lado al final del recorrido del canal o con los botones."

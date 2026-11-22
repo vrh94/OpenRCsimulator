@@ -7,6 +7,7 @@ const Widgets := preload("res://ui/widgets.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const CameraSettings := preload("res://render/camera/camera_settings.gd")
+const FpvHead := preload("res://render/camera/fpv_head.gd")
 const FixedWingFC := preload("res://sim/fixed_wing_fc.gd")
 const FpvOsdModel := preload("res://render/overlays/fpv_osd_model.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
@@ -15,7 +16,12 @@ const CAMERA_AIDS: Array[String] = ["off", "horizon", "overhead", "both"]
 ## Settings pages, in tab order. CAM-17 added Camera.
 const CATEGORIES: Array[String] = ["Display", "Interface", "Sound", "Graphics", "Camera", "Lighting"]
 ## FPV-9: the Camera page's parts, one shown at a time so each fits without scrolling.
-const CAMERA_PARTS: Array[String] = ["General", "FPV camera", "Look & gimbal", "OSD", "Video link", "Flight controller"]
+## GIMBAL-2: the gimbal's button roles as the settings name them, and how long a capture listens.
+const GIMBAL_BUTTON_CAPTIONS := {pan_left = "Gimbal pan left button", pan_right = "Gimbal pan right button",
+	tilt_up = "Gimbal tilt up button", tilt_down = "Gimbal tilt down button", centre = "Gimbal centre button"}
+const GIMBAL_CAPTURE_SECONDS := 10
+const GIMBAL_CAPTURE_SWEEP := 0.5
+const CAMERA_PARTS: Array[String] = ["General", "FPV camera", "Look & gimbal", "Gimbal controls", "OSD", "Video link", "Flight controller"]
 const LensSettings := preload("res://render/lens/lens_settings.gd")
 ## LENS-01 rows at the end of the Lighting page: node name, preference key, choices, caption. "Glasses in pilot
 ## view" (lens_glasses) stays a display.cfg / --lens-glasses preference: the page has no room for a seventh row at 1080p.
@@ -146,6 +152,15 @@ var _camera_fpv_gimbal_tilt_travel_picker: OptionButton
 var _camera_fpv_gimbal_speed_picker: OptionButton
 var _camera_fpv_gimbal_invert_pan_toggle: CheckButton
 var _camera_fpv_gimbal_invert_tilt_toggle: CheckButton
+## GIMBAL-2: the gimbal's radio controls. Press-to-assign buttons (one per role, and Detect beside each channel picker)
+## listen to the selected flight radio. gimbal_radio: Callable() → {device: int (-1 any), reserved: Array (flight
+## axes)}, set by the app; tests may leave it unset (any device, no reserved axes).
+var gimbal_radio: Callable
+var _camera_fpv_gimbal_button_mode_picker: OptionButton
+var _gimbal_button_controls: Dictionary = {} # role -> Button
+var _gimbal_detect_buttons: Dictionary = {} # axis key -> Button
+## The capture in progress: {key, kind ("button"/"axis"), device, reserved, baseline (device -> axes), until_msec}.
+var _gimbal_capture: Dictionary = {}
 ## FPV-6: the fixed-wing OSD style and one check box per element.
 var _camera_fpv_osd_picker: OptionButton
 var _camera_fpv_osd_boxes := {}
@@ -199,6 +214,8 @@ func _init(store: DisplayPreferences = null, initial_language: String = "en") ->
 
 
 func _process(delta: float) -> void:
+	if not _gimbal_capture.is_empty() and Time.get_ticks_msec() >= int(_gimbal_capture.until_msec):
+		cancel_gimbal_capture()
 	if _trial_waiting_for_draw:
 		var now := _trial_now_msec()
 		if _trial_last_process_msec >= 0 and now - _trial_last_process_msec >= DISPLAY_TEST_SECONDS * 1000:
@@ -240,6 +257,7 @@ func _notification(what: int) -> void:
 		_refresh_translated_text()
 	elif what == NOTIFICATION_EXIT_TREE:
 		_cancel_trial_draw_wait()
+		_gimbal_capture.clear()
 
 
 func _ready() -> void:
@@ -492,9 +510,10 @@ func _build() -> void:
 	var camera_views: VBoxContainer = camera_parts[0]
 	var fpv_camera: VBoxContainer = camera_parts[1]
 	var fpv_look: VBoxContainer = camera_parts[2]
-	var fpv_osd: VBoxContainer = camera_parts[3]
-	var fpv_video: VBoxContainer = camera_parts[4] # FC-3: the video link has its own part (long-range gear)
-	var fc_part: VBoxContainer = camera_parts[5]
+	var gimbal_part: VBoxContainer = camera_parts[3] # GIMBAL-2: channels and buttons that steer the gimbal
+	var fpv_osd: VBoxContainer = camera_parts[4]
+	var fpv_video: VBoxContainer = camera_parts[5] # FC-3: the video link has its own part (long-range gear)
+	var fc_part: VBoxContainer = camera_parts[6]
 	_camera_view_picker = _camera_picker("CameraView", "camera_view", CameraSettings.VIEWS)
 	_add_row(camera_views, "First view", _camera_view_picker)
 	_set_localized_tooltip(_camera_view_picker, "The pilot view stays the reference for learning to fly; chase and orbit are aids. Right-drag turns the orbit; the wheel or +/− zooms.")
@@ -572,17 +591,18 @@ func _build() -> void:
 	_add_row(fpv_look, "FPV head tracking", _camera_fpv_head_tracking_picker)
 	_set_localized_tooltip(_camera_fpv_head_tracking_picker, "Turns the onboard camera with your head. Run opentrack on this computer with the output \"UDP over network\" to 127.0.0.1, port 4242. Backspace takes your present head position as straight ahead.")
 	_camera_fpv_gimbal_pan_axis_picker = _camera_picker("CameraFpvGimbalPanAxis", "camera_fpv_gimbal_pan_axis", CameraSettings.FPV_GIMBAL_AXES)
-	_add_row(fpv_look, "FPV gimbal pan channel", _camera_fpv_gimbal_pan_axis_picker)
+	gimbal_part.add_child(_label("Click Detect or a button, then use that control on your radio. Esc cancels.", "SecondaryLabel", true))
+	_add_row(gimbal_part, "FPV gimbal pan channel", _gimbal_channel_row("camera_fpv_gimbal_pan_axis", _camera_fpv_gimbal_pan_axis_picker))
 	_set_localized_tooltip(_camera_fpv_gimbal_pan_axis_picker, "A radio channel that turns the onboard camera left and right like a pan servo, numbered as in the controller setup. Use a knob or slider; the flight sticks are never used.")
 	_camera_fpv_gimbal_tilt_axis_picker = _camera_picker("CameraFpvGimbalTiltAxis", "camera_fpv_gimbal_tilt_axis", CameraSettings.FPV_GIMBAL_AXES)
-	_add_row(fpv_look, "FPV gimbal tilt channel", _camera_fpv_gimbal_tilt_axis_picker)
+	_add_row(gimbal_part, "FPV gimbal tilt channel", _gimbal_channel_row("camera_fpv_gimbal_tilt_axis", _camera_fpv_gimbal_tilt_axis_picker))
 	_set_localized_tooltip(_camera_fpv_gimbal_tilt_axis_picker, "A radio channel that tilts the onboard camera up and down like a tilt servo, numbered as in the controller setup.")
 	_camera_fpv_gimbal_pan_travel_picker = _camera_picker("CameraFpvGimbalPanTravel", "camera_fpv_gimbal_pan_travel", CameraSettings.FPV_GIMBAL_PAN_TRAVELS)
 	_add_row(fpv_look, "FPV gimbal pan travel", _camera_fpv_gimbal_pan_travel_picker)
-	_set_localized_tooltip(_camera_fpv_gimbal_pan_travel_picker, "How far the pan servo turns each way at the end of the channel's travel.")
+	_set_localized_tooltip(_camera_fpv_gimbal_pan_travel_picker, "How far the pan servo turns each way at the end of the channel's travel or with the buttons.")
 	_camera_fpv_gimbal_tilt_travel_picker = _camera_picker("CameraFpvGimbalTiltTravel", "camera_fpv_gimbal_tilt_travel", CameraSettings.FPV_GIMBAL_TILT_TRAVELS)
 	_add_row(fpv_look, "FPV gimbal tilt travel", _camera_fpv_gimbal_tilt_travel_picker)
-	_set_localized_tooltip(_camera_fpv_gimbal_tilt_travel_picker, "How far the tilt servo turns each way at the end of the channel's travel.")
+	_set_localized_tooltip(_camera_fpv_gimbal_tilt_travel_picker, "How far the tilt servo turns each way at the end of the channel's travel or with the buttons.")
 	_camera_fpv_gimbal_speed_picker = _camera_picker("CameraFpvGimbalSpeed", "camera_fpv_gimbal_speed", CameraSettings.FPV_GIMBAL_SPEEDS)
 	_add_row(fpv_look, "FPV gimbal servo speed", _camera_fpv_gimbal_speed_picker)
 	_set_localized_tooltip(_camera_fpv_gimbal_speed_picker, "How fast the gimbal servos follow the channels. If the radio or a channel is lost, the camera returns to the centre at this speed.")
@@ -590,6 +610,11 @@ func _build() -> void:
 	_add_row(fpv_look, "FPV gimbal reverse pan", _camera_fpv_gimbal_invert_pan_toggle)
 	_camera_fpv_gimbal_invert_tilt_toggle = _camera_toggle("CameraFpvGimbalInvertTilt", "camera_fpv_gimbal_invert_tilt", "Reverses the tilt servo.")
 	_add_row(fpv_look, "FPV gimbal reverse tilt", _camera_fpv_gimbal_invert_tilt_toggle)
+	for role: String in CameraSettings.FPV_GIMBAL_BUTTON_ROLES:
+		_add_row(gimbal_part, GIMBAL_BUTTON_CAPTIONS[role], _gimbal_button_row(role))
+	_camera_fpv_gimbal_button_mode_picker = _camera_picker("CameraFpvGimbalButtonMode", "camera_fpv_gimbal_button_mode", CameraSettings.FPV_GIMBAL_BUTTON_MODES)
+	_add_row(gimbal_part, "Gimbal buttons", _camera_fpv_gimbal_button_mode_picker)
+	_set_localized_tooltip(_camera_fpv_gimbal_button_mode_picker, "Move: the camera turns while you hold a button and stays where you leave it; the centre button brings it back. Look: the camera points to the end of its travel while you hold a button and returns when you let go, handy on a two-position switch.")
 	_camera_fpv_osd_picker = _camera_picker("CameraFpvOsd", "camera_fpv_osd", CameraSettings.FPV_OSD_STYLES)
 	_add_row(fpv_osd, "FPV OSD", _camera_fpv_osd_picker)
 	_set_localized_tooltip(_camera_fpv_osd_picker, "The on-screen display over the onboard picture, laid out like a Betaflight, INAV or ArduPilot flight controller's OSD. It shows only what the simulator measures: no battery figures on a glow or gas engine.")
@@ -947,6 +972,142 @@ func _show_camera_part(index: int) -> void:
 		_camera_part_picker.select(index)
 
 
+## GIMBAL-2: a channel picker with a Detect button beside it (move the knob or slider to choose its channel).
+func _gimbal_channel_row(key: String, picker: OptionButton) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.add_child(picker)
+	var detect := _button("Detect", "", picker.name + "Detect")
+	_set_localized_tooltip(detect, "Click, then turn the knob or move the slider you want for this. The flight sticks are never used.")
+	detect.pressed.connect(func() -> void: begin_gimbal_capture(key, "axis"))
+	row.add_child(detect)
+	_gimbal_detect_buttons[key] = detect
+	return row
+
+
+## GIMBAL-2: one gimbal button role: an assign button showing the bound radio button, and a clear button.
+func _gimbal_button_row(role: String) -> HBoxContainer:
+	var key := "camera_fpv_gimbal_%s_button" % role
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	var assign := Button.new()
+	assign.name = "CameraFpvGimbal%sButton" % role.to_pascal_case()
+	assign.custom_minimum_size.x = 220
+	assign.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	assign.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
+	assign.pressed.connect(func() -> void: begin_gimbal_capture(key, "button"))
+	_set_localized_tooltip(assign, "Click, then press the radio button or flip the switch you want for this.")
+	row.add_child(assign)
+	var clear := _button("Clear", "", assign.name + "Clear")
+	clear.pressed.connect(func() -> void:
+		cancel_gimbal_capture()
+		_draft[key] = -1
+		_on_presentation_option_changed()
+		_refresh_gimbal_controls())
+	row.add_child(clear)
+	_gimbal_button_controls[role] = assign
+	return row
+
+
+## GIMBAL-2: starts listening for the radio input of `key` ("button": a pressed button; "axis": a channel moved at
+## least half its travel from where it was). Returns false when the key is not a gimbal control.
+func begin_gimbal_capture(key: String, kind: String) -> bool:
+	if not CameraSettings.DEFAULTS.has(key) or kind not in ["button", "axis"]:
+		return false
+	var radio: Dictionary = gimbal_radio.call() if gimbal_radio.is_valid() else {}
+	var device := int(radio.get("device", -1))
+	var baseline := {}
+	for id: int in Input.get_connected_joypads():
+		if device >= 0 and id != device:
+			continue
+		var axes := PackedFloat32Array()
+		for axis: int in FpvHead.AXES:
+			axes.append(Input.get_joy_axis(id, axis))
+		baseline[id] = axes
+	_gimbal_capture = {key = key, kind = kind, device = device, reserved = radio.get("reserved", []), baseline = baseline,
+		until_msec = Time.get_ticks_msec() + GIMBAL_CAPTURE_SECONDS * 1000}
+	_refresh_gimbal_controls()
+	return true
+
+
+func cancel_gimbal_capture() -> void:
+	if _gimbal_capture.is_empty():
+		return
+	_gimbal_capture.clear()
+	_refresh_gimbal_controls()
+
+
+## GIMBAL-2: a radio event during a capture. Returns true when it was taken (assigned, or swallowed so a radio button
+## does not also press the focused control).
+func gimbal_capture_event(event: InputEvent) -> bool:
+	if _gimbal_capture.is_empty():
+		return false
+	if event is InputEventKey and event.pressed and (event as InputEventKey).keycode == KEY_ESCAPE:
+		cancel_gimbal_capture()
+		return true
+	var device := int(_gimbal_capture.device)
+	if event is InputEventJoypadButton:
+		var press := event as InputEventJoypadButton
+		if device >= 0 and press.device != device:
+			return false
+		if _gimbal_capture.kind == "button" and press.pressed and press.button_index >= 0 and press.button_index < FpvHead.BUTTONS:
+			_assign_gimbal_capture(press.button_index)
+		return true
+	if event is InputEventJoypadMotion and _gimbal_capture.kind == "axis":
+		var motion := event as InputEventJoypadMotion
+		if (device >= 0 and motion.device != device) or motion.axis < 0 or motion.axis >= FpvHead.AXES \
+				or (_gimbal_capture.reserved as Array).has(motion.axis):
+			return false
+		var base: Variant = (_gimbal_capture.baseline as Dictionary).get(motion.device)
+		var start: float = float(base[motion.axis]) if base is PackedFloat32Array else 0.0
+		if absf(motion.axis_value - start) >= GIMBAL_CAPTURE_SWEEP:
+			_assign_gimbal_capture(motion.axis)
+		return true
+	return false
+
+
+func _input(event: InputEvent) -> void:
+	if gimbal_capture_event(event):
+		get_viewport().set_input_as_handled()
+
+
+func _assign_gimbal_capture(value: int) -> void:
+	var key := str(_gimbal_capture.key)
+	_gimbal_capture.clear()
+	if key.ends_with("_button"):
+		# One radio button steers one role: the same button leaves any other role it had.
+		for role: String in CameraSettings.FPV_GIMBAL_BUTTON_ROLES:
+			var other := "camera_fpv_gimbal_%s_button" % role
+			if other != key and int(_draft.get(other, -1)) == value:
+				_draft[other] = -1
+	_draft[key] = value
+	_on_presentation_option_changed()
+	_sync_controls_from_draft_gimbal()
+	_refresh_gimbal_controls()
+
+
+func _sync_controls_from_draft_gimbal() -> void:
+	for entry: Array in [[_camera_fpv_gimbal_pan_axis_picker, "camera_fpv_gimbal_pan_axis"], [_camera_fpv_gimbal_tilt_axis_picker, "camera_fpv_gimbal_tilt_axis"]]:
+		_select_metadata(entry[0], int(_draft.get(entry[1], -1)))
+
+
+## GIMBAL-2: the assign buttons show the bound radio button (numbered from 1 as radios and the OS show them), or
+## that they are listening.
+func _refresh_gimbal_controls() -> void:
+	var listening := str(_gimbal_capture.get("key", ""))
+	for role: String in _gimbal_button_controls:
+		var key := "camera_fpv_gimbal_%s_button" % role
+		var assign: Button = _gimbal_button_controls[role]
+		var bound := int(_draft.get(key, -1))
+		if key == listening:
+			assign.text = tr("Press a radio button…")
+		else:
+			assign.text = tr("Not set") if bound < 0 else tr("Button %d") % (bound + 1)
+	for key: String in _gimbal_detect_buttons:
+		var detect: Button = _gimbal_detect_buttons[key]
+		detect.text = tr("Move it now…") if key == listening else tr("Detect")
+
+
 func _camera_toggle(node_name: String, key: String, tooltip: String) -> CheckButton:
 	var toggle := CheckButton.new()
 	toggle.name = node_name
@@ -1033,6 +1194,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"camera_fpv_gimbal_pan_travel", "camera_fpv_gimbal_tilt_travel":
 			var travel := "±%d°" % int(value)
 			return tr("%s (default)") % travel if int(value) == int(CameraSettings.DEFAULTS[key]) else travel
+		"camera_fpv_gimbal_button_mode": return {move = tr("%s (default)") % tr("Move and stay"), look = tr("Look while held")}.get(value, str(value))
 		"camera_fpv_gimbal_speed": return {slow = tr("Slow (90°/s)"), medium = tr("%s (default)") % tr("Medium (180°/s)"),
 			fast = tr("Fast (360°/s)"), instant = tr("Instant")}.get(value, str(value))
 		"camera_zoom": return {off = tr("Off"), constant = tr("%s (default)") % tr("Constant size"), partial = tr("Keeps looming"),
@@ -1577,6 +1739,8 @@ func _sync_controls() -> void:
 	_select_metadata(_camera_fpv_gimbal_speed_picker, str(_draft.get("camera_fpv_gimbal_speed", CameraSettings.DEFAULTS.camera_fpv_gimbal_speed)))
 	_camera_fpv_gimbal_invert_pan_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_pan", false)))
 	_camera_fpv_gimbal_invert_tilt_toggle.set_pressed_no_signal(bool(_draft.get("camera_fpv_gimbal_invert_tilt", false)))
+	_select_metadata(_camera_fpv_gimbal_button_mode_picker, str(_draft.get("camera_fpv_gimbal_button_mode", CameraSettings.DEFAULTS.camera_fpv_gimbal_button_mode)))
+	_refresh_gimbal_controls()
 	_select_metadata(_camera_fpv_osd_picker, str(_draft.get("camera_fpv_osd", CameraSettings.DEFAULTS.camera_fpv_osd)))
 	_select_metadata(_camera_fpv_link_picker, str(_draft.get("camera_fpv_link", CameraSettings.DEFAULTS.camera_fpv_link)))
 	_select_metadata(_camera_fpv_rx_antenna_picker, str(_draft.get("camera_fpv_rx_antenna", CameraSettings.DEFAULTS.camera_fpv_rx_antenna)))
@@ -1866,6 +2030,7 @@ func _refresh_translated_text() -> void:
 			[_camera_fpv_gimbal_pan_axis_picker, "camera_fpv_gimbal_pan_axis"], [_camera_fpv_gimbal_tilt_axis_picker, "camera_fpv_gimbal_tilt_axis"],
 			[_camera_fpv_gimbal_pan_travel_picker, "camera_fpv_gimbal_pan_travel"], [_camera_fpv_gimbal_tilt_travel_picker, "camera_fpv_gimbal_tilt_travel"],
 			[_camera_fpv_gimbal_speed_picker, "camera_fpv_gimbal_speed"], [_camera_fpv_osd_picker, "camera_fpv_osd"],
+			[_camera_fpv_gimbal_button_mode_picker, "camera_fpv_gimbal_button_mode"],
 			[_camera_fpv_link_picker, "camera_fpv_link"], [_camera_fpv_vtx_picker, "camera_fpv_vtx_power"],
 			[_camera_fc_switch_pickers[0], "camera_fc_switch_low"], [_camera_fc_switch_pickers[1], "camera_fc_switch_mid"],
 			[_camera_fc_switch_pickers[2], "camera_fc_switch_high"], [_camera_fc_rc_link_picker, "camera_fc_rc_link"],
@@ -1878,6 +2043,7 @@ func _refresh_translated_text() -> void:
 		for index: int in lens_picker.item_count:
 			lens_picker.set_item_text(index, _choice_caption(key, lens_picker.get_item_metadata(index)))
 	_refresh_graphics_info()
+	_refresh_gimbal_controls()
 	_refresh_rc_track_captions()
 	_refresh_shadow_group_button()
 	_refresh_shadow_technique_tooltip()

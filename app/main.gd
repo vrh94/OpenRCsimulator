@@ -1934,7 +1934,11 @@ func _update_fpv_head() -> void:
 	head.update_gimbal(func(axis: int) -> float:
 		if radio == null or not radio.connected or axis >= radio.axes.size() or not radio.has_axis_sample(axis):
 			return NAN
-		return float(radio.axes[axis]), reserved, _camera_dt)
+		return float(radio.axes[axis]), reserved, _camera_dt, func(button: int) -> Variant:
+		# GIMBAL-2: the radio's buttons, read from the selected flight device only.
+		if radio == null or not radio.connected or int(radio.device_id) < 0:
+			return null
+		return Input.is_joy_button_pressed(int(radio.device_id), button))
 
 
 ## FPV-5: the help line for head-look, the tracker and the gimbal (empty when all are idle).
