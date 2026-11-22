@@ -407,6 +407,21 @@ temperature, QNH and humidity; a standard column starts at the field. Flat field
 saved weather is never rewritten. Revisit if a field needs its own measured climate, or if rotorcraft qualify the
 vertical column.
 
+### Airborne skip tests on solid terrain use proven local bounds
+
+Owner request 2026-11-22 (make terrain physics as cheap as flat fields). The fast native physics was not the cause:
+no native library is installed on the development Mac. Every airborne skip test compared the aircraft with the
+map's highest point, 1.8 km above the Triglav field, so wheels, gear and hull sampled the terrain on every stage at
+any height. The tests now use the ground near the aircraft: `terrain_dem.gd` keeps, per 32 m block and computed on
+first use, the highest possible sample and steepest possible slope of the interpolated surface, derived from the
+Catmull-Rom weights rather than estimated. `ground_terrain.gd` `max_height_near` replaces the global bound in the
+wheel, gear, anchor, substep and ground-effect gates, and `clear_of_solid_ground` lets hull contact skip building
+the tangent frame. A skip happens only where the old code computed no contact, so flights are bit-identical (three
+scripted flights hash the same every tick); flat fields take exactly the old path. Airborne physics on Triglav fell
+from 1.04 to 0.61 ms per tick, level with the Club field. The helicopter's rotor-strike envelope keeps the global
+bound because it feeds the strike test itself, not only a skip. Revisit if a terrain needs bounds outside its grid
+(lakes on terrain) or native kernels learn terrain.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

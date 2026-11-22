@@ -65,6 +65,12 @@ func _failure_airborne() -> bool:
 	var ground_up: float = environment.terrain(sim.state[RB.POS], sim.state[RB.POS + 1])[0]
 	if -sim.state[RB.POS + 2] - ground_up < 5.0:
 		return false
+	if _lake.is_empty() and _rc_track.is_empty() and wheel_count() > 0 and GroundTerrain.dem_for(ground_surfaces) != null:
+		# Solid terrain: every wheel is above the highest ground within the gear's reach, so none is compressed.
+		var reach: float = float(current_landing_gear().get("reach", INF))
+		if -sim.state[RB.POS + 2] > reach + GroundTerrain.max_height_near(ground_surfaces, sim.state[RB.POS],
+				sim.state[RB.POS + 1], reach):
+			return true
 	for compression: float in gear_compressions(sim.state):
 		if compression > 0.0:
 			return false
@@ -3305,6 +3311,9 @@ func _external_number_is_in_range(value: Variant, minimum: float, maximum: float
 func _check_prop_strike() -> void:
 	if not prop_strike.is_empty() or not engine_running or _prop_disc.is_empty() or sim.aux[AUX_RPM] < HullContact.STRIKE_MIN_RPM:
 		return
+	if _lake.is_empty() and HullContact.clear_of_terrain({surfaces = airframe_surfaces}, sim.state,
+			M.norm(_prop_disc.hub) + float(_prop_disc.radius) + 1e-6):
+		return # the whole disc is above the solid ground's tangent plane: no depth to report
 	var disc: Dictionary = HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt(), airframe_surfaces)
 	if float(disc.depth) <= 0.0:
 		return
@@ -3365,6 +3374,9 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 	var hull: PackedFloat64Array = aircraft.model.crash_hull
 	var q := PackedFloat64Array([s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3]])
 	var solid: bool = GroundTerrain.dem_for(ground_surfaces) != null # TG-06: solid terrain on this field
+	if solid and _lake.is_empty() and -s[RB.POS + 2] > _hull_reach(hull) \
+			+ GroundTerrain.max_height_near(ground_surfaces, s[RB.POS], s[RB.POS + 1], _hull_reach(hull)):
+		return false # every hull point is above the highest ground within its reach
 	for i in range(0, hull.size(), 3):
 		# down component of R(q)·p: third row of the body→NED rotation matrix
 		var down := 2.0 * (q[1] * q[3] - q[0] * q[2]) * hull[i] + 2.0 * (q[2] * q[3] + q[0] * q[1]) * hull[i + 1] \
@@ -3384,6 +3396,21 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 		if s[RB.POS + 2] + down >= ground_down:
 			return true
 	return false
+
+
+var _hull_reach_source := PackedFloat64Array()
+var _hull_reach_m := 0.0
+
+
+## Largest distance of a crash-hull point from the CG (cached per hull).
+func _hull_reach(hull: PackedFloat64Array) -> float:
+	if hull != _hull_reach_source:
+		var reach := 0.0
+		for i in range(0, hull.size(), 3):
+			reach = maxf(reach, sqrt(hull[i] * hull[i] + hull[i + 1] * hull[i + 1] + hull[i + 2] * hull[i + 2]))
+		_hull_reach_source = hull.duplicate()
+		_hull_reach_m = reach * (1.0 + 1e-9) + 1e-6 # q_rotate of a near-unit quaternion may lengthen a point slightly
+	return _hull_reach_m
 
 
 ## Swept contact interpolates position, velocity and rates plus normalized attitude.
@@ -5552,7 +5579,7 @@ func _wing_cl(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float = NA
 func _ground_up(s: PackedFloat64Array) -> float:
 	if _ground_effect_reach <= 0.0:
 		return NAN
-	if -s[RB.POS + 2] >= _ground_effect_reach + environment.ground_max_height():
+	if -s[RB.POS + 2] >= _ground_effect_reach + environment.ground_max_height_near(s[RB.POS], s[RB.POS + 1], 0.0):
 		return NAN
 	return environment.terrain(s[RB.POS], s[RB.POS + 1])[0]
 

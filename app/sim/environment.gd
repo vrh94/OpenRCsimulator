@@ -120,6 +120,14 @@ func ground_max_height() -> float:
 	return Terrain.max_height_validated(surfaces) + Track.max_height_m(terrain_overlay)
 
 
+## ground_max_height bounded over the square of half-width `radius` around (north, east): equal to it on flat
+## fields, the local ground on solid terrain (physics/ground_terrain.gd max_height_near).
+func ground_max_height_near(north: float, east: float, radius: float) -> float:
+	if terrain_overlay.is_empty():
+		return Terrain.max_height_near(surfaces, north, east, radius)
+	return Terrain.max_height_near(surfaces, north, east, radius) + Track.max_height_m(terrain_overlay)
+
+
 ## Install provenance for the current legacy table at a field boundary. Geometry
 ## cannot be changed through this method: all current consumers retain one law.
 func install_ground_registry(regions: Array) -> bool:

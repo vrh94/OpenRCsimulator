@@ -13,6 +13,14 @@ extends RefCounted
 
 const FORMAT := "openrc-heightfield v1"
 const BLEND_M := 96.0
+## Local height bounds (max_up_near) are kept per square block of this size, computed on first use.
+const BOUND_BLOCK_M := 32.0
+## A Catmull-Rom patch exceeds its 4 x 4 nodes by at most this fraction of their range: per axis the positive
+## weights sum to 1 + t(1-t)/2 <= 1.125 and the negative ones to 0.125, so in 2D the positive products sum to at most
+## 1.125^2 + 0.125^2 = 1.28125 and h <= min + 1.28125 (max - min).
+const BICUBIC_OVERSHOOT := 0.28125
+## Absolute slack for floating-point rounding in the samplers (heights are ~1e3 m, rounding ~1e-12 m).
+const BOUND_SLACK_M := 0.001
 
 var identity: String = ""
 var error: String = ""
@@ -42,6 +50,9 @@ var _r_spacing := 1.0
 var _r_base := 0.0
 var _r_step := 1.0
 var _r_ref := 0.0        # ground_ref_m in ring units
+
+var _bounds: Dictionary = {}   # Vector2i block -> [height bound (m above ground_ref_m), slope bound]
+var _bounds_mutex := Mutex.new()
 
 static var _cache: Dictionary = {}
 static var _cache_mutex := Mutex.new()
@@ -114,6 +125,99 @@ func ok() -> bool:
 func sample(north: float, east: float) -> PackedFloat64Array:
 	var value := _grid_value(east, north)
 	return PackedFloat64Array([value[0], value[2], value[1]])
+
+
+## A bound on sample()[0] over the square of half-width `radius` around field point (north, east): never below the
+## height of any point in it, and usually within a few metres of the highest. Deterministic for a given grid.
+func max_up_near(north: float, east: float, radius: float) -> float:
+	return bounds_near(north, east, radius)[0]
+
+
+## [height bound, slope bound] over the square of half-width `radius` around (north, east): no sample()[0] in it is
+## higher than the first, and neither |dh/dnorth| nor |dh/deast| is larger than the second.
+func bounds_near(north: float, east: float, radius: float) -> PackedFloat64Array:
+	if not (radius >= 0.0) or not is_finite(north) or not is_finite(east) or not is_finite(radius):
+		return PackedFloat64Array([max_up_m + BOUND_SLACK_M, INF])
+	var bx0 := floori((east - radius) / BOUND_BLOCK_M)
+	var bx1 := floori((east + radius) / BOUND_BLOCK_M)
+	var by0 := floori((north - radius) / BOUND_BLOCK_M)
+	var by1 := floori((north + radius) / BOUND_BLOCK_M)
+	if (bx1 - bx0 + 1) * (by1 - by0 + 1) > 64:
+		return PackedFloat64Array([max_up_m + BOUND_SLACK_M, INF])
+	var top := -INF
+	var slope := 0.0
+	for by in range(by0, by1 + 1):
+		for bx in range(bx0, bx1 + 1):
+			var block := _block_bound(Vector2i(bx, by))
+			top = maxf(top, block[0])
+			slope = maxf(slope, block[1])
+	return PackedFloat64Array([top, slope])
+
+
+func _block_bound(block: Vector2i) -> PackedFloat64Array:
+	_bounds_mutex.lock()
+	var known: Variant = _bounds.get(block)
+	_bounds_mutex.unlock()
+	if known != null:
+		return known
+	var xa := block.x * BOUND_BLOCK_M
+	var ya := block.y * BOUND_BLOCK_M
+	var xb := xa + BOUND_BLOCK_M
+	var yb := ya + BOUND_BLOCK_M
+	# The ring's bilinear patch (also the far field, where its nodes and fractions clamp) stays within its 4 nodes,
+	# and each slope component is one node difference over a spacing.
+	var ring := _node_range(_r_data, _r_cols, _r_rows, floori((xa - _r_x0) / _r_spacing),
+		floori((xb - _r_x0) / _r_spacing) + 1, floori((ya - _r_y0) / _r_spacing), floori((yb - _r_y0) / _r_spacing) + 1)
+	var top := (ring[0] - _r_ref) * _r_step
+	var low := (ring[1] - _r_ref) * _r_step
+	var slope := maxi(ring[2], ring[3]) * _r_step / _r_spacing
+	# Inside the core the bicubic patch (blended toward the ring near its edge) spans one more node each side. Summed
+	# by parts, a Catmull-Rom derivative is a combination of adjacent node differences with absolute weights summing to
+	# at most 1.5, taken across rows (or columns) whose weights sum in absolute value to at most 1.25.
+	if xb > _c_x0 and xa < _c_x1 and yb > _c_y0 and ya < _c_y1:
+		var core := _node_range(_c_data, _c_cols, _c_rows, floori((xa - _c_x0) / _c_spacing) - 1,
+			floori((xb - _c_x0) / _c_spacing) + 2, floori((ya - _c_y0) / _c_spacing) - 1,
+			floori((yb - _c_y0) / _c_spacing) + 2)
+		var spread := float(core[0] - core[1])
+		var fine_top := (core[0] + BICUBIC_OVERSHOOT * spread - _c_ref) * _c_step
+		var fine_low := (core[1] - BICUBIC_OVERSHOOT * spread - _c_ref) * _c_step
+		slope = maxf(slope, 1.875 * maxi(core[2], core[3]) * _c_step / _c_spacing)
+		# Within BLEND_M of the core edge the blend weight's slope (at most 1.5 / BLEND_M) multiplies fine - ring.
+		var inset := minf(minf(xa - _c_x0, _c_x1 - xb), minf(ya - _c_y0, _c_y1 - yb))
+		if inset < BLEND_M:
+			slope += 1.5 / BLEND_M * (maxf(top, fine_top) - minf(low, fine_low))
+		top = maxf(top, fine_top)
+	var bound := PackedFloat64Array([top + BOUND_SLACK_M, slope * (1.0 + 1e-9) + 1e-9])
+	_bounds_mutex.lock()
+	_bounds[block] = bound
+	_bounds_mutex.unlock()
+	return bound
+
+
+## [max, min, largest step between column neighbours, largest step between row neighbours] of the grid nodes in
+## columns c0..c1 and rows r0..r1, clamped to the grid.
+static func _node_range(data: PackedByteArray, cols: int, rows: int, c0: int, c1: int, r0: int, r1: int) -> PackedInt32Array:
+	c0 = clampi(c0, 0, cols - 1)
+	c1 = clampi(c1, 0, cols - 1)
+	r0 = clampi(r0, 0, rows - 1)
+	r1 = clampi(r1, 0, rows - 1)
+	var high := 0
+	var low := 65535
+	var step_x := 0
+	var step_y := 0
+	for r in range(r0, r1 + 1):
+		var at := (r * cols + c0) * 2
+		var left := data.decode_u16(at)
+		for c in range(c0, c1 + 1):
+			var v := data.decode_u16(at)
+			high = maxi(high, v)
+			low = mini(low, v)
+			step_x = maxi(step_x, absi(v - left))
+			left = v
+			if r < r1:
+				step_y = maxi(step_y, absi(data.decode_u16(at + cols * 2) - v))
+			at += 2
+	return PackedInt32Array([high, low, step_x, step_y])
 
 
 ## Absolute height (m) under a field NED point.

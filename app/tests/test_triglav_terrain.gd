@@ -139,6 +139,9 @@ func _run() -> void:
 	var flat: Dictionary = GroundSurfaces.build(table.table, FieldLoader.validate(flat_raw).field)
 	check("a flat field has no terrain and keeps its relief bound",
 		Terrain.dem_for(flat.rects) == null and Terrain.max_height_validated(flat.rects) == Terrain.RELIEF_ROUGH_M)
+	_local_bounds(rects, dem, rng)
+	check("a flat field's local bound is its relief bound", Terrain.max_height_near(flat.rects, 10.0, 20.0, 3.0)
+		== Terrain.max_height_validated(flat.rects) and not Terrain.clear_of_solid_ground(flat.rects, 0.0, 0.0, 500.0, 1.0))
 
 	# The tangent-plane frame.
 	var frame: Dictionary = TerrainFrame.at(dem.sample(300.0, -400.0), 300.0, -400.0)
@@ -253,6 +256,60 @@ func _airplane(field: Dictionary) -> void:
 	check("a full-power take-off roll on the strip does not crash", not crashed, "%s %s" % [s.crash, s.sim.fault_reason])
 	check("the roll moves the airplane along the ground", M.norm(M.sub(RB._slice3(rolled, RB.POS), RB._slice3(start, RB.POS))) > 5.0)
 	s.queue_free()
+
+
+## Option 4 (2026-11-22): local height and slope bounds let airborne skip tests work on terrain as on flat fields.
+## They must never be below any sample within their square, on the core, its blend band, the ring and beyond.
+func _local_bounds(rects: PackedFloat64Array, dem: RefCounted, rng: RandomNumberGenerator) -> void:
+	var worst_height := INF
+	var worst_slope := INF
+	var tight := 0.0
+	var count := 0
+	for i in 6000:
+		var scale: float = [400.0, 2500.0, 4200.0, 13000.0][i % 4]
+		var north := rng.randf_range(-scale, scale)
+		var east := rng.randf_range(-scale, scale)
+		var radius: float = [0.0, 1.5, 6.0, 40.0][i % 4]
+		var bound: PackedFloat64Array = dem.bounds_near(north, east, radius)
+		for j in 6:
+			var p := Vector2(north + rng.randf_range(-radius, radius), east + rng.randf_range(-radius, radius))
+			var sample: PackedFloat64Array = dem.sample(p.x, p.y)
+			worst_height = minf(worst_height, bound[0] - sample[0])
+			worst_slope = minf(worst_slope, bound[1] - maxf(absf(sample[1]), absf(sample[2])))
+			var composed: float = Terrain.sample_validated(p.x, p.y, rects)[0]
+			worst_height = minf(worst_height, Terrain.max_height_near(rects, north, east, radius) - composed)
+			tight += bound[0] - sample[0]
+			count += 1
+	print("local bounds: worst height margin %.4f m, worst slope margin %.4f, mean height margin %.1f m" % [
+		worst_height, worst_slope, tight / count])
+	check("the local height bound covers every sampled point", worst_height >= 0.0, str(worst_height))
+	check("the local slope bound covers every sampled gradient", worst_slope >= 0.0, str(worst_slope))
+	check("the local height bound follows the local ground", tight / count < 60.0, str(tight / count))
+	# clear_of_solid_ground against the tangent frame it stands in for.
+	var wrong := 0
+	var cleared := 0
+	for i in 3000:
+		var north := rng.randf_range(-3000.0, 3000.0)
+		var east := rng.randf_range(-3000.0, 3000.0)
+		var ground: PackedFloat64Array = Terrain.solid_sample(rects, north, east)
+		var altitude: float = ground[0] + rng.randf_range(-2.0, 30.0)
+		var reach := rng.randf_range(0.2, 3.0)
+		if Terrain.clear_of_solid_ground(rects, north, east, altitude, reach):
+			cleared += 1
+			var framed: PackedFloat64Array = TerrainFrame.state(TerrainFrame.at(ground, north, east), _pose(north, east, -altitude))
+			if -framed[RB.POS + 2] <= reach:
+				wrong += 1
+	var high := 0
+	for i in 1000:
+		var north := rng.randf_range(-3000.0, 3000.0)
+		var east := rng.randf_range(-3000.0, 3000.0)
+		var ground: float = Terrain.solid_sample(rects, north, east)[0]
+		if Terrain.clear_of_solid_ground(rects, north, east, ground + rng.randf_range(100.0, 200.0), 2.0):
+			high += 1
+	print("clear_of_solid_ground: %d of 3000 near the ground cleared, %d of 1000 at 100-200 m" % [cleared, high])
+	check("terrain clearance never clears a body within its reach of the tangent plane", wrong == 0, str(wrong))
+	check("terrain clearance clears bodies 100-200 m above the ground", high > 900, str(high))
+	check("terrain clearance never clears over a levelled pad", not Terrain.clear_of_solid_ground(rects, -12.0, 0.0, 400.0, 1.0))
 
 
 ## The X-Maxx drives off on the Rateče meadow and stays on its wheels on the real ground.

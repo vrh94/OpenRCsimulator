@@ -327,6 +327,47 @@ static func max_height_validated(surfaces: PackedFloat64Array) -> float:
 	return RELIEF_ROUGH_M
 
 
+## Like max_height_validated, bounded over the square of half-width `radius` around (north, east) only. Flat fields
+## return exactly max_height_validated; on solid terrain the bound follows the local ground (physics/terrain_dem.gd
+## max_up_near) instead of the highest summit, so airborne skip tests work there as on flat fields. Levelled pads lie
+## between the terrain and the datum, hence the floor at zero.
+static func max_height_near(surfaces: PackedFloat64Array, north: float, east: float, radius: float) -> float:
+	if _dem_count == 0 or surfaces.is_empty():
+		return max_height_validated(surfaces)
+	var dem: RefCounted = dem_for(surfaces)
+	if dem == null:
+		return max_height_validated(surfaces)
+	return RELIEF_ROUGH_M + maxf(float(dem.max_up_near(north, east, radius)), 0.0)
+
+
+## True when the field's solid terrain under (north, east) is certainly more than `reach` below `altitude`, measured
+## along the normal of its tangent plane there (the frame of physics/terrain_frame.gd at that point). False when unsure,
+## on flat fields and near levelled pads. Lets contact laws skip building the frame where it could not touch.
+static func clear_of_solid_ground(surfaces: PackedFloat64Array, north: float, east: float, altitude: float,
+		reach: float) -> bool:
+	if _dem_count == 0 or surfaces.is_empty() or not is_finite(altitude) or not is_finite(reach):
+		return false
+	var dem: RefCounted = null
+	var pads := PackedFloat64Array()
+	_dem_mutex.lock()
+	for i in _dem_tables.size():
+		if _dem_tables[i] == surfaces:
+			dem = _dem_providers[i]
+			pads = _dem_pads[i]
+			break
+	_dem_mutex.unlock()
+	if dem == null:
+		return false
+	for i in range(0, pads.size(), 4):
+		if north > pads[i] - PAD_BLEND_M - 1.0 and north < pads[i + 1] + PAD_BLEND_M + 1.0 \
+				and east > pads[i + 2] - PAD_BLEND_M - 1.0 and east < pads[i + 3] + PAD_BLEND_M + 1.0:
+			return false
+	var bound: PackedFloat64Array = dem.bounds_near(north, east, 0.0)
+	# Height above the plane = (altitude - ground) * cos(slope), cos(slope) = 1 / sqrt(1 + gn^2 + ge^2).
+	var cos_min := 1.0 / sqrt(1.0 + 2.0 * bound[1] * bound[1])
+	return (altitude - bound[0]) * cos_min > reach * (1.0 + 1e-9) + 1e-6
+
+
 ## Validate the local six-float contract without depending on GroundSurfaces (which depends on contact code).
 ## Production tables are already validated upstream; this guard also protects test tools and future callers.
 static func is_valid_surface_table(surfaces: PackedFloat64Array) -> bool:

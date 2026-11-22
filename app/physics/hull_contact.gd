@@ -211,6 +211,8 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 	if geometry.is_empty() or not bool(geometry.get("geometry_only", false)) \
 			or not geometry.has("points") or not geometry.has("reach"):
 		return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
+	if s.size() == RB.SIZE and _finite_array(s) and clear_of_terrain(geometry, s, float(geometry.reach)):
+		return {ok = true, loads = PackedFloat64Array(), reason = ""}
 	var frame := _terrain_frame(geometry, s)
 	if not frame.is_empty():
 		s = TerrainFrame.state(frame, s)
@@ -336,6 +338,8 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 	elif diagnostics_out is Dictionary:
 		diagnostics_out.clear()
 		diagnostics_out.merge({available = true, reason = "", rows = []})
+	if not prepared.is_empty() and clear_of_terrain(prepared, s, float(prepared.reach)):
+		return PackedFloat64Array() # as below, without building the terrain frame
 	var frame := _terrain_frame(prepared, s)
 	if not frame.is_empty():
 		s = TerrainFrame.state(frame, s)
@@ -441,6 +445,8 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary,
 ## (CRASH_DEPTH_M by default) crashes too. Returns {index, rule, specific_j_per_kg,
 ## normal_speed_mps, depth_m}.
 static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepared: Dictionary) -> Dictionary:
+	if not prepared.is_empty() and previous.size() == s.size() and clear_of_terrain(prepared, s, float(prepared.reach)):
+		return {index = -1, rule = "", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = 0.0}
 	var frame := _terrain_frame(prepared, s)
 	if not frame.is_empty() and previous.size() == s.size():
 		previous = TerrainFrame.state(frame, previous)
@@ -506,6 +512,8 @@ static func terminal_at_properties(previous: PackedFloat64Array, s: PackedFloat6
 		+ q_before[2] * q_before[2] + q_before[3] * q_before[3]
 	if not is_finite(previous_q_norm_squared) or absf(previous_q_norm_squared - 1.0) > 1.0e-9:
 		return {ok = false, event = none, reason = "invalid_previous_attitude"}
+	if clear_of_terrain(geometry, s, float(geometry.reach)):
+		return {ok = true, event = none, reason = ""}
 	var frame := _terrain_frame(geometry, s)
 	if not frame.is_empty():
 		previous = TerrainFrame.state(frame, previous)
@@ -560,6 +568,8 @@ static func terminal_at_properties(previous: PackedFloat64Array, s: PackedFloat6
 ## Presentation feed: every hull point touching after the step previous → s, as {index, new, depth_m,
 ## normal_speed_mps (into the ground, from `previous`), slide_speed_mps, point_ned}. Empty in the air.
 static func contacts(previous: PackedFloat64Array, s: PackedFloat64Array, prepared: Dictionary) -> Array:
+	if not prepared.is_empty() and previous.size() == s.size() and clear_of_terrain(prepared, s, float(prepared.reach)):
+		return []
 	var frame := _terrain_frame(prepared, s)
 	if not frame.is_empty() and previous.size() == s.size():
 		var framed := {}
@@ -769,6 +779,15 @@ static func _lake_contact_record(previous: PackedFloat64Array, s: PackedFloat64A
 
 ## TG-06: the tangent-plane frame of the field's solid terrain under `s`, or {} on flat fields (and for a state
 ## already expressed in it), so every flat-ground law here runs unchanged in that frame.
+## True when the body at `s` is certainly more than `reach` above the tangent plane _terrain_frame would build under
+## it, so a law that skips beyond its reach in that frame may skip without building it. False on flat fields.
+static func clear_of_terrain(prepared: Dictionary, s: PackedFloat64Array, reach: float) -> bool:
+	if prepared.is_empty() or bool(prepared.get("terrain_framed", false)) or s.size() != RB.SIZE:
+		return false
+	return Terrain.clear_of_solid_ground(prepared.get("surfaces", PackedFloat64Array()), s[RB.POS], s[RB.POS + 1],
+		-s[RB.POS + 2], reach)
+
+
 static func _terrain_frame(prepared: Dictionary, s: PackedFloat64Array) -> Dictionary:
 	if prepared.is_empty() or bool(prepared.get("terrain_framed", false)) or s.size() != RB.SIZE:
 		return {}

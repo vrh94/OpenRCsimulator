@@ -175,7 +175,8 @@ static func _loads_with_lake(s: PackedFloat64Array, gear: Dictionary, steer: flo
 		overlay: Dictionary = {}) -> PackedFloat64Array:
 	if (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)) or not Terrain.is_valid_surface_table(surfaces):
 		return PackedFloat64Array([NAN])
-	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces) + Wheels.Track.max_height_m(overlay):
+	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_near(surfaces, s[RB.POS], s[RB.POS + 1],
+			float(gear.reach)) + Wheels.Track.max_height_m(overlay):
 		return PackedFloat64Array()
 	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var touched := false
@@ -417,7 +418,8 @@ static func substeps(s: PackedFloat64Array, gear: Dictionary, dt: float, surface
 	if count <= 1:
 		return 1
 	var speed_bound: float = absf(s[RB.VEL]) + absf(s[RB.VEL + 1]) + absf(s[RB.VEL + 2])
-	var terrain: float = 0.0 if surfaces.is_empty() else Terrain.max_height_validated(surfaces)
+	var travel: float = float(gear.reach) + speed_bound * dt + SUBSTEP_REACH_MARGIN_M
+	var terrain: float = 0.0 if surfaces.is_empty() else Terrain.max_height_near(surfaces, s[RB.POS], s[RB.POS + 1], travel)
 	if not overlay.is_empty():
 		terrain += Wheels.Track.max_height_m(overlay)
 	if -s[RB.POS + 2] > float(gear.reach) + terrain + speed_bound * dt + SUBSTEP_REACH_MARGIN_M:
@@ -445,7 +447,12 @@ static func collapsed(s: PackedFloat64Array, gear: Dictionary, surfaces := Packe
 		lake: Dictionary = {}, overlay: Dictionary = {}) -> bool:
 	if not lake.is_empty() and not LakeSurface.is_valid_definition(lake):
 		return true
-	if gear.is_empty() or -s[RB.POS + 2] > float(gear.reach) + Wheels.Terrain.max_height(surfaces) + Wheels.Track.max_height_m(overlay):
+	if gear.is_empty():
+		return false
+	var terrain_bound: float = Wheels.Terrain.max_height(surfaces)
+	if is_finite(terrain_bound):
+		terrain_bound = Wheels.Terrain.max_height_near(surfaces, s[RB.POS], s[RB.POS + 1], float(gear.reach))
+	if -s[RB.POS + 2] > float(gear.reach) + terrain_bound + Wheels.Track.max_height_m(overlay):
 		return false
 	var c := compressions(s, gear, surfaces, lake, overlay)
 	for i in c.size():

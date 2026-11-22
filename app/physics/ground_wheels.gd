@@ -144,7 +144,8 @@ static func evaluate(s: PackedFloat64Array, gear: Dictionary, steer: float, surf
 	if speeds.size() != gear.contacts.size() or not Terrain.is_valid_surface_table(surfaces) or not _valid_lake(lake):
 		return {loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN]), wheels = diagnostics}
 	# No body arithmetic at all when every wheel is beyond the terrain's height bound.
-	if -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_validated(surfaces) + Track.max_height_m(overlay):
+	if -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height_near(surfaces, s[RB.POS], s[RB.POS + 1], float(gear.reach)) \
+			+ Track.max_height_m(overlay):
 		return {loads = loads, derivative = rates, wheels = diagnostics}
 	var rotation := _rotation(s)
 	for i in gear.contacts.size():
@@ -240,7 +241,12 @@ static func anchor_step(s: PackedFloat64Array, gear: Dictionary, steer: float, s
 	out.resize(anchors.size())
 	if not _valid_lake(lake):
 		return PackedFloat64Array([NAN])
-	if gear.is_empty() or anchors.size() != gear.contacts.size() * 3 or -s[RB.POS + 2] > float(gear.reach) + Terrain.max_height(surfaces) + Track.max_height_m(overlay):
+	if gear.is_empty() or anchors.size() != gear.contacts.size() * 3:
+		return out
+	var terrain_bound: float = Terrain.max_height(surfaces)
+	if is_finite(terrain_bound):
+		terrain_bound = Terrain.max_height_near(surfaces, s[RB.POS], s[RB.POS + 1], float(gear.reach))
+	if -s[RB.POS + 2] > float(gear.reach) + terrain_bound + Track.max_height_m(overlay):
 		return out
 	for i in gear.contacts.size():
 		var c: Dictionary = gear.contacts[i]

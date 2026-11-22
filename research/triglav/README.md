@@ -98,7 +98,8 @@ docstring of `fetch_gkot.py`); `fetch_dem.py` and `bake_terrain.py` need only th
   over 2 m; the field refuses a pad more than 0.5 m from the datum. The landscape draws the platform and its banks.
 - On a terrain field a runway start lines up facing uphill along the strip, and the start solver is seeded on the
   ground under the threshold, tilted to its slope.
-- The native kernels know flat fields only and refuse terrain fields, which fly the GDScript stage.
+- The native kernels know flat fields only and refuse terrain fields, which fly the GDScript stage. (No native
+  library is installed on the development Mac, so every field flies the GDScript stage there.)
 
 **The pilot spot.** The Tamar meadow falls 6–7 % to the north everywhere; on that slope only 2 of the 10 runway-start
 airplanes could be parked at idle (the cross-slope unloads one wheel below its static hold). No clear, level ground
@@ -124,8 +125,27 @@ With vsync on (the default), Triglav at High holds the 120 Hz display: p50 8.32 
 
 - Triglav costs about 1 ms per frame more than the Club field at the median. Tree range barely matters on this GPU,
   so Scene detail mainly protects weaker GPUs.
-- Physics costs about 50 % more per tick (1.04 against 0.68 ms). Native kernels refuse terrain fields, so Triglav
-  runs the GDScript reference backend. At 240 Hz that is a quarter of one core, and the simulation kept real time
-  (8,883 ticks in 37.0 s).
+- Physics cost about 50 % more per tick (1.04 against 0.68 ms). Correction (2026-11-22): this was not the native
+  kernels. No native library is installed on this Mac (its macOS admission is bound to another model), so both fields
+  ran the GDScript backend. The cost was terrain sampling: every airborne skip test compared the aircraft with the
+  highest summit of the map (1.8 km above the field), so wheels, gear and hull sampled the terrain on every stage.
+  At 240 Hz that was a quarter of one core, and the simulation kept real time (8,883 ticks in 37.0 s).
+**Local terrain bounds (2026-11-22).** The skip tests now compare with the ground near the aircraft
+(`terrain_dem.gd` `bounds_near`: per 32 m block, the highest possible sample and the steepest possible slope of the
+interpolated surface, computed on first use from the grid; `ground_terrain.gd` `max_height_near` and
+`clear_of_solid_ground`). The bounds are proven, not estimated: a Catmull-Rom patch exceeds its nodes by at most
+0.28125 of their range, and its slope is at most 1.875 adjacent-node steps per spacing. `test_triglav_terrain.gd`
+samples 36,000 points against them. Flights are bit-identical: three scripted Ugly Stik flights on the strip (a 20 s
+ground roll, a take-off into a loop and crash, a take-off, climb to 57 m and crash) hash the same state every tick
+before and after. Same benchmark, High:
+
+| Field | p50 ms | p95 ms | p99 ms | Mean fps | Physics µs per tick |
+| --- | --- | --- | --- | --- | --- |
+| Triglav | 3.96 | 4.78 | 5.16 | 252 | 611 |
+| Club field (reference) | 2.96 | 3.54 | 3.79 | 359 | 599 |
+
+Airborne physics on Triglav now costs the same as on the Club field; on the ground it still samples the terrain per
+wheel, as it must. The helicopter's rotor-strike envelope still uses the map's highest point.
+
 - An occluded window draws almost nothing on macOS; the first attempt reported "window_not_drawable" and was
   discarded. Keep the window visible (`--always-on-top`) and check `render_progress.status == "observed"`.
