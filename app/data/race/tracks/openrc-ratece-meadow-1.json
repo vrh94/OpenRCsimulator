@@ -1,0 +1,21 @@
+{
+	"format": "openrc-race-track v1",
+	"id": "openrc-ratece-meadow-1",
+	"name": "Rateče meadow",
+	"field_id": "triglav_tamar",
+	"ruleset": "openrc-local-race-v1",
+	"laps": 3,
+	"origin": "pilot",
+	"pad": {"north_m": 12.0, "east_m": -15.0, "heading_deg": 270.0},
+	"gates": [
+		{"id": "start", "north_m": 20.0, "east_m": -35.0, "center_height_m": 2.0, "heading_deg": 270.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "hay-hurdle", "north_m": 20.0, "east_m": -85.0, "center_height_m": 1.0, "heading_deg": 270.0, "width_m": 5.0, "height_m": 1.3},
+		{"id": "meadow-tower", "north_m": 25.0, "east_m": -135.0, "center_height_m": 6.0, "heading_deg": 270.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "west-turn", "north_m": 50.0, "east_m": -185.0, "center_height_m": 3.0, "heading_deg": 0.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "north-climb", "north_m": 100.0, "east_m": -185.0, "center_height_m": 10.0, "heading_deg": 0.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "north-turn", "north_m": 118.0, "east_m": -140.0, "center_height_m": 4.0, "heading_deg": 90.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "high-gate", "north_m": 120.0, "east_m": -60.0, "center_height_m": 14.0, "heading_deg": 90.0, "width_m": 4.0, "height_m": 3.0},
+		{"id": "dive-south", "north_m": 75.0, "east_m": -40.0, "center_height_m": 2.0, "heading_deg": 180.0, "width_m": 3.0, "height_m": 2.0},
+		{"id": "finish", "north_m": 42.0, "east_m": -22.0, "center_height_m": 2.0, "heading_deg": 180.0, "width_m": 3.0, "height_m": 2.0}
+	]
+}

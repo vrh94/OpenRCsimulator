@@ -41,7 +41,8 @@ const MOTOR_AUDIO := "res://assets/audio/powertrains/electric_quad.wav"
 const AFTERMATH_S := 2.0
 const RACE_TRACK := "res://data/race/tracks/openrc-practice-oval-1.json"
 ## DR-28/32 courses the pilot cycles with T on this field (each is offered only on the field it was authored for).
-const RACE_TRACKS := [RACE_TRACK, "res://data/race/tracks/openrc-tower-sprint-1.json"]
+const RACE_TRACKS := [RACE_TRACK, "res://data/race/tracks/openrc-tower-sprint-1.json",
+	"res://data/race/tracks/openrc-ratece-meadow-1.json"]
 const OSD_PREFS := "user://multirotor_osd.cfg"
 const READY_TEXT := "Ready. Cycle the arm switch OFF then ON at low throttle."
 const CHANGED_TEXT := "The controller changed: restart on the pad to fly with it."
@@ -266,6 +267,13 @@ func _load_field() -> bool:
 	_lighting = TimeOfDayLighting.snapshot(lighting_config) if lighting_config.mode != "legacy" else {}
 	field = loaded.field
 	_race_option = _course_option(race_track)
+	if _race_option.is_empty() and not race_track.is_empty():
+		# The chosen course belongs to another field: fly this field's first course (Triglav's Rateče meadow).
+		for path: String in RACE_TRACKS:
+			if not _course_option(path).is_empty():
+				race_track = path
+				_race_option = path
+				break
 	return true
 
 

@@ -130,3 +130,12 @@ quantized products the game needs are committed, each well under the repository'
   terrain on fields that have it: windward slopes lift and lee slopes sink, fading with height. With an east wind the
   slope south of the pilot spot gives about 4 m/s of lift. Rotors and valley channelling are not modelled
   ([decision](../DECISIONS.md)).
+- **FPV race course** (owner request 2026-11-22, done). "Rateče meadow" (`app/data/race/tracks/openrc-ratece-meadow-1.json`):
+  nine gates over the meadow west of the pilot, from a 1 m hurdle to a 14 m high gate, round the lone trees; the
+  FPV quad activity picks it on Triglav. Every gate stands at least 13 m and every racing line 10 m from the surveyed
+  trees and buildings (`tests/test_triglav_race.gd`, which also flies three laps).
+- **Obstacles for the quad and the blimp** (fixed 2026-11-22). Their activities built obstacles from the field's
+  scenery layout, which has none on Triglav, so they flew through the surveyed trees and buildings they drew.
+  `scenery/collision_setup.gd` now takes a terrain field's obstacles from its landscape adapter, as the airplane and
+  helicopter already did. Quad and blimp logs recorded on Triglav before the fix no longer replay against the new
+  inventory.
