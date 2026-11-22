@@ -21,7 +21,8 @@ var error: String = ""
 
 
 ## Loads and verifies a grid; `error` is non-empty on failure (missing file, wrong format, size or checksum).
-static func load_grid(json_path: String) -> RefCounted:
+## `frame_origin` is the absolute D96/TM corner the core frame counts from (the Triglav core's by default).
+static func load_grid(json_path: String, frame_origin := Vector2(CORE_ORIGIN_EAST_M, CORE_ORIGIN_NORTH_M)) -> RefCounted:
 	var grid: RefCounted = new()
 	if not FileAccess.file_exists(json_path):
 		grid.error = "heightfield: missing %s" % json_path
@@ -47,8 +48,8 @@ static func load_grid(json_path: String) -> RefCounted:
 	if grid.data.size() != grid.columns * grid.rows * 2:
 		grid.error = "heightfield: %s holds %d bytes, expected %d" % [json_path, grid.data.size(), grid.columns * grid.rows * 2]
 		return grid
-	grid.origin_east = float(header.origin_east_m) - CORE_ORIGIN_EAST_M
-	grid.origin_north = float(header.origin_north_m) - CORE_ORIGIN_NORTH_M
+	grid.origin_east = float(header.origin_east_m) - frame_origin.x
+	grid.origin_north = float(header.origin_north_m) - frame_origin.y
 	grid.spacing = float(header.spacing_m)
 	grid.base_m = float(header.base_m)
 	grid.step_m = float(header.step_m)

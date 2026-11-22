@@ -22,8 +22,10 @@ static var _cache := {}
 
 
 ## {ok, world, errors}. `pilot_core` is the field origin in the core frame and `ground_ref_m` its absolute height.
-static func build(trees_path: String, buildings_path: String, pilot_core: Vector2, ground_ref_m: float) -> Dictionary:
-	var key := "%s|%s|%s|%s" % [trees_path, buildings_path, pilot_core, ground_ref_m]
+## `tree_ground_base_m` is the trees' uint16 ground base (trees.gd); `id_prefix` names the landscape in proxy ids.
+static func build(trees_path: String, buildings_path: String, pilot_core: Vector2, ground_ref_m: float,
+		tree_ground_base_m: float = 600.0, id_prefix: String = "triglav") -> Dictionary:
+	var key := "%s|%s|%s|%s|%s|%s" % [trees_path, buildings_path, pilot_core, ground_ref_m, tree_ground_base_m, id_prefix]
 	if key == _cache_key:
 		return _cache.duplicate(true)
 	var proxies: Array[Dictionary] = []
@@ -32,11 +34,11 @@ static func build(trees_path: String, buildings_path: String, pilot_core: Vector
 	if trees.is_empty() or trees.size() % TREE_RECORD_BYTES != 0:
 		errors.append("triglav obstacles: unreadable %s" % trees_path)
 	else:
-		_add_trees(proxies, trees, pilot_core, ground_ref_m)
+		_add_trees(proxies, trees, pilot_core, ground_ref_m, tree_ground_base_m, id_prefix)
 	var buildings := _decompress(buildings_path)
 	if buildings.is_empty():
 		errors.append("triglav obstacles: unreadable %s" % buildings_path)
-	elif not _add_buildings(proxies, buildings, pilot_core, ground_ref_m):
+	elif not _add_buildings(proxies, buildings, pilot_core, ground_ref_m, id_prefix):
 		errors.append("triglav obstacles: truncated building record")
 	if not errors.is_empty():
 		return {ok = false, world = {}, errors = errors}
@@ -52,7 +54,8 @@ static func _decompress(path: String) -> PackedByteArray:
 	return PackedByteArray() if packed.is_empty() else packed.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 
 
-static func _add_trees(proxies: Array[Dictionary], data: PackedByteArray, pilot_core: Vector2, ground_ref_m: float) -> void:
+static func _add_trees(proxies: Array[Dictionary], data: PackedByteArray, pilot_core: Vector2, ground_ref_m: float,
+		ground_base_m: float, id_prefix: String) -> void:
 	for index in data.size() / TREE_RECORD_BYTES:
 		var at := index * TREE_RECORD_BYTES
 		var north := data.decode_u16(at + 2) * 0.2 - pilot_core.y
@@ -60,13 +63,13 @@ static func _add_trees(proxies: Array[Dictionary], data: PackedByteArray, pilot_
 		if north * north + east * east > RADIUS_M * RADIUS_M:
 			continue
 		# The same decoding as trees.gd, so the solid tree stands where the drawn one does.
-		var base_down := -(600.0 + data.decode_u16(at + 4) / 32.0 - ground_ref_m)
+		var base_down := -(ground_base_m + data.decode_u16(at + 4) / 32.0 - ground_ref_m)
 		var height := maxf(data[at + 6] * 0.25, 2.0)
 		var radius := maxf(data[at + 7] * 0.1, 0.6)
 		var kind := clampi(data[at + 8], 0, 1)
 		var trunk_radius := maxf(0.07 * radius, MIN_TRUNK_RADIUS_M)
 		var trunk_top: float = height * TRUNK_TOP_FRACTIONS[kind]
-		var id := "tree:triglav:%06d" % index
+		var id := "tree:%s:%06d" % [id_prefix, index]
 		CollisionWorld.capsule_proxy(proxies, id + ":trunk", "tree_trunk", "trunk", "hard_terminal",
 			north, east, base_down - trunk_top * 0.5, trunk_radius, maxf(trunk_top * 0.5 - trunk_radius, 0.0))
 		var crown: Array = CROWN_FRACTIONS[kind]
@@ -77,7 +80,7 @@ static func _add_trees(proxies: Array[Dictionary], data: PackedByteArray, pilot_
 
 
 static func _add_buildings(proxies: Array[Dictionary], data: PackedByteArray, pilot_core: Vector2,
-		ground_ref_m: float) -> bool:
+		ground_ref_m: float, id_prefix: String) -> bool:
 	var at := 0
 	var record := 0
 	while at + 8 <= data.size():
@@ -118,7 +121,7 @@ static func _add_buildings(proxies: Array[Dictionary], data: PackedByteArray, pi
 				if top == 0:
 					continue
 				var tall := top * 0.2
-				CollisionWorld.box_proxy(proxies, "building:triglav:%04d:%d:%d" % [record, r0, c0], "building",
+				CollisionWorld.box_proxy(proxies, "building:%s:%04d:%d:%d" % [id_prefix, record, r0, c0], "building",
 					"surveyed_building", "hard_terminal",
 					north0 + (r_lo + r_hi + 1) * 0.5, east0 + (c_lo + c_hi + 1) * 0.5, base_down - tall * 0.5,
 					float(c_hi - c_lo + 1), tall, float(r_hi - r_lo + 1), 0.0)

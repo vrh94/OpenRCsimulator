@@ -33,8 +33,16 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 REPO = Path(__file__).resolve().parents[3]
-OUT = REPO / "tmp/triglav/gkot"
-SOURCES = REPO / "research/triglav/sources.json"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import region as regions  # noqa: E402
+
+R = regions.select()
+OUT = R["cache"] / "gkot"
+SOURCES = R["sources"]
+
+SCALE_IS_2KM = """() => Array.from(document.querySelectorAll('*')).some(e => e.childElementCount === 0
+  && (e.innerText || '').trim() === '2 km')"""
+
 
 async def open_viewer(p):
     b = await p.chromium.launch()
@@ -43,11 +51,22 @@ async def open_viewer(p):
     await pg.wait_for_timeout(3000)
     fr = [f for f in pg.frames if "lift.clss.si/#" in f.url][0]
     box = fr.get_by_placeholder("Napišite naslov")
-    await box.click(); await box.type("Rateče", delay=120); await pg.wait_for_timeout(3000); await box.press("Enter")
+    await box.click(); await box.type(R["clss_search"], delay=120); await pg.wait_for_timeout(3000)
+    if R.get("clss_pick"):
+        await fr.get_by_text(R["clss_pick"]).first.click()
+    else:
+        await box.press("Enter")
     await pg.wait_for_timeout(4000)
     await pg.mouse.move(400, 520)
-    for i in range(10):
-        await pg.mouse.wheel(0, 400); await pg.wait_for_timeout(500)
+    if R.get("clss_pick"):
+        # A picked address opens at street scale: zoom out about the pin until the sheet-grid scale (2 km bar).
+        for i in range(40):
+            if await fr.evaluate(SCALE_IS_2KM):
+                break
+            await pg.mouse.wheel(0, 120); await pg.wait_for_timeout(700)
+    else:
+        for i in range(10):
+            await pg.mouse.wheel(0, 400); await pg.wait_for_timeout(500)
     await pg.wait_for_timeout(2500)
     await pg.mouse.click(29, 121)      # download mode
     await pg.wait_for_timeout(2500)
@@ -63,7 +82,7 @@ async def panel_text(fr):
     return await fr.evaluate("() => document.body.innerText")
 
 LOG = OUT / "fetch_log.json"
-SHEETS = [(e, n) for n in range(151, 143, -1) for e in range(399, 407)]
+SHEETS = regions.sheets(R)
 
 
 def sha256(path):
@@ -199,6 +218,9 @@ async def main():
     LOG.write_text(json.dumps(log, indent=1))
     todo = [s for s in SHEETS if f"{s[0]}_{s[1]}" not in log or "sha256" not in log[f"{s[0]}_{s[1]}"]]
     todo = [s for s in todo if log.get(f"{s[0]}_{s[1]}", {}).get("absent") is None]
+    if R.get("fetch_first"):
+        fe, fn = R["fetch_first"]
+        todo.sort(key=lambda s: max(abs(s[0] - fe), abs(s[1] - fn)))
     say(f"{len(todo)} sheets to fetch")
     if not todo:
         return 0

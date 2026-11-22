@@ -13,6 +13,7 @@ const UiDriver = preload("res://tests/ui_driver.gd")
 var prefs_path := "user://test_landscapes-%d.cfg" % OS.get_process_id()
 const GREEN := "green_paradise"
 const TRIGLAV := "triglav_tamar"
+const KAMNIK := "kamnik_duplica"
 var failures := 0
 var checks := 0
 var ui: RefCounted
@@ -37,7 +38,7 @@ func check(label: String, passed: bool) -> void:
 func _run() -> void:
 	TranslationServer.set_locale("en")
 	DirAccess.remove_absolute(prefs_path)
-	check("Club field remains first and default", Landscapes.DEFAULT_ID == "club_field" and Landscapes.ids() == ["club_field", GREEN, TRIGLAV])
+	check("Club field remains first and default", Landscapes.DEFAULT_ID == "club_field" and Landscapes.ids() == ["club_field", GREEN, TRIGLAV, KAMNIK])
 	check("unknown IDs do not resolve", not Landscapes.has("missing") and Landscapes.entry("missing").is_empty())
 	check("missing preferences retain Club field", Preferences.load_from(prefs_path).landscape == Landscapes.DEFAULT_ID)
 	for invalid: Variant in ["missing", 7, true]:
@@ -101,6 +102,13 @@ func _run() -> void:
 
 	app.home.landscape_button.grab_focus()
 	await ui.tap(KEY_ENTER)
+	check("keyboard switches Home to Kamnik", app.landscape_id == KAMNIK and app.home_scene.field.id == KAMNIK)
+	check("Kamnik offers its strip for the runway start", app.home.runway_available)
+	check("Kamnik has no Natural Random catalog", app.home.natural_random_button.disabled)
+	await _fly_and_return(app, KAMNIK)
+
+	app.home.landscape_button.grab_focus()
+	await ui.tap(KEY_ENTER)
 	check("keyboard switches back to Club", app.landscape_id == Landscapes.DEFAULT_ID and app.home_scene.field.id == "default")
 	check("Club restores Natural Random availability", not app.home.natural_random_button.disabled)
 	await _capture("club-home.png")
@@ -148,14 +156,16 @@ func _fly_and_return(app: Node, id: String, helicopter := false) -> void:
 	var agree: bool = rendered.get_node_or_null("Scenery") != null and not flight.session._collision_world.is_empty()
 	if green:
 		agree = rendered.get_child_count() == 1 and flight.session._collision_world.is_empty()
-	elif id == TRIGLAV:
+	elif id == TRIGLAV or id == KAMNIK:
 		agree = rendered.get_node_or_null("Terrain") != null and not flight.session._collision_world.is_empty()
 	check(id + " visual and physical worlds agree", agree)
 	if not helicopter:
 		# Owner decision 2026-11-21: Triglav flies in the air at its 850 m height; the flat fields keep sea level.
 		var rho: float = flight.session.environment.air_density(0.0)
 		print("%s air density %.4f kg/m3" % [id, rho])
-		check(id + " air density matches the field height", rho < 1.14 and rho > 1.11 if id == TRIGLAV else rho == 1.225)
+		# Option 7: Kamnik flies at its 349 m (standard atmosphere there: about 1.184 kg/m3).
+		var expected: bool = (rho < 1.14 and rho > 1.11) if id == TRIGLAV else ((rho < 1.20 and rho > 1.17) if id == KAMNIK else rho == 1.225)
+		check(id + " air density matches the field height", expected)
 	app.set_landscape(Landscapes.DEFAULT_ID if green else GREEN)
 	check("active flight cannot change landscape", flight.landscape_id == id and app.landscape_id == id)
 	flight.session.resume()

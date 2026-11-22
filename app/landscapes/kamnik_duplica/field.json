@@ -1,0 +1,240 @@
+{
+  "format": "openrc-field v1",
+  "id": "kamnik_duplica",
+  "runway": "strip",
+  "pilot": {
+    "id": "pilot",
+    "north": {
+      "value": 0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "The model flyers' spot at threshold 29 of the Kamnik airstrip (LZS operating manual 2021: model aircraft use the first 50 m from threshold 29): 25 m in from the threshold along the runway and 18 m north of its centreline, on open grass between the runway and the hangars in the GURS GKOT 2023-25 photo; D96/TM E 467840, N 117512 (research/kamnik/README.md)."
+    },
+    "east": {
+      "value": 0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "The model flyers' spot at threshold 29 of the Kamnik airstrip (LZS operating manual 2021: model aircraft use the first 50 m from threshold 29): 25 m in from the threshold along the runway and 18 m north of its centreline, on open grass between the runway and the hangars in the GURS GKOT 2023-25 photo; D96/TM E 467840, N 117512 (research/kamnik/README.md)."
+    },
+    "down": {
+      "value": 0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "On the terrain: the field datum is the GKOT ground under the pilot."
+    },
+    "eye_height": {
+      "value": 1.7,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "The simulator's usual standing eye height."
+    }
+  },
+  "surfaces": [
+    {
+      "id": "rough",
+      "type": "rough",
+      "center_north": {
+        "value": 0,
+        "unit": "m",
+        "kind": "derived",
+        "source": "Centred on the pilot."
+      },
+      "center_east": {
+        "value": 0,
+        "unit": "m",
+        "kind": "derived",
+        "source": "Centred on the pilot."
+      },
+      "length_east_west": {
+        "value": 48000,
+        "unit": "m",
+        "kind": "derived",
+        "source": "The terrain ring's extent (48 km)."
+      },
+      "width_north_south": {
+        "value": 48000,
+        "unit": "m",
+        "kind": "derived",
+        "source": "The terrain ring's extent (48 km)."
+      }
+    },
+    {
+      "id": "strip",
+      "type": "runway",
+      "center_north": {
+        "value": -16,
+        "unit": "m",
+        "kind": "derived",
+        "source": "The model-flying part of the runway at threshold 29, as a grid-aligned box: the real runway runs at 112.3 degrees grid (manual: 112 degrees true; convergence -0.30 degrees), so a 36 x 10 m east-west box centred on the runway 25 m in from the threshold stays inside its 25 m width (research/kamnik/README.md)."
+      },
+      "center_east": {
+        "value": -6,
+        "unit": "m",
+        "kind": "derived",
+        "source": "The model-flying part of the runway at threshold 29, as a grid-aligned box: the real runway runs at 112.3 degrees grid (manual: 112 degrees true; convergence -0.30 degrees), so a 36 x 10 m east-west box centred on the runway 25 m in from the threshold stays inside its 25 m width (research/kamnik/README.md)."
+      },
+      "length_east_west": {
+        "value": 36,
+        "unit": "m",
+        "kind": "derived",
+        "source": "The model-flying part of the runway at threshold 29, as a grid-aligned box: the real runway runs at 112.3 degrees grid (manual: 112 degrees true; convergence -0.30 degrees), so a 36 x 10 m east-west box centred on the runway 25 m in from the threshold stays inside its 25 m width (research/kamnik/README.md)."
+      },
+      "width_north_south": {
+        "value": 10,
+        "unit": "m",
+        "kind": "derived",
+        "source": "The model-flying part of the runway at threshold 29, as a grid-aligned box: the real runway runs at 112.3 degrees grid (manual: 112 degrees true; convergence -0.30 degrees), so a 36 x 10 m east-west box centred on the runway 25 m in from the threshold stays inside its 25 m width (research/kamnik/README.md)."
+      }
+    },
+    {
+      "id": "helicopter-pad-surface",
+      "type": "rotorpad",
+      "center_north": {
+        "value": 12.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Kamnik field layout: the helicopter pad on the grass 12 m north of the pilot, away from the runway; simulator placement, not surveyed."
+      },
+      "center_east": {
+        "value": 0.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Kamnik field layout: the helicopter pad on the grass 12 m north of the pilot, away from the runway; simulator placement, not surveyed."
+      },
+      "length_east_west": {
+        "value": 6.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "HELI-20a simulator pad footprint estimate; accommodates the authored rotor envelope and clearance margin, not a real-world standard."
+      },
+      "width_north_south": {
+        "value": 6.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "HELI-20a simulator pad footprint estimate; accommodates the authored rotor envelope and clearance margin, not a real-world standard."
+      }
+    }
+  ],
+  "objects": [],
+  "rotorcraft_pad": {
+    "id": "kamnik-helicopter-pad",
+    "north": {
+      "value": 12.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Kamnik field layout: the helicopter pad on the grass 12 m north of the pilot, away from the runway; simulator placement, not surveyed."
+    },
+    "east": {
+      "value": 0.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Kamnik field layout: the helicopter pad on the grass 12 m north of the pilot, away from the runway; simulator placement, not surveyed."
+    },
+    "heading": {
+      "value": 1.5707963267948966,
+      "unit": "rad",
+      "kind": "derived",
+      "source": "HELI-20a candidate nose-east heading in NED coordinates; normalized by the field loader."
+    },
+    "surface_id": "helicopter-pad-surface",
+    "material": "rotorpad",
+    "clearance_margin": {
+      "value": 0.75,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "HELI-20a explicit simulator placement margin around the modeled aircraft envelope; not a real-world separation standard."
+    },
+    "aircraft_envelopes": [
+      {
+        "aircraft_id": "xcell-60-research",
+        "radius": {
+          "value": 1.25,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a conservative radial envelope around the loaded main and tail discs and four skids; estimated model geometry, not a measured safety radius."
+        },
+        "max_takeoff_tilt": {
+          "value": 0.35,
+          "unit": "rad",
+          "kind": "estimated",
+          "source": "HELI-20a layout envelope for initial lift-off; spherical reach is orientation-independent and the value is not a qualified flight limit."
+        }
+      }
+    ],
+    "keepouts": [
+      {
+        "id": "fixedwing-east-start",
+        "north": {
+          "value": -16.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Triglav strip: the fixed-wing start at the strip's east end (the line-up faces uphill, west); layout record, not surveyed."
+        },
+        "east": {
+          "value": 12.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Triglav strip: the fixed-wing start at the strip's east end (the line-up faces uphill, west); layout record, not surveyed."
+        },
+        "length_east_west": {
+          "value": 16.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a broad visual aircraft clearance box; estimated, not a collision model."
+        },
+        "width_north_south": {
+          "value": 8.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a broad visual aircraft clearance box; estimated, not a collision model."
+        },
+        "source": "Fixed-wing start at the strip's east end; broad estimated visual keepout, not an enabled contact body."
+      },
+      {
+        "id": "fixedwing-west-start",
+        "north": {
+          "value": -16.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Triglav strip: the strip's west threshold; layout record, not surveyed."
+        },
+        "east": {
+          "value": -24.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "Triglav strip: the strip's west threshold; layout record, not surveyed."
+        },
+        "length_east_west": {
+          "value": 16.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a broad visual aircraft clearance box; estimated, not a collision model."
+        },
+        "width_north_south": {
+          "value": 8.0,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "HELI-20a broad visual aircraft clearance box; estimated, not a collision model."
+        },
+        "source": "The strip's west end; broad estimated visual keepout, not an enabled contact body."
+      }
+    ],
+    "provenance": "Kamnik field layout: the pad stands on the grass 12 m north of the pilot, away from the runway, nose east. Footprint, aircraft envelope, clearance margin and keepouts are the default field's simulator estimates, not measured geometry or RC safety standards. The rotorpad is a zero-relief support patch on the surveyed terrain."
+  },
+  "terrain": {
+    "core": "res://landscapes/kamnik_duplica/terrain/core.json",
+    "ring": "res://landscapes/kamnik_duplica/terrain/ring.json",
+    "origin_east": {
+      "value": 467840,
+      "unit": "m",
+      "kind": "derived",
+      "source": "D96/TM (EPSG:3794) east of the pilot spot."
+    },
+    "origin_north": {
+      "value": 117512,
+      "unit": "m",
+      "kind": "derived",
+      "source": "D96/TM (EPSG:3794) north of the pilot spot."
+    }
+  }
+}

@@ -11,8 +11,9 @@ const DEFAULT_RANGE_M := 1500.0
 
 
 ## Returns {node, materials, count, error}. `photo` may be null (then the crowns use their base colours).
+## `ground_base_m`: the base of the records' uint16 ground heights (the region's core grid base; Triglav 600 m).
 static func build(bin_path: String, photo: Texture2D, pilot_core: Vector2, ground_ref_m: float,
-		range_m: float = DEFAULT_RANGE_M) -> Dictionary:
+		range_m: float = DEFAULT_RANGE_M, ground_base_m: float = 600.0) -> Dictionary:
 	var root := Node3D.new()
 	root.name = "Trees"
 	var packed := FileAccess.get_file_as_bytes(bin_path)
@@ -57,7 +58,7 @@ static func build(bin_path: String, photo: Texture2D, pilot_core: Vector2, groun
 		var at := index * RECORD_BYTES
 		var east := data.decode_u16(at) * 0.2
 		var north := data.decode_u16(at + 2) * 0.2
-		var ground := 600.0 + data.decode_u16(at + 4) / 32.0
+		var ground := ground_base_m + data.decode_u16(at + 4) / 32.0
 		var height := maxf(data[at + 6] * 0.25, 2.0)
 		var radius := maxf(data[at + 7] * 0.1, 0.6)
 		var yaw := fposmod(east * 12.9898 + north * 78.233, TAU)

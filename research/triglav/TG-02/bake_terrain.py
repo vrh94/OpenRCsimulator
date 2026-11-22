@@ -29,63 +29,52 @@ from pathlib import Path
 import numpy as np
 
 REPO = Path(__file__).resolve().parents[3]
-CACHE = REPO / "tmp/triglav"
-GKOT_RASTER = CACHE / "gkot_raster"
-SOURCES = REPO / "research/triglav/sources.json"
-OUT = REPO / "app/landscapes/triglav_tamar/terrain"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import region as regions  # noqa: E402
 
-CORE_E0, CORE_N0 = 399000, 144000  # D96/TM metres, the core's south-west corner
-CORE_KM = 8
+R = regions.select()
+CACHE = R["cache"]
+GKOT_RASTER = CACHE / "gkot_raster"
+SOURCES = R["sources"]
+OUT = R["landscape"] / "terrain"
+
+CORE_E0, CORE_N0 = R["core_e_km"] * 1000, R["core_n_km"] * 1000  # D96/TM metres, the core's south-west corner
+CORE_KM = R["core_km"]
 CORE_STEP = 2.0
-RING_STEP = 16.0
-RING_SIZE_M = 24000.0
-BASE_M = 600.0          # lowest storable height; the region's valleys are above 800 m
-STEP_M = 1.0 / 32.0     # 3.1 cm; 65535 steps reach 2648 m: Jalovec is 2645 m, so the ring clamps nothing in the core
+RING_STEP = R["ring_step_m"]
+RING_SIZE_M = R["ring_size_m"]
+# Storage: uint16 steps above a base (region.py): Triglav 1/32 m above 600 m for both grids.
+BASE_M, STEP_M = R["core_base_m"], R["core_step_m"]
+RING_BASE_M, RING_STEP_M = R["ring_base_m"], R["ring_step_m_height"]
 FORMAT = "openrc-heightfield v1"
 
-# GRS80 transverse Mercator for D96/TM (EPSG:3794).
-A = 6378137.0
-F = 1.0 / 298.257222101
-E2 = F * (2.0 - F)
-EP2 = E2 / (1.0 - E2)
-K0 = 0.9999
-LON0 = math.radians(15.0)
-FE, FN = 500000.0, -5000000.0
-
-
-def d96_to_wgs84(east: np.ndarray, north: np.ndarray):
-    """Inverse transverse Mercator (Snyder 1987, eqs. 8-12 to 8-25), arrays in metres to degrees."""
-    x = (east - FE) / K0
-    m = (north - FN) / K0
-    mu = m / (A * (1 - E2 / 4 - 3 * E2 ** 2 / 64 - 5 * E2 ** 3 / 256))
-    e1 = (1 - math.sqrt(1 - E2)) / (1 + math.sqrt(1 - E2))
-    phi1 = (mu + (3 * e1 / 2 - 27 * e1 ** 3 / 32) * np.sin(2 * mu) + (21 * e1 ** 2 / 16 - 55 * e1 ** 4 / 32) * np.sin(4 * mu)
-            + (151 * e1 ** 3 / 96) * np.sin(6 * mu) + (1097 * e1 ** 4 / 512) * np.sin(8 * mu))
-    c1 = EP2 * np.cos(phi1) ** 2
-    t1 = np.tan(phi1) ** 2
-    n1 = A / np.sqrt(1 - E2 * np.sin(phi1) ** 2)
-    r1 = A * (1 - E2) / (1 - E2 * np.sin(phi1) ** 2) ** 1.5
-    d = x / n1
-    lat = phi1 - (n1 * np.tan(phi1) / r1) * (d ** 2 / 2 - (5 + 3 * t1 + 10 * c1 - 4 * c1 ** 2 - 9 * EP2) * d ** 4 / 24
-                                              + (61 + 90 * t1 + 298 * c1 + 45 * t1 ** 2 - 252 * EP2 - 3 * c1 ** 2) * d ** 6 / 720)
-    lon = LON0 + (d - (1 + 2 * t1 + c1) * d ** 3 / 6 + (5 - 2 * c1 + 28 * t1 - 3 * c1 ** 2 + 8 * EP2 + 24 * t1 ** 2) * d ** 5 / 120) / np.cos(phi1)
-    return np.degrees(lat), np.degrees(lon)
+from d96 import d96_to_wgs84  # noqa: E402
 
 
 def load_srtm():
-    raw = gzip.decompress((CACHE / "srtm/N46E013.hgt.gz").read_bytes())
-    size = int(round(math.sqrt(len(raw) / 2)))
-    grid = np.frombuffer(raw, dtype=">i2").reshape(size, size).astype(np.float64)  # rows north (47 N) to south
+    """The region's skadi tiles as one grid, rows north to south from srtm_north_deg, one column of tiles
+    (tiles that share a longitude, stacked by latitude; their shared edge row is kept once). `size` is the samples per
+    degree plus one, as for a single tile."""
+    tiles = []
+    for name in R["srtm_tiles"]:
+        raw = gzip.decompress((CACHE / f"srtm/{name}.hgt.gz").read_bytes())
+        size = int(round(math.sqrt(len(raw) / 2)))
+        grid = np.frombuffer(raw, dtype=">i2").reshape(size, size).astype(np.float64)  # rows north to south
+        tiles.append((int(name[1:3]) * (1 if name[0] == "N" else -1), grid))
+    tiles.sort(key=lambda item: -item[0])
+    grid = tiles[0][1]
+    for _, below in tiles[1:]:
+        grid = np.vstack([grid[:-1], below])
     grid[grid < -1000] = np.nan
     return grid, size
 
 
 def sample_srtm(grid, size, east, north):
     lat, lon = d96_to_wgs84(east, north)
-    row = (47.0 - lat) * (size - 1)
-    col = (lon - 13.0) * (size - 1)
-    r0 = np.clip(np.floor(row).astype(int), 0, size - 2)
-    c0 = np.clip(np.floor(col).astype(int), 0, size - 2)
+    row = (R["srtm_north_deg"] - lat) * (size - 1)
+    col = (lon - R["srtm_west_deg"]) * (size - 1)
+    r0 = np.clip(np.floor(row).astype(int), 0, grid.shape[0] - 2)
+    c0 = np.clip(np.floor(col).astype(int), 0, grid.shape[1] - 2)
     fr = row - r0
     fc = col - c0
     return ((grid[r0, c0] * (1 - fc) + grid[r0, c0 + 1] * fc) * (1 - fr)
@@ -200,9 +189,9 @@ def bake_ring(core2, srtm, srtm_size):
     return ring, (e0, n0), (first_e, first_n, block.shape[1], block.shape[0])
 
 
-def encode(grid: np.ndarray):
-    q = np.clip(np.rint((grid - BASE_M) / STEP_M), 0, 65535).astype("<u2")
-    clamped = int(np.count_nonzero((grid - BASE_M) / STEP_M > 65535.5) + np.count_nonzero(grid < BASE_M))
+def encode(grid: np.ndarray, base_m: float, step_m: float):
+    q = np.clip(np.rint((grid - base_m) / step_m), 0, 65535).astype("<u2")
+    clamped = int(np.count_nonzero((grid - base_m) / step_m > 65535.5) + np.count_nonzero(grid < base_m))
     buffer = io.BytesIO()
     with gzip.GzipFile(fileobj=buffer, mode="wb", compresslevel=9, mtime=0) as handle:
         handle.write(q.tobytes())
@@ -216,13 +205,14 @@ def bake():
     ring, ring_origin, ring_core = bake_ring(core2, srtm, srtm_size)
     outputs = {}
     attribution = pins["attribution"]
-    for name, grid, origin, step, extra in (
-        ("core", core2, None, CORE_STEP, fill),
-        ("ring", ring, ring_origin, RING_STEP, {"core_cells": dict(zip(["east_first", "north_first", "east_count", "north_count"], ring_core))}),
+    for name, grid, origin, step, extra, base_m, step_m in (
+        ("core", core2, None, CORE_STEP, fill, BASE_M, STEP_M),
+        ("ring", ring, ring_origin, RING_STEP, {"core_cells": dict(zip(["east_first", "north_first", "east_count", "north_count"], ring_core))},
+         RING_BASE_M, RING_STEP_M),
     ):
         if name == "core":
             origin = (CORE_E0 + CORE_STEP / 2, CORE_N0 + CORE_STEP / 2)
-        payload, q, clamped = encode(grid)
+        payload, q, clamped = encode(grid, base_m, step_m)
         header = {
             "format": FORMAT,
             "name": name,
@@ -234,10 +224,10 @@ def bake():
             "spacing_m": step,
             "row_order": "south to north; column order west to east; node (0, 0) at the origin",
             "encoding": "gzip of little-endian uint16; height_m = base_m + value * step_m",
-            "base_m": BASE_M,
-            "step_m": STEP_M,
-            "min_m": round(float(BASE_M + q.min() * STEP_M), 3),
-            "max_m": round(float(BASE_M + q.max() * STEP_M), 3),
+            "base_m": base_m,
+            "step_m": step_m,
+            "min_m": round(float(base_m + q.min() * step_m), 3),
+            "max_m": round(float(base_m + q.max() * step_m), 3),
             "clamped_nodes": clamped,
             "data": f"{name}.u16.gz",
             "data_sha256": hashlib.sha256(payload).hexdigest(),

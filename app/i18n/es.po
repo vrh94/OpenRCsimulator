@@ -12698,3 +12698,6 @@ msgstr "Surf de nubes"
 
 msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
 msgstr "Cúmulos altos a los que puedes subir, rozar y atravesar volando. Sus bases planas están 600 m por encima del campo."
+
+msgid "Kamnik: Duplica airstrip"
+msgstr "Kamnik: aeródromo de Duplica"

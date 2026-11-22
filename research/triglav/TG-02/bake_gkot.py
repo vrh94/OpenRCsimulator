@@ -32,11 +32,16 @@ import PIL
 from PIL import Image
 
 REPO = Path(__file__).resolve().parents[3]
-RASTER = REPO / "tmp/triglav/gkot_raster"
-TERRAIN = REPO / "app/landscapes/triglav_tamar/terrain"
-OUT = REPO / "app/landscapes/triglav_tamar"
-E_KM = range(399, 407)
-N_KM = range(144, 152)
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import region as regions  # noqa: E402
+
+R = regions.select()
+RASTER = R["cache"] / "gkot_raster"
+TERRAIN = R["landscape"] / "terrain"
+OUT = R["landscape"]
+E_KM = range(R["core_e_km"], R["core_e_km"] + R["core_km"])
+TREE_GROUND_BASE_M = R["core_base_m"]   # tree ground heights share the core grid's base (Triglav 600 m), in 1/32 m
+N_KM = range(R["core_n_km"], R["core_n_km"] + R["core_km"])
 PHOTO_PX = 8192
 COVERAGE_PX = 1024
 JPEG_QUALITY = 85
@@ -176,6 +181,47 @@ def building_records(roof: np.ndarray, ground: np.ndarray):
     return records, cells_total
 
 
+def harmonize_sheets(photo: np.ndarray, strip_px: int = 40) -> np.ndarray:
+    """Even out the sheet-to-sheet colour of a survey flown over many days (Kamnik). Each 1 km sheet and channel gets
+    an affine map, gain g and offset b, solved by least squares so that across every shared sheet edge the strips
+    (strip_px wide, about 40 m) on both sides have equal contrast (log g_i + log sd_i = log g_j + log sd_j) and then
+    equal mean (g_i mu_i + b_i = g_j mu_j + b_j). Gauge: the mean log gain and the mean offset are zero, so the photo
+    keeps its overall brightness and contrast."""
+    rows, cols = len(N_KM), len(E_KM)
+    side = photo.shape[0] // cols
+    index = {(r, c): r * cols + c for r in range(rows) for c in range(cols)}
+    edges = []  # (i, j, strip i, strip j): strips that face each other across the edge
+    for r in range(rows):
+        for c in range(cols):
+            y0, x0 = r * side, c * side
+            if c + 1 < cols:
+                edges.append((index[r, c], index[r, c + 1],
+                              photo[y0:y0 + side, x0 + side - strip_px:x0 + side], photo[y0:y0 + side, x0 + side:x0 + side + strip_px]))
+            if r + 1 < rows:
+                edges.append((index[r, c], index[r + 1, c],
+                              photo[y0 + side - strip_px:y0 + side, x0:x0 + side], photo[y0 + side:y0 + side + strip_px, x0:x0 + side]))
+    n = rows * cols
+    gains = np.ones((n, 3))
+    offsets = np.zeros((n, 3))
+    for ch in range(3):
+        a = np.zeros((len(edges) + 1, n))
+        y = np.zeros(len(edges) + 1)
+        for k, (i, j, si, sj) in enumerate(edges):
+            a[k, i], a[k, j] = 1.0, -1.0
+            y[k] = np.log(max(sj[..., ch].std(), 1.0)) - np.log(max(si[..., ch].std(), 1.0))
+        a[-1, :] = 1.0
+        log_g = np.linalg.lstsq(a, y, rcond=None)[0]
+        gains[:, ch] = np.clip(np.exp(log_g), 0.5, 2.0)
+        for k, (i, j, si, sj) in enumerate(edges):
+            y[k] = gains[j, ch] * sj[..., ch].mean() - gains[i, ch] * si[..., ch].mean()
+        offsets[:, ch] = np.linalg.lstsq(a, y, rcond=None)[0]
+    out = photo.copy()
+    for (r, c), i in index.items():
+        block = photo[r * side:(r + 1) * side, c * side:(c + 1) * side]
+        out[r * side:(r + 1) * side, c * side:(c + 1) * side] = block * gains[i] + offsets[i]
+    return out
+
+
 def bake():
     core2, _ = load_core()
     mosaic = np.zeros((16000, 16000, 3), np.uint8)
@@ -202,6 +248,8 @@ def bake():
     # BOX averaged black holes into the colour: undo that, then fill the empty pixels.
     colour = np.where(weight[..., None] > 0, small / np.maximum(weight, 1e-9)[..., None], 0.0)
     filled = push_pull_fill(colour, weight > 0.5)
+    if R.get("photo_harmonize"):
+        filled = harmonize_sheets(filled)
     photo = Image.fromarray(np.clip(np.rint(filled), 0, 255).astype(np.uint8))
     buf = io.BytesIO()
     photo.save(buf, "JPEG", quality=JPEG_QUALITY, optimize=True, subsampling=0)
@@ -221,7 +269,7 @@ def bake():
     rec["e"] = np.clip(np.rint(east[order] * 5), 0, 40000)        # 0.2 m units
     rec["n"] = np.clip(np.rint(north[order] * 5), 0, 40000)
     # Ground at the stored (rounded) position, so a record is self-consistent even on a cliff.
-    rec["g"] = np.clip(np.rint((core_height(core2, rec["e"] * 0.2, rec["n"] * 0.2) - 600.0) * 32.0), 0, 65535)
+    rec["g"] = np.clip(np.rint((core_height(core2, rec["e"] * 0.2, rec["n"] * 0.2) - TREE_GROUND_BASE_M) * 32.0), 0, 65535)
     rec["h"] = np.clip(np.rint(height[order] * 4), 0, 255)
     rec["r"] = np.clip(np.rint(radius[order] * 10), 0, 255)
     rec["k"] = np.where(conifer[order], 0, 1)
@@ -241,7 +289,7 @@ def bake():
         "vegetation/trees.bin.gz": tree_buf.getvalue(),
     }
     common = {"sheets": present, "source": CREDIT, "generator": "research/triglav/TG-02/bake_gkot.py",
-              "origin": "core south-west corner, D96/TM E 399000 m, N 144000 m; grid north"}
+              "origin": f"core south-west corner, D96/TM E {E_KM.start * 1000} m, N {N_KM.start * 1000} m; grid north"}
     files["photo/ortho.json"] = (json.dumps({
         "format": "openrc-orthophoto v1", **common, "pixels": PHOTO_PX, "size_m": 8000.0,
         "row_order": "north to south; column order west to east",
@@ -251,7 +299,7 @@ def bake():
         "real_fraction": round(float((weight > 0.5).mean()), 4)}, indent=1) + "\n").encode()
     files["vegetation/trees.json"] = (json.dumps({
         "format": "openrc-trees v1", **common, "count": int(len(rec)),
-        "record": "10 bytes LE: uint16 east, uint16 north (0.2 m units from the origin), uint16 ground (600 m + "
+        "record": f"10 bytes LE: uint16 east, uint16 north (0.2 m units from the origin), uint16 ground ({TREE_GROUND_BASE_M:.0f} m + "
                   "value / 32), uint8 height (0.25 m), uint8 crown radius (0.1 m), uint8 kind (0 conifer, 1 broadleaf), "
                   "uint8 spare",
         "order": "by north, then east", "min_height_m": TREE_MIN_M,

@@ -28,8 +28,12 @@ import laspy
 import numpy as np
 
 REPO = Path(__file__).resolve().parents[3]
-SRC = REPO / "tmp/triglav/gkot"
-OUT = REPO / "tmp/triglav/gkot_raster"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import region as regions  # noqa: E402
+
+R = regions.select()
+SRC = R["cache"] / "gkot"
+OUT = R["cache"] / "gkot_raster"
 NOISE = (7, 18)
 VEGETATION = (3, 4, 5)
 BUILDING = (6,)

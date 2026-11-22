@@ -25,17 +25,20 @@ import urllib.request
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
-SOURCES = REPO / "research/triglav/sources.json"
-DEFAULT_CACHE = REPO / "tmp/triglav"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import region as regions  # noqa: E402
 
-# The playable core, owner decision 2026-11-18: 8 x 8 km, D96/TM kilometre indices E 399-406, N 144-151.
-CORE_E = range(399, 407)
-CORE_N = range(144, 152)
-# ARSO serves the tiles in survey blocks; the core spans two (found by probing 2026-11-18).
+R = regions.select()
+SOURCES = R["sources"]
+DEFAULT_CACHE = R["cache"]
+
+# The playable core (region.py): 8 x 8 km of D96/TM kilometre tiles.
+CORE_E = range(R["core_e_km"], R["core_e_km"] + R["core_km"])
+CORE_N = range(R["core_n_km"], R["core_n_km"] + R["core_km"])
+# ARSO serves the tiles in survey blocks (region.py lists the ones found by probing).
 ARSO_URL = "https://gis.arso.gov.si/lidar/dmr1/b_{block}/D96TM/TM1_{e}_{n}.asc"
-ARSO_BLOCKS = (37, 31)
-# One skadi tile covers 46-47 N, 13-14 E: the whole valley and the ring.
-SRTM_TILES = {"N46E013": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N46/N46E013.hgt.gz"}
+ARSO_BLOCKS = R["arso_blocks"]
+SRTM_TILES = R["srtm_tiles"]
 USER_AGENT = "OpenRCsimulator-TG01/1 (terrain fetch; https://github.com/vrh94/OpenRCsimulator)"
 
 
@@ -132,7 +135,7 @@ def main() -> int:
     if args.record or unpinned:
         record = {
             "format": "openrc-terrain-sources v1",
-            "region": "Planica/Tamar, Triglav National Park, Slovenia",
+            "region": R["name"],
             "crs": "ARSO tiles: D96/TM (EPSG:3794), heights in metres; SRTM: WGS84 geographic, 1 arc-second",
             "core_d96tm_km": {"east": [CORE_E.start, CORE_E.stop - 1], "north": [CORE_N.start, CORE_N.stop - 1]},
             "attribution": [

@@ -13901,3 +13901,6 @@ msgstr "Полёты среди облаков"
 
 msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
 msgstr "Высокие кучевые облака, к которым можно подняться, пройти вдоль них и пролететь насквозь. Их плоские основания на 600 м выше поля."
+
+msgid "Kamnik: Duplica airstrip"
+msgstr "Камник: аэродром Дуплица"

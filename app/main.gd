@@ -3877,6 +3877,7 @@ func _build_world() -> bool:
 			luminous.layers |= Magnifier.LAYER
 	_update_aircraft_lights(0.0) # after the extent is measured; fixed TOD and field-world clocks share the policy
 	_camera = PilotCamera.create(self, field.pilot)
+	_camera.far = Landscapes.camera_far_m(landscape_id, _camera.far)
 	_storm_fx = Lightning.new()
 	_storm_fx.name = "ElectricalStorm"
 	add_child(_storm_fx)

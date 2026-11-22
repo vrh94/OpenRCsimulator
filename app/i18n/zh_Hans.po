@@ -13102,3 +13102,6 @@ msgstr "云中冲浪"
 
 msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
 msgstr "高耸的积云，可以飞上去、贴边掠过并穿越而过。它们平坦的云底位于机场上方 600 米。"
+
+msgid "Kamnik: Duplica airstrip"
+msgstr "卡姆尼克：杜普利察机场"

@@ -135,6 +135,7 @@ func _ready() -> void:
  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
  add_child(_airplane.root)
  _camera=PilotCamera.create(self,field.pilot)
+ _camera.far=Landscapes.camera_far_m(landscape_id,_camera.far)
  _rig=CameraRig.new(_camera,1.55)
  # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum (Backspace keeps it).
  _rig.default_pilot_zoom=.35

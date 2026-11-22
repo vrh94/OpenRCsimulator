@@ -1,0 +1,35 @@
+{
+ "format": "openrc-heightfield v1",
+ "name": "core",
+ "crs": "D96/TM (EPSG:3794); grid north; heights in metres above the Slovenian height datum (GKOT ground, ARSO DMR1 fill)",
+ "columns": 4000,
+ "rows": 4000,
+ "origin_east_m": 464001.0,
+ "origin_north_m": 114001.0,
+ "spacing_m": 2.0,
+ "row_order": "south to north; column order west to east; node (0, 0) at the origin",
+ "encoding": "gzip of little-endian uint16; height_m = base_m + value * step_m",
+ "base_m": 250.0,
+ "step_m": 0.03125,
+ "min_m": 309.938,
+ "max_m": 724.312,
+ "clamped_nodes": 0,
+ "data": "core.u16.gz",
+ "data_sha256": "e9b4aa78d7a38541d491b22d2f3b72e884a6f6ee65f1a8e1f029381c8313f022",
+ "sources": [
+  "Digital terrain model DMR1 (LiDAR, 1 m): Ministry of the Environment and Spatial Planning, Slovenian Environment Agency (ARSO)",
+  "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles",
+  "Sentinel-2 cloudless - https://s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016), CC BY 4.0",
+  "Cyclic laser scanning of Slovenia 2023-2025 (CLSS), classified point cloud GKOT: Surveying and Mapping Authority of the Republic of Slovenia (GURS), CC BY 4.0"
+ ],
+ "generator": "research/triglav/TG-02/bake_terrain.py",
+ "filled_1m_samples": 0,
+ "fill_offset_m": 0.0,
+ "gkot_sheets": 64,
+ "gkot_ground_nodes": 0.953,
+ "gkot_minus_arso_median_m": -0.166,
+ "gkot_minus_arso_p05_p95_m": [
+  -0.378,
+  0.141
+ ]
+}

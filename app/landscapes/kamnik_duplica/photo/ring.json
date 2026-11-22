@@ -1,0 +1,13 @@
+{
+ "format": "openrc-ring-photo v1",
+ "crs": "D96/TM (EPSG:3794); grid north; row 0 is the north edge",
+ "origin_east_m": 444000.0,
+ "origin_north_m": 94000.0,
+ "size_m": 48000.0,
+ "pixels": 3600,
+ "data": "ring.jpg",
+ "data_sha256": "217048da9868ff6972b02cb36578bb81193eef66aa6fe6eb88144748e98da503",
+ "source": "Sentinel-2 cloudless - https://s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016), CC BY 4.0",
+ "layer": "s2cloudless_3857 zoom 13",
+ "generator": "research/kamnik/KM-01/ring_photo.py"
+}

@@ -1,0 +1,2474 @@
+{
+ "format": "openrc-terrain-sources v1",
+ "region": "Kamnik (Duplica) airstrip, Ljubljana basin, with the Kamnik Alps, Slovenia",
+ "crs": "ARSO tiles: D96/TM (EPSG:3794), heights in metres; SRTM: WGS84 geographic, 1 arc-second",
+ "core_d96tm_km": {
+  "east": [
+   464,
+   471
+  ],
+  "north": [
+   114,
+   121
+  ]
+ },
+ "attribution": [
+  "Digital terrain model DMR1 (LiDAR, 1 m): Ministry of the Environment and Spatial Planning, Slovenian Environment Agency (ARSO)",
+  "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles",
+  "Sentinel-2 cloudless - https://s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016), CC BY 4.0",
+  "Cyclic laser scanning of Slovenia 2023-2025 (CLSS), classified point cloud GKOT: Surveying and Mapping Authority of the Republic of Slovenia (GURS), CC BY 4.0"
+ ],
+ "licence_note": "ARSO: free to use, modify and reuse with the credit above (ARSO statement recorded by opendem.info); confirm with ARSO before a public release. SRTM: public domain.",
+ "arso_dmr1": [
+  {
+   "name": "TM1_464_114.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_464_114.asc",
+   "bytes": 27000000,
+   "sha256": "8c371d0d6e0eccda9dbe670307a3add71de0bf891362112f6cfbf3e75c7da919"
+  },
+  {
+   "name": "TM1_465_114.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_465_114.asc",
+   "bytes": 27000000,
+   "sha256": "2284dabe4add99abb5b59f05b0a2a2d448057867ed4c605ce76d02243722df00"
+  },
+  {
+   "name": "TM1_466_114.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_466_114.asc",
+   "bytes": 27000000,
+   "sha256": "a657ef3268f07bdde041d0926b1320570f4179810c4abdfabc168ece1c1e114a"
+  },
+  {
+   "name": "TM1_467_114.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_467_114.asc",
+   "bytes": 27000000,
+   "sha256": "00bbc12b294cda04b48e00734b87a6638b2d3b6b388024fcf5fa2951b6965c72"
+  },
+  {
+   "name": "TM1_468_114.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_468_114.asc",
+   "bytes": 27000000,
+   "sha256": "822126abcef9140e91ccc0dbcde2c5294aa2eb8f3ca6937b0e4add133012ff6a"
+  },
+  {
+   "name": "TM1_469_114.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_469_114.asc",
+   "bytes": 27000000,
+   "sha256": "4e555af8c29850b8e0f22d23793384f9835a38bc3b92fa9f925e25be320490ba"
+  },
+  {
+   "name": "TM1_470_114.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_470_114.asc",
+   "bytes": 27000000,
+   "sha256": "e418e983236b712bf5dc983ca82bd93ecbe259fbf317c39e0905e817dfe8280e"
+  },
+  {
+   "name": "TM1_471_114.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_471_114.asc",
+   "bytes": 27000000,
+   "sha256": "1aa55eca8c8bec53abb189119c869684c75fcafd31e2e3f47ba40123f5d06104"
+  },
+  {
+   "name": "TM1_464_115.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_464_115.asc",
+   "bytes": 27000000,
+   "sha256": "f936cd301f4b3d36dae14896b9a4d9563efb3e92ac8b935a1804e1557c0e13c6"
+  },
+  {
+   "name": "TM1_465_115.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_465_115.asc",
+   "bytes": 27000000,
+   "sha256": "4d88bf34a815341fb17e7549740e7d5247e62d2d1887f76da973bc592ad18862"
+  },
+  {
+   "name": "TM1_466_115.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_466_115.asc",
+   "bytes": 27000000,
+   "sha256": "89c141916be20a97ac2c67dc7cede567c3de838507f3f53c9d9b8e7af6a5d83d"
+  },
+  {
+   "name": "TM1_467_115.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_467_115.asc",
+   "bytes": 27000000,
+   "sha256": "f9499e36cf71699ac6e521280e8c9f5d54db34891335e60d427abea79a594010"
+  },
+  {
+   "name": "TM1_468_115.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_468_115.asc",
+   "bytes": 27000000,
+   "sha256": "0d3dec3f90805103d45a99cd1483107aa333cd1b643ab40372d2d4824446096a"
+  },
+  {
+   "name": "TM1_469_115.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_469_115.asc",
+   "bytes": 27000000,
+   "sha256": "36df932feb07eb81f6e853458d84fff4994d171a331b35dfaa6cbf24f483792f"
+  },
+  {
+   "name": "TM1_470_115.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_470_115.asc",
+   "bytes": 27000000,
+   "sha256": "22a6460986a24b4a64b6ee00c80de5cedf77f3828f4d43532143e80c8fb35f57"
+  },
+  {
+   "name": "TM1_471_115.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_471_115.asc",
+   "bytes": 27000000,
+   "sha256": "04d67813988f7d72bc87f4250bcac0db6810446bd4cf9fbb03f73c5d1b8c1781"
+  },
+  {
+   "name": "TM1_464_116.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_464_116.asc",
+   "bytes": 27000000,
+   "sha256": "090e8f8156f5a97cc809f0ded233376d5e49c715d913b360c7349a3aee2bf0a3"
+  },
+  {
+   "name": "TM1_465_116.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_465_116.asc",
+   "bytes": 27000000,
+   "sha256": "4c488811006822531ebc37b37a246615a8074269583539658ef3308d351515a4"
+  },
+  {
+   "name": "TM1_466_116.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_466_116.asc",
+   "bytes": 27000000,
+   "sha256": "8feafc3b71214fe7ae95b4a400386172c01bfc9148e069f5c33dcd14dfb65b7a"
+  },
+  {
+   "name": "TM1_467_116.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_467_116.asc",
+   "bytes": 27000000,
+   "sha256": "d3e427ba50e5b009fe7fc7e9b3fe49f29bbc37cad9b016910dbc0063a4a0fba1"
+  },
+  {
+   "name": "TM1_468_116.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_468_116.asc",
+   "bytes": 27000000,
+   "sha256": "226b0f76207551cdf4392d78a4f508bc3739abdee2c5ab77379babecbfa4f8d6"
+  },
+  {
+   "name": "TM1_469_116.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_469_116.asc",
+   "bytes": 27000000,
+   "sha256": "49b535659fb4885b9c98db1da06b4204d6eec6ce726eabb714318ae82f18cb5e"
+  },
+  {
+   "name": "TM1_470_116.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_470_116.asc",
+   "bytes": 27000000,
+   "sha256": "dd7081ebd1e94de3b600a61ac6b001767d8dd3b593fd35e8c31931c06c9b0f06"
+  },
+  {
+   "name": "TM1_471_116.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_471_116.asc",
+   "bytes": 27000000,
+   "sha256": "48e6a2f5878f879a3fc67e4f1f161fd575f8e74cfca2814b59f8f78fd2967716"
+  },
+  {
+   "name": "TM1_464_117.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_464_117.asc",
+   "bytes": 27000000,
+   "sha256": "3e0676f3e680636e959b52c34211eec4a15dd52c624e8bc269fa43fc92f75c47"
+  },
+  {
+   "name": "TM1_465_117.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_465_117.asc",
+   "bytes": 27000000,
+   "sha256": "2ec5489950630f5e7cfa607bd47686f426f0187f4b671cb38b8f3e4eb6beb92a"
+  },
+  {
+   "name": "TM1_466_117.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_466_117.asc",
+   "bytes": 27000000,
+   "sha256": "d2983287c1a94941535f1350bff80acbdfac2bdd7285302e89cf481a4313aabf"
+  },
+  {
+   "name": "TM1_467_117.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_467_117.asc",
+   "bytes": 27000000,
+   "sha256": "1b5455e9b4a2ab82dd879001c53862933bd45c3a38277ff110ee6022fb4b25f1"
+  },
+  {
+   "name": "TM1_468_117.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_468_117.asc",
+   "bytes": 27000000,
+   "sha256": "eee95472deaf5ef65aef7ee5d2389055eb80761e2acdecf6d5b6ce5b37327479"
+  },
+  {
+   "name": "TM1_469_117.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_469_117.asc",
+   "bytes": 27000000,
+   "sha256": "fea654370ace55b2467732d9756d8ec975e16413425a9bbe4f58fdba93a63964"
+  },
+  {
+   "name": "TM1_470_117.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_470_117.asc",
+   "bytes": 27000000,
+   "sha256": "b53627e9207b8e8a655b566d1afe3645000f3f3f82415190c01d72d7b8a3f77e"
+  },
+  {
+   "name": "TM1_471_117.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_471_117.asc",
+   "bytes": 27000000,
+   "sha256": "a4f96bc61bcd9a950bd79eee0e0bee6d8cea7c4856d6f016e5fd080c4f48629c"
+  },
+  {
+   "name": "TM1_464_118.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_464_118.asc",
+   "bytes": 27000000,
+   "sha256": "4134bf1ac7e2ab3ca189f276e0df6a8d1b4a05f86703e9957d64cc234a91f29f"
+  },
+  {
+   "name": "TM1_465_118.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_465_118.asc",
+   "bytes": 27000000,
+   "sha256": "d4f657193a325b3d9a82539e29f84f9b916854f31e0fdef514b4badedbfbcf81"
+  },
+  {
+   "name": "TM1_466_118.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_466_118.asc",
+   "bytes": 27000000,
+   "sha256": "d41a5689417cce882c56ee7d94138349f3ad3dfa66244d7633e696e5ed2c4b30"
+  },
+  {
+   "name": "TM1_467_118.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_467_118.asc",
+   "bytes": 27000000,
+   "sha256": "ca3856b11ad237636608c668c762d840ff9466c4b667dd42ec3384c8cfda29e5"
+  },
+  {
+   "name": "TM1_468_118.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_468_118.asc",
+   "bytes": 27000000,
+   "sha256": "ca3e8d95c2942b2b277b7a16266912ce7b47db852192d5a5a7451cedde483b24"
+  },
+  {
+   "name": "TM1_469_118.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_469_118.asc",
+   "bytes": 27000000,
+   "sha256": "d79a0101be86ff7c3801bd007497c1dc44189f2e899680f407df532739d493d7"
+  },
+  {
+   "name": "TM1_470_118.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_470_118.asc",
+   "bytes": 27000000,
+   "sha256": "e95a1dea7ec85aedeb761588f3a2521436eddfb64472fda02c569c193fa1f7f3"
+  },
+  {
+   "name": "TM1_471_118.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_471_118.asc",
+   "bytes": 27000000,
+   "sha256": "c7bd9f29bcdf6183e76bf083cc20993073cbfa9987f0021b27b798400c5aee6d"
+  },
+  {
+   "name": "TM1_464_119.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_464_119.asc",
+   "bytes": 27000000,
+   "sha256": "3c84cf688c734688d6faf4f6fd89b695a6fce255d9deab446290e22e422c457f"
+  },
+  {
+   "name": "TM1_465_119.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_465_119.asc",
+   "bytes": 27000000,
+   "sha256": "dba8455b22571a7fbb59e896f51d9d2a8700a705df749eb4caf6dccdfff08bb7"
+  },
+  {
+   "name": "TM1_466_119.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_466_119.asc",
+   "bytes": 27000000,
+   "sha256": "78c24a86a53f4e857483562e060d137cc8ad57e8f8b82d9a6e3b3e493ea40898"
+  },
+  {
+   "name": "TM1_467_119.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_467_119.asc",
+   "bytes": 27000000,
+   "sha256": "90c2d42a950d69c5ddbdec532c0f60d4dcf7e5ee9a12e3e1afd2bb3c4d91960a"
+  },
+  {
+   "name": "TM1_468_119.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_468_119.asc",
+   "bytes": 27000000,
+   "sha256": "ce6a8b69073e6659942114e384a8fdd1db6f535a2826b0c4f46ea4d1b71b89ce"
+  },
+  {
+   "name": "TM1_469_119.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_469_119.asc",
+   "bytes": 27000000,
+   "sha256": "f0c1008d989363768b7cdd07abbd5399808706c2a1b3cbe6dd8798d6976e2861"
+  },
+  {
+   "name": "TM1_470_119.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_470_119.asc",
+   "bytes": 27000000,
+   "sha256": "c6fb12db1aa88425fc3756fb03442f88f3769b2354c550961ef5fc703a1769ca"
+  },
+  {
+   "name": "TM1_471_119.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_471_119.asc",
+   "bytes": 27000000,
+   "sha256": "5c0df87114e3efebda536ebeb7347a5cab2817580f222cf0b9db0e00f23616a4"
+  },
+  {
+   "name": "TM1_464_120.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_464_120.asc",
+   "bytes": 27000000,
+   "sha256": "78ea17f2c842d47382acb68d84dedddb7d9cb21f6f2bbd36774158a2e03be0db"
+  },
+  {
+   "name": "TM1_465_120.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_465_120.asc",
+   "bytes": 27000000,
+   "sha256": "7c70a6dab0af1f23142c23ba32c703a4f91cb4b347ced73b2fe070fc06e2657a"
+  },
+  {
+   "name": "TM1_466_120.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_466_120.asc",
+   "bytes": 27000000,
+   "sha256": "41ccb2103f5e9967245005dd1df6bb7c73a70f00caee8d9dd8815aef4bd4e612"
+  },
+  {
+   "name": "TM1_467_120.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_467_120.asc",
+   "bytes": 27000000,
+   "sha256": "c409ba1ab6d86e1630a886f40eb68b6cc08c220c6f532cc385d5ad1e6fb51054"
+  },
+  {
+   "name": "TM1_468_120.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_468_120.asc",
+   "bytes": 27000000,
+   "sha256": "b0f9472b0a14b58c601bfb69d6c7518f5e5582bc6bf5be39f00132aeb195430e"
+  },
+  {
+   "name": "TM1_469_120.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_469_120.asc",
+   "bytes": 27000000,
+   "sha256": "e7f2ab5050dbd877dbc26eeb12e16ba70766fa1c52a54a53638c89ff38c641c1"
+  },
+  {
+   "name": "TM1_470_120.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_470_120.asc",
+   "bytes": 27000000,
+   "sha256": "99a9842cfb46ea1616dea2cbe9e8193b17e1395047a81a1e3920ce44037458ff"
+  },
+  {
+   "name": "TM1_471_120.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_471_120.asc",
+   "bytes": 27000000,
+   "sha256": "1d01c1c52d7b7883c6c3d224adb77a4d828328dd662eef75b7a13fa66c697a68"
+  },
+  {
+   "name": "TM1_464_121.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_464_121.asc",
+   "bytes": 27000000,
+   "sha256": "fe2f5aba6601f734e18bb9cdde013ded64a2f90f0ff400534c80374e3ec0f798"
+  },
+  {
+   "name": "TM1_465_121.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_465_121.asc",
+   "bytes": 27000000,
+   "sha256": "1f10e1c28d83308aea43b2886c94a3b740d8a9e857b8aa55c34efeeeb95871cf"
+  },
+  {
+   "name": "TM1_466_121.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_466_121.asc",
+   "bytes": 27000000,
+   "sha256": "8accb15710be9d2aafde3b68e6a678f3eba6d8f168ef8eadb8802e730030c892"
+  },
+  {
+   "name": "TM1_467_121.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_467_121.asc",
+   "bytes": 27000000,
+   "sha256": "67ac228fa075254576171c8191819c9cb2988c8e8a73aaac4c4290b5efa24821"
+  },
+  {
+   "name": "TM1_468_121.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_468_121.asc",
+   "bytes": 27000000,
+   "sha256": "d0d3ee03d47683588a0b817af35b194ae27021b9257b1e8f6617e8363b0643ac"
+  },
+  {
+   "name": "TM1_469_121.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_469_121.asc",
+   "bytes": 27000000,
+   "sha256": "6b852a0c625f0b8dedba5f8c6d045fe64c660a3f9d9a862910f71787186cf8b0"
+  },
+  {
+   "name": "TM1_470_121.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_470_121.asc",
+   "bytes": 27000000,
+   "sha256": "d27c658ad015fca948a6832a92bf64120c6df97025f85e71dda131b5f671657f"
+  },
+  {
+   "name": "TM1_471_121.asc",
+   "url": "https://gis.arso.gov.si/lidar/dmr1/b_36/D96TM/TM1_471_121.asc",
+   "bytes": 27000000,
+   "sha256": "32cb8e17844548d02315cd8d2cc46921ca72b3b5f09bed728dcc93ce57de8ad5"
+  }
+ ],
+ "srtm": [
+  {
+   "name": "N46E014.hgt.gz",
+   "url": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N46/N46E014.hgt.gz",
+   "bytes": 13740093,
+   "sha256": "e1f6c25337ed5250749d4982ff9222f675e585bc89078968004a6e0cee7f66c1"
+  },
+  {
+   "name": "N45E014.hgt.gz",
+   "url": "https://s3.amazonaws.com/elevation-tiles-prod/skadi/N45/N45E014.hgt.gz",
+   "bytes": 11980994,
+   "sha256": "5d660767eaf1e583bc86d99e66e38d9b809c98df0d608dde47e6a52e6af9bfa7"
+  }
+ ],
+ "s2cloudless": [
+  {
+   "name": "13_4420_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4420.jpg",
+   "bytes": 15132,
+   "sha256": "e96ccf8e6f8dd6eb60c15370efa103a87192969c82074d3240c44922fa0eb21c"
+  },
+  {
+   "name": "13_4421_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4421.jpg",
+   "bytes": 14158,
+   "sha256": "3058e553728c8f614e7345436e94aa09e0ee5c6c37f572034a6d92a10abda9f1"
+  },
+  {
+   "name": "13_4422_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4422.jpg",
+   "bytes": 13397,
+   "sha256": "2c81008cebb0fd5e12ff117d95dc6c4024a312a273ec285c400c7cec4d08d1ac"
+  },
+  {
+   "name": "13_4423_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4423.jpg",
+   "bytes": 12428,
+   "sha256": "32256aa4695c95b689de984c010b60e52e308ae2815db23ebf894a6746403bb1"
+  },
+  {
+   "name": "13_4424_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4424.jpg",
+   "bytes": 11716,
+   "sha256": "04f98d0cb4ec24ccc7f16b5acf0e73fdf12955d23ff81e694f32fcf1d7662570"
+  },
+  {
+   "name": "13_4425_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4425.jpg",
+   "bytes": 11245,
+   "sha256": "b5be080ec78a127c305b1061c5046f0f241a928715998dcb1e4058a22bf6673b"
+  },
+  {
+   "name": "13_4426_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4426.jpg",
+   "bytes": 11748,
+   "sha256": "6dcbd6ec65368d136ab9809c6f4a3850a77ae7e94ecb1efa7e9b0b393a63076c"
+  },
+  {
+   "name": "13_4427_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4427.jpg",
+   "bytes": 11021,
+   "sha256": "27d890ffa14ba6c1d0b9a4707bd35fa4f2339abf1a09b3f994488bcc407694d9"
+  },
+  {
+   "name": "13_4428_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4428.jpg",
+   "bytes": 10970,
+   "sha256": "1ff9227abf34f13c3344418266e2026a3322384e2f83458f9b95e4f64d833dc2"
+  },
+  {
+   "name": "13_4429_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4429.jpg",
+   "bytes": 10794,
+   "sha256": "2286f8dddb5dd30f81b512f0f24acecc6951e00c5f449621df59d0478c190924"
+  },
+  {
+   "name": "13_4430_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4430.jpg",
+   "bytes": 10313,
+   "sha256": "63c311a5db5b1768018c40e8a9648c4bb437ea78319ab89c5da33f60c87abb54"
+  },
+  {
+   "name": "13_4431_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4431.jpg",
+   "bytes": 11062,
+   "sha256": "8bcd9772729c978c204628347070567456754409ee724647f01a5996bb7ebc20"
+  },
+  {
+   "name": "13_4432_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4432.jpg",
+   "bytes": 10070,
+   "sha256": "8bc48fe5aaaf1139d4ad2ed41ef84e627d902ce74952b863e2586abe6d25c2c2"
+  },
+  {
+   "name": "13_4433_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4433.jpg",
+   "bytes": 11742,
+   "sha256": "4be87c33ccce9a27b2385a849dd56675b1340bad77b36a285beaff5a2bfbb8e3"
+  },
+  {
+   "name": "13_4434_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4434.jpg",
+   "bytes": 11614,
+   "sha256": "6465e7f0e44c66d179cb9f784b40d29b063f9e19ee78a69ea5c2851f67d3c76c"
+  },
+  {
+   "name": "13_4435_2900.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2900/4435.jpg",
+   "bytes": 9514,
+   "sha256": "5056c475f93e023b787acbc7f44d9d3c2337544d5bd73a1879856a386e828c74"
+  },
+  {
+   "name": "13_4420_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4420.jpg",
+   "bytes": 10154,
+   "sha256": "9fbf8259078917254314df79f298fa2a3c8eaf905c990071ee96408e29a945c3"
+  },
+  {
+   "name": "13_4421_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4421.jpg",
+   "bytes": 11245,
+   "sha256": "255007df1b0958dcf082d5dfb3d26c8b00ba172f10666213ed6b3498d9ded277"
+  },
+  {
+   "name": "13_4422_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4422.jpg",
+   "bytes": 10160,
+   "sha256": "80dc798d21515c9879da483bc3172f4fedaec7f54d53320b5160e62103726015"
+  },
+  {
+   "name": "13_4423_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4423.jpg",
+   "bytes": 9146,
+   "sha256": "5a9f5f93e7182a806833f5cbc8793131dd290d32fa2ea1c4ab9ed987dca1377f"
+  },
+  {
+   "name": "13_4424_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4424.jpg",
+   "bytes": 11330,
+   "sha256": "760d0fdce852ce956c1b89404486cc86d246d650cfa5909e7c55f63c9603a6db"
+  },
+  {
+   "name": "13_4425_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4425.jpg",
+   "bytes": 11654,
+   "sha256": "28c6f296a80923a05800610e6ddec4e7ef5a2712d4cefdfcd446c987a8639181"
+  },
+  {
+   "name": "13_4426_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4426.jpg",
+   "bytes": 11042,
+   "sha256": "f5c296379f789ca11be8a877b577af2992700d1efb21fc2c17c9f8b47fe0a4ec"
+  },
+  {
+   "name": "13_4427_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4427.jpg",
+   "bytes": 15407,
+   "sha256": "7b2a53d89d14842c2a8c577a005cb6874140df280cf5b01fa95bed2b8de9edb2"
+  },
+  {
+   "name": "13_4428_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4428.jpg",
+   "bytes": 11854,
+   "sha256": "efffe2df80b79ba23095a1b2cb5e881c85f3943ef1b8c201e93319025e3eb99f"
+  },
+  {
+   "name": "13_4429_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4429.jpg",
+   "bytes": 11627,
+   "sha256": "050a34a3393a9fc84af95571dab0c022b4e7fc0097f1d23e877c13d7f188e60f"
+  },
+  {
+   "name": "13_4430_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4430.jpg",
+   "bytes": 10637,
+   "sha256": "e40f37b9b2f884b44cf7fd8679e8bac2fc3bcdf052af6b82372c0f39aa978e38"
+  },
+  {
+   "name": "13_4431_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4431.jpg",
+   "bytes": 11138,
+   "sha256": "cc3f57f4c1ccf58e802730c7e7b18694704cb8d04ceafba373dda22a78bd3201"
+  },
+  {
+   "name": "13_4432_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4432.jpg",
+   "bytes": 10351,
+   "sha256": "fc3565e9fbe78a2760831d2f8fd980ae440fd899c73de184510b1c5e3a7835cf"
+  },
+  {
+   "name": "13_4433_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4433.jpg",
+   "bytes": 10945,
+   "sha256": "d9e06439415609c707db48d7b808d0d16f5137a4059d3f5c6a90a67de3f37bab"
+  },
+  {
+   "name": "13_4434_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4434.jpg",
+   "bytes": 10261,
+   "sha256": "46d4217519f37a657d029e6b855ccc87fa09cd088fc409590f85e63e625d2639"
+  },
+  {
+   "name": "13_4435_2901.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2901/4435.jpg",
+   "bytes": 11851,
+   "sha256": "b634ab1c2e16846b2be89962a88a667d7d4761122723efd51c5428cef8b267db"
+  },
+  {
+   "name": "13_4420_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4420.jpg",
+   "bytes": 11825,
+   "sha256": "8a4bd54ec035dd31cf79ff9361bce17513617f34b8fbca609cd4d6f1cd0dc8b4"
+  },
+  {
+   "name": "13_4421_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4421.jpg",
+   "bytes": 12395,
+   "sha256": "3d45e9fc9951884226f7c799754629df81be9513945c4175f1ea932783a26b44"
+  },
+  {
+   "name": "13_4422_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4422.jpg",
+   "bytes": 11092,
+   "sha256": "d397b7782a17db1eb4749b602049dd8257bf35c2aedc315c2d269596436da8ef"
+  },
+  {
+   "name": "13_4423_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4423.jpg",
+   "bytes": 11103,
+   "sha256": "ae80d69dbefcbc34ece90fc67992dc8e6a2cfb2a21d8d1d540fed45d0a988228"
+  },
+  {
+   "name": "13_4424_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4424.jpg",
+   "bytes": 10432,
+   "sha256": "34b60e87c0b77dc6cdd9f4d0e7015de7340caa08d02e0c5ff3d3b322aee15bc9"
+  },
+  {
+   "name": "13_4425_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4425.jpg",
+   "bytes": 11052,
+   "sha256": "1c7d0d1e8ce6e7dfb145f23914cb7370c8d4e8a590036285a9fd22e3ca60ce23"
+  },
+  {
+   "name": "13_4426_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4426.jpg",
+   "bytes": 17987,
+   "sha256": "4e073eb95068c4c55baae9956295dbc2c65ae411ef0f2c9c45dd5f841210eba4"
+  },
+  {
+   "name": "13_4427_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4427.jpg",
+   "bytes": 22769,
+   "sha256": "04ff9c285c3b3699339500f52f7549548393518b183af8a4f2bad4b6f6397824"
+  },
+  {
+   "name": "13_4428_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4428.jpg",
+   "bytes": 16941,
+   "sha256": "34236ba40e6a1623aba6ab8e7d59d9465536cc429bf94a052768ac995e11c982"
+  },
+  {
+   "name": "13_4429_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4429.jpg",
+   "bytes": 17358,
+   "sha256": "93727d12ef63f71b22cb7a49f34ad528fd6fdecac04a2f7acfb8a461159c260b"
+  },
+  {
+   "name": "13_4430_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4430.jpg",
+   "bytes": 12886,
+   "sha256": "90e71d48f7fa28042bb74ed6553f7414018434d05d9cdf920b01e1a5adf446f5"
+  },
+  {
+   "name": "13_4431_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4431.jpg",
+   "bytes": 11229,
+   "sha256": "e2e06b3ed76110112821d1c3ab38aa09866492b26c0a216d70302a93d09b1855"
+  },
+  {
+   "name": "13_4432_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4432.jpg",
+   "bytes": 10339,
+   "sha256": "f019f16addc3c2705c3ed798c0c005ee4f8ff071b44c49892720ec85db35c3b1"
+  },
+  {
+   "name": "13_4433_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4433.jpg",
+   "bytes": 11314,
+   "sha256": "8482847f5e61904a56fd4eff45d4e477f635bd4ef2e9113b4013d168b68d05d9"
+  },
+  {
+   "name": "13_4434_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4434.jpg",
+   "bytes": 11143,
+   "sha256": "fa87c9d8ea0832141271a415ee5c3a0990ba677b0fdf5b46906ad499cc9d8cd9"
+  },
+  {
+   "name": "13_4435_2902.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2902/4435.jpg",
+   "bytes": 12163,
+   "sha256": "fbfc22b31599caa3a86037bbfc3d3ddb9f5a55d08c9b232b8f886072b1d7d464"
+  },
+  {
+   "name": "13_4420_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4420.jpg",
+   "bytes": 11079,
+   "sha256": "dd78c099c93ab582848f98a2fa378cf1262161e6f18c56b8f68765bf2e485da9"
+  },
+  {
+   "name": "13_4421_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4421.jpg",
+   "bytes": 13506,
+   "sha256": "a2c8fe07e31a692a5b303c05dacd7b30fff8debd664c36d3401c6381e17d9c8f"
+  },
+  {
+   "name": "13_4422_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4422.jpg",
+   "bytes": 12103,
+   "sha256": "76dd95bc2d3b5e67e29375e90ca0f116f6cdea9f694d8f1b49b199362dc25d22"
+  },
+  {
+   "name": "13_4423_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4423.jpg",
+   "bytes": 12116,
+   "sha256": "b76bd3b04b90389e39e6b27b114bcf181b831aa2db00595992f5e87d461f2958"
+  },
+  {
+   "name": "13_4424_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4424.jpg",
+   "bytes": 9984,
+   "sha256": "d02cc178b0612b44ad2469de601b534d11e364af7c20b701e2f3aa959f5c690a"
+  },
+  {
+   "name": "13_4425_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4425.jpg",
+   "bytes": 10060,
+   "sha256": "b875af8bde0c2e761dc694674c7f9da777965a35decbc06b7a49d09dc9b5ed11"
+  },
+  {
+   "name": "13_4426_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4426.jpg",
+   "bytes": 13426,
+   "sha256": "f48fe81eeb3e33b6bf56705f9a0f62bd6ec1ba84fd193bc42c35cf156709415b"
+  },
+  {
+   "name": "13_4427_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4427.jpg",
+   "bytes": 13165,
+   "sha256": "8100c0adc8ab0f9ac2790b41e0e2d3c543fecd7f5f3856092a212e8bdbcec26d"
+  },
+  {
+   "name": "13_4428_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4428.jpg",
+   "bytes": 11859,
+   "sha256": "cb74411f77163953dcf55cbb016340ba8343a9273f5054d877dff9d77c097064"
+  },
+  {
+   "name": "13_4429_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4429.jpg",
+   "bytes": 14134,
+   "sha256": "f4c2b0303c3622f94e4332dbf9a37b6852d7e4bc4af1df67aec74ae6f877e9ef"
+  },
+  {
+   "name": "13_4430_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4430.jpg",
+   "bytes": 10244,
+   "sha256": "1d1a8943463b3913de1c78a1863040eccd3c04355d98f5c2cd9a13cb340d95ee"
+  },
+  {
+   "name": "13_4431_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4431.jpg",
+   "bytes": 9667,
+   "sha256": "335bd770a348fd8d639151e0b813531dea0adb47d9104c417b829e1ad235e285"
+  },
+  {
+   "name": "13_4432_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4432.jpg",
+   "bytes": 9523,
+   "sha256": "fc68f33fd9fab5d0d488f11257b16eb9071d9789a90797a2c13cf9ce5c6ec5c0"
+  },
+  {
+   "name": "13_4433_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4433.jpg",
+   "bytes": 11768,
+   "sha256": "fd3d177a7b072b3f346f8331488a3e72da1562bedbee7e3c88a73e9fb6f9c26d"
+  },
+  {
+   "name": "13_4434_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4434.jpg",
+   "bytes": 11385,
+   "sha256": "7f1988dc3a0312a6571ad3635da401714b09a841bab253c634d461069fc2925c"
+  },
+  {
+   "name": "13_4435_2903.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2903/4435.jpg",
+   "bytes": 11336,
+   "sha256": "6bd0cc16cd4d9c2f8f24917d5666789cdb2c68d212f4fcec1c408a4d8db03827"
+  },
+  {
+   "name": "13_4420_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4420.jpg",
+   "bytes": 13298,
+   "sha256": "25ecb8e6e49a44443354eba1214d034e74cd0c747d71122886f97a868c1d47ce"
+  },
+  {
+   "name": "13_4421_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4421.jpg",
+   "bytes": 11099,
+   "sha256": "1b73abcdfe48db303a93a6a6e2e13dd1f88a39184e27b5a88d5a7f567f135b29"
+  },
+  {
+   "name": "13_4422_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4422.jpg",
+   "bytes": 10152,
+   "sha256": "d6a55b6aaa1588ee3729837bb82144ca8701ddced3e26e3d34d4bb1b6e556efc"
+  },
+  {
+   "name": "13_4423_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4423.jpg",
+   "bytes": 11802,
+   "sha256": "a03798dbe26ca930bb3008e18f933ed9df0e9af9eb077b2bc62c115e803cde63"
+  },
+  {
+   "name": "13_4424_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4424.jpg",
+   "bytes": 12181,
+   "sha256": "41260f86784a3fb674bd946b5ab12f4518ad3f2bce757ba332f1f5a90909cdf0"
+  },
+  {
+   "name": "13_4425_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4425.jpg",
+   "bytes": 9541,
+   "sha256": "e4629cf569b88b100dffbc5927786c73c725e04742a29eea83ba39c379bb3597"
+  },
+  {
+   "name": "13_4426_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4426.jpg",
+   "bytes": 11635,
+   "sha256": "954b3a18ed4d7c70ff8188404ce06e2edcd51e057f541f2b2a21ffb8f7dc1530"
+  },
+  {
+   "name": "13_4427_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4427.jpg",
+   "bytes": 12683,
+   "sha256": "6fc7f055d12c9f7fd452936b0b7a10021d9b7aacf85e7188d6843a011ed6f604"
+  },
+  {
+   "name": "13_4428_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4428.jpg",
+   "bytes": 8832,
+   "sha256": "e04f81120b7fa15713af1c79b43e4068213e139a0e25d6d58ef772ca621708be"
+  },
+  {
+   "name": "13_4429_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4429.jpg",
+   "bytes": 10984,
+   "sha256": "af74ddc64041404a405305dba65be4c8fa55d66f3fc7d4b18d95cb3f8961a161"
+  },
+  {
+   "name": "13_4430_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4430.jpg",
+   "bytes": 8826,
+   "sha256": "9cd5e3dc7498409c7cf5b55eef3e57ffddfb7637f8e831a689fec8020d5ba780"
+  },
+  {
+   "name": "13_4431_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4431.jpg",
+   "bytes": 10567,
+   "sha256": "fd95788f3a882071539e060e9168ee780e634666aa2702392a3880cacfc6f5d9"
+  },
+  {
+   "name": "13_4432_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4432.jpg",
+   "bytes": 11385,
+   "sha256": "ac737d2c34ba6e9fc93f403d39dabf78f3a8f8e2ef6994e5f9aa261c34daf184"
+  },
+  {
+   "name": "13_4433_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4433.jpg",
+   "bytes": 10990,
+   "sha256": "d73485501b04bfa86f7aadeaa0d5d87464dcad991b5d2f001338dbc73344cf87"
+  },
+  {
+   "name": "13_4434_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4434.jpg",
+   "bytes": 10684,
+   "sha256": "c7753ed699824d1092a26677e3986cb0014b96dcc69b3c87212df6da0928b0e8"
+  },
+  {
+   "name": "13_4435_2904.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2904/4435.jpg",
+   "bytes": 12383,
+   "sha256": "339502f55f50b867567774f72d4d78c9db58f0bbf30850aba7dc68f6425cad6d"
+  },
+  {
+   "name": "13_4420_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4420.jpg",
+   "bytes": 10615,
+   "sha256": "dbc911b3a74843bc67d52ce94188c44bccc7b6918c490bd59688f185b834e92b"
+  },
+  {
+   "name": "13_4421_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4421.jpg",
+   "bytes": 14744,
+   "sha256": "4a838bdbe614f04631b16cf5b0ebf05e97cb2f9f84ed0cc3df8f0ca8d17be63b"
+  },
+  {
+   "name": "13_4422_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4422.jpg",
+   "bytes": 13440,
+   "sha256": "9cb04c4e1ea1203b196675a297dbcedb2e468d56e7d3b1f9a86327da43987484"
+  },
+  {
+   "name": "13_4423_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4423.jpg",
+   "bytes": 13094,
+   "sha256": "77e9eb77b37172149cb30d80849817ebb9c59773027726f8defdf0a472703bff"
+  },
+  {
+   "name": "13_4424_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4424.jpg",
+   "bytes": 12943,
+   "sha256": "315908ecb021fa0802ca2059e7c879afa4e603569c9ca8541828dcf336bf1733"
+  },
+  {
+   "name": "13_4425_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4425.jpg",
+   "bytes": 11132,
+   "sha256": "a2cac5b392e89aec1a7c58eb99f472349cc6792d680977b09eb432c8a0ddaabc"
+  },
+  {
+   "name": "13_4426_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4426.jpg",
+   "bytes": 11560,
+   "sha256": "305a072a442997a90199b342c342840c64c066214397ce34d5013d1b24f47464"
+  },
+  {
+   "name": "13_4427_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4427.jpg",
+   "bytes": 12389,
+   "sha256": "5ca7e8459484225fdfa4299776c0da5d995ced520aec3d1eb0a9aa95d8f52fba"
+  },
+  {
+   "name": "13_4428_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4428.jpg",
+   "bytes": 11335,
+   "sha256": "167e8b6e9053ee639c80dd31bf0fd7ee85d1e2df0cc80b5f2489db00604859d7"
+  },
+  {
+   "name": "13_4429_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4429.jpg",
+   "bytes": 10441,
+   "sha256": "172771b05de0e1c9b0e5ff61b82a98d1f11af8a6d60d2ccebe57bb9780b60f3c"
+  },
+  {
+   "name": "13_4430_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4430.jpg",
+   "bytes": 10226,
+   "sha256": "dd09034fe5dd5010d54035a6c01f1fa978fbf74dfc20bc16d37a8fa296e8a0a7"
+  },
+  {
+   "name": "13_4431_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4431.jpg",
+   "bytes": 10612,
+   "sha256": "be012de8c7f1fe12f6c4a5e4eccb4143c78f5707e322b446236457a2e63e7fea"
+  },
+  {
+   "name": "13_4432_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4432.jpg",
+   "bytes": 8144,
+   "sha256": "329afed40c98a4d4d44a42c4c39bd5c35d011b63acda996e50fa6c9535442204"
+  },
+  {
+   "name": "13_4433_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4433.jpg",
+   "bytes": 8822,
+   "sha256": "3d87800e515a30156ee3799e649e6b0182e492be194397441b53148dc1888649"
+  },
+  {
+   "name": "13_4434_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4434.jpg",
+   "bytes": 9670,
+   "sha256": "45acbc9e571b47925c32836664843c7b372f68df9b09c5daf1c582d93a4f70f8"
+  },
+  {
+   "name": "13_4435_2905.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2905/4435.jpg",
+   "bytes": 8037,
+   "sha256": "202abaa4b491aed07c4d30ed86549ab650d5d7bbcba9a804eee993ffeb4df534"
+  },
+  {
+   "name": "13_4420_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4420.jpg",
+   "bytes": 10311,
+   "sha256": "e1003f49726e9a040019bfede2f4b117f496a14749880f279c378077532bc872"
+  },
+  {
+   "name": "13_4421_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4421.jpg",
+   "bytes": 10258,
+   "sha256": "28353d07302ca8b20ee01728d2c7d108892dac98f081186760bfdd5856b7c93a"
+  },
+  {
+   "name": "13_4422_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4422.jpg",
+   "bytes": 19904,
+   "sha256": "fb959be6127a29babbf314a753acbb4a3a02d9e654d5add5f3776acf1e5b4929"
+  },
+  {
+   "name": "13_4423_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4423.jpg",
+   "bytes": 13373,
+   "sha256": "bc692af422d81f00dc5d94ce8b5d1e6c3e48de9eb9bda612fded5d1ab9aaeb06"
+  },
+  {
+   "name": "13_4424_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4424.jpg",
+   "bytes": 13518,
+   "sha256": "b6b58a2d06cc87d172c92ac055d5ebcdd64f1b4e9cb664ccd8489ed5275acb78"
+  },
+  {
+   "name": "13_4425_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4425.jpg",
+   "bytes": 13987,
+   "sha256": "c969f3479d86c0350b92fdf775532dfb5fcba2ea7ed5d23685b7a45225103941"
+  },
+  {
+   "name": "13_4426_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4426.jpg",
+   "bytes": 11358,
+   "sha256": "16c9ca8058771be06836a1a7e58071a99743384970dc1edbd02328a82355e5b0"
+  },
+  {
+   "name": "13_4427_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4427.jpg",
+   "bytes": 11890,
+   "sha256": "32bcfcfccaebbe6db91d3b6d308676c1e606816d0991e8df7beb1bdea91b217f"
+  },
+  {
+   "name": "13_4428_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4428.jpg",
+   "bytes": 13593,
+   "sha256": "23916a1f9e30cebf711d654bcea9a6b3864a34e20879468fa1931a0e3c34f88f"
+  },
+  {
+   "name": "13_4429_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4429.jpg",
+   "bytes": 11159,
+   "sha256": "c01a340e4e10651aa7bf0c8ff96e79e288686b636627c33b8ae3579e7e91af2b"
+  },
+  {
+   "name": "13_4430_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4430.jpg",
+   "bytes": 11913,
+   "sha256": "339e9af27cc5299533e7b9c30e6a7464d98131c68d16b6df6cc25a7cc446b8ef"
+  },
+  {
+   "name": "13_4431_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4431.jpg",
+   "bytes": 10025,
+   "sha256": "6ac1d32afab3ec33a4ca49006d3e7610548ab7ad160ca93c7af703825317cbb9"
+  },
+  {
+   "name": "13_4432_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4432.jpg",
+   "bytes": 11071,
+   "sha256": "da29960e0b1656f3039a0d59d6b59dbfd25b90958ddc12598a635ea06adfe821"
+  },
+  {
+   "name": "13_4433_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4433.jpg",
+   "bytes": 11414,
+   "sha256": "f82a3ef604997880883794ec4edf2866781ebb1dc6308f67c76663036f69cb5c"
+  },
+  {
+   "name": "13_4434_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4434.jpg",
+   "bytes": 9421,
+   "sha256": "1796e5624d0073c1fb6b7e6024943a0792111657176b7001bacbc2111612f46a"
+  },
+  {
+   "name": "13_4435_2906.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2906/4435.jpg",
+   "bytes": 10445,
+   "sha256": "c8e02ef3005ee9c9a5d3dbf8aa12f2555ad4445657e51003a22e84e8d4426653"
+  },
+  {
+   "name": "13_4420_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4420.jpg",
+   "bytes": 11454,
+   "sha256": "e1438679ab51cbc663fd187ecb3d54a5ef148fb9fef639c9cf1da6d17c9c7b2e"
+  },
+  {
+   "name": "13_4421_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4421.jpg",
+   "bytes": 9193,
+   "sha256": "691595bf932b6266c3f63c95f65e2c231f3c8e6f8507e348b02b50d91cfe98d5"
+  },
+  {
+   "name": "13_4422_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4422.jpg",
+   "bytes": 13504,
+   "sha256": "f52d9af8b4834e54609964c0db9f651928572f059e2b5b4705a654e8b7c70c0e"
+  },
+  {
+   "name": "13_4423_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4423.jpg",
+   "bytes": 13869,
+   "sha256": "0c3af696bb834aee234ceeef57fbc2d4fc44a51e86f148bb30e474aa77ab1f9d"
+  },
+  {
+   "name": "13_4424_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4424.jpg",
+   "bytes": 12064,
+   "sha256": "81009f1d21da2ad3595039b8b5eb5c9256f78a6420799976fd866af79c0e6196"
+  },
+  {
+   "name": "13_4425_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4425.jpg",
+   "bytes": 10487,
+   "sha256": "82a1e3f36c3dc7b39020e2484d8725fe3a35b653954449976121aa2846ef7e68"
+  },
+  {
+   "name": "13_4426_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4426.jpg",
+   "bytes": 14197,
+   "sha256": "e62b420be35bab0c9686810248078ccd5c39f30e82882bab587b3e2b4c36c51e"
+  },
+  {
+   "name": "13_4427_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4427.jpg",
+   "bytes": 12419,
+   "sha256": "2672c8162c032cfd8ce42b276df85b01c11c3532529b11a3ac92330b7a60ced3"
+  },
+  {
+   "name": "13_4428_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4428.jpg",
+   "bytes": 14370,
+   "sha256": "b0ac1b8c8ac8a0aabf1e7989c3e688304310399762016a6a2059e80307e4466f"
+  },
+  {
+   "name": "13_4429_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4429.jpg",
+   "bytes": 10020,
+   "sha256": "e162cea22fc79c44ddd7bcd553eecb3e7065b66a78960aa98e24e53b54bc0141"
+  },
+  {
+   "name": "13_4430_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4430.jpg",
+   "bytes": 10835,
+   "sha256": "edf1c78b4fc2af7b4b2bf1f7be5265eb42d82f5e651dc2bf6000de27e63054f9"
+  },
+  {
+   "name": "13_4431_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4431.jpg",
+   "bytes": 10999,
+   "sha256": "1af9ff3147f9e89deff4ca003a82b659ed62f721d3f2e5d61f8567a92b6cedfa"
+  },
+  {
+   "name": "13_4432_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4432.jpg",
+   "bytes": 10630,
+   "sha256": "cf28ae39b55e84bd0b5abc58ac71047bdc494d8d5e302f7c5857d812c4714baa"
+  },
+  {
+   "name": "13_4433_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4433.jpg",
+   "bytes": 9842,
+   "sha256": "7ec0c608624c4bb217f49092f1f3d0c03ee211ab3a4c8d79721c76eded51e345"
+  },
+  {
+   "name": "13_4434_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4434.jpg",
+   "bytes": 9947,
+   "sha256": "76b8e73e6941d6df3eeb46a2f2fad91e362d59c506fab8928aafaa57a84b24ce"
+  },
+  {
+   "name": "13_4435_2907.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2907/4435.jpg",
+   "bytes": 10494,
+   "sha256": "44a940ffd0ff7c178e7060d4ed41f5837b5364a89cbafac9ad277c0bb1e6c8f1"
+  },
+  {
+   "name": "13_4420_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4420.jpg",
+   "bytes": 9903,
+   "sha256": "d41ef22d9f6b29b6ff13ec280f83e07505c3dfaf1e49290326f9de490aca6d2b"
+  },
+  {
+   "name": "13_4421_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4421.jpg",
+   "bytes": 14585,
+   "sha256": "b8800421fae627ac0d4c4ae3baea2517590ad2d83f3758c8f48489f13e3d02a5"
+  },
+  {
+   "name": "13_4422_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4422.jpg",
+   "bytes": 13629,
+   "sha256": "f9fb6c308e0309d22ab129264512805a6929e9912da8767adc05d74774b25a2e"
+  },
+  {
+   "name": "13_4423_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4423.jpg",
+   "bytes": 12293,
+   "sha256": "770406389dd5bcbb56543738ec0dd52ec6da28e4a633044394c0f405d5c9a715"
+  },
+  {
+   "name": "13_4424_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4424.jpg",
+   "bytes": 11296,
+   "sha256": "1a02d3863fcb939c703d153ad62438544cde003462e476b691dfbd9d6bdff9ed"
+  },
+  {
+   "name": "13_4425_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4425.jpg",
+   "bytes": 12431,
+   "sha256": "1c01bcf22b2fa681e5949255f83e4d35ab7513c3f31e3934f06e1ddbdaf54237"
+  },
+  {
+   "name": "13_4426_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4426.jpg",
+   "bytes": 12324,
+   "sha256": "61c1d65586decf84bc02cea37f2230eaa29d4b977a7117daa4c6c7dd5f8638c0"
+  },
+  {
+   "name": "13_4427_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4427.jpg",
+   "bytes": 12701,
+   "sha256": "60a2e60d1cc0bdaadd47079a9370f5b7eba446b31785103d3e479b44eba95d7f"
+  },
+  {
+   "name": "13_4428_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4428.jpg",
+   "bytes": 15057,
+   "sha256": "225508e0c9688ef3228cac2c9425ca8e681fdc55387b926b9f34ab73c3512057"
+  },
+  {
+   "name": "13_4429_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4429.jpg",
+   "bytes": 11034,
+   "sha256": "c7c125678523f9eb2dc9117bf077f5a4f8c0b01c2093520b1b0e767053c52970"
+  },
+  {
+   "name": "13_4430_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4430.jpg",
+   "bytes": 12997,
+   "sha256": "3123aabe2a0a980eb2e08f5ac93c6674a159d8d50f679014d8d58e05615192fd"
+  },
+  {
+   "name": "13_4431_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4431.jpg",
+   "bytes": 11319,
+   "sha256": "5b6b54f6d8757198c335634c191b498ccea77f6af1a004bd80c7194c643b4997"
+  },
+  {
+   "name": "13_4432_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4432.jpg",
+   "bytes": 12044,
+   "sha256": "2670853aff69cf6ac17e76e1d7907b8e00e670195b579f0c1b195b13ec99544b"
+  },
+  {
+   "name": "13_4433_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4433.jpg",
+   "bytes": 11690,
+   "sha256": "75c8af986a515fab3b894e5fb54b434c502eafe34efd3660f5480551873b7e71"
+  },
+  {
+   "name": "13_4434_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4434.jpg",
+   "bytes": 10837,
+   "sha256": "7b011e1b02695ff9d710efe8d9cc21dc7f6835873f4448ba48698001435c29ee"
+  },
+  {
+   "name": "13_4435_2908.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2908/4435.jpg",
+   "bytes": 12475,
+   "sha256": "47f56e032f464034362bb3de46a09884b3faf52b991757dc3e28dbf1ce15aef7"
+  },
+  {
+   "name": "13_4420_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4420.jpg",
+   "bytes": 10409,
+   "sha256": "2c6f1c24f8223d4ccb7cdfefc41c2fdb0bc4a96792ca8b66fb8bcbc2decccc0a"
+  },
+  {
+   "name": "13_4421_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4421.jpg",
+   "bytes": 11466,
+   "sha256": "10118f6b0a8e70db41dd4f3b658c0c72186b19dbe10ab87dda6a4839a9a85dcf"
+  },
+  {
+   "name": "13_4422_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4422.jpg",
+   "bytes": 11115,
+   "sha256": "5ae94aeb8c57996c6a78ed4c470af73975a3d1a9126f06071809baa0b8f50569"
+  },
+  {
+   "name": "13_4423_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4423.jpg",
+   "bytes": 14345,
+   "sha256": "432abf3bcd26758a384a4eb89464a582f3c2f206df07d5daf2622ff931d05e14"
+  },
+  {
+   "name": "13_4424_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4424.jpg",
+   "bytes": 12581,
+   "sha256": "64557316448aeac5179ea8d889a7cb6119f306c5dd9e37130aa234fc839a8043"
+  },
+  {
+   "name": "13_4425_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4425.jpg",
+   "bytes": 10521,
+   "sha256": "1ef1d0cedbecf718b4da13a1312021ec81e4e5a17e6b4322fe392135bf9a9e6a"
+  },
+  {
+   "name": "13_4426_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4426.jpg",
+   "bytes": 10116,
+   "sha256": "9c741999c241aedd9650cc6e00ef7b8dc90af94935deda83e08907a64805e78f"
+  },
+  {
+   "name": "13_4427_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4427.jpg",
+   "bytes": 13238,
+   "sha256": "5c73db24d594022ea88e657f8f9bed5e04e6cce34be6dadd6276fb1e28c06d22"
+  },
+  {
+   "name": "13_4428_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4428.jpg",
+   "bytes": 16872,
+   "sha256": "1d165514b3bb7eca614b90cb65b08de8c4302067039acc8e21bf7c680c9a1f3d"
+  },
+  {
+   "name": "13_4429_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4429.jpg",
+   "bytes": 13422,
+   "sha256": "e3f4f2e210c96678a01f327d09bb70933b79ca873ba767cd9d08bd3497256d80"
+  },
+  {
+   "name": "13_4430_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4430.jpg",
+   "bytes": 13026,
+   "sha256": "d8887778b70a7856af0490f31cfa65d051f79c4d5a671e2d77914c83aa94235c"
+  },
+  {
+   "name": "13_4431_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4431.jpg",
+   "bytes": 12402,
+   "sha256": "d4152382414a53a56555db8d33151363d4395eed9f4a5284f01069fdd04b62c8"
+  },
+  {
+   "name": "13_4432_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4432.jpg",
+   "bytes": 12806,
+   "sha256": "9a9cea6a2e77dbd89793d8d4fb5c6ce216773c4d314914903fbdfaa929749363"
+  },
+  {
+   "name": "13_4433_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4433.jpg",
+   "bytes": 11909,
+   "sha256": "4d557646cf3c1943499b0ece3d82aa4b48e3ae7bd8cd9410d75a70d3b07cb5d5"
+  },
+  {
+   "name": "13_4434_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4434.jpg",
+   "bytes": 12160,
+   "sha256": "2512321a092a68750bfd5e044eb3365453c8ff1bee6912e6678dce449a725e6f"
+  },
+  {
+   "name": "13_4435_2909.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2909/4435.jpg",
+   "bytes": 11513,
+   "sha256": "d12004c846c2a478d51ae2a2d27eff03ca96b09e56abce2c22376689be115406"
+  },
+  {
+   "name": "13_4420_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4420.jpg",
+   "bytes": 9079,
+   "sha256": "47724f53823cfce11ce224b34a7ed81ef96ac15bd58e0767a2d5ff8d73d399c4"
+  },
+  {
+   "name": "13_4421_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4421.jpg",
+   "bytes": 10553,
+   "sha256": "f414bcb0ff2012bfca19c29be085e822bc7ef0c819b50d361944e2bb2326dc05"
+  },
+  {
+   "name": "13_4422_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4422.jpg",
+   "bytes": 9905,
+   "sha256": "d44b8c9315ce160c8ce8012a1bd88f2da926e0de7ead5ecf95568cfe7727308b"
+  },
+  {
+   "name": "13_4423_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4423.jpg",
+   "bytes": 11215,
+   "sha256": "fbdbd6cd2e19e2a621a89dbfa3262f24b433106b7b801692858876443074c7c4"
+  },
+  {
+   "name": "13_4424_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4424.jpg",
+   "bytes": 13563,
+   "sha256": "bae173ae35ab93f305a590ef1c435e1b07f1d94e73c9ae5140cb2463b11ebca8"
+  },
+  {
+   "name": "13_4425_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4425.jpg",
+   "bytes": 14882,
+   "sha256": "32215601269bad7da7d8c55c0811adb336c4419c7c99fa789cfea8ae72ec74df"
+  },
+  {
+   "name": "13_4426_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4426.jpg",
+   "bytes": 11468,
+   "sha256": "4a7f1867d5b4f2daf6e53a22b14274d80728e67585124aba88a219d3b05271ec"
+  },
+  {
+   "name": "13_4427_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4427.jpg",
+   "bytes": 11682,
+   "sha256": "3abb2f07e2974e0fbd891406daafc45f664cd696e3241a46c0ccf13676c3902b"
+  },
+  {
+   "name": "13_4428_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4428.jpg",
+   "bytes": 15096,
+   "sha256": "cd7b15bd2f09b0c1934b0f7fa772adf544171d863635a8020da3bf1c755709f4"
+  },
+  {
+   "name": "13_4429_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4429.jpg",
+   "bytes": 11304,
+   "sha256": "a18fc60bcba0a2fa1b7ad7efbf9e62fdc42fdfb5f848bffca9297f65f4ef9a24"
+  },
+  {
+   "name": "13_4430_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4430.jpg",
+   "bytes": 11609,
+   "sha256": "ba2c552a3a4f55798d073070c63fa47847aed923c0658c27b78ad4b78001a8df"
+  },
+  {
+   "name": "13_4431_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4431.jpg",
+   "bytes": 11470,
+   "sha256": "78a2f53c563865942adfc47a25d9cb2250b6f20cfaa588736135a80c4127001f"
+  },
+  {
+   "name": "13_4432_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4432.jpg",
+   "bytes": 12065,
+   "sha256": "c9df524f36e6ce06c97476c4e2138ffbcc8ec348600694fc6ead1f2bb3439b26"
+  },
+  {
+   "name": "13_4433_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4433.jpg",
+   "bytes": 11948,
+   "sha256": "a8a9d1b24bf7f79be62435023443159f8e3e741b94eb7bfb97cd90cdc92b8f02"
+  },
+  {
+   "name": "13_4434_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4434.jpg",
+   "bytes": 10255,
+   "sha256": "da60f3f84902b2ce2f6217c470b4f9197f3c86a6a2c14d08b95af4372b74dd70"
+  },
+  {
+   "name": "13_4435_2910.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2910/4435.jpg",
+   "bytes": 10842,
+   "sha256": "a153095ba3bbc78294d85f9e3d5efdc6ed54b21d2f7a572d94b708163b3eb4ce"
+  },
+  {
+   "name": "13_4420_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4420.jpg",
+   "bytes": 12015,
+   "sha256": "2f2752c4329d23c6ff82df81b52b0dced0baa0adbbb51ce09403eb61a5b7f69d"
+  },
+  {
+   "name": "13_4421_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4421.jpg",
+   "bytes": 11026,
+   "sha256": "a26309d1a2ed138d913555b10c77199284394172d7483dbf13d5439777875b19"
+  },
+  {
+   "name": "13_4422_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4422.jpg",
+   "bytes": 10082,
+   "sha256": "fd5c65cbc189a97d9686656c40cbfd97465c748326d3886beb111b5361a39cd2"
+  },
+  {
+   "name": "13_4423_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4423.jpg",
+   "bytes": 11166,
+   "sha256": "8947a5dc67e3838483b1fe09673ddb191155579c3ae86c8dd7629b5b31d937d7"
+  },
+  {
+   "name": "13_4424_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4424.jpg",
+   "bytes": 11560,
+   "sha256": "4254b431fcbefeaebcc7fd4cd77e49d2766cd6b92e5083192ffe84e61e9f26d4"
+  },
+  {
+   "name": "13_4425_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4425.jpg",
+   "bytes": 19017,
+   "sha256": "2c6ec56c8fb802377f70639ce3d0c84e111710c3e110048c865be178099a0772"
+  },
+  {
+   "name": "13_4426_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4426.jpg",
+   "bytes": 19441,
+   "sha256": "709ff679fe448424987962b56ad21e0e4f8dd555858fefa6e7b74a3195f9ec53"
+  },
+  {
+   "name": "13_4427_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4427.jpg",
+   "bytes": 15585,
+   "sha256": "48f36f9044ce8a7dc3ec9eece08a2664588b460639cc6c94f8883ba3d374074b"
+  },
+  {
+   "name": "13_4428_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4428.jpg",
+   "bytes": 14363,
+   "sha256": "e4f2802a7332ff49b3b939bec6a65355c76e6f65be3c549d3750477c92cca7ee"
+  },
+  {
+   "name": "13_4429_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4429.jpg",
+   "bytes": 12729,
+   "sha256": "a938f23ca7dc2701861ee6df36d28d8db6e540698be16418de4e9e8a16aa4f39"
+  },
+  {
+   "name": "13_4430_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4430.jpg",
+   "bytes": 9905,
+   "sha256": "0d76c56c4783674a5e11ef13ab35f6eb069f4cdffdd545a5d5ea20a7418d5814"
+  },
+  {
+   "name": "13_4431_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4431.jpg",
+   "bytes": 11176,
+   "sha256": "f0d9fa24f873b4779137c1187b45e24ec4e127483f6bb54c1a240eef3dba3534"
+  },
+  {
+   "name": "13_4432_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4432.jpg",
+   "bytes": 11605,
+   "sha256": "a59313d2aa58389ddfc71e69fdeaed8414540d207d2ca1048517ccaaea8a1912"
+  },
+  {
+   "name": "13_4433_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4433.jpg",
+   "bytes": 11642,
+   "sha256": "1972bb1cb0f7e8bd4a0dbbeddeac86d850adcb3f54ec79c6030e79b4ecf23ac7"
+  },
+  {
+   "name": "13_4434_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4434.jpg",
+   "bytes": 11551,
+   "sha256": "2f1e1786032b5143038029dcfa296aee3229ddee318a92e8bba5adbc0f7f194f"
+  },
+  {
+   "name": "13_4435_2911.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2911/4435.jpg",
+   "bytes": 9984,
+   "sha256": "dfa911e34a02ee0f9f98c154f7bd0bd7b334a273cb4fb8eff09178cc0950254c"
+  },
+  {
+   "name": "13_4420_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4420.jpg",
+   "bytes": 11516,
+   "sha256": "5df80af0b3b137bf4256d35fdab6d604bf7be64c2975cef087f4c8f8a79d5c9a"
+  },
+  {
+   "name": "13_4421_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4421.jpg",
+   "bytes": 11979,
+   "sha256": "8c286283c06587e28e500538e7b10d65c41f513418145f09566b7e2ab88a8926"
+  },
+  {
+   "name": "13_4422_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4422.jpg",
+   "bytes": 11381,
+   "sha256": "ee95ace12088afd8b8ef5c0318dc91f1f502e577882cc53a60e2a6129064e326"
+  },
+  {
+   "name": "13_4423_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4423.jpg",
+   "bytes": 11142,
+   "sha256": "cb672013aa2d00e98b7b743ae78a0330a7b3d98c0d017b52e7d685be5ce382a7"
+  },
+  {
+   "name": "13_4424_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4424.jpg",
+   "bytes": 13750,
+   "sha256": "b7288c926492ef0dc54272c6b3197f3358727c3a1398e1e27079dc9bd6226da0"
+  },
+  {
+   "name": "13_4425_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4425.jpg",
+   "bytes": 17994,
+   "sha256": "686a0fbaaa313a766231bb85e5e7dc7be1bf44a5cc7700b569a3361637f8f671"
+  },
+  {
+   "name": "13_4426_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4426.jpg",
+   "bytes": 22322,
+   "sha256": "f61eb10eb2f097de4332f67981c3bab078e0cb02d7ffb5bd9a339114d99e9a1b"
+  },
+  {
+   "name": "13_4427_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4427.jpg",
+   "bytes": 19447,
+   "sha256": "51db3d4298630cda702f6dfa30a6f8d5dea523cdf1963d63460109faa8c104ad"
+  },
+  {
+   "name": "13_4428_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4428.jpg",
+   "bytes": 15789,
+   "sha256": "1463c8d74c5b09b847f5e44e83f97c9211c2372b3d2f424e348c8e9333bb966a"
+  },
+  {
+   "name": "13_4429_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4429.jpg",
+   "bytes": 9209,
+   "sha256": "74e862ad322e7ddc0cf3a70947069179d8d8aa805796c472c823f1ea984a4745"
+  },
+  {
+   "name": "13_4430_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4430.jpg",
+   "bytes": 10111,
+   "sha256": "5ba97662fed8dd4823f1814ef832812b022f9638e14f00fcd9b71443d32c5492"
+  },
+  {
+   "name": "13_4431_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4431.jpg",
+   "bytes": 10869,
+   "sha256": "8c1223640c0436e90afeccf31e4330d11e1b4075ae50d8beea6cfc7258a96c13"
+  },
+  {
+   "name": "13_4432_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4432.jpg",
+   "bytes": 11104,
+   "sha256": "f9377182293a7d66fe79188a07d3fe59d30bd17c5ba430165b436216eeb404d6"
+  },
+  {
+   "name": "13_4433_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4433.jpg",
+   "bytes": 14477,
+   "sha256": "0eb01f4f29209bd21d4e930dfb4103a811559295398c5e9536659a1ea3612546"
+  },
+  {
+   "name": "13_4434_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4434.jpg",
+   "bytes": 10100,
+   "sha256": "6d92a602e7d730bb13a627b40c012f494e286f0a48e6a7ad148b0127b7959dfa"
+  },
+  {
+   "name": "13_4435_2912.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2912/4435.jpg",
+   "bytes": 9922,
+   "sha256": "7dffeaee935ea0c0a15f0fce6b602535b37e5d7bc6b4e2d57f5bffc98a0e2a86"
+  },
+  {
+   "name": "13_4420_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4420.jpg",
+   "bytes": 11352,
+   "sha256": "a65972ff5c7a3e58f2e76068ae807b188fdb107a5add0fab20242dc80b35acf6"
+  },
+  {
+   "name": "13_4421_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4421.jpg",
+   "bytes": 12245,
+   "sha256": "56e54c469ed2347ac96b83e4f9f006ed47f60b8d30cf230c90e2f1a99e9378e3"
+  },
+  {
+   "name": "13_4422_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4422.jpg",
+   "bytes": 10688,
+   "sha256": "1122ebf4112205cc1cdff8984a80ddb3401b3025e4b8ebff2fd643e5105f31ef"
+  },
+  {
+   "name": "13_4423_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4423.jpg",
+   "bytes": 11978,
+   "sha256": "07242e63bb10556b33df5a6faed49ff049acfa4f5bf31e94ca35b8e032b664b9"
+  },
+  {
+   "name": "13_4424_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4424.jpg",
+   "bytes": 13911,
+   "sha256": "5059c68832b3afd873fb14d606617eb2c9c50d5baf62688f723bbad010b1508a"
+  },
+  {
+   "name": "13_4425_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4425.jpg",
+   "bytes": 17321,
+   "sha256": "4f2bb95afe3516a75fe13cba6b6daa544c5a8bcf2d7f4c59e903bc7857556790"
+  },
+  {
+   "name": "13_4426_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4426.jpg",
+   "bytes": 17343,
+   "sha256": "ef07e9839fafd3f6a0815a93a699555253164a38b91bc8427bc3a8a7758cebd2"
+  },
+  {
+   "name": "13_4427_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4427.jpg",
+   "bytes": 10777,
+   "sha256": "9104438a00c79e6a3da3d13522696fd96722cb7c101a147e233f6258851ec8e2"
+  },
+  {
+   "name": "13_4428_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4428.jpg",
+   "bytes": 12860,
+   "sha256": "40fe702402c328ed14ab0f197f8040588725c0f1f8dad17b4d5e9c29fe3877aa"
+  },
+  {
+   "name": "13_4429_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4429.jpg",
+   "bytes": 10596,
+   "sha256": "d545ad5cbb17df68eba0c94636e8944d9121ad609ff88689768de8aa27eafbcc"
+  },
+  {
+   "name": "13_4430_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4430.jpg",
+   "bytes": 11995,
+   "sha256": "b5187c105a74cda323d9d7d4d8744ae81ff7509d1295b152a1f9ddb80439aa00"
+  },
+  {
+   "name": "13_4431_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4431.jpg",
+   "bytes": 11499,
+   "sha256": "cccc034aa245deca64f2ba4cbe24127d873ed661dfa0ba973ea0f252ce860deb"
+  },
+  {
+   "name": "13_4432_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4432.jpg",
+   "bytes": 11659,
+   "sha256": "d96be9165dfddbf2b4a35ffeb487de1e75b2b8809730af883148effb5ae8c027"
+  },
+  {
+   "name": "13_4433_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4433.jpg",
+   "bytes": 11943,
+   "sha256": "03175c63c20ef9da62e87f67c70b7d5d3d29ef7ff8b49602353823073ca82373"
+  },
+  {
+   "name": "13_4434_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4434.jpg",
+   "bytes": 12706,
+   "sha256": "0e3fc264a0322d1008bdbb46ef27f25f0b1d008e9625cb6ea65922942635311d"
+  },
+  {
+   "name": "13_4435_2913.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2913/4435.jpg",
+   "bytes": 10306,
+   "sha256": "0fd065deeac1b41678bd245bdfbbe671c4b4317ae55c69921a1926491a47d01d"
+  },
+  {
+   "name": "13_4420_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4420.jpg",
+   "bytes": 11474,
+   "sha256": "fdc7f6b42d25712358d21b2a4c6fbcfacba2fd758c6c88c27e02fdae95c044c5"
+  },
+  {
+   "name": "13_4421_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4421.jpg",
+   "bytes": 12071,
+   "sha256": "6da759c564a2aa515bc1482363b9fcfd34a5bb6def553fb7d4e6528573689cde"
+  },
+  {
+   "name": "13_4422_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4422.jpg",
+   "bytes": 12922,
+   "sha256": "a68b4bb2c43661318e0eb70712c815a66c0dad39a6877c0d29aaab80c381c10c"
+  },
+  {
+   "name": "13_4423_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4423.jpg",
+   "bytes": 12507,
+   "sha256": "af830e83ed143c3230929bfaf4ff7f1c607292a1b2e05e3b01602d3d0bda7bda"
+  },
+  {
+   "name": "13_4424_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4424.jpg",
+   "bytes": 11822,
+   "sha256": "502b83c2b4a43b08e6bdecc6bf264f9010cf11739a7c170c6f3c4a8c3b17c2a3"
+  },
+  {
+   "name": "13_4425_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4425.jpg",
+   "bytes": 10631,
+   "sha256": "1571200ebcc7ce968c82b539a014381f467dd99f61cd502c83511890467bc827"
+  },
+  {
+   "name": "13_4426_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4426.jpg",
+   "bytes": 10560,
+   "sha256": "14181cc306a6a5c9a23a26d8d579e0dc67d7a0d9b0873e005070a9c501ca7ecc"
+  },
+  {
+   "name": "13_4427_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4427.jpg",
+   "bytes": 14590,
+   "sha256": "7002e99201f0cdb66f305e08c089533a54505ddfa88741f8daa633db783eebf2"
+  },
+  {
+   "name": "13_4428_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4428.jpg",
+   "bytes": 11561,
+   "sha256": "8452fb0834b00a1586cc92531b3583d5329e981bd35228f6863972487adc6909"
+  },
+  {
+   "name": "13_4429_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4429.jpg",
+   "bytes": 10546,
+   "sha256": "93a954198c3799a35c3e8e795a0ee8c4bc501fe9ca698829622a8ad00765c3a9"
+  },
+  {
+   "name": "13_4430_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4430.jpg",
+   "bytes": 10929,
+   "sha256": "85b682646a355da7adeeed8d909af8ff055bd0126c49758bd5094a23aacbe907"
+  },
+  {
+   "name": "13_4431_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4431.jpg",
+   "bytes": 11288,
+   "sha256": "506364e951e9588fccf0f7caeff3a89182688aafbd4bfc99047e7ecfd7329114"
+  },
+  {
+   "name": "13_4432_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4432.jpg",
+   "bytes": 10347,
+   "sha256": "391def10788a853a45c97b99c663e30b3b59793a873c25d4f3fb4ad5fa8d9298"
+  },
+  {
+   "name": "13_4433_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4433.jpg",
+   "bytes": 10045,
+   "sha256": "af989e5eb4a2d25755bfdf0642f45fc35bd93d42aa30c1b0429eeb3d5ae022a9"
+  },
+  {
+   "name": "13_4434_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4434.jpg",
+   "bytes": 11713,
+   "sha256": "d32ab3ae7935d7535db8a74d1e6485cc9b04441c3822be420390a466ec2aec91"
+  },
+  {
+   "name": "13_4435_2914.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2914/4435.jpg",
+   "bytes": 11695,
+   "sha256": "ef59edcda9b01c9736d2de076126e438c900b609f9aa65761c15c3a000686826"
+  },
+  {
+   "name": "13_4420_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4420.jpg",
+   "bytes": 11315,
+   "sha256": "16b82de53740e6226e0403feeb8963cb89fffebe1501bd497a9d2ad39120fa87"
+  },
+  {
+   "name": "13_4421_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4421.jpg",
+   "bytes": 15614,
+   "sha256": "171d31c30afb6ca01b42c4db107603dbf17c70e7e58eaa9c3d3beb714740d0ac"
+  },
+  {
+   "name": "13_4422_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4422.jpg",
+   "bytes": 9608,
+   "sha256": "ffb88ead28e205cac069244850c35da76d5ddd827dbb5ed5b71f7d5031cae135"
+  },
+  {
+   "name": "13_4423_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4423.jpg",
+   "bytes": 10267,
+   "sha256": "b4a5ac2ab02d8b881a9d585ec6dc28a3610b70cc6aaebe0aae5f314d386b5fcb"
+  },
+  {
+   "name": "13_4424_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4424.jpg",
+   "bytes": 9703,
+   "sha256": "f2cc6d5ddb4b51eae9df7aa5e684690029181eb09b33574695c27999f2b56b7e"
+  },
+  {
+   "name": "13_4425_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4425.jpg",
+   "bytes": 9676,
+   "sha256": "a67bdd0a95b90eb6412b88fc248a89ddf1543bdc49f96e9413446e68c73e08c1"
+  },
+  {
+   "name": "13_4426_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4426.jpg",
+   "bytes": 11193,
+   "sha256": "37654942ab19965f5d1a95dca0db1492935eb8dd66846678548137b36d81ff51"
+  },
+  {
+   "name": "13_4427_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4427.jpg",
+   "bytes": 11170,
+   "sha256": "6767a3ae4dddece2dfeea9f90ccda529ae9c4cca443cf03c5486c8d5f6aadde5"
+  },
+  {
+   "name": "13_4428_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4428.jpg",
+   "bytes": 11882,
+   "sha256": "89334d7e454efd3684f74df9635d02f764bbca562bd167e6b2d45d7297b2b172"
+  },
+  {
+   "name": "13_4429_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4429.jpg",
+   "bytes": 13923,
+   "sha256": "85d2e7786e1ac3d324cf671212bddc9c1f64342f5a120481d0d720ba6a6399c9"
+  },
+  {
+   "name": "13_4430_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4430.jpg",
+   "bytes": 11594,
+   "sha256": "bfafec2431ac66b4eb4c2336534b23fb4dabd35dd5acc5d6a4e1ed60d44d06e9"
+  },
+  {
+   "name": "13_4431_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4431.jpg",
+   "bytes": 12345,
+   "sha256": "e2e32f0e9c107df2097b3284dcd233cde18c91b05b00b2cbd94d19cebc1f513a"
+  },
+  {
+   "name": "13_4432_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4432.jpg",
+   "bytes": 10561,
+   "sha256": "c4d6cf748150eb6f33dde07b9b8e8a74c48622cf995bf1fc624811bbbf327e7a"
+  },
+  {
+   "name": "13_4433_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4433.jpg",
+   "bytes": 12087,
+   "sha256": "d58c42801d6af71ddd8ce54c9ff1911b3cb3cab14a4f527d11a23b6406ef8927"
+  },
+  {
+   "name": "13_4434_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4434.jpg",
+   "bytes": 12250,
+   "sha256": "7f20ef0e8e69d3d4411f3123d81e7ed7c9f7d95a488f761200140d84868c1eb9"
+  },
+  {
+   "name": "13_4435_2915.jpg",
+   "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/13/2915/4435.jpg",
+   "bytes": 11230,
+   "sha256": "fe151373fac8c17bca16690146114a795d938f76a6cffc8fe89643083e0fe7ab"
+  }
+ ],
+ "clss_gkot": [
+  {
+   "sheet": "464_121",
+   "name": "GKOT_464_121.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_464_121.laz",
+   "bytes": 430420305,
+   "sha256": "7181849b985fda8c59f6ca14ce3a46b492df48d3636eb5c8c3a7efd944e23705",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_121",
+   "name": "GKOT_465_121.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_465_121.laz",
+   "bytes": 254137138,
+   "sha256": "bd390a60c517bd84efd336806001cfe286771dc5b71d11266217092bb814ebf7",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "466_121",
+   "name": "GKOT_466_121.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_466_121.laz",
+   "bytes": 470060088,
+   "sha256": "ee3aaf206a26c277d1535e011beee320b2d2a54081f8714fe66cb3b33af0d719",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "467_121",
+   "name": "GKOT_467_121.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_467_121.laz",
+   "bytes": 481014641,
+   "sha256": "54b546428cc8d130531b1b91cd57ac64120d99a57c517c7e08df5bc1cc6b3745",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "468_121",
+   "name": "GKOT_468_121.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_468_121.laz",
+   "bytes": 240535710,
+   "sha256": "451a1b4d478e464114dbcd86c77fe2ffa3572c9323ac5b59de2557122f77ea2d",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "469_121",
+   "name": "GKOT_469_121.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_469_121.laz",
+   "bytes": 228149409,
+   "sha256": "fe1a72726cfe7ee6cafb3e49c80df432b62aaa199eeaec43298803144102d8b0",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "470_121",
+   "name": "GKOT_470_121.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_470_121.laz",
+   "bytes": 429890644,
+   "sha256": "c02bfe314fc8eab1ba27498fb15dd38c0dc98f5a82b0130adf703582d06462ed",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "471_121",
+   "name": "GKOT_471_121.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_471_121.laz",
+   "bytes": 238262290,
+   "sha256": "b9ef9c855c4012b1be82a54cacd32928d0a52c7f20ada730600d35a328cfaa2a",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_120",
+   "name": "GKOT_464_120.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_464_120.laz",
+   "bytes": 288738880,
+   "sha256": "af0d6e85a86538934bbbf8d713cec44661310f2de63d0b65800458f83cff3c0f",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_120",
+   "name": "GKOT_465_120.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_465_120.laz",
+   "bytes": 614417896,
+   "sha256": "c9a60c3e484aea09bfa5284ff1527bc10005af237364af4e327fac9289660a1d",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "466_120",
+   "name": "GKOT_466_120.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_466_120.laz",
+   "bytes": 280620927,
+   "sha256": "02523a407d7ef8f0fa15231528d037d81401d42cd9433648ef368e8a5004c852",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "467_120",
+   "name": "GKOT_467_120.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_467_120.laz",
+   "bytes": 269651207,
+   "sha256": "c55e0e2a323a7cfb6b8621a2d78d20d8f5d9ae6f3c8e9c6d5d0ff8ecea7e9542",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "468_120",
+   "name": "GKOT_468_120.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_468_120.laz",
+   "bytes": 274823168,
+   "sha256": "c8f67520a54b7d8200b3ab208e964a51850767ed0dd452a02cee6fb6063e0e37",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "469_120",
+   "name": "GKOT_469_120.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_469_120.laz",
+   "bytes": 245152595,
+   "sha256": "bbbec15e7ddd70376552b9941b9b7567a4de2d391fa61d7799a0e2e4167cc46c",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "470_120",
+   "name": "GKOT_470_120.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_470_120.laz",
+   "bytes": 535710886,
+   "sha256": "cfb03362eba64314300da43eac3953a2ec32d457d3b0d52d84ea80c5be4cf2c3",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "471_120",
+   "name": "GKOT_471_120.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_471_120.laz",
+   "bytes": 690159163,
+   "sha256": "f1d9d39da4fe7b2273c6bef814061326bde434cfa7ec59ae0e03975f603555cb",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_119",
+   "name": "GKOT_464_119.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_464_119.laz",
+   "bytes": 478455420,
+   "sha256": "d5766b1085554b7f9491292563814bbff5058d0aa19691767d05a6b67a646f37",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_119",
+   "name": "GKOT_465_119.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_465_119.laz",
+   "bytes": 513301597,
+   "sha256": "8a27dce9381f5b1729390aff9aee83fd97e37545880de364d19c038702722729",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "466_119",
+   "name": "GKOT_466_119.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_466_119.laz",
+   "bytes": 561328614,
+   "sha256": "2bb9bc39bd9363640e9a7c2d883ecd29c0f24ffa0c51e17a9366952b848e55aa",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "467_119",
+   "name": "GKOT_467_119.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_467_119.laz",
+   "bytes": 261034571,
+   "sha256": "e58608ad58ca6d27915d83fa0c3e9859ef1e3ce056c7d16c7a57bdf219b0ec4d",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "468_119",
+   "name": "GKOT_468_119.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_468_119.laz",
+   "bytes": 357310047,
+   "sha256": "2dd1bf15603d9f2a21343809d23e5baaf6e325b9757f7e3f5d036894af3d0309",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "469_119",
+   "name": "GKOT_469_119.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_469_119.laz",
+   "bytes": 226628750,
+   "sha256": "dc9761c684a018c0de127b61081fdc5c7ce95baf09d848682955dcc541abc3e2",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "470_119",
+   "name": "GKOT_470_119.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_470_119.laz",
+   "bytes": 557325391,
+   "sha256": "ce913c72dc24eb699e6f10716c70657b7b1425752dbc799580b85bd84cb00b83",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "471_119",
+   "name": "GKOT_471_119.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_471_119.laz",
+   "bytes": 347955731,
+   "sha256": "ef08ed9e09a85f4abd44fd16b5c920c09654546e428507c66095788988e55ed3",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_118",
+   "name": "GKOT_464_118.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_464_118.laz",
+   "bytes": 419347622,
+   "sha256": "bc324b259b4cbb1cd754f389c2a0c32c199a25596ef4364052bc42655edf7737",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_118",
+   "name": "GKOT_465_118.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_465_118.laz",
+   "bytes": 483776972,
+   "sha256": "671ae5c9dca3168307e73ed3981376fa61650c4d39cf811ad89acfce9e6d5469",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "466_118",
+   "name": "GKOT_466_118.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_466_118.laz",
+   "bytes": 272642323,
+   "sha256": "a17ca51203b616039bbaae62b496df326590b00d53fc71ec82887188310695a0",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "467_118",
+   "name": "GKOT_467_118.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_467_118.laz",
+   "bytes": 455471659,
+   "sha256": "1c39d2903e432edebeedd072efa5b4be7d20cb016db6674960e2bfaf7a1ee99a",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "468_118",
+   "name": "GKOT_468_118.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_468_118.laz",
+   "bytes": 229591839,
+   "sha256": "c806c01707e204b7c21b87f72ec05883bf211a19fbad243e6376abfe16194c44",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "469_118",
+   "name": "GKOT_469_118.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_469_118.laz",
+   "bytes": 572324984,
+   "sha256": "e96e112a5ea27b42d139616c88faa59e99e505f5adda77f204fa7a1be4e7ea18",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "470_118",
+   "name": "GKOT_470_118.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_470_118.laz",
+   "bytes": 726459939,
+   "sha256": "4b49f59dd1dddb1028e34c67b67e275c6beb96c957f94a3dda98fee3a3dee5fc",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "471_118",
+   "name": "GKOT_471_118.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_471_118.laz",
+   "bytes": 777681970,
+   "sha256": "0bb416d46c98a8e4db4d9112b66f3edc75902241ec5b0bc79d4dffb3fa87b334",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_117",
+   "name": "GKOT_464_117.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_464_117.laz",
+   "bytes": 405306163,
+   "sha256": "a22c0ebb62dc2348fccdb614ff946b3d9686e26f28e4a84fcce4eaf97bd1809c",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_117",
+   "name": "GKOT_465_117.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_465_117.laz",
+   "bytes": 374151897,
+   "sha256": "b87613c6e559443cda195ee296eb4e11f77166a8fa4a1ccd09d9ee4906d0d3ab",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "466_117",
+   "name": "GKOT_466_117.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_466_117.laz",
+   "bytes": 365047278,
+   "sha256": "4f8c08e124557c43013e586e01167b3261f984796c04d11412048feaebc04b6d",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "467_117",
+   "name": "GKOT_467_117.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_467_117.laz",
+   "bytes": 233853018,
+   "sha256": "ee559e2163e01af9b85c6ca0a99d06cf5d35bdb19e8b4f49f52441ece3b1efbb",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "468_117",
+   "name": "GKOT_468_117.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_468_117.laz",
+   "bytes": 379390921,
+   "sha256": "f63a904ec6179c3c5fa96c5133240d9351b1f835e431c7ca846e4e9adc4b11c4",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "469_117",
+   "name": "GKOT_469_117.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_469_117.laz",
+   "bytes": 482054963,
+   "sha256": "b32a9937f5e0e05af98fb07f6973ad2417c2c2e06e30441a8c7db10d66d10f60",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "470_117",
+   "name": "GKOT_470_117.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_470_117.laz",
+   "bytes": 567213292,
+   "sha256": "8a65117033de2231e5e608a537543b9928ba160b15c7cdc0573d44be8fab5666",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "471_117",
+   "name": "GKOT_471_117.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_471_117.laz",
+   "bytes": 678785393,
+   "sha256": "03567b0e2bbe1bc032bee06956a0189b073a9a277fdb46a696c8bfc42f38d85c",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_116",
+   "name": "GKOT_464_116.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_464_116.laz",
+   "bytes": 340799544,
+   "sha256": "b39737261f32f09ab91a6249486908d2d4864d70e7b2cde8af53db4d2782fc64",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_116",
+   "name": "GKOT_465_116.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_465_116.laz",
+   "bytes": 277604697,
+   "sha256": "1eb5fe62678f93ee905956bd3e88cbd0b6ffc2bd72af26b8c54190182127bf37",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "466_116",
+   "name": "GKOT_466_116.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_466_116.laz",
+   "bytes": 286672632,
+   "sha256": "76b82beee753d8dc124d4f6eb0d3d2efd2c6f89107ff1703810b57ff2ef1c93c",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "467_116",
+   "name": "GKOT_467_116.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_467_116.laz",
+   "bytes": 261010175,
+   "sha256": "625e3ebf4f74d0198a4c766ca3c5550decab66df62a876a78a5102551af248b0",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "468_116",
+   "name": "GKOT_468_116.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_468_116.laz",
+   "bytes": 241710366,
+   "sha256": "0fa69b4db49b2f68e8f7000e93007f6b2e7305174348f3e2a0f89a9c9d21ae44",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "469_116",
+   "name": "GKOT_469_116.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_469_116.laz",
+   "bytes": 323498142,
+   "sha256": "7dafb5a6f665422168d391809f6a2cfab55004381c1e282edc5372deb7129666",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "470_116",
+   "name": "GKOT_470_116.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_470_116.laz",
+   "bytes": 458853143,
+   "sha256": "68d3d54836ed8942809e732975b8d26c7923946b194dd1668364181a0b521877",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "471_116",
+   "name": "GKOT_471_116.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_471_116.laz",
+   "bytes": 539315385,
+   "sha256": "641fd9194cf8f24ee4f66bb6ee24b80b8591828a9b1add33b4378b112bb8dfdc",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_115",
+   "name": "GKOT_464_115.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_464_115.laz",
+   "bytes": 493324658,
+   "sha256": "8fe6e454671e90f3b104f37477a3072366d65f21fa80ad32cb85d4349f956814",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_115",
+   "name": "GKOT_465_115.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_465_115.laz",
+   "bytes": 372483915,
+   "sha256": "d835cdf0ab37e386f3299eb8f832fb5bc1f0b7bc00a2c0085efcb02480ca7d89",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "466_115",
+   "name": "GKOT_466_115.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_466_115.laz",
+   "bytes": 280975340,
+   "sha256": "c34676d42bc754d8e7d618c7623089f7530b2faaf7ad7294cca0b74181f15480",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "467_115",
+   "name": "GKOT_467_115.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_467_115.laz",
+   "bytes": 278304940,
+   "sha256": "287cfb0b01216bde3a6ae53f2e6ac0e25cec8e115bcf3da72ebf990f292ea41f",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "468_115",
+   "name": "GKOT_468_115.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_468_115.laz",
+   "bytes": 274682643,
+   "sha256": "0d7e9bed8ed07012f67665f09c3d7c38744e772b3e78b714f87c51aeadf683c5",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "469_115",
+   "name": "GKOT_469_115.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_469_115.laz",
+   "bytes": 375158797,
+   "sha256": "fc5c971a6c1fbd056f7ea8266cbc1e7cb1ac82832ae94ed57b80b225730b229e",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "470_115",
+   "name": "GKOT_470_115.laz",
+   "url": "https://assets.flycom.si/clss/raw/08-kamnik/zls/gkot/GKOT_470_115.laz",
+   "bytes": 226358841,
+   "sha256": "9d40f82e3961d9cd63ffb11c141106728b40e3b1285a9df191bbda4acc1de70c",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "471_115",
+   "name": "GKOT_471_115.laz",
+   "url": "https://assets.flycom.si/clss/raw/16-kamnik-aneks/zls/gkot/GKOT_471_115.laz",
+   "bytes": 407837892,
+   "sha256": "f9b76bd094048e215446fd83f4c31935e006c85c01a9434380963b6f0d2e6fcd",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_114",
+   "name": "GKOT_464_114.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_464_114.laz",
+   "bytes": 191069482,
+   "sha256": "c053e7aec9c03d24ada6613ad77e1441ec275ee94fbe9a9535c726ed6b4c80a3",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_114",
+   "name": "GKOT_465_114.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_465_114.laz",
+   "bytes": 198873769,
+   "sha256": "ac86c4b2a618e0e9f25c74570eb82bd2850637ca6fb28d7fb8a4b587bcd3c4a3",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "466_114",
+   "name": "GKOT_466_114.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_466_114.laz",
+   "bytes": 195352805,
+   "sha256": "4075a23d50707f64ca057a64edc836cd5d3198958ae029c24516becb2ddf80d7",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "467_114",
+   "name": "GKOT_467_114.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_467_114.laz",
+   "bytes": 178616987,
+   "sha256": "babf7f2224dcce942172a767aa281d49cee17a4cf43630d02fbebcc31941f70d",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "468_114",
+   "name": "GKOT_468_114.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_468_114.laz",
+   "bytes": 179817844,
+   "sha256": "abc4d0037b53b3f601b6a4f913f4651a3e2214903984cd11b1b28c79ecd0fd5e",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "469_114",
+   "name": "GKOT_469_114.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_469_114.laz",
+   "bytes": 181797143,
+   "sha256": "b465992cd2d3e242e4136aa1ab71a088d6b71dde9a0ecb8ab76074698ea3d743",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "470_114",
+   "name": "GKOT_470_114.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_470_114.laz",
+   "bytes": 336968458,
+   "sha256": "fb9adca6df53767d0c043800aeda4d6ae920ba72798bf20c90d3b1474e8344f8",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "471_114",
+   "name": "GKOT_471_114.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_471_114.laz",
+   "bytes": 472477773,
+   "sha256": "0eed4f47aca2014f028e3b81fb0bf51104d4b68b95730cb6f79b528ffd07c03d",
+   "fetched": "2026-11-22"
+  }
+ ]
+}

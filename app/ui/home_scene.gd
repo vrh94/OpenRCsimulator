@@ -159,7 +159,7 @@ func finish_construction() -> void:
 	show_aircraft(aircraft, livery)
 	camera = Camera3D.new()
 	camera.near = Spec.CAMERA.near
-	camera.far = Spec.CAMERA.far
+	camera.far = Landscapes.camera_far_m(_source_landscape, Spec.CAMERA.far)
 	add_child(camera)
 	camera.current = true
 

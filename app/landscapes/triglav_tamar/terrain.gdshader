@@ -31,6 +31,13 @@ uniform sampler2D photo : source_color, filter_linear_mipmap_anisotropic, repeat
 uniform sampler2D photo_coverage : filter_linear, repeat_disable;
 uniform float photo_size_m = 8000.0;
 uniform bool photo_enabled = true;
+// Optional (Kamnik, research/kamnik/KM-01/ring_photo.py): a coarse satellite photo of the whole ring, used outside
+// the core photo; the core photo fades into it over core_photo_fade_m inside the core edge (0: no fade).
+uniform sampler2D ring_photo : source_color, filter_linear_mipmap_anisotropic, repeat_disable;
+uniform bool ring_photo_enabled = false;
+uniform vec2 ring_photo_origin;      // core frame metres of the photo's south-west corner
+uniform float ring_photo_size_m = 48000.0;
+uniform float core_photo_fade_m = 0.0;
 // Near the camera the 1 m photo is soft: a CC0 aerial grass-and-rock texture modulates its brightness at two scales.
 uniform sampler2D near_detail : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform bool near_detail_enabled = false;
@@ -156,9 +163,20 @@ void fragment() {
 	}
 	float h = ground_ref_m + (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).y;
 	vec3 col = alpine_colour(core_xy, h, 1.0 - world_n.y);
+	if (ring_photo_enabled) {
+		vec2 ring_uv = (core_xy - ring_photo_origin) / ring_photo_size_m;
+		ring_uv.y = 1.0 - ring_uv.y;
+		if (all(greaterThanEqual(ring_uv, vec2(0.0))) && all(lessThanEqual(ring_uv, vec2(1.0)))) {
+			col = texture(ring_photo, ring_uv).rgb;
+		}
+	}
 	vec2 uv = vec2(core_xy.x / photo_size_m, 1.0 - core_xy.y / photo_size_m);
 	if (photo_enabled && all(greaterThanEqual(uv, vec2(0.0))) && all(lessThanEqual(uv, vec2(1.0)))) {
 		float real = texture(photo_coverage, uv).r;
+		if (core_photo_fade_m > 0.0) {
+			vec2 edge = min(core_xy, vec2(photo_size_m) - core_xy);
+			real *= smoothstep(0.0, core_photo_fade_m, min(edge.x, edge.y));
+		}
 		col = mix(col, texture(photo, uv).rgb, real);
 	}
 	if (near_detail_enabled && dist < near_detail_end_m) {

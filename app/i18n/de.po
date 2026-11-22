@@ -14045,3 +14045,6 @@ msgstr "Wolkensurfen"
 
 msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
 msgstr "Hoch aufragende Cumuluswolken, zu denen du hinauffliegen, an denen du entlanggleiten und durch die du hindurchfliegen kannst. Ihre flachen Untergrenzen liegen 600 m über dem Platz."
+
+msgid "Kamnik: Duplica airstrip"
+msgstr "Kamnik: Flugplatz Duplica"

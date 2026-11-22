@@ -4,6 +4,7 @@ const ADAPTERS: Array = [
 	preload("res://landscapes/club_field/landscape.gd"),
 	preload("res://landscapes/green_paradise/landscape.gd"),
 	preload("res://landscapes/triglav_tamar/landscape.gd"),
+	preload("res://landscapes/kamnik_duplica/landscape.gd"),
 ]
 
 const DEFAULT_ID: String = "club_field"
@@ -24,7 +25,16 @@ static func entry(id: String) -> Dictionary:
 	var adapter: Variant = _adapter(id)
 	if adapter == null:
 		return {}
-	return {id = adapter.ID, name = adapter.DISPLAY_NAME, field_path = adapter.FIELD_PATH}
+	var out := {id = adapter.ID, name = adapter.DISPLAY_NAME, field_path = adapter.FIELD_PATH}
+	# A landscape whose distant terrain lies beyond the default camera far plane names its own (metres).
+	if "CAMERA_FAR_M" in adapter:
+		out.camera_far_m = float(adapter.CAMERA_FAR_M)
+	return out
+
+
+## The flight camera's far plane on a landscape: the default unless the landscape needs to see farther.
+static func camera_far_m(id: String, default_far_m: float) -> float:
+	return maxf(default_far_m, float(entry(id).get("camera_far_m", 0.0)))
 
 
 ## `rc_track` (RC-TRACK) reaches only the club field, the one landscape whose geometry carries the circuit.
