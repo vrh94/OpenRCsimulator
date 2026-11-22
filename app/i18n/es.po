@@ -12692,3 +12692,9 @@ msgstr "Cuánto gira el servo de giro hacia cada lado al final del recorrido del
 
 msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
 msgstr "Cuánto gira el servo de inclinación hacia cada lado al final del recorrido del canal o con los botones."
+
+msgid "Cloud Surfing"
+msgstr "Surf de nubes"
+
+msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
+msgstr "Cúmulos altos a los que puedes subir, rozar y atravesar volando. Sus bases planas están 600 m por encima del campo."

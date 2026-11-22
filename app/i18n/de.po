@@ -14039,3 +14039,9 @@ msgstr "Wie weit das Schwenkservo am Ende des Kanalwegs oder mit den Tasten zu j
 
 msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
 msgstr "Wie weit das Neigeservo am Ende des Kanalwegs oder mit den Tasten zu jeder Seite dreht."
+
+msgid "Cloud Surfing"
+msgstr "Wolkensurfen"
+
+msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
+msgstr "Hoch aufragende Cumuluswolken, zu denen du hinauffliegen, an denen du entlanggleiten und durch die du hindurchfliegen kannst. Ihre flachen Untergrenzen liegen 600 m über dem Platz."

@@ -10,6 +10,8 @@ signal night_requested
 const MOTIONS := ["legacy", "follow_wind", "still", "aloft"]
 const MOTION_LABELS := ["Classic motion", "Follow wind", "Still", "Wind aloft"]
 const FLASHES := ["full", "reduced", "off"]
+## CLOUD-1: presets without their own preview picture borrow a similar sky's (no new image files).
+const PREVIEW_FALLBACK := {cloud_surfing = "fair_cumulus"}
 const FLASH_LABELS := ["Full", "Reduced", "Off"]
 var draft: Dictionary
 var preset_buttons: Dictionary = {}
@@ -64,7 +66,7 @@ func _init(initial: Variant = null) -> void:
 		picture.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		var image_path: String = "res://assets/sky/weather/previews/%s.png" % entry.id
+		var image_path: String = "res://assets/sky/weather/previews/%s.png" % PREVIEW_FALLBACK.get(str(entry.id), str(entry.id))
 		if ResourceLoader.exists(image_path):
 			picture.texture = load(image_path) as Texture2D
 		content.add_child(picture)

@@ -1,6 +1,8 @@
 extends RefCounted
 class_name SkyConfig
 
+const CumulusField := preload("res://render/weather/cumulus_field.gd")
+
 const FORMAT := "openrc-sky-appearance v1"
 const PRESET_FORMAT := "openrc-sky-weather-presets v1"
 const PRESET_PATH := "res://data/sky/weather_presets.json"
@@ -15,7 +17,7 @@ const ARG_KEYS := [
 ]
 const EXPECTED_PRESET_IDS := [
 	"classic", "clear", "cirrus", "fair_cumulus", "broken", "overcast",
-	"prestorm", "distant_storm", "electrical_storm",
+	"prestorm", "distant_storm", "electrical_storm", "cloud_surfing",
 ]
 const MOTION_MODES := ["legacy", "still", "follow_wind", "aloft"]
 const FLASH_MODES := ["full", "reduced", "off"]
@@ -311,6 +313,8 @@ static func _validate_profile(profile: Dictionary) -> PackedStringArray:
 	var renderer_keys := RENDERER_KEYS.duplicate()
 	if renderer.has("storm_bank"):
 		renderer_keys.append("storm_bank")
+	if renderer.has("cumulus_field"):
+		renderer_keys.append("cumulus_field") # CLOUD-1: 3D cumulus for cloud surfing
 	if not _has_exact_keys(renderer, renderer_keys):
 		errors.append("weather renderer must contain the complete versioned appearance schema")
 	for scalar_key: String in ["cloud_cover", "cloud_density", "haze", "cloud_shadow"]:
@@ -349,6 +353,8 @@ static func _validate_profile(profile: Dictionary) -> PackedStringArray:
 				errors.append("weather cloud layer %d %s is out of range" % [index, field_name])
 	if renderer.has("storm_bank"):
 		errors.append_array(_validate_bank(renderer.storm_bank, layers))
+	if renderer.has("cumulus_field"):
+		errors.append_array(CumulusField.errors(renderer.cumulus_field))
 	return errors
 
 

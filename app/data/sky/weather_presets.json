@@ -202,6 +202,28 @@
         "cloud_shadow": 0.86,
         "storm_bank": {"layout_version": 1, "east_m": -6800.0, "north_m": 8500.0, "width_m": 8200.0, "depth_m": 4500.0, "base_m": 1250.0, "top_m": 7000.0, "rain_opacity": 0.68, "advection_layer": 0}
       }
+    },
+    {
+      "id": "cloud_surfing",
+      "name": "Cloud Surfing",
+      "description": "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field.",
+      "renderer": {
+        "cloud_cover": 0.3,
+        "cloud_density": 0.6,
+        "cloud_layers": [
+          {"type": "cirrus", "altitude_m": 9200.0, "coverage": 0.30, "density": 0.50, "scale_m": 1500.0, "drift_multiplier": 1.0}
+        ],
+        "zenith_color": [0.21, 0.43, 0.75],
+        "horizon_color": [0.66, 0.80, 0.91],
+        "cloud_color": [0.99, 0.99, 0.98],
+        "sun_color": [1.0, 0.95, 0.83],
+        "ambient_color": [0.61, 0.72, 0.84],
+        "sun_intensity": 1.1,
+        "ambient_intensity": 0.79,
+        "haze": 0.055,
+        "cloud_shadow": 0.1,
+        "cumulus_field": {"layout_version": 1, "base_m": 600.0, "top_m": 1800.0, "spacing_m": 1400.0, "coverage": 0.55, "radius_m": 9000.0, "min_width_m": 400.0, "max_width_m": 1300.0}
+      }
     }
   ]
 }

@@ -13146,3 +13146,9 @@ msgstr "チャンネルの端またはボタンでパンサーボが左右それ
 
 msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
 msgstr "チャンネルの端またはボタンでチルトサーボが上下それぞれに回る量。"
+
+msgid "Cloud Surfing"
+msgstr "クラウドサーフィン"
+
+msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
+msgstr "近づいて、かすめて、突き抜けて飛べる高くそびえる積雲。平らな雲底は飛行場の 600 m 上にあります。"

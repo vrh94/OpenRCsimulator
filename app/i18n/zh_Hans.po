@@ -13096,3 +13096,9 @@ msgstr "通道行程尽头或按钮使平移舵机向每侧转动的角度。"
 
 msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
 msgstr "通道行程尽头或按钮使俯仰舵机向每侧转动的角度。"
+
+msgid "Cloud Surfing"
+msgstr "云中冲浪"
+
+msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
+msgstr "高耸的积云，可以飞上去、贴边掠过并穿越而过。它们平坦的云底位于机场上方 600 米。"

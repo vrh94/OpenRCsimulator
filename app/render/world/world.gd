@@ -26,6 +26,7 @@ const AirfieldLighting := preload("res://render/landscape_upgrade/airfield_light
 const SceneryLayer := preload("res://scenery/scenery.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
 const StormBank := preload("res://render/weather/storm_bank.gd")
+const CumulusField := preload("res://render/weather/cumulus_field.gd")
 const WaterMaterial := preload("res://render/lake/water_material.gd")
 
 ## The club switches its field lights on at dusk (FW-31…34): sun below this elevation in time-of-day mode.
@@ -518,6 +519,11 @@ static func _build_sky_stage(context: Dictionary) -> void:
 	storm_bank.name = "StormBank"
 	parent.add_child(storm_bank)
 	environment.set_meta("fw_storm_bank", weakref(storm_bank))
+	# CLOUD-1: the cloud-surfing preset's 3D cumulus (hidden for every other sky).
+	var cumulus := CumulusField.new()
+	cumulus.name = "CumulusField"
+	parent.add_child(cumulus)
+	environment.set_meta("fw_cumulus_field", weakref(cumulus))
 	refresh_weather_appearance(environment, 0.0)
 	var stars: Node3D = null
 	if not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < STARS_BELOW_SUN_DEG):
@@ -1069,10 +1075,16 @@ static func refresh_weather_appearance(environment: Environment, clock_s: float)
 	var checked: Dictionary = Atmosphere.SkyConfig.validate(Atmosphere.appearance_config())
 	if checked.ok:
 		bank.configure(checked.profile, int(checked.config.seed))
+		var cumulus: Node3D = cumulus_field_node(environment)
+		if cumulus != null:
+			cumulus.configure(checked.profile, int(checked.config.seed))
 	_update_weather_presentation(environment, clock_s)
 
 
 static func _update_weather_presentation(environment: Environment, clock_s: float) -> void:
+	var cumulus: Node3D = cumulus_field_node(environment)
+	if cumulus != null and cumulus.visible:
+		cumulus.update_visual(environment)
 	var bank: Node3D = _weather_bank(environment)
 	if bank != null and bank.visible:
 		bank.update_visual(Atmosphere.cloud_state_snapshot(), environment, null, clock_s)
@@ -1097,6 +1109,14 @@ static func weather_snapshot(environment: Environment) -> Dictionary:
 ## Scene-local presentation binding. Consumers must keep only a WeakRef to this node.
 static func storm_bank_node(environment: Environment) -> Node3D:
 	return _weather_bank(environment)
+
+
+## CLOUD-1: the scene's 3D cumulus field (visible only for a sky with renderer.cumulus_field), or null.
+static func cumulus_field_node(environment: Environment) -> Node3D:
+	if environment == null or not environment.has_meta("fw_cumulus_field"):
+		return null
+	var reference: Variant = environment.get_meta("fw_cumulus_field")
+	return reference.get_ref() as Node3D if reference is WeakRef else null
 
 
 ## Reapply the shared cloud mask after a paused visual preset edit or a cloud transport step.

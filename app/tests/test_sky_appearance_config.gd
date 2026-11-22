@@ -39,11 +39,12 @@ func _check_defaults_and_detachment() -> void:
 
 func _check_catalog_and_profiles() -> void:
 	var entries: Array[Dictionary] = Config.presets()
-	var expected_ids := ["classic", "clear", "cirrus", "fair_cumulus", "broken", "overcast", "prestorm", "distant_storm", "electrical_storm"]
+	# CLOUD-1 (2026-11-22) appends the Cloud Surfing sky.
+	var expected_ids := ["classic", "clear", "cirrus", "fair_cumulus", "broken", "overcast", "prestorm", "distant_storm", "electrical_storm", "cloud_surfing"]
 	var ids: Array[String] = []
 	for entry: Dictionary in entries:
 		ids.append(String(entry.get("id", "")))
-	_check("catalog exposes all nine profiles in stable order", ids == expected_ids)
+	_check("catalog exposes all ten profiles in stable order", ids == expected_ids)
 	var layers_by_profile := {}
 	for entry: Dictionary in entries:
 		_check("profile has UI labels and renderer schema: %s" % entry.get("id", "?"),

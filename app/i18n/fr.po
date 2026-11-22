@@ -14065,3 +14065,9 @@ msgstr "Jusqu'où le servo panoramique tourne de chaque côté en bout de course
 
 msgid "How far the tilt servo turns each way at the end of the channel's travel or with the buttons."
 msgstr "Jusqu'où le servo d'inclinaison tourne de chaque côté en bout de course de la voie ou avec les boutons."
+
+msgid "Cloud Surfing"
+msgstr "Surf de nuages"
+
+msgid "Towering cumulus you can fly up to, skim along and fly through. Their flat bases sit 600 m above the field."
+msgstr "De hauts cumulus vers lesquels voler, à frôler et à traverser. Leurs bases plates sont à 600 m au-dessus du terrain."

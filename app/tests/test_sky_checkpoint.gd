@@ -49,7 +49,7 @@ func _run() -> void:
 		check("time selection unchanged for " + entry.id, flight.lighting_config == light)
 	var saved: Dictionary = flight.checkpoint()
 	check("new appearance emits sky envelope", saved.get("format") == SkyCheckpoint.FORMAT)
-	check("snapshot is detached", saved.config == flight.sky_config and saved.edits.size() == 8)
+	check("snapshot is detached", saved.config == flight.sky_config and saved.edits.size() == SkyConfig.presets().size() - 1)
 	check("follow wind is bound to accepted noncalm weather", saved.transport.mean_wind_ned == [-1.5, 0.0, 0.0] \
 		and saved.transport.layers[0].velocity_cells_s[1] < 0.0)
 	var bad: Dictionary = saved.duplicate(true)
