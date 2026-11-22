@@ -54,6 +54,7 @@ func _run() -> void:
 	_catalog_and_field()
 	_heights()
 	_mountains()
+	_city()
 	await _build()
 	_finish()
 
@@ -127,6 +128,56 @@ func _ground(p: Vector2) -> float:
 	return core.height_at(p.x, p.y) if core.contains(p.x, p.y, 4.0) else ring.height_at(p.x, p.y)
 
 
+## Option 7b: Ljubljana's skyline and the ring's LiDAR ground under the city.
+func _city() -> void:
+	var header: Variant = JSON.parse_string(FileAccess.get_file_as_string(ROOT + "city/city.json"))
+	check("the Ljubljana city blocks are baked", header is Dictionary and int(header.count) > 20000,
+		str(header.get("count", -1)) if header is Dictionary else "missing")
+	if not (header is Dictionary):
+		return
+	# Ljubljana Castle stands on its hill at 376 m (the old town below is about 295 m); SRTM alone had it far lower.
+	var hill := -INF
+	for dx in range(-600, 601, 16):
+		for dy in range(-600, 601, 16):
+			hill = maxf(hill, ring.height_at(461970.0 - Landscape.CORE_ORIGIN.x + dx, 101140.0 - Landscape.CORE_ORIGIN.y + dy))
+	check("the castle hill stands at 360-380 m in the ring's LiDAR ground", hill > 360.0 and hill < 380.0, "%.1f m" % hill)
+	var tallest: Dictionary = header.tallest
+	# The tallest structure is a slender 150 m stack (a chimney) in Siska; nothing in the city reaches 160 m.
+	check("the tallest structure is 50-160 m", float(tallest.height_m) > 50.0 and float(tallest.height_m) < 160.0,
+		str(tallest.height_m))
+	# Kristalna palaca (BTC, 89 m; 46.0664 N, 14.5411 E = D96/TM E 464498, N 103058).
+	var crystal := _city_top(header, Vector2(464498.0, 103058.0), 60.0)
+	check("Kristalna palaca stands 85-95 m tall", crystal > 85.0 and crystal < 95.0, "%.1f m" % crystal)
+	var at := Vector2(float(header.origin_east_m) + (float(tallest.column) + 0.5) * float(header.cell_m),
+		float(header.origin_north_m) + (float(tallest.row) + 0.5) * float(header.cell_m)) - Landscape.CORE_ORIGIN
+	var top := _ground(at) + float(tallest.height_m) - 10.0
+	check("300 m above the field the tallest tower's top is in sight", _visible(at, top, 300.0))
+
+
+## The tallest city block within `radius_m` of the D96/TM point `at`.
+func _city_top(header: Dictionary, at: Vector2, radius_m: float) -> float:
+	var data := FileAccess.get_file_as_bytes(ROOT + "city/" + str(header.data)).decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
+	var cell := float(header.cell_m)
+	var origin := Vector2(float(header.origin_east_m), float(header.origin_north_m))
+	var best := 0.0
+	for at_byte in range(0, data.size(), 12):
+		var p := origin + (Vector2(data.decode_u16(at_byte), data.decode_u16(at_byte + 2)) + Vector2(0.5, 0.5)) * cell
+		if p.distance_to(at) <= radius_m:
+			best = maxf(best, data.decode_u16(at_byte + 6) / 10.0)
+	return best
+
+
+func _visible(at: Vector2, target_m: float, height_m: float) -> bool:
+	var from := Vector3(Landscape.PILOT_CORE.x, Landscape.PILOT_CORE.y, _ground(Landscape.PILOT_CORE) + height_m)
+	var to := Vector3(at.x, at.y, target_m)
+	var steps := 3000
+	for i in range(1, int(steps * 0.97)):
+		var p := from.lerp(to, float(i) / steps)
+		if _ground(Vector2(p.x, p.y)) > p.z:
+			return false
+	return true
+
+
 func _build() -> void:
 	var loaded: Dictionary = FieldLoader.load_from(Landscape.FIELD_PATH)
 	var field: Node3D = Landscape.build(loaded.get("field", {}), {})
@@ -144,7 +195,10 @@ func _build() -> void:
 		and float(terrain.get_shader_parameter("ring_photo_size_m")) == 48000.0)
 	check("the surveyed core photo fades into it at the core edge", terrain != null and bool(terrain.get_shader_parameter("photo_enabled"))
 		and float(terrain.get_shader_parameter("core_photo_fade_m")) == Landscape.CORE_PHOTO_FADE_M)
-	check("terrain, two tree and the building materials are registered for lighting", materials.size() == 4, str(materials.size()))
+	check("terrain, two tree, the building and the city materials are registered for lighting", materials.size() == 5, str(materials.size()))
+	var city_header: Variant = JSON.parse_string(FileAccess.get_file_as_string(ROOT + "city/city.json"))
+	check("every Ljubljana block is drawn", field.get_node_or_null("City") != null and city_header is Dictionary
+		and int(field.get_meta("city_count", -1)) == int(city_header.count))
 	var trees_header: Variant = JSON.parse_string(FileAccess.get_file_as_string(ROOT + "vegetation/trees.json"))
 	var buildings_header: Variant = JSON.parse_string(FileAccess.get_file_as_string(ROOT + "buildings/buildings.json"))
 	check("every baked tree is instanced", trees_header is Dictionary and int(field.get_meta("trees_count", -1)) == int(trees_header.count))

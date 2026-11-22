@@ -15,7 +15,7 @@
  "max_m": 2521.625,
  "clamped_nodes": 0,
  "data": "ring.u16.gz",
- "data_sha256": "3082adc398316dd9b69e0cace32020031fda48f0ee411d3e3834eb3409a88a79",
+ "data_sha256": "b6a6e4be101f60d5c9c31b31dbc57a83254dcc1117ac765d17d5c7b26bfa1294",
  "sources": [
   "Digital terrain model DMR1 (LiDAR, 1 m): Ministry of the Environment and Spatial Planning, Slovenian Environment Agency (ARSO)",
   "SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles",
@@ -28,5 +28,12 @@
   "north_first": 1250,
   "east_count": 500,
   "north_count": 500
+ },
+ "ring_lidar": {
+  "ljubljana_city": {
+   "sheets": 48,
+   "cells": 175939,
+   "lidar_minus_srtm_median_m": -1.026
+  }
  }
 }

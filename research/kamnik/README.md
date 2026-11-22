@@ -49,6 +49,27 @@ solved by least squares so that along all 112 shared sheet edges the 40 m strips
 and mean, with the mean log gain and mean offset held at zero. Triglav's sheets come from one campaign and are not
 balanced (its bytes are unchanged).
 
+## Ljubljana's skyline (KM-03)
+
+Ljubljana lies 12–20 km south-west of the pilot, outside the surveyed core, on the flat basin floor. With the ring's
+SRTM ground and satellite colour alone it was only a grey smudge at the horizon. So the city's own GKOT sheets are
+fetched too (region `ljubljana_city`: E 458–465 km × N 98–105 km, 64 sheets: the centre and castle, Bežigrad, Šiška,
+Vič, Moste, BTC and Stožice). The survey's Ljubljana block (`13-ljubljana-aneks`) ends at N 100 km: the viewer has no
+sheet for the two southern rows (N 98–99 km: Rudnik and the marsh), so 48 sheets are fetched and 16 are pinned absent;
+there the ring keeps its SRTM ground and no blocks are drawn:
+
+| Step | Command | Writes |
+| --- | --- | --- |
+| fetch | `tmp/triglav/venv/bin/python research/triglav/TG-01/fetch_gkot.py --region ljubljana_city [--record]` | `tmp/ljubljana_city/gkot/`; pins in `sources_city.json` |
+| raster | `tmp/triglav/venv/bin/python research/triglav/TG-02/raster_gkot.py --region ljubljana_city` | `tmp/ljubljana_city/gkot_raster/` |
+| ring ground | `bake_terrain.py --region kamnik` (above) | under the city the ring takes the GKOT ground averaged per 16 m cell (`ring_lidar`), fading back to SRTM over 1 km |
+| blocks | `tmp/triglav/venv/bin/python research/kamnik/KM-03/bake_city.py [--check]` | `city/city.bin.gz` + `city.json` |
+
+The city is drawn as blocks (`app/landscapes/kamnik_duplica/city.gd`): every 12.5 m cell that is at least 35 % roof
+becomes one box from the cell's ground (median of its ground points) to the 90th percentile of its roof tops, coloured
+by the mean colour of its roof points. At 17 km a 12.5 m cell is about one pixel, so the skyline keeps its real
+outline (the tower blocks, the castle hill, BTC) at a fraction of the core's detail. The blocks are visual only.
+
 ## Ring photo
 
 Sentinel-2 cloudless 2016 (EOX, CC BY 4.0), WMTS layer `s2cloudless_3857` at zoom 13 (about 13 m per pixel here),

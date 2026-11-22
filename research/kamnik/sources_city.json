@@ -1,0 +1,457 @@
+{
+ "format": "openrc-terrain-sources v1",
+ "region": "Ljubljana city (skyline for the Kamnik landscape), Slovenia",
+ "attribution": [
+  "Cyclic laser scanning of Slovenia 2023-2025 (CLSS), classified point cloud GKOT: Surveying and Mapping Authority of the Republic of Slovenia (GURS), CC BY 4.0"
+ ],
+ "clss_gkot": [
+  {
+   "sheet": "458_105",
+   "name": "GKOT_458_105.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_458_105.laz",
+   "bytes": 613442716,
+   "sha256": "eee8b8916fd95e2d6dcd9170701f8859c0ed5db488b32a570ba44182be4c287d",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "459_105",
+   "name": "GKOT_459_105.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_459_105.laz",
+   "bytes": 200038748,
+   "sha256": "481d845bda6a44784315150474cb1f0ca0e2e0fd9356043b1be2acd467757c56",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "460_105",
+   "name": "GKOT_460_105.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_460_105.laz",
+   "bytes": 209059150,
+   "sha256": "a7e49b67cd637f26fee13a80425c8a190f5263c88cff2f4b1effc62d12cd693e",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "461_105",
+   "name": "GKOT_461_105.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_461_105.laz",
+   "bytes": 176605360,
+   "sha256": "c45d766f9d3f759d25b362419a20260791fe3422f6d1771437ca7a2bbfc2488e",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "462_105",
+   "name": "GKOT_462_105.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_462_105.laz",
+   "bytes": 171254754,
+   "sha256": "23109a693168f7d4a7692b991994cc5788117ee9e074f349feac2142f021e965",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "463_105",
+   "name": "GKOT_463_105.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_463_105.laz",
+   "bytes": 167042490,
+   "sha256": "bc27186772e62d2e039330c9e446e53ed3eccd9cb668aa9c3fb0e1c7ad0dfe75",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_105",
+   "name": "GKOT_464_105.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_464_105.laz",
+   "bytes": 206330311,
+   "sha256": "5edea182a065ba687b21137bf92af3b6caeea871566d4c71c6e9e3c9783289e1",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_105",
+   "name": "GKOT_465_105.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_465_105.laz",
+   "bytes": 443013589,
+   "sha256": "c0edcbce8a34c486b3a520953d815e94c8434bd43134bfaa341db9ab38ae0c05",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "458_104",
+   "name": "GKOT_458_104.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_458_104.laz",
+   "bytes": 436240580,
+   "sha256": "199c31526f7a9bbb9309ec12bb178057de49d3b90fd1bf97ec8decbfffad7623",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "459_104",
+   "name": "GKOT_459_104.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_459_104.laz",
+   "bytes": 202026992,
+   "sha256": "78889ccd028182d4ddc7cb12f3858b477b61910959d3269136e8bccf54245b68",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "460_104",
+   "name": "GKOT_460_104.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_460_104.laz",
+   "bytes": 207124595,
+   "sha256": "132c1c9bfcfbd7ee87ed014420804fde73797a6f7444e37aad5d1290551f758c",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "461_104",
+   "name": "GKOT_461_104.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_461_104.laz",
+   "bytes": 409903413,
+   "sha256": "22c1b62dad40dadc063576b31781f9544c79aea9a26faae03e8e6e2015eed38d",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "462_104",
+   "name": "GKOT_462_104.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_462_104.laz",
+   "bytes": 429828256,
+   "sha256": "a44e739125ae67e80c62ba8014add185454cf1a2ad7e4213cf85d9a11caee037",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "463_104",
+   "name": "GKOT_463_104.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_463_104.laz",
+   "bytes": 162732113,
+   "sha256": "9481a8862ee2f854ffbf9f7aedbe4d724b740b0d813544c7fc53bb755043296d",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_104",
+   "name": "GKOT_464_104.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_464_104.laz",
+   "bytes": 372852665,
+   "sha256": "d58137ae8d38aeba916b8fe69fa1f025f4f43f7a41cbc3f265bb559de82bba47",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_104",
+   "name": "GKOT_465_104.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_465_104.laz",
+   "bytes": 227596416,
+   "sha256": "47137666a3ba662384db18b11cd2e72de43b42fa22185667e2247df1b2b7bf79",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "458_103",
+   "name": "GKOT_458_103.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_458_103.laz",
+   "bytes": 164300300,
+   "sha256": "e3ac27ca9e45a0ec94a9f19214a171b54ba026b213cefb1f37f8b270eb85a1b3",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "459_103",
+   "name": "GKOT_459_103.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_459_103.laz",
+   "bytes": 200266007,
+   "sha256": "99f31457a10271688e1c0646bb3b3fbdde5b3230f08aea7a37f0db5a914de8dd",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "460_103",
+   "name": "GKOT_460_103.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_460_103.laz",
+   "bytes": 546771417,
+   "sha256": "19dbaab75d0e1e5fc19e586154c4557bdabb84c1bddff4010b649bc9be137bfa",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "461_103",
+   "name": "GKOT_461_103.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_461_103.laz",
+   "bytes": 161865472,
+   "sha256": "624eec9e635dec88c356466c83ad490e08602747dc645cb3fb5d063bcc2ad2a0",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "462_103",
+   "name": "GKOT_462_103.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_462_103.laz",
+   "bytes": 404763081,
+   "sha256": "3175e6d465da1efa08036f07683abb8fa00e191d48adfa12a74047b60a75e774",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "463_103",
+   "name": "GKOT_463_103.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_463_103.laz",
+   "bytes": 166527464,
+   "sha256": "82295c64d6e61d29c731d6563d8f27276af3414a890a297971fee2a68364f907",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_103",
+   "name": "GKOT_464_103.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_464_103.laz",
+   "bytes": 402659967,
+   "sha256": "d1cbf48abe58feba994a8033ad44974e6e9184b6e16ca8d93cd5b940dbd8be0e",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_103",
+   "name": "GKOT_465_103.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_465_103.laz",
+   "bytes": 235325977,
+   "sha256": "091f9a8e564dd373cd22f06875ce6f827e76c8af442369c378020d7b3818a78e",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "458_102",
+   "name": "GKOT_458_102.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_458_102.laz",
+   "bytes": 171599562,
+   "sha256": "c842579edbdf64b15248ccb1e161bd897348a9e6343edba56e852373b1c66f3f",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "459_102",
+   "name": "GKOT_459_102.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_459_102.laz",
+   "bytes": 215996653,
+   "sha256": "eec96282c3895cc90876b188555e3f11fb8fcab59bdaac53928579a57dda5efe",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "460_102",
+   "name": "GKOT_460_102.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_460_102.laz",
+   "bytes": 228659402,
+   "sha256": "51f402c6c482f4acc5c7293430fa8042ad7de1438b280d4bee48233937681863",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "461_102",
+   "name": "GKOT_461_102.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_461_102.laz",
+   "bytes": 164771049,
+   "sha256": "61ec6d8f3968a84e28f6e2f77ff953040d1b53e32a485eafbe2d95d817f56f70",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "462_102",
+   "name": "GKOT_462_102.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_462_102.laz",
+   "bytes": 170454616,
+   "sha256": "2676e9f1a653357dde9dd2403b9674d65db25b759f822efc20d0e512224515d0",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "463_102",
+   "name": "GKOT_463_102.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_463_102.laz",
+   "bytes": 182462327,
+   "sha256": "4435bb4b7f325a9ed658a263aee138839e0009a79250d31e3d9add4392ada9d5",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_102",
+   "name": "GKOT_464_102.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_464_102.laz",
+   "bytes": 202470780,
+   "sha256": "6e1be325b0194a6ce66f638b44785a4f29b9f1af3bc20fc3b42baf7b7c09736a",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_102",
+   "name": "GKOT_465_102.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_465_102.laz",
+   "bytes": 238940253,
+   "sha256": "e6c607bcc58cf7fa8f3f4e44bd4b7bd753b928039c49c11026e2706513701004",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "458_101",
+   "name": "GKOT_458_101.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_458_101.laz",
+   "bytes": 169042849,
+   "sha256": "d6d37684ffd56715a83c1c5d340c3a3948b57cd3bedc58ae576a48b37ca5ad63",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "459_101",
+   "name": "GKOT_459_101.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_459_101.laz",
+   "bytes": 582530956,
+   "sha256": "a7c43188fe5422edc29aee36f381944ffad27b100223bd690a26f19a8089fa6a",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "460_101",
+   "name": "GKOT_460_101.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_460_101.laz",
+   "bytes": 677681739,
+   "sha256": "749e005b003fb163cb7c934822d955daa13deaf9f06416bcd0ffa037ee5d9c02",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "461_101",
+   "name": "GKOT_461_101.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_461_101.laz",
+   "bytes": 163784199,
+   "sha256": "742d9a3a88511bb54719916392f802e7590480293a81f3f2ac65aed54e455ec6",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "462_101",
+   "name": "GKOT_462_101.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_462_101.laz",
+   "bytes": 161965270,
+   "sha256": "c290bcd4ddc6325398a25f01e2c67a88d24a2ea9da721032f94844dbe0c0997b",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "463_101",
+   "name": "GKOT_463_101.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_463_101.laz",
+   "bytes": 396339067,
+   "sha256": "ff5f7afe747f8bf62a856c49e254bdd8d9e6254b66faea937118b08301d4ba62",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_101",
+   "name": "GKOT_464_101.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_464_101.laz",
+   "bytes": 405442752,
+   "sha256": "ff8738b2c02d375352141ec1a2b28506ef23a9063d759e71b7270fd3904b599b",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_101",
+   "name": "GKOT_465_101.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_465_101.laz",
+   "bytes": 384581756,
+   "sha256": "e6f3058c7e68dd75a10081e79aa1ee89f5381ae29b2fcbbc3188438532190812",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "458_100",
+   "name": "GKOT_458_100.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_458_100.laz",
+   "bytes": 298704126,
+   "sha256": "163bb6f566cf76982dc10ce47dfcf070d50bf85f84f97c90815f0ce54463362b",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "459_100",
+   "name": "GKOT_459_100.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_459_100.laz",
+   "bytes": 176131725,
+   "sha256": "31da67835f7529d60d0a1a6568c268c18816aa4286ff21e2cddd5e97f9280dee",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "460_100",
+   "name": "GKOT_460_100.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_460_100.laz",
+   "bytes": 432160246,
+   "sha256": "47a862fb5515575ce6ad5428b0143c43fe090e8541ecb489a4fbb0816bb954c8",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "461_100",
+   "name": "GKOT_461_100.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_461_100.laz",
+   "bytes": 318344233,
+   "sha256": "9373fa7637617580478bcf1b88188a6b826d89fb1872e0ee80b4df2ade32a37f",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "462_100",
+   "name": "GKOT_462_100.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_462_100.laz",
+   "bytes": 171495722,
+   "sha256": "89c8df3f1d3ee5abd4b67d817cdc02434d5111ffddb03e4ea7dfdd7beeca5a31",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "463_100",
+   "name": "GKOT_463_100.laz",
+   "url": "https://assets.flycom.si/clss/raw/13-ljubljana-aneks/zls/gkot/GKOT_463_100.laz",
+   "bytes": 480203681,
+   "sha256": "0ec4fb5b3e4e517847b6be999149498b245a1bb92eafcc67c156443318a9fcce",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "464_100",
+   "name": "GKOT_464_100.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_464_100.laz",
+   "bytes": 198225542,
+   "sha256": "07d2df44e08b873cc766dffeb6d55b1d40f845de5f7b20e27c03120b59742e0b",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "465_100",
+   "name": "GKOT_465_100.laz",
+   "url": "https://assets.flycom.si/clss/raw/05-ljubljana/zls/gkot/GKOT_465_100.laz",
+   "bytes": 256285451,
+   "sha256": "623d2cbdfad1fb85f35d78927fcc5d4dffd42ffb6920deb3f9e1da0bd7230e81",
+   "fetched": "2026-11-22"
+  },
+  {
+   "sheet": "458_99",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "459_99",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "460_99",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "461_99",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "462_99",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "463_99",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "464_99",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "465_99",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "458_98",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "459_98",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "460_98",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "461_98",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "462_98",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "463_98",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "464_98",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  },
+  {
+   "sheet": "465_98",
+   "absent": "the viewer shows no CLSS sheet at this position (got None)"
+  }
+ ]
+}

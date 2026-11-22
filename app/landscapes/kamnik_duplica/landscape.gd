@@ -2,6 +2,7 @@ extends RefCounted
 ## Option 7 (2026-11-22): the Kamnik (Duplica) airstrip in the Ljubljana basin, from the national LiDAR and
 ## orthophoto, with the Kamnik Alps, Krvavec, Rašica and Šmarna gora around it (research/kamnik/README.md). The
 ## surveyed core is 8 x 8 km at 2 m; the 48 x 48 km ring (SRTM, coloured by Sentinel-2) carries the distant mountains.
+## Ljubljana's skyline (city.gd) stands on the ring's LiDAR ground 12-20 km south-west.
 ## The render origin is the model flyers' spot at threshold 29; render x is grid east, render z grid south
 ## (D96/TM grid north is 0.30 degrees west of true north here).
 ##
@@ -18,6 +19,7 @@ const Obstacles = preload("res://landscapes/triglav_tamar/obstacles.gd")
 const TriglavLandscape = preload("res://landscapes/triglav_tamar/landscape.gd")
 const SceneDetail = preload("res://render/scene_detail.gd")
 const TERRAIN_SHADER = preload("res://landscapes/triglav_tamar/terrain.gdshader")
+const City = preload("res://landscapes/kamnik_duplica/city.gd")
 
 const ID: String = "kamnik_duplica"
 const DISPLAY_NAME: String = "Kamnik: Duplica airstrip"
@@ -70,6 +72,9 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	if FileAccess.file_exists(ROOT + "buildings/buildings.bin.gz"):
 		parts.append(Buildings.build(ROOT + "buildings/buildings.bin.gz", photo, PILOT_CORE, ground_ref,
 			float(detail.landscape_building_range_m)))
+	# Option 7b: Ljubljana's skyline, 12-20 km south-west (city.gd).
+	if FileAccess.file_exists(ROOT + "city/city.json"):
+		parts.append(City.build(ROOT + "city/city.json", CORE_ORIGIN + PILOT_CORE, ground_ref))
 	for part: Dictionary in parts:
 		if not str(part.error).is_empty():
 			push_warning("kamnik_duplica: " + str(part.error))

@@ -67,6 +67,25 @@ REGIONS = {
         "core_step_m": 1.0 / 32.0,
         "ring_base_m": 200.0,       # Ljubljana and the Sava are near 270 m; Grintovec is 2558 m
         "ring_step_m_height": 1.0 / 16.0,
+        # Option 7b: under Ljubljana the ring takes the GKOT ground of the city sheets (region ljubljana_city)
+        # instead of SRTM, so the castle hill and the river banks are real; it fades back to SRTM over 1 km.
+        "ring_lidar": ["ljubljana_city"],
+    },
+    # Option 7b: Ljubljana's skyline for the Kamnik landscape (research/kamnik/README.md). Only the GKOT sheets are
+    # fetched and rasterised under this region; research/kamnik/KM-03/bake_city.py bakes them into the Kamnik
+    # landscape (far city blocks, and the ring's ground under the city).
+    "ljubljana_city": {
+        "name": "Ljubljana city, for the Kamnik landscape's skyline, Slovenia",
+        "cache": REPO / "tmp/ljubljana_city",
+        "sources": REPO / "research/kamnik/sources_city.json",
+        "landscape": REPO / "app/landscapes/kamnik_duplica",
+        # 8 x 8 km: the centre and castle, Bezigrad, Siska, Vic, Moste, BTC and Stozice. E 458-465, N 98-105 km.
+        "core_e_km": 458,
+        "core_n_km": 98,
+        "core_km": 8,
+        "clss_search": "Prešernov trg",
+        "clss_pick": "Prešernov trg 1, Ljubljana",
+        "fetch_first": (462, 101),
     },
 }
 

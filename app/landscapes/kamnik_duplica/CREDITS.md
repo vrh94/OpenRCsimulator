@@ -6,7 +6,7 @@ source distribution.
 
 | Used for | Source | Licence and credit |
 | --- | --- | --- |
-| Bare-earth terrain (8 × 8 km core, 2 m), trees, buildings, aerial photo of the core (from the point colours) | Cyclic laser scanning of Slovenia 2023–2025: classified point cloud (GKOT), via [clss.si](https://clss.si/) | CC BY 4.0 ([terms](https://www.e-prostor.gov.si/en/access-to-geodetic-data/)). *Contains data of the Surveying and Mapping Authority of the Republic of Slovenia (GURS), cyclic laser scanning 2023–2025.* |
+| Bare-earth terrain (8 × 8 km core, 2 m), trees, buildings, aerial photo of the core (from the point colours); Ljubljana's skyline blocks and the ring's ground under the city | Cyclic laser scanning of Slovenia 2023–2025: classified point cloud (GKOT), via [clss.si](https://clss.si/) | CC BY 4.0 ([terms](https://www.e-prostor.gov.si/en/access-to-geodetic-data/)). *Contains data of the Surveying and Mapping Authority of the Republic of Slovenia (GURS), cyclic laser scanning 2023–2025.* |
 | Core terrain under dense canopy | ARSO LiDAR digital terrain model DMR1, 2014–15 survey | Free to use, modify and reuse with credit. *Ministry of the Environment and Spatial Planning, Slovenian Environment Agency (ARSO).* |
 | Outer ring heights (48 × 48 km: the Kamnik Alps, Krvavec, Rašica, Šmarna gora, Ljubljana) | SRTM 1 arc-second, Mapzen Terrain Tiles | Public domain. *SRTM data courtesy of the U.S. Geological Survey; Mapzen Terrain Tiles.* |
 | Outer ring colour | Sentinel-2 cloudless 2016, [s2maps.eu](https://s2maps.eu) | CC BY 4.0. *Sentinel-2 cloudless - https://s2maps.eu by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016).* |

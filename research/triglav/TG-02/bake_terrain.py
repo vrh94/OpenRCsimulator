@@ -189,6 +189,53 @@ def bake_ring(core2, srtm, srtm_size):
     return ring, (e0, n0), (first_e, first_n, block.shape[1], block.shape[0])
 
 
+def apply_ring_lidar(ring, ring_origin):
+    """Replace the ring's SRTM under each `ring_lidar` region (region.py) by that region's GKOT ground averaged over
+    each ring cell; the LiDAR - SRTM difference fades out over FADE_M around it, so no step appears."""
+    fade_m = 1000.0
+    info = {}
+    for name in R.get("ring_lidar", []):
+        area = regions.REGIONS[name]
+        raster = area["cache"] / "gkot_raster"
+        k, e_km, n_km = area["core_km"], area["core_e_km"], area["core_n_km"]
+        side = k * 1000
+        ground = np.full((side, side), np.nan, np.float32)   # 1 m, rows south to north
+        sheets = 0
+        for n in range(n_km, n_km + k):
+            for e in range(e_km, e_km + k):
+                path = raster / f"{e}_{n}.npz"
+                if path.exists():
+                    r0, c0 = (n - n_km) * 1000, (e - e_km) * 1000
+                    ground[r0:r0 + 1000, c0:c0 + 1000] = np.load(path)["ground"][::-1]
+                    sheets += 1
+        if not sheets:
+            continue
+        cell = int(RING_STEP)
+        blocks = ground.reshape(side // cell, cell, side // cell, cell)
+        count = np.isfinite(blocks).sum(axis=(1, 3))
+        with np.errstate(invalid="ignore", divide="ignore"):
+            lidar = np.where(count > 0, np.nansum(blocks, axis=(1, 3)) / count, np.nan)
+        first_e = int(round((e_km * 1000 - (ring_origin[0] - RING_STEP / 2)) / RING_STEP))
+        first_n = int(round((n_km * 1000 - (ring_origin[1] - RING_STEP / 2)) / RING_STEP))
+        rows, cols = lidar.shape
+        patch_srtm = ring[first_n:first_n + rows, first_e:first_e + cols].copy()
+        valid = np.isfinite(lidar) & (count >= cell * cell // 4)
+        offset = np.zeros_like(ring)
+        known = np.zeros(ring.shape, bool)
+        offset[first_n:first_n + rows, first_e:first_e + cols] = np.where(valid, lidar - patch_srtm, 0.0)
+        known[first_n:first_n + rows, first_e:first_e + cols] = valid
+        offset = push_pull(offset, known)
+        ii, jj = np.meshgrid(np.arange(ring.shape[0]), np.arange(ring.shape[1]), indexing="ij")
+        dn = np.maximum(np.maximum(first_n - ii, ii - (first_n + rows - 1)), 0) * RING_STEP
+        de = np.maximum(np.maximum(first_e - jj, jj - (first_e + cols - 1)), 0) * RING_STEP
+        weight = np.clip(1.0 - np.hypot(dn, de) / fade_m, 0.0, 1.0)
+        ring += offset * weight
+        diff = (lidar - patch_srtm)[valid]
+        info[name] = {"sheets": sheets, "cells": int(valid.sum()),
+                      "lidar_minus_srtm_median_m": round(float(np.median(diff)), 3)}
+    return info
+
+
 def encode(grid: np.ndarray, base_m: float, step_m: float):
     q = np.clip(np.rint((grid - base_m) / step_m), 0, 65535).astype("<u2")
     clamped = int(np.count_nonzero((grid - base_m) / step_m > 65535.5) + np.count_nonzero(grid < base_m))
@@ -203,11 +250,13 @@ def bake():
     srtm, srtm_size = load_srtm()
     core2, fill = bake_core(pins, srtm, srtm_size)
     ring, ring_origin, ring_core = bake_ring(core2, srtm, srtm_size)
+    ring_lidar = apply_ring_lidar(ring, ring_origin)
     outputs = {}
     attribution = pins["attribution"]
     for name, grid, origin, step, extra, base_m, step_m in (
         ("core", core2, None, CORE_STEP, fill, BASE_M, STEP_M),
-        ("ring", ring, ring_origin, RING_STEP, {"core_cells": dict(zip(["east_first", "north_first", "east_count", "north_count"], ring_core))},
+        ("ring", ring, ring_origin, RING_STEP, {"core_cells": dict(zip(["east_first", "north_first", "east_count", "north_count"], ring_core)),
+                                                 **({"ring_lidar": ring_lidar} if ring_lidar else {})},
          RING_BASE_M, RING_STEP_M),
     ):
         if name == "core":
