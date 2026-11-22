@@ -59,6 +59,10 @@ func _check_legacy_compatibility() -> void:
 	for preset: Dictionary in WindConfig.presets():
 		var config: Dictionary = preset.config
 		if config.format == WindConfig.SPATIAL_FORMAT:
+			if bool(preset.get("requires_terrain", false)):
+				# Terrain-following wind flies only once a launch binds it to a surveyed field.
+				_check("unbound terrain preset refuses to build: " + str(preset.id), not WindField.build(config).ok)
+				continue
 			# Explicit spatial laws deliberately refuse the positionless legacy API.
 			var spatial_field: Variant = WindField.build(config).field
 			_check("spatial preset requires a position: " + str(preset.id),

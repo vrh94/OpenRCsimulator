@@ -92,11 +92,13 @@ func _check_preset_contracts() -> void:
 		if bool(entry.available):
 			var checked: Dictionary = SpatialConfig.resolve(entry.spatial_wind)
 			_check("preset %s passes schema" % str(entry.id), checked.ok, str(checked.errors))
-	_check("ridge, rotor, valley remain explicitly unavailable",
-		not by_id["spatial-ridge-lift-v1"].available and not by_id["spatial-rotor-v1"].available
-		and not by_id["spatial-valley-v1"].available
-		and not by_id["spatial-ridge-lift-v1"].unavailable_reason.is_empty())
-	_check("unavailable IDs do not produce a fake preset", SpatialPresets.get_preset("spatial-ridge-lift-v1").is_empty())
+	_check("rotor and valley remain explicitly unavailable",
+		not by_id["spatial-rotor-v1"].available and not by_id["spatial-valley-v1"].available
+		and not by_id["spatial-rotor-v1"].unavailable_reason.is_empty())
+	_check("ridge lift is a terrain-following preset for surveyed fields", by_id["spatial-ridge-lift-v1"].available
+		and bool(by_id["spatial-ridge-lift-v1"].get("requires_terrain", false))
+		and by_id["spatial-ridge-lift-v1"].spatial_wind.format == SpatialConfig.FORMAT_V3)
+	_check("unavailable IDs do not produce a fake preset", SpatialPresets.get_preset("spatial-rotor-v1").is_empty())
 	var gusty: Dictionary = by_id["spatial-gusty-v1"].spatial_wind
 	_check("gust agenda stays finite within the one-day provider horizon", gusty.domain.time_horizon_s == 86400.0
 		and gusty.gusts.events.size() == 24
@@ -414,12 +416,18 @@ func _check_validation_cancel_and_locale() -> void:
 		and dialog.spatial_controls._field_inputs["gust_start_s"].text == "6"
 		and dialog.spatial_controls.domain_summary_label.text.contains("200 m AGL")
 		and dialog.spatial_controls.domain_summary_label.text.contains("86400 s"))
-	var ridge_index := _preset_index(dialog.spatial_controls.preset_picker, "Ridge lift (unavailable)")
+	var rotor_index := _preset_index(dialog.spatial_controls.preset_picker, "Terrain rotor (unavailable)")
 	var previous: Dictionary = dialog.spatial_controls._source_spatial.duplicate(true)
+	dialog.spatial_controls.preset_picker.select(rotor_index)
+	dialog.spatial_controls._on_preset_selected(rotor_index)
+	_check("unavailable terrain preset reports reason without changing the active flow",
+		dialog.spatial_controls.status_label.text.contains("Terrain-driven rotor")
+		and dialog.spatial_controls._source_spatial == previous)
+	var ridge_index := _preset_index(dialog.spatial_controls.preset_picker, str(SpatialPresets.get_preset("spatial-ridge-lift-v1").label))
 	dialog.spatial_controls.preset_picker.select(ridge_index)
 	dialog.spatial_controls._on_preset_selected(ridge_index)
-	_check("unavailable terrain preset reports reason without changing the active flow",
-		dialog.spatial_controls.status_label.text.contains("Terrain-driven ridge lift")
+	_check("ridge lift on a flat field asks for a surveyed field without changing the active flow",
+		dialog.spatial_controls.status_label.text.contains("surveyed terrain")
 		and dialog.spatial_controls._source_spatial == previous)
 	dialog.spatial_controls._field_inputs["reference_speed_mps"].text = "NaN"
 	dialog._on_apply()

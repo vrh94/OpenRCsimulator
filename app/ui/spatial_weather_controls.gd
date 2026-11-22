@@ -50,6 +50,10 @@ const ADVANCED_KEYS: Array[String] = [
 ]
 const SPATIAL_ACTIVE_NOTE := "Spatial wind is active; standard wind controls are replaced while this mode is enabled."
 const FIELD_NOTE := "Flat-site spatial field; terrain lift, rotor flow, and valley channeling are unavailable."
+const TERRAIN_NOTE := "Ridge lift follows surveyed terrain. Select a field with surveyed terrain, such as Triglav, to fly it."
+const TERRAIN_FIELD_NOTE := "On this field, ridge lift follows the surveyed terrain; rotor flow and valley channeling are unavailable."
+## Whether the selected field has surveyed terrain, so terrain-following presets can be flown (set before _ready).
+var terrain_available := false
 const TURBULENCE_NOTE := "Turbulence input is nominal; realized local variation can differ with height, wall taper, and the finite mode set."
 const GUST_NOTE := "Gusts are finite authored events. Editing these fields replaces the agenda with one event; the profile remains after it ends."
 const INACTIVE_NOTE := "Choose a spatial preset or enable spatial wind to edit this separate draft."
@@ -341,6 +345,11 @@ func _on_preset_selected(index: int) -> void:
 		_status_message = str(entry.unavailable_reason)
 		_refresh_texts()
 		return
+	if bool(entry.get("requires_terrain", false)) and not terrain_available:
+		_selected_preset_id = ""
+		_status_message = TERRAIN_NOTE
+		_refresh_texts()
+		return
 	set_source(entry.spatial_wind, true, str(entry.id))
 	enabled_changed.emit(true)
 	draft_changed.emit()
@@ -397,7 +406,7 @@ func _refresh_texts() -> void:
 	preset_label.text = tr("Spatial preset")
 	enable_check.text = tr("Enable spatial wind")
 	advanced_check.text = tr("Advanced spatial settings")
-	spatial_note.text = tr(SPATIAL_ACTIVE_NOTE) + " " + tr(FIELD_NOTE)
+	spatial_note.text = tr(SPATIAL_ACTIVE_NOTE) + " " + tr(TERRAIN_FIELD_NOTE if terrain_available else FIELD_NOTE)
 	turbulence_note.text = tr(TURBULENCE_NOTE)
 	gust_note.text = tr(GUST_NOTE)
 	for key: String in FIELDS:

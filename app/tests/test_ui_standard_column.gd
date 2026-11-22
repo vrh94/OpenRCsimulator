@@ -133,6 +133,7 @@ func _run() -> void:
 	v4_dialog.queue_free()
 	await ui.settle()
 	await _surveyed_field(source_v3)
+	await _ridge_preset(source_v3)
 	print("all standard-column UI checks passed" if _failures == 0 else "%d standard-column UI checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
 
@@ -166,6 +167,52 @@ func _surveyed_field(source: Dictionary) -> void:
 		float(_accepted_config.get("field_elevation_m", -1.0)) == 300.0
 		and float(_accepted_config.get("temperature_c", -1.0)) == 20.0, str(_accepted_config))
 	dialog.queue_free()
+	await ui.settle()
+
+
+## Option 2: ridge lift applies on a surveyed field, keeps its terrain flow through spatial edits, and a flat field's
+## dialog refuses it with a note instead of applying.
+func _ridge_preset(source: Dictionary) -> void:
+	var entries: Array[Dictionary] = WeatherSettings.presets()
+	var ridge := -1
+	for index: int in entries.size():
+		if entries[index].id == "spatial-ridge-lift-v1":
+			ridge = index + 1
+	_check("ridge lift is a weather preset", ridge > 0)
+	if ridge <= 0:
+		return
+	var dialog: CanvasLayer = WeatherDialog.new(source.duplicate(true), null, null, null, 849.7) as CanvasLayer
+	dialog.applied.connect(_on_applied)
+	root.add_child(dialog)
+	await ui.settle()
+	_check("surveyed field: the ridge preset has no restriction caption",
+		not dialog.preset_picker.get_item_text(ridge).contains("surveyed fields only"), dialog.preset_picker.get_item_text(ridge))
+	dialog.preset_picker.select(ridge)
+	dialog._on_preset_selected(ridge)
+	await ui.settle()
+	dialog.spatial_controls._field_inputs["reference_speed_mps"].text = "8"
+	dialog._on_apply()
+	var spatial: Dictionary = _accepted_config.get("spatial_wind", {})
+	_check("surveyed field: ridge lift applies as terrain-following wind and keeps it through edits",
+		str(spatial.get("format", "")) == "openrc-spatial-wind v3"
+		and str(spatial.get("terrain_flow", {}).get("terrain", "")) == "field"
+		and float(spatial.profile.reference_speed_mps) == 8.0, str(spatial))
+	dialog.queue_free()
+	await ui.settle()
+	_accepted_config = {}
+	var flat: CanvasLayer = WeatherDialog.new(source.duplicate(true)) as CanvasLayer
+	flat.applied.connect(_on_applied)
+	root.add_child(flat)
+	await ui.settle()
+	_check("flat field: the ridge preset is captioned for surveyed fields",
+		flat.preset_picker.get_item_text(ridge).contains("surveyed fields only"), flat.preset_picker.get_item_text(ridge))
+	flat.preset_picker.select(ridge)
+	flat._on_preset_selected(ridge)
+	await ui.settle()
+	_check("flat field: choosing ridge lift explains instead of applying",
+		flat.preset_picker.selected == 0 and flat.error_label.visible and flat.error_label.text.contains("surveyed terrain"),
+		flat.error_label.text)
+	flat.queue_free()
 	await ui.settle()
 
 

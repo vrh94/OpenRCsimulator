@@ -126,6 +126,7 @@ var _diagnostic_generation := 0
 ## Surveyed elevation of the selected field (physics/field_air.gd); 0.0 on a flat field. A surveyed field flies at
 ## its own height, so the elevation box shows that height read-only and the saved value is kept for flat fields.
 var field_elevation_m: float = 0.0
+const TERRAIN_PRESET_NOTE := "Ridge lift follows surveyed terrain. Select a field with surveyed terrain, such as Triglav, to fly it."
 
 
 func _init(initial_config: Variant = null, initial_lighting_config: Variant = null, initial_night_options: Variant = null, initial_sky_config: Variant = null, selected_field_elevation_m: float = 0.0) -> void:
@@ -214,6 +215,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	for key: String in EDITED_KEYS:
 		_add_number_field(wind_grid, key, FIELD_LABELS[key], field_inputs, false, false)
 	spatial_controls = SpatialWeatherControls.new() as VBoxContainer
+	spatial_controls.terrain_available = field_elevation_m != 0.0
 	spatial_controls.set_source(_base_config.get("spatial_wind"),
 		_base_config.get("format", "") == WeatherSettings.SPATIAL_FORMAT)
 	spatial_controls.enabled_changed.connect(_on_spatial_enabled_changed)
@@ -365,6 +367,8 @@ func _fill_presets() -> void:
 		var caption: String = tr(entry.label)
 		if entry.get("changes_atmosphere", false):
 			caption += " · " + tr("Wind") + " + " + tr("Atmosphere")
+		if entry.get("requires_terrain", false) and field_elevation_m == 0.0:
+			caption += " · " + tr("surveyed fields only")
 		preset_picker.add_item(caption)
 	preset_picker.select(mini(selected, preset_picker.item_count - 1))
 
@@ -589,9 +593,20 @@ func _on_preset_selected(index: int) -> void:
 	var preset_index: int = index - 1
 	if preset_index >= 0 and preset_index < entries.size():
 		var entry: Dictionary = entries[preset_index]
+		if entry.get("requires_terrain", false) and field_elevation_m == 0.0:
+			preset_picker.select(0)
+			_show_terrain_preset_note()
+			return
 		var replace_atmosphere: bool = entry.get("changes_atmosphere", false)
 		var config: Dictionary = entry.config if replace_atmosphere else _wind_preset_config(entry.config)
 		_set_fields(config, index, replace_atmosphere)
+
+
+func _show_terrain_preset_note() -> void:
+	if error_label == null:
+		return
+	error_label.text = tr(TERRAIN_PRESET_NOTE)
+	_set_error_visible(true)
 
 
 ## Merge only the accepted air into the new wind base; leave the live atmosphere

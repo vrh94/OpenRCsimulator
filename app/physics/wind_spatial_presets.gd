@@ -3,6 +3,13 @@ extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const SpatialConfig := preload("res://physics/wind_spatial_config.gd")
+## Ridge lift preset (option 2, 2026-11-22). Alpine meadow and forest roughness; smoothing and decay span the
+## valley walls' scale rather than single gullies.
+const RIDGE_SPEED_MPS := 6.0
+const RIDGE_FROM_DEG := 90.0
+const RIDGE_ROUGHNESS_M := 0.1
+const RIDGE_SMOOTHING_M := 96.0
+const RIDGE_DECAY_M := 150.0
 const GUST_AGENDA_STARTS: Array[float] = [
 	6.0, 22.0, 51.0, 93.0, 148.0, 220.0, 311.0, 421.0,
 	552.0, 630.0, 704.0, 765.0, 813.0, 850.0, 876.0, 890.0,
@@ -53,13 +60,30 @@ static func entries() -> Array[Dictionary]:
 	output.append(_entry("spatial-strong-wind-v1", "Strong wind · 8 m/s FROM 090°",
 		"A steady east wind at the reference height. Use only when the selected aircraft and scenario support it.",
 		_steady(8.0, 90.0)))
-	output.append(_unavailable("spatial-ridge-lift-v1", "Ridge lift (unavailable)",
-		"Terrain-driven ridge lift is not represented by the flat-site spatial-wind provider."))
+	output.append(_terrain_entry("spatial-ridge-lift-v1", "Ridge lift · %.0f m/s FROM %03.0f°" % [RIDGE_SPEED_MPS,
+		RIDGE_FROM_DEG], "Wind follows the surveyed terrain: windward slopes lift and lee slopes sink, fading with "
+		+ "height. Fields with surveyed terrain only; elsewhere it flies as a steady wind. No rotors or valley channelling.",
+		ridge_lift(RIDGE_SPEED_MPS, RIDGE_FROM_DEG)))
 	output.append(_unavailable("spatial-rotor-v1", "Terrain rotor (unavailable)",
 		"Terrain-driven rotor flow is not represented by the flat-site spatial-wind provider."))
 	output.append(_unavailable("spatial-valley-v1", "Valley channeling (unavailable)",
 		"Valley channeling is not represented by the flat-site spatial-wind provider."))
 	return output
+
+
+## Ridge lift (terrain-following v3): a steady profile whose terrain is bound to the selected field at launch.
+static func ridge_lift(speed_mps: float, from_deg: float) -> Dictionary:
+	var config := _base(speed_mps, from_deg, 10.0, RIDGE_ROUGHNESS_M)
+	config.format = SpatialConfig.FORMAT_V3
+	config.profile.wall_join_height_agl_m = 10.0 * RIDGE_ROUGHNESS_M # the law's floor, d + max(0.3 m, 10 z0)
+	config.domain.max_height_agl_m = 1000.0
+	config["terrain_flow"] = {
+		"law": SpatialConfig.TERRAIN_FLOW_LAW,
+		"terrain": SpatialConfig.TERRAIN_UNBOUND,
+		"smoothing_m": RIDGE_SMOOTHING_M,
+		"decay_height_m": RIDGE_DECAY_M,
+	}
+	return config
 
 
 static func get_preset(preset_id: String) -> Dictionary:
@@ -78,6 +102,12 @@ static func _entry(preset_id: String, label: String, description: String, spatia
 		"unavailable_reason": "",
 		"spatial_wind": spatial,
 	}
+
+
+static func _terrain_entry(preset_id: String, label: String, description: String, spatial: Dictionary) -> Dictionary:
+	var entry := _entry(preset_id, label, description, spatial)
+	entry["requires_terrain"] = true
+	return entry
 
 
 static func _unavailable(preset_id: String, label: String, reason: String) -> Dictionary:

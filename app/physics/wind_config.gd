@@ -212,7 +212,8 @@ static func presets() -> Array[Dictionary]:
 			continue
 		var spatial := spatial_defaults()
 		spatial.spatial_wind = entry.spatial_wind.duplicate(true)
-		out.append({id = entry.id, label = entry.label, config = spatial})
+		out.append({id = entry.id, label = entry.label, config = spatial,
+			requires_terrain = bool(entry.get("requires_terrain", false))})
 	return out
 
 
@@ -230,7 +231,8 @@ static func summary(config: Variant) -> String:
 		return "Invalid weather"
 	var c: Dictionary = checked.config
 	if c.format == SPATIAL_FORMAT:
-		return "Spatial wind: %.1f m/s from %03.0f° at %.0f m AGL" % [c.spatial_wind.profile.reference_speed_mps, c.spatial_wind.profile.reference_from_deg, c.spatial_wind.profile.reference_height_agl_m]
+		return ("Spatial wind: %.1f m/s from %03.0f° at %.0f m AGL" % [c.spatial_wind.profile.reference_speed_mps, c.spatial_wind.profile.reference_from_deg, c.spatial_wind.profile.reference_height_agl_m]) \
+			+ (" with ridge lift" if c.spatial_wind.get("format") == SpatialConfig.FORMAT_V3 else "")
 	if float(c.speed_mps) == 0.0 and float(c.gust_mps) == 0.0 and float(c.gust_up_mps) == 0.0 \
 			and not has_turbulence(c) and not has_atmosphere(c) and not has_vertical_atmosphere(c):
 		return "Calm"

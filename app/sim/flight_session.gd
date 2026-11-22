@@ -5944,7 +5944,9 @@ func trace_meta() -> Dictionary:
 	if _weather.is_spatial():
 		metadata.spatial_weather_schema = SPATIAL_RECEIPT_FORMAT
 		metadata.spatial_weather_receipt = JSON.stringify(_spatial_weather_receipt(_weather), "", true, true)
-		metadata.weather_model = "flat-site-spatial-wind-v1"
+		var spatial_field: Variant = _weather.get("_spatial")
+		metadata.weather_model = "terrain-following-spatial-wind-v1" if spatial_field != null \
+			and spatial_field.has_terrain_flow() else "flat-site-spatial-wind-v1"
 		metadata.weather_timing = "datum wind/TAS at row position/time; loads_* at previous body position and k1 time; all surface/prop points use that stage time"
 		metadata.spatial_aero_model = Aero.SPATIAL_CONTINUATION_LAW
 		metadata.spatial_aero_limits = "continuous local section surrogate; held reference wake; datum body residuals; no dynamic stall or measured RC qualification"

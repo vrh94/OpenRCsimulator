@@ -7,10 +7,13 @@ extends RefCounted
 ## - custom keeps the pilot's temperature, QNH and humidity and takes the field's elevation;
 ## - standard_column takes the field's elevation as its base.
 ## Applied where the launch hands weather to a session, so logs record the air the flight actually flew in.
+## Option 2 (2026-11-22): the same step binds terrain-following spatial wind (v3, ridge lift) to the field's surveyed
+## terrain; on a flat field it flies as the plain spatial wind (v1) it extends.
 
 const Atmosphere := preload("res://physics/atmosphere.gd")
 const TerrainDem := preload("res://physics/terrain_dem.gd")
 const WindConfig := preload("res://physics/wind_config.gd")
+const SpatialConfig := preload("res://physics/wind_spatial_config.gd")
 
 
 ## Metres above sea level of the field origin; 0.0 for a field without surveyed terrain.
@@ -26,7 +29,30 @@ static func elevation_m(field: Dictionary) -> float:
 ## The weather `config` as flown on `field`. Unchanged on flat fields and for configs that are not dictionaries
 ## (setup_weather reports those). Idempotent.
 static func weather(config: Variant, field: Dictionary) -> Variant:
-	return at_elevation(config, elevation_m(field))
+	return bind_terrain(at_elevation(config, elevation_m(field)), field)
+
+
+## The weather `config` with terrain-following spatial wind bound to `field`'s surveyed terrain, or reduced to plain
+## spatial wind on a field without one. Other configs are returned unchanged. Idempotent.
+static func bind_terrain(config: Variant, field: Dictionary) -> Variant:
+	if typeof(config) != TYPE_DICTIONARY or str(config.get("format", "")) != WindConfig.SPATIAL_FORMAT:
+		return config
+	var spatial: Variant = config.get("spatial_wind")
+	if typeof(spatial) != TYPE_DICTIONARY or str(spatial.get("format", "")) != SpatialConfig.FORMAT_V3:
+		return config
+	var bound: Dictionary = (config as Dictionary).duplicate(true)
+	var terrain: Variant = field.get("terrain", {})
+	var dem: RefCounted = null
+	if typeof(terrain) == TYPE_DICTIONARY and not (terrain as Dictionary).is_empty():
+		dem = TerrainDem.load_cached(str(terrain.get("core", "")), str(terrain.get("ring", "")),
+			float(terrain.get("origin_east", NAN)), float(terrain.get("origin_north", NAN)))
+	if dem == null or not dem.ok():
+		bound.spatial_wind.format = SpatialConfig.FORMAT
+		bound.spatial_wind.erase("terrain_flow")
+		return bound
+	bound.spatial_wind.terrain_flow.terrain = {core = str(terrain.core), ring = str(terrain.ring),
+		origin_east_m = float(terrain.origin_east), origin_north_m = float(terrain.origin_north), identity = dem.identity}
+	return bound
 
 
 ## The weather `config` as flown on a field `elevation` metres above sea level (0.0: unchanged).

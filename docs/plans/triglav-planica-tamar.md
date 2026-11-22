@@ -126,3 +126,7 @@ quantized products the game needs are committed, each well under the repository'
   air becomes the standard atmosphere there; custom air keeps its temperature, QNH and humidity at the field's
   elevation. Home's conditions line shows the air flown. Natural Random stays on Club field (its v1 catalog pins sea
   level). Wind and height-above-ground readouts use the datum at the pilot spot.
+- **Ridge lift** (owner request 2026-11-22, done). The weather preset "Ridge lift" makes the wind follow the surveyed
+  terrain on fields that have it: windward slopes lift and lee slopes sink, fading with height. With an east wind the
+  slope south of the pilot spot gives about 4 m/s of lift. Rotors and valley channelling are not modelled
+  ([decision](../DECISIONS.md)).

@@ -6,6 +6,9 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const Config := preload("res://physics/wind_spatial_config.gd")
 const ThermalField := preload("res://physics/wind_thermal_field.gd")
+const TerrainDem := preload("res://physics/terrain_dem.gd")
+## terrain_flow: the slope that lifts the wind is capped here (56 degrees); steeper smoothed terrain lifts no faster.
+const TERRAIN_FLOW_MAX_SLOPE := 1.5
 const TAU_F64 := 6.283185307179586476925286766559
 const U32_MASK := 0xffffffff
 const U32_SCALE := 4294967296.0
@@ -36,6 +39,10 @@ var _gust_transition_height := 0.0
 var _gust_values := PackedFloat64Array()
 var _gust_max_duration := 0.0
 var _turbulence_rms := 0.0
+# v3 terrain_flow: the surveyed terrain the wind follows, or null.
+var _terrain: RefCounted = null
+var _terrain_smoothing := 0.0
+var _terrain_decay := 0.0
 
 
 ## Validate, detach, and freeze a spatial provider. A failure never yields a zero-wind fallback.
@@ -53,9 +60,24 @@ static func build(raw: Variant) -> Dictionary:
 		thermal_field = thermal_built.field
 		thermal_content_hash = str(checked.thermal_content_hash)
 		thermal_law = str(checked.thermal_law)
+	var terrain: RefCounted = null
+	if checked.config.format == Config.FORMAT_V3:
+		var bound: Variant = checked.config.terrain_flow.terrain
+		if typeof(bound) != TYPE_DICTIONARY:
+			return {"ok": false, "field": null, "errors": PackedStringArray([
+				"terrain_flow.terrain must be bound to a surveyed field before flight"])}
+		terrain = TerrainDem.load_cached(str(bound.core), str(bound.ring), float(bound.origin_east_m),
+			float(bound.origin_north_m))
+		if not terrain.ok():
+			return {"ok": false, "field": null, "errors": PackedStringArray(["terrain_flow: %s" % terrain.error])}
+		if terrain.identity != str(bound.identity):
+			return {"ok": false, "field": null, "errors": PackedStringArray([
+				"terrain_flow.terrain.identity does not match the surveyed grids"])}
 	var script: Script = load("res://physics/wind_spatial_field.gd")
 	var field: Variant = script.new()
 	field.call("_apply_config", checked.config, checked.content_hash, thermal_field, thermal_content_hash, thermal_law)
+	if terrain != null:
+		field.call("_apply_terrain", terrain)
 	return {"ok": true, "field": field, "errors": PackedStringArray()}
 
 
@@ -67,6 +89,17 @@ func _apply_config(config: Dictionary, content_hash: String, thermal_field: Vari
 	_thermal_law = thermal_law
 	_prepare_profile_and_gusts()
 	_modes = _resolve_modes()
+
+
+func _apply_terrain(terrain: RefCounted) -> void:
+	_terrain = terrain
+	_terrain_smoothing = float(_config.terrain_flow.smoothing_m)
+	_terrain_decay = float(_config.terrain_flow.decay_height_m)
+
+
+## True for a v3 field that follows surveyed terrain.
+func has_terrain_flow() -> bool:
+	return _terrain != null
 
 
 func _prepare_profile_and_gusts() -> void:
@@ -157,6 +190,8 @@ func absolute_speed_bound_mps() -> float:
 	bound += 2.0 * (1.0 + 1.875 / TAU_F64) * rms * sqrt(count)
 	if _thermal_field != null:
 		bound += float(_thermal_field.absolute_speed_bound_mps())
+	if _terrain != null:
+		bound += TERRAIN_FLOW_MAX_SLOPE * maxf(log_speed, free_air_speed)
 	return bound
 
 
@@ -181,6 +216,11 @@ func sample_world(position_ned: PackedFloat64Array, simulation_time_s: float) ->
 	if not is_finite(epoch_time) or epoch_time > float(domain.time_horizon_s):
 		return _sample_failure("world epoch time is outside the declared horizon")
 	var height_agl := -position_ned[2]
+	if _terrain != null:
+		# Terrain flow: heights are above the surveyed ground under the point; inside the ground the air is still.
+		height_agl -= float(_terrain.sample(position_ned[0], position_ned[1])[0])
+		if height_agl <= 0.0:
+			return _sample_success(PackedFloat64Array([0.0, 0.0, 0.0]))
 	if height_agl < -float(domain.ground_extension_m):
 		return _sample_failure("position is below the declared flat-site ground extension")
 	if height_agl > float(domain.max_height_agl_m):
@@ -190,12 +230,17 @@ func sample_world(position_ned: PackedFloat64Array, simulation_time_s: float) ->
 		return _sample_success(PackedFloat64Array([0.0, 0.0, 0.0]))
 
 	var wind := _profile_wind(height_agl)
+	var lift := 0.0
+	if _terrain != null:
+		lift = _terrain_updraft(wind, position_ned[0], position_ned[1], height_agl)
 	var gust := _gust_wind(height_agl, epoch_time)
 	var turbulent := _turbulence_wind(position_ned[0], position_ned[1], height_agl, epoch_time)
 	for axis: int in 3:
 		wind[axis] += gust[axis] + turbulent[axis]
 		if not is_finite(wind[axis]):
 			return _sample_failure("spatial field evaluation overflowed")
+	if lift != 0.0:
+		wind[2] -= lift # NED: up is negative down
 	if _thermal_field != null:
 		var thermal_sample: Dictionary = _thermal_field.sample_world(position_ned, simulation_time_s)
 		if not thermal_sample.ok:
@@ -206,6 +251,21 @@ func sample_world(position_ned: PackedFloat64Array, simulation_time_s: float) ->
 			if not is_finite(wind[axis]):
 				return _sample_failure("combined spatial and thermal field evaluation overflowed")
 	return _sample_success(wind)
+
+
+## terrain-following-linear-hill-updraft-v1: the kinematic surface condition of linear flow over a hill (Jackson and
+## Hunt 1975), w = U . grad h, with the mean profile wind U at the point's height above the ground and h the terrain
+## smoothed at smoothing_m, fading as exp(-height / decay_height_m). Windward slopes lift, lee slopes sink; flow
+## separation, rotors, speed-up over crests and valley channelling are not modelled. Returns the upward speed (m/s).
+func _terrain_updraft(mean: PackedFloat64Array, north: float, east: float, height_agl: float) -> float:
+	var smooth: PackedFloat64Array = _terrain.smooth_sample(north, east, _terrain_smoothing)
+	var slope_north := smooth[1]
+	var slope_east := smooth[2]
+	var steepness := sqrt(slope_north * slope_north + slope_east * slope_east)
+	if steepness > TERRAIN_FLOW_MAX_SLOPE:
+		slope_north *= TERRAIN_FLOW_MAX_SLOPE / steepness
+		slope_east *= TERRAIN_FLOW_MAX_SLOPE / steepness
+	return (mean[0] * slope_north + mean[1] * slope_east) * M.exp_(-height_agl / _terrain_decay)
 
 
 func _profile_wind(height_agl: float) -> PackedFloat64Array:

@@ -6,6 +6,14 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const FORMAT := "openrc-spatial-wind v1"
 const FORMAT_V2 := "openrc-spatial-wind v2"
+## Option 2 (2026-11-22): v1 plus `terrain_flow`, wind that follows a surveyed field's terrain (ridge lift).
+const FORMAT_V3 := "openrc-spatial-wind v3"
+const TERRAIN_FLOW_LAW := "terrain-following-linear-hill-updraft-v1"
+## Saved preferences name the terrain "field"; a launch binds it to the selected field's surveyed grids
+## (physics/field_air.gd). Only a bound terrain can be flown.
+const TERRAIN_UNBOUND := "field"
+const TERRAIN_FLOW_KEYS := ["law", "terrain", "smoothing_m", "decay_height_m"]
+const TERRAIN_KEYS := ["core", "ring", "origin_east_m", "origin_north_m", "identity"]
 const FRAME := "NED"
 const DATUM_LAW := "flat-site-ground-plane-v1"
 const PROFILE_LAW := "neutral-log-flat-site-c1-wall-v1"
@@ -15,6 +23,7 @@ const SEED_ALGORITHM := "xorshift32-v1"
 
 const ROOT_KEYS := ["format", "identity", "frame", "datum", "domain", "profile", "gusts", "turbulence"]
 const ROOT_KEYS_V2 := ["format", "identity", "frame", "datum", "domain", "profile", "gusts", "turbulence", "thermal_field"]
+const ROOT_KEYS_V3 := ["format", "identity", "frame", "datum", "domain", "profile", "gusts", "turbulence", "terrain_flow"]
 const IDENTITY_KEYS := ["seed_u32", "world_epoch_id_u32", "epoch_offset_s", "seed_algorithm"]
 const DATUM_KEYS := ["law", "ground_down_m"]
 const DOMAIN_KEYS := [
@@ -141,9 +150,11 @@ static func resolve(raw: Variant) -> Dictionary:
 	var source: Dictionary = raw
 	var format_name := str(source.get("format", ""))
 	var version_two := format_name == FORMAT_V2
-	if format_name not in [FORMAT, FORMAT_V2]:
-		errors.append("spatial_wind.format must be '%s' or '%s'" % [FORMAT, FORMAT_V2])
-	_check_keys(source, ROOT_KEYS_V2 if version_two else ROOT_KEYS, "spatial_wind", errors)
+	var version_three := format_name == FORMAT_V3
+	if format_name not in [FORMAT, FORMAT_V2, FORMAT_V3]:
+		errors.append("spatial_wind.format must be '%s', '%s' or '%s'" % [FORMAT, FORMAT_V2, FORMAT_V3])
+	_check_keys(source, ROOT_KEYS_V2 if version_two else (ROOT_KEYS_V3 if version_three else ROOT_KEYS), "spatial_wind",
+		errors)
 	if source.get("frame") != FRAME:
 		errors.append("spatial_wind.frame must be 'NED'")
 
@@ -323,6 +334,10 @@ static func resolve(raw: Variant) -> Dictionary:
 			thermal_config = thermal_checked.config
 			thermal_content_hash = str(thermal_checked.content_hash)
 
+	var terrain_flow: Dictionary = {}
+	if version_three:
+		terrain_flow = _terrain_flow(source.get("terrain_flow"), errors)
+
 	if not errors.is_empty():
 		return {"ok": false, "config": {}, "content_hash": "", "errors": errors}
 
@@ -349,6 +364,8 @@ static func resolve(raw: Variant) -> Dictionary:
 	}
 	if version_two:
 		canonical["thermal_field"] = thermal_config
+	if version_three:
+		canonical["terrain_flow"] = terrain_flow
 	var result := {
 		"ok": true,
 		"config": canonical,
@@ -359,6 +376,44 @@ static func resolve(raw: Variant) -> Dictionary:
 		result["thermal_content_hash"] = thermal_content_hash
 		result["thermal_law"] = str(thermal_config.law)
 	return result
+
+
+## The terrain_flow block of a v3 configuration, canonical.
+static func _terrain_flow(raw: Variant, errors: PackedStringArray) -> Dictionary:
+	if typeof(raw) != TYPE_DICTIONARY:
+		errors.append("spatial_wind.terrain_flow must be an object")
+		return {}
+	var source: Dictionary = raw
+	_check_keys(source, TERRAIN_FLOW_KEYS, "spatial_wind.terrain_flow", errors)
+	if source.get("law") != TERRAIN_FLOW_LAW:
+		errors.append("terrain_flow.law must be '%s'" % TERRAIN_FLOW_LAW)
+	var terrain: Variant = TERRAIN_UNBOUND
+	var terrain_raw: Variant = source.get("terrain")
+	if typeof(terrain_raw) == TYPE_DICTIONARY:
+		var terrain_source: Dictionary = terrain_raw
+		_check_keys(terrain_source, TERRAIN_KEYS, "terrain_flow.terrain", errors)
+		for key: String in ["core", "ring"]:
+			var path: Variant = terrain_source.get(key)
+			if typeof(path) != TYPE_STRING or not str(path).begins_with("res://") or ".." in str(path):
+				errors.append("terrain_flow.terrain.%s must be a res:// path" % key)
+		var identity: Variant = terrain_source.get("identity")
+		if typeof(identity) != TYPE_STRING or not str(identity).begins_with("dem-"):
+			errors.append("terrain_flow.terrain.identity must be a terrain identity")
+		terrain = {
+			"core": str(terrain_source.get("core", "")),
+			"ring": str(terrain_source.get("ring", "")),
+			"origin_east_m": _number(terrain_source.get("origin_east_m"), "terrain_flow.terrain.origin_east_m", -1.0e7, 1.0e7, errors),
+			"origin_north_m": _number(terrain_source.get("origin_north_m"), "terrain_flow.terrain.origin_north_m", -1.0e7, 1.0e7, errors),
+			"identity": str(identity),
+		}
+	elif terrain_raw != TERRAIN_UNBOUND:
+		errors.append("terrain_flow.terrain must be '%s' or a bound terrain object" % TERRAIN_UNBOUND)
+	return {
+		"law": TERRAIN_FLOW_LAW,
+		"terrain": terrain,
+		"smoothing_m": _number(source.get("smoothing_m"), "terrain_flow.smoothing_m", 32.0, 256.0, errors),
+		"decay_height_m": _number(source.get("decay_height_m"), "terrain_flow.decay_height_m", 20.0, 1000.0, errors),
+	}
 
 
 static func _validate_thermal_coupling(thermal: Dictionary, identity: Dictionary, datum: Dictionary, domain: Dictionary, errors: PackedStringArray) -> void:

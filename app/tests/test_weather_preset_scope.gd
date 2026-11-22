@@ -125,6 +125,8 @@ func _preset_matrix() -> void:
 	var column: Dictionary = Weather.upgrade_column(_custom(), {atmosphere_mode = "standard_column"})
 	for source: Dictionary in [_custom(), column]:
 		for entry: Dictionary in Weather.presets():
+			if entry.get("requires_terrain", false):
+				continue # flat-field dialogs refuse it (test_ui_spatial_weather.gd)
 			if entry.id in COMPOSITE:
 				continue
 			var dialog: CanvasLayer = await _open(source)

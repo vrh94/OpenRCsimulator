@@ -422,6 +422,20 @@ from 1.04 to 0.61 ms per tick, level with the Club field. The helicopter's rotor
 bound because it feeds the strike test itself, not only a skip. Revisit if a terrain needs bounds outside its grid
 (lakes on terrain) or native kernels learn terrain.
 
+### Ridge lift is terrain-following spatial wind bound at launch
+
+Owner request 2026-11-22 (slope wind on the Triglav terrain). Spatial wind gains format `openrc-spatial-wind v3`
+(`wind_spatial_config.gd`, law `terrain-following-linear-hill-updraft-v1`): the flat-site profile is measured above
+the surveyed ground, and the vertical wind is the profile wind along the terrain's slope, smoothed over 96 m and
+fading with height over 150 m (`wind_spatial_field.gd`, `terrain_dem.gd` `smooth_sample`). Windward slopes lift and
+lee slopes sink; inside the ground the air is still. The pilot's weather names its terrain only as `"field"`;
+`field_air.gd` binds the selected field's grids and identity when a launch hands weather to a session, so flight
+logs carry the terrain they flew, and on a flat field the same preset flies as plain spatial wind. The preset
+"Ridge lift · 6 m/s FROM 090°" gives about 4 m/s of lift 30 m over the slope 1 km south of the pilot spot. It adds
+about 0.3 ms per airborne tick to the cost of spatial wind. Native weather refuses v3. Rotors, lee waves and valley
+channelling are not modelled: a linear updraft has no flow separation. Revisit if a mass-consistent or
+potential-flow solution is affordable, or valley winds are wanted.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

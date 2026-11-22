@@ -54,6 +54,9 @@ var _r_ref := 0.0        # ground_ref_m in ring units
 var _bounds: Dictionary = {}   # Vector2i block -> [height bound (m above ground_ref_m), slope bound]
 var _bounds_mutex := Mutex.new()
 
+var _smooth: Dictionary = {}   # Vector3i(column, row, spacing) -> mean height of the box around that node
+var _smooth_mutex := Mutex.new()
+
 static var _cache: Dictionary = {}
 static var _cache_mutex := Mutex.new()
 
@@ -218,6 +221,90 @@ static func _node_range(data: PackedByteArray, cols: int, rows: int, c0: int, c1
 				step_y = maxi(step_y, absi(data.decode_u16(at + cols * 2) - v))
 			at += 2
 	return PackedInt32Array([high, low, step_x, step_y])
+
+
+## [height, dh/dnorth, dh/deast] of the terrain smoothed at `spacing` metres (32-256): a Catmull-Rom patch through
+## nodes every `spacing` metres, each the mean of the 16 m ring surface over a spacing-wide box around it (5 x 5
+## samples). Features narrower than about the spacing vanish; the slope is continuous. For flow over the terrain
+## (physics/wind_spatial_field.gd terrain_flow), not for contact.
+func smooth_sample(north: float, east: float, spacing: float) -> PackedFloat64Array:
+	var u := east / spacing
+	var v := north / spacing
+	var c := floori(u)
+	var r := floori(v)
+	var tx := u - c
+	var ty := v - r
+	var tx2 := tx * tx
+	var ty2 := ty * ty
+	# Catmull-Rom weights (w) and their derivatives (d), written out as in _bicubic.
+	var wx0 := 0.5 * (-tx2 * tx + 2.0 * tx2 - tx)
+	var wx1 := 0.5 * (3.0 * tx2 * tx - 5.0 * tx2 + 2.0)
+	var wx2 := 0.5 * (-3.0 * tx2 * tx + 4.0 * tx2 + tx)
+	var wx3 := 0.5 * (tx2 * tx - tx2)
+	var dx0 := 0.5 * (-3.0 * tx2 + 4.0 * tx - 1.0)
+	var dx1 := 0.5 * (9.0 * tx2 - 10.0 * tx)
+	var dx2 := 0.5 * (-9.0 * tx2 + 8.0 * tx + 1.0)
+	var dx3 := 0.5 * (3.0 * tx2 - 2.0 * tx)
+	var p := _smooth_patch(c, r, int(spacing), spacing)
+	var r0 := wx0 * p[0] + wx1 * p[1] + wx2 * p[2] + wx3 * p[3]
+	var r1 := wx0 * p[4] + wx1 * p[5] + wx2 * p[6] + wx3 * p[7]
+	var r2 := wx0 * p[8] + wx1 * p[9] + wx2 * p[10] + wx3 * p[11]
+	var r3 := wx0 * p[12] + wx1 * p[13] + wx2 * p[14] + wx3 * p[15]
+	var s0 := dx0 * p[0] + dx1 * p[1] + dx2 * p[2] + dx3 * p[3]
+	var s1 := dx0 * p[4] + dx1 * p[5] + dx2 * p[6] + dx3 * p[7]
+	var s2 := dx0 * p[8] + dx1 * p[9] + dx2 * p[10] + dx3 * p[11]
+	var s3 := dx0 * p[12] + dx1 * p[13] + dx2 * p[14] + dx3 * p[15]
+	var wy0 := 0.5 * (-ty2 * ty + 2.0 * ty2 - ty)
+	var wy1 := 0.5 * (3.0 * ty2 * ty - 5.0 * ty2 + 2.0)
+	var wy2 := 0.5 * (-3.0 * ty2 * ty + 4.0 * ty2 + ty)
+	var wy3 := 0.5 * (ty2 * ty - ty2)
+	var dy0 := 0.5 * (-3.0 * ty2 + 4.0 * ty - 1.0)
+	var dy1 := 0.5 * (9.0 * ty2 - 10.0 * ty)
+	var dy2 := 0.5 * (-9.0 * ty2 + 8.0 * ty + 1.0)
+	var dy3 := 0.5 * (3.0 * ty2 - 2.0 * ty)
+	return PackedFloat64Array([wy0 * r0 + wy1 * r1 + wy2 * r2 + wy3 * r3,
+		(dy0 * r0 + dy1 * r1 + dy2 * r2 + dy3 * r3) / spacing,
+		(wy0 * s0 + wy1 * s1 + wy2 * s2 + wy3 * s3) / spacing])
+
+
+## The 4 × 4 smoothed nodes around cell (column, row), row-major from (column - 1, row - 1); cached per cell so a
+## sample takes one lookup. The values are the cached nodes themselves, so samples are unchanged.
+func _smooth_patch(column: int, row: int, key_spacing: int, spacing: float) -> PackedFloat64Array:
+	var key := Vector3i(column, row, -key_spacing)
+	_smooth_mutex.lock()
+	var known: Variant = _smooth.get(key)
+	_smooth_mutex.unlock()
+	if known != null:
+		return known
+	var patch := PackedFloat64Array()
+	patch.resize(16)
+	for j in 4:
+		for i in 4:
+			patch[j * 4 + i] = _smooth_node(column - 1 + i, row - 1 + j, key_spacing, spacing)
+	_smooth_mutex.lock()
+	_smooth[key] = patch
+	_smooth_mutex.unlock()
+	return patch
+
+
+func _smooth_node(column: int, row: int, key_spacing: int, spacing: float) -> float:
+	var key := Vector3i(column, row, key_spacing)
+	_smooth_mutex.lock()
+	var known: Variant = _smooth.get(key)
+	_smooth_mutex.unlock()
+	if known != null:
+		return known
+	var x := column * spacing
+	var y := row * spacing
+	var total := 0.0
+	for j in 5:
+		for i in 5:
+			total += _bilinear(x + (i - 2) * spacing * 0.25, y + (j - 2) * spacing * 0.25)[0]
+	var value := total / 25.0
+	_smooth_mutex.lock()
+	_smooth[key] = value
+	_smooth_mutex.unlock()
+	return value
 
 
 ## Absolute height (m) under a field NED point.

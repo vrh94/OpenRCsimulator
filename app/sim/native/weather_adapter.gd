@@ -63,6 +63,8 @@ static func provider_identity(session: Node) -> Dictionary:
 			return {ok = false, reason = "spatial weather is not the built-in provider"}
 		if var_to_bytes(spatial.configuration()) != var_to_bytes(config.spatial_wind):
 			return {ok = false, reason = "spatial provider configuration differs from the weather field"}
+		if config.spatial_wind.get("format") == "openrc-spatial-wind v3":
+			return {ok = false, reason = "native weather does not support terrain-following wind"}
 		thermal = spatial.get("_thermal_field")
 		var has_thermal: bool = config.spatial_wind.get("format") == "openrc-spatial-wind v2"
 		if has_thermal != (thermal != null) \
