@@ -16,7 +16,8 @@ const VERTICAL_ALLOWANCE_M := 2.0
 const OBSTACLE_CLEARANCE_M := 2.0
 # Conservative AFC policy around people/pit proxies, not a surveyed field rule.
 const EXCLUSION_MARGIN_M := 30.0
-const MAX_PROXIES := 10000
+## Launch-only inventory budget. Triglav carries 16,930 surveyed trees and buildings (Club field a few hundred).
+const MAX_PROXIES := 20000
 const MAX_COORDINATE_M := 1000000.0
 const BOUNDS_EPSILON_M := 1.0e-8
 const BOUND_KEYS := ["bounds_north_min", "bounds_north_max", "bounds_east_min",
@@ -62,6 +63,10 @@ static func validate(field_profile: Dictionary, field: Dictionary, world: Dictio
 	var ground_upper := Terrain.max_height(surfaces)
 	if not is_finite(ground_upper):
 		return _failure("Terrain surface table is invalid.")
+	# Surveyed terrain (Triglav): bound the ground over the circuit's square, not at the map's highest summit.
+	# Flat fields return the same table-wide bound.
+	ground_upper = Terrain.max_height_near(surfaces, north, east,
+		radius + RADIAL_ALLOWANCE_M + aircraft_radius + OBSTACLE_CLEARANCE_M)
 	if not lake.is_empty():
 		if not Lake.is_valid_definition(lake) or LakeLoader.identity(lake) != lake.get("identity", ""):
 			return _failure("Lake geometry or identity is invalid.")

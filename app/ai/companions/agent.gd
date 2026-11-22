@@ -81,7 +81,9 @@ func configure(player: Node, field: Dictionary, slot: int, count: int, seed_valu
 	trim.throttle = float(session.start.throttle)
 	trim.speed_m_s = float(session.start.get("V", 15.0))
 	_accepted_trim = trim.duplicate()
-	if not pilot.configure(slot, count, seed_value, trim, field):
+	var field_profile: Dictionary = qualification.get("field_profile", {})
+	var circuit: Dictionary = field_profile.get("circuit", {}) if typeof(field_profile.get("circuit")) == TYPE_DICTIONARY else {}
+	if not pilot.configure(slot, count, seed_value, trim, field, circuit):
 		return _refuse(pilot.configure_error)
 	var pose: Dictionary = pilot.initial_pose()
 	if not session.external_spawn_airborne(float(pose.north), float(pose.east),

@@ -188,7 +188,7 @@ func _build() -> void:
 		"SecondaryLabel", true,
 	))
 	body.add_child(Widgets.label(
-		"Experienced Ugly Stik pilots fly circuits at Club field, in calm air or a gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable.",
+		"Experienced Ugly Stik pilots fly circuits at Club field and Triglav, in calm air or a gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable.",
 		"SecondaryLabel", true,
 	))
 	var volume_row := HBoxContainer.new()

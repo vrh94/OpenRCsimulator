@@ -8,10 +8,18 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const AircraftCatalog := preload("res://app_state/aircraft_catalog.gd")
 const ModelRegistry := preload("res://aircraft/model_registry.gd")
+const FieldAir := preload("res://physics/field_air.gd")
 
 const FORMAT := "openrc-flight-scenario v1"
 const CATALOG_PATH := "res://data/scenarios/natural_random_v1.json"
 const EXPECTED_FIELD_ID := "default"
+## Option 6 (2026-11-22): one v1 catalog per field. Club field keeps the synthetic sea-level catalog; Triglav has its
+## own (real place, date and elevation, same wind recipes). A scenario validates against its field's catalog.
+const CATALOGS := {
+	"default": {catalog = CATALOG_PATH, field = "res://data/fields/default.json"},
+	"triglav_tamar": {catalog = "res://data/scenarios/natural_random_triglav_v1.json",
+		field = "res://landscapes/triglav_tamar/field.json"},
+}
 const UINT32_MAX := 4294967295
 const EXPECTED_AIRCRAFT_IDS: Array[String] = [
 	"jensen-das-ugly-stik-60",
@@ -37,22 +45,22 @@ const BUILD_IDENTITY_KEYS: Array[String] = [
 const SOURCE_CACHE_MAX_ENTRIES := 16
 const SOURCE_CACHE_MAX_ENTRY_BYTES := 4096
 
-static var _policy_loaded := false
-static var _policy_ok := false
-static var _policy: Dictionary = {}
-static var _policy_errors := PackedStringArray()
+static var _policies: Dictionary = {} # field id -> {ok, policy, errors}
 static var _source_cache: Dictionary = {}
 
 
-## Read-only copy of the versioned recipe policy. The returned dictionary must not be modified.
-static func policy_catalog() -> Dictionary:
-	_policy_status()
-	return _policy.duplicate(true)
+## Read-only copy of a field's versioned recipe policy (empty when invalid or the field has none).
+static func policy_catalog(field_id: String = EXPECTED_FIELD_ID) -> Dictionary:
+	return (_policy_status(field_id).policy as Dictionary).duplicate(true)
 
 
-static func policy_errors() -> PackedStringArray:
-	_policy_status()
-	return _policy_errors.duplicate()
+static func policy_errors(field_id: String = EXPECTED_FIELD_ID) -> PackedStringArray:
+	return (_policy_status(field_id).errors as PackedStringArray).duplicate()
+
+
+## Whether Natural Random has a catalog for this normalized field id.
+static func field_supported(field_id: String) -> bool:
+	return CATALOGS.has(field_id)
 
 
 ## Validate an untrusted resolved flight record, normalize its nested inputs and verify its digest.
@@ -67,11 +75,14 @@ static func validate(raw: Variant) -> Dictionary:
 	if not errors.is_empty():
 		return _failure(errors)
 
-	var policy_result := _policy_status()
+	var policy_field: String = str(source.get("field_id", ""))
+	if not CATALOGS.has(policy_field):
+		policy_field = EXPECTED_FIELD_ID
+	var policy_result: Dictionary = _policy_status(policy_field)
 	if not bool(policy_result.get("ok", false)):
-		errors.append_array(_policy_errors)
+		errors.append_array(policy_result.errors)
 		return _failure(errors)
-	var policy: Dictionary = _policy
+	var policy: Dictionary = policy_result.policy
 
 	if source.format != FORMAT:
 		errors.append("scenario.format must be '%s'" % FORMAT)
@@ -84,8 +95,8 @@ static func validate(raw: Variant) -> Dictionary:
 	if not EXPECTED_AIRCRAFT_IDS.has(aircraft_id):
 		errors.append("scenario.aircraft_id is not in the Natural Random stock allowlist")
 	var field_id := _read_slug(source.get("field_id"), "scenario.field_id", errors)
-	if field_id != EXPECTED_FIELD_ID:
-		errors.append("scenario.field_id must be the fixed v1 field '%s'" % EXPECTED_FIELD_ID)
+	if not CATALOGS.has(field_id):
+		errors.append("scenario.field_id must be a Natural Random v1 field (%s)" % ", ".join(CATALOGS.keys()))
 	var field_identity := _read_sha256(source.get("field_identity"), "scenario.field_identity", errors)
 	var aircraft_identity := _read_sha256(source.get("aircraft_identity"), "scenario.aircraft_identity", errors)
 	var model_identity := _read_sha256(source.get("model_identity"), "scenario.model_identity", errors)
@@ -465,31 +476,35 @@ static func _find_record(records: Variant, id: String) -> Dictionary:
 	return {}
 
 
-static func _policy_status() -> Dictionary:
-	if _policy_loaded:
-		return {"ok": _policy_ok, "errors": _policy_errors}
-	_policy_loaded = true
-	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(CATALOG_PATH)
+## {ok, policy, errors} for a field's catalog, read and validated once.
+static func _policy_status(field_id: String = EXPECTED_FIELD_ID) -> Dictionary:
+	if _policies.has(field_id):
+		return _policies[field_id]
+	var result := _load_policy(field_id)
+	_policies[field_id] = result
+	return result
+
+
+static func _load_policy(field_id: String) -> Dictionary:
+	if not CATALOGS.has(field_id):
+		return {ok = false, policy = {}, errors = PackedStringArray(["Natural Random has no catalog for field '%s'" % field_id])}
+	var path: String = str(CATALOGS[field_id].catalog)
+	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(path)
 	if bytes.is_empty():
-		_policy_errors = PackedStringArray(["Natural Random recipe catalog cannot be read: %s" % CATALOG_PATH])
-		return {"ok": false, "errors": _policy_errors}
+		return {ok = false, policy = {}, errors = PackedStringArray(["Natural Random recipe catalog cannot be read: %s" % path])}
 	var parser := JSON.new()
 	var parse_error: Error = parser.parse(bytes.get_string_from_utf8())
 	if parse_error != OK or typeof(parser.data) != TYPE_DICTIONARY:
-		_policy_errors = PackedStringArray(["Natural Random recipe catalog is invalid JSON or not an object"])
-		return {"ok": false, "errors": _policy_errors}
+		return {ok = false, policy = {}, errors = PackedStringArray(["Natural Random recipe catalog is invalid JSON or not an object"])}
 	var parsed: Dictionary = parser.data
 	var validation_errors := PackedStringArray()
-	_validate_policy(validation_errors, parsed)
+	_validate_policy(validation_errors, parsed, field_id)
 	if not validation_errors.is_empty():
-		_policy_errors = validation_errors
-		return {"ok": false, "errors": _policy_errors}
-	_policy = parsed.duplicate(true)
-	_policy_ok = true
-	return {"ok": true, "errors": PackedStringArray()}
+		return {ok = false, policy = {}, errors = validation_errors}
+	return {ok = true, policy = parsed.duplicate(true), errors = PackedStringArray()}
 
 
-static func _validate_policy(errors: PackedStringArray, value: Dictionary) -> void:
+static func _validate_policy(errors: PackedStringArray, value: Dictionary, field_id: String = EXPECTED_FIELD_ID) -> void:
 	_check_exact_keys(errors, "catalog", value, [
 		"format", "generator_version", "recipe_version", "qualification_status", "qualification_note",
 		"aircraft_ids", "start_choice", "required_capabilities", "field_context", "recipes", "daylight",
@@ -515,8 +530,11 @@ static func _validate_policy(errors: PackedStringArray, value: Dictionary) -> vo
 		_check_exact_keys(errors, "catalog.field_context", context, [
 			"elevation_m", "date", "utc_offset_minutes", "latitude_deg", "longitude_deg", "location_name",
 		])
-		if not _finite(context.get("elevation_m")) or float(context.get("elevation_m")) != 0.0:
-			errors.append("catalog.field_context.elevation_m must retain the synthetic sea-level v1 value")
+		if field_id == EXPECTED_FIELD_ID:
+			if not _finite(context.get("elevation_m")) or float(context.get("elevation_m")) != 0.0:
+				errors.append("catalog.field_context.elevation_m must retain the synthetic sea-level v1 value")
+		elif not _finite(context.get("elevation_m")) or float(context.get("elevation_m")) != _field_elevation(field_id):
+			errors.append("catalog.field_context.elevation_m must be the field's surveyed elevation")
 		if typeof(context.get("date")) != TYPE_STRING or typeof(context.get("location_name")) != TYPE_STRING:
 			errors.append("catalog field context date and location name must be strings")
 	if typeof(value.get("recipes")) != TYPE_ARRAY or value.recipes.size() != EXPECTED_RECIPE_IDS.size():
@@ -559,6 +577,12 @@ static func _validate_policy(errors: PackedStringArray, value: Dictionary) -> vo
 					errors.append("catalog.daylight[%d].%s must be an ordered finite range" % [index, key])
 			if item.get("hour_angle") not in ["rising", "any", "setting"]:
 				errors.append("catalog daylight hour_angle must be rising, any or setting")
+
+
+## The surveyed elevation of a catalogued field (physics/field_air.gd), NAN when its field cannot load.
+static func _field_elevation(field_id: String) -> float:
+	var loaded: Dictionary = FieldLoader.load_from(str(CATALOGS[field_id].field))
+	return FieldAir.elevation_m(loaded.field) if bool(loaded.get("ok", false)) else NAN
 
 
 static func _valid_range_pair(value: Variant) -> bool:

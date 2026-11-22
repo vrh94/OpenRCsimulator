@@ -244,12 +244,12 @@ func _test_malformed_inventory() -> void:
 	var too_many: Dictionary = _world.duplicate(true)
 	var repeated: Dictionary = _box_template.duplicate(true)
 	var proxies: Array = []
-	for index: int in 10001:
+	for index: int in Airspace.MAX_PROXIES + 1:
 		var copy: Dictionary = repeated.duplicate(true)
 		copy.id = "over-limit-%05d" % index
 		proxies.append(copy)
 	too_many.proxies = proxies
-	_check_refused("proxy inventories above the explicit 10,000-proxy budget fail closed", too_many)
+	_check_refused("proxy inventories above the explicit 20,000-proxy budget fail closed", too_many)
 
 
 func _test_input_corruption() -> void:

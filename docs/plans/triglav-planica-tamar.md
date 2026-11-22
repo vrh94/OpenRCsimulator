@@ -93,7 +93,7 @@ quantized products the game needs are committed, each well under the repository'
   tables, airframe contact runs in the terrain's tangent plane, helicopter pads are levelled platforms):
   - airplanes (gear, hull, ground effect, ground start);
   - helicopters, multirotors and the RC trucks.
-  - The AI companions are qualified on Club field only and refuse other fields as before.
+  - The AI companions fly Triglav since option 6 (2026-11-22) through their own field profile; see below.
 - TG-07 collision for trees and buildings through the existing scenery collision world (done:
   `landscapes/triglav_tamar/obstacles.gd`; trees and buildings within 600 m of the pilot are solid, since a flight log
   carries the whole inventory). Settings > Graphics > Scene detail sets how far they are drawn (trees 600, 1000, 1500
@@ -124,8 +124,7 @@ quantized products the game needs are committed, each well under the repository'
 - **Atmosphere at altitude** (owner decision 2026-11-21, done). The field flies in the air at its 849.7 m pilot spot:
   1.128 kg/m³, 7.9 % thinner than sea level (`app/physics/field_air.gd`, [decision](../DECISIONS.md)). The default
   air becomes the standard atmosphere there; custom air keeps its temperature, QNH and humidity at the field's
-  elevation. Home's conditions line shows the air flown. Natural Random stays on Club field (its v1 catalog pins sea
-  level). Wind and height-above-ground readouts use the datum at the pilot spot.
+  elevation. Home's conditions line shows the air flown. Natural Random has its own Triglav catalog (option 6). Wind and height-above-ground readouts use the datum at the pilot spot.
 - **Ridge lift** (owner request 2026-11-22, done). The weather preset "Ridge lift" makes the wind follow the surveyed
   terrain on fields that have it: windward slopes lift and lee slopes sink, fading with height. With an east wind the
   slope south of the pilot spot gives about 4 m/s of lift. Rotors and valley channelling are not modelled
@@ -139,3 +138,19 @@ quantized products the game needs are committed, each well under the repository'
   `scenery/collision_setup.gd` now takes a terrain field's obstacles from its landscape adapter, as the airplane and
   helicopter already did. Quad and blimp logs recorded on Triglav before the fix no longer replay against the new
   inventory.
+- **Flight companions** (owner request 2026-11-22, done). One to three Ugly Stik companions fly circuits on Triglav:
+  - the strip-derived 80 m circle 160 m north of the pilot, at 45, 65 and 85 m above the pilot;
+  - 10 m higher than on Club field, because the meadow under the circuit rises 7.4 m;
+  - in the field's standard air, calm or a gentle breeze.
+
+  They passed the 120 s qualification matrix with nothing refused, crashed or faulted
+  ([AFC-23-R1](../research/ai-companions/AFC-23-R1/README.md)). The launch check bounds the ground locally and
+  examines all 16,930 surveyed obstacles.
+- **Natural Random** (owner request 2026-11-22, done). Triglav draws from its own catalog
+  (`app/data/scenarios/natural_random_triglav_v1.json`):
+  - the Club wind recipes;
+  - Rateče's place on 2026-06-20 (CEST);
+  - the field's 849.7 m, with daylight temperatures 5.5 °C below the Club bands (the ISA lapse; an estimate, not
+    climatology).
+
+  The same seed draws the same aircraft and weather recipe on both fields. A scenario flies only on its own field.

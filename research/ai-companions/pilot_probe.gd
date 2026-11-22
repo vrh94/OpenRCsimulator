@@ -6,6 +6,8 @@ const Math3D := preload("res://physics/math3d.gd")
 const RigidBody := preload("res://physics/rigid_body.gd")
 const WindConfig := preload("res://physics/wind_config.gd")
 const Seeds := preload("res://ai/companions/seed_allocator.gd")
+const Profiles := preload("res://ai/companions/profile_loader.gd")
+const FieldAir := preload("res://physics/field_air.gd")
 
 const STIK_PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 const STIK_ID := "jensen-das-ugly-stik-60"
@@ -29,6 +31,11 @@ var _spot_check: bool = false
 var _output_dir := ""
 var _pilot_path := "res://ai/companions/pilot.gd"
 var _pilot_script: Script
+## --field-profile=<id> (profile_loader.gd FIELD_PROFILES): the field, its circuit bands and the field's air.
+var _field_profile_id := "club-default"
+var _circuit: Dictionary = {}
+var _base_agl_m := 35.0
+var _slot_step_m := 20.0
 
 
 func _check(label: String, passed: bool, detail: String = "") -> void:
@@ -45,6 +52,8 @@ func _initialize() -> void:
 			_output_dir = argument.trim_prefix("--out=")
 		elif argument.begins_with("--pilot="):
 			_pilot_path = argument.trim_prefix("--pilot=")
+		elif argument.begins_with("--field-profile="):
+			_field_profile_id = argument.trim_prefix("--field-profile=")
 	if _spot_check:
 		_flight_ticks = SPOT_CHECK_TICKS
 	call_deferred("_run")
@@ -71,8 +80,18 @@ func _run() -> void:
 			printerr("Qualification output must be a new directory.")
 			quit(2)
 			return
-	var loaded: Dictionary = FieldLoader.load_from()
-	_check("Club field loads from accepted data", loaded.get("ok", false), str(loaded.get("errors", [])))
+	if not Profiles.FIELD_PROFILES.has(_field_profile_id):
+		printerr("Unknown --field-profile.")
+		quit(2)
+		return
+	var entry: Dictionary = Profiles.FIELD_PROFILES[_field_profile_id]
+	_base_agl_m = float(entry.base_agl)
+	_slot_step_m = float(entry.slot_agl_step)
+	for key: String in ["center_north", "center_east", "radius", "base_agl", "slot_agl_step"]:
+		_circuit[key] = {value = float(entry[key]), unit = "m", kind = "derived", source = "probe"}
+	print("FIELD PROFILE %s %s" % [_field_profile_id, entry.field_path])
+	var loaded: Dictionary = FieldLoader.load_from(str(entry.field_path))
+	_check("%s loads from accepted data" % entry.field_id, loaded.get("ok", false), str(loaded.get("errors", [])))
 	if not loaded.get("ok", false):
 		quit(1)
 		return
@@ -107,7 +126,8 @@ func _run() -> void:
 
 
 func _run_fleet(field: Dictionary, count: int, weather_id: String, record_trace: bool, record_rows: bool) -> Dictionary:
-	var weather: Dictionary = WindConfig.preset(weather_id)
+	# The air the field flies in: Club field keeps the sea-level preset, surveyed fields take their elevation.
+	var weather: Dictionary = FieldAir.weather(WindConfig.preset(weather_id), field)
 	var resolved: Dictionary = Seeds.new().resolve(int(weather.get("turbulence_seed", 0)), SEED, count)
 	_check("%s %d-aircraft versioned seed roster resolves" % [weather_id, count], resolved.ok)
 	if not resolved.ok:
@@ -143,7 +163,7 @@ func _run_fleet(field: Dictionary, count: int, weather_id: String, record_trace:
 		session.reset()
 		var trim: Dictionary = session.start.duplicate(true)
 		var pilot: Variant = _pilot_script.new()
-		var configured: bool = pilot.configure(slot, count, SEED, trim, field)
+		var configured: bool = pilot.configure(slot, count, SEED, trim, field, _circuit)
 		_check("%s %d-slot pilot accepts current Stik trim" % [weather_id, slot], configured, str(pilot.configure_error))
 		if not configured:
 			session.free()
@@ -156,7 +176,7 @@ func _run_fleet(field: Dictionary, count: int, weather_id: String, record_trace:
 			float(pose.get("north", NAN)), float(pose.get("east", NAN)),
 			float(pose.get("height_agl_m", NAN)), float(pose.get("heading_rad", NAN)))
 		_check("%s %d-slot spawn uses reset-boundary AGL pose" % [weather_id, slot],
-			spawn_ok and float(pose.get("height_agl_m", 0.0)) >= 35.0)
+			spawn_ok and float(pose.get("height_agl_m", 0.0)) >= _base_agl_m)
 		if not spawn_ok:
 			session.free()
 			for old: Node in sessions:
@@ -279,7 +299,7 @@ func _run_fleet(field: Dictionary, count: int, weather_id: String, record_trace:
 			break
 	var completed_ticks: int = int(sessions[0].sim.tick) if not sessions.is_empty() else 0
 	var completed: bool = stop_reason.is_empty() and completed_ticks >= _flight_ticks
-	var highest_target: float = 35.0 + float(count - 1) * 20.0
+	var highest_target: float = _base_agl_m + float(count - 1) * _slot_step_m
 	var max_clearance_limit: float = highest_target + 20.0
 	var detail: String = "ticks=%d/%d AGL=%.2f..%.2fm TAS=%.2f..%.2fm/s max_radius_error=%.2fm min_player=%.2fm min_pair=%.2fm max_bank=%.1fdeg max_input=%.4f refusals=%d%s" % [
 		completed_ticks, _flight_ticks, min_clearance, max_clearance, min_tas, max_tas, max_radius_error,

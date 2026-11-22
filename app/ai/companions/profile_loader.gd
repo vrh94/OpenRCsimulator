@@ -7,7 +7,7 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
 const StrictJSON := preload("res://workshop/strict_json.gd")
 
-const AIRCRAFT_FORMAT := "openrc-ai-aircraft v2"
+const AIRCRAFT_FORMAT := "openrc-ai-aircraft v3"
 const FIELD_FORMAT := "openrc-ai-field v1"
 const IDENTITY_FORMAT := "openrc-ai-profile-identity v2"
 const BEHAVIOR_MANIFEST_FORMAT := "openrc-ai-behavior-manifest v1"
@@ -49,8 +49,24 @@ const CLUB_FIELD_PATH := "res://data/fields/default.json"
 const AIRCRAFT_PROFILE_PATHS := {
 	ACCEPTED_AIRCRAFT_ID: "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
 }
+const TRIGLAV_FIELD_PATH := "res://landscapes/triglav_tamar/field.json"
+const TRIGLAV_EVIDENCE_PATH := "docs/research/ai-companions/AFC-23-R1/README.md"
+## Qualified field profiles: the field each one binds, its runway, the route it must record and its evidence.
+## Centre and radius are the runway-derived route (checked again against the loaded field); the altitude bands are
+## metres above the pilot's ground. Triglav flies 10 m higher than Club field: the meadow under its circuit rises up
+## to 7.4 m above the pilot, and 35 m would sit inside the controller's 30 m terrain-recovery band. `max_agl` caps the
+## recorded clearance above the local ground: the top band plus that rise (companions spawn above the local ground).
+const FIELD_PROFILES := {
+	"club-default": {path = "res://data/ai/companions/fields/club-default.json", field_path = CLUB_FIELD_PATH,
+		field_id = "default", landscape_id = "club_field", runway_id = "runway", center_north = 199.0,
+		center_east = 0.0, radius = 80.0, base_agl = 35.0, slot_agl_step = 20.0, max_agl = 75.1, evidence = EVIDENCE_PATH},
+	"triglav-tamar": {path = "res://data/ai/companions/fields/triglav-tamar.json", field_path = TRIGLAV_FIELD_PATH,
+		field_id = "triglav_tamar", landscape_id = "triglav_tamar", runway_id = "strip", center_north = 160.0,
+		center_east = 0.0, radius = 80.0, base_agl = 45.0, slot_agl_step = 20.0, max_agl = 92.5, evidence = TRIGLAV_EVIDENCE_PATH},
+}
 const FIELD_PROFILE_PATHS := {
 	"club-default": "res://data/ai/companions/fields/club-default.json",
+	"triglav-tamar": "res://data/ai/companions/fields/triglav-tamar.json",
 }
 
 # These route factors are copied from the source-bound pilot implementation. Its exact
@@ -62,7 +78,7 @@ const ROUTE_CENTER_WIDTH_FACTOR := 2.0
 
 const AIRCRAFT_PROFILE_KEYS := [
 	"format", "id", "catalog_id", "aircraft_data", "controller", "behavior_manifest", "solver", "engine_version",
-	"field_profile_id", "qualification", "performance",
+	"field_profile_ids", "qualification", "performance",
 ]
 const FIELD_PROFILE_KEYS := [
 	"format", "id", "field_source", "runway_id", "circuit", "qualification", "static_route_clearance",
@@ -106,9 +122,9 @@ static func load_profile(
 	if not aircraft_file.get("ok", false):
 		return _failure(aircraft_file.get("errors", PackedStringArray()))
 	var aircraft_profile: Dictionary = aircraft_file.raw
-	var field_profile_id: String = str(aircraft_profile.get("field_profile_id", ""))
-	if not FIELD_PROFILE_PATHS.has(field_profile_id):
-		return _failure(PackedStringArray(["field_profile_id: no qualified AI field profile for '%s'" % field_profile_id]))
+	var field_profile_id: String = field_profile_for(str(field.get("id", "")))
+	if field_profile_id.is_empty():
+		return _failure(PackedStringArray(["field: no qualified AI field profile for '%s'" % str(field.get("id", ""))]))
 
 	var field_profile_path: String = str(FIELD_PROFILE_PATHS[field_profile_id])
 	var field_file: Dictionary = _read_json_object(field_profile_path)
@@ -142,7 +158,7 @@ static func load_profile(
 		"solver_normalization": SOLVER_NORMALIZATION,
 		"engine_version": str(aircraft_profile.engine_version),
 		"field_profile_id": field_profile_id,
-		"field_data_path": CLUB_FIELD_PATH,
+		"field_data_path": str(FIELD_PROFILES[field_profile_id].field_path),
 		"field_data_format": FIELD_DATA_FORMAT,
 		"field_data_sha256": str(field_profile.field_source.sha256),
 		"aircraft_profile_path": aircraft_profile_path,
@@ -157,6 +173,22 @@ static func load_profile(
 		"field_profile": validated.field_profile.duplicate(true),
 		"identity": identity.duplicate(true),
 	}
+
+
+## The qualified field profile id for a normalized field id, or "" when companions are not qualified there.
+static func field_profile_for(field_id: String) -> String:
+	for id: String in FIELD_PROFILES:
+		if str(FIELD_PROFILES[id].field_id) == field_id:
+			return id
+	return ""
+
+
+## Whether a landscape has a qualified companion field profile (Home and pause availability).
+static func landscape_qualified(landscape_id: String) -> bool:
+	for id: String in FIELD_PROFILES:
+		if str(FIELD_PROFILES[id].landscape_id) == landscape_id:
+			return true
+	return false
 
 
 ## Exact executable identity, including prerelease status and source revision.
@@ -304,31 +336,45 @@ static func validate_profile_data(
 	_validate_aircraft_qualification(errors, profile)
 	_validate_unknown_performance(errors, profile.get("performance"))
 
-	var field_profile_id: String = str(profile.get("field_profile_id", ""))
-	if field_profile_id != "club-default" or not FIELD_PROFILE_PATHS.has(field_profile_id):
-		errors.append("field_profile_id: only the qualified Club field profile is supported")
+	var field_profile_id: String = str(field_profile.get("id", ""))
+	var listed: Variant = profile.get("field_profile_ids")
+	if typeof(listed) != TYPE_ARRAY or (listed as Array).is_empty():
+		errors.append("field_profile_ids: expected the list of qualified field profiles")
+	else:
+		var seen: Array = []
+		for value: Variant in listed:
+			if typeof(value) != TYPE_STRING or not FIELD_PROFILES.has(str(value)) or seen.has(str(value)):
+				errors.append("field_profile_ids: unknown or repeated field profile '%s'" % str(value))
+			seen.append(str(value))
+		if not seen.has(field_profile_id):
+			errors.append("field_profile_ids: the aircraft is not qualified for field profile '%s'" % field_profile_id)
+	if not FIELD_PROFILES.has(field_profile_id):
+		errors.append("field profile.id: no qualified field profile '%s'" % field_profile_id)
+		return _failure(errors)
+	var entry: Dictionary = FIELD_PROFILES[field_profile_id]
+	var field_path: String = str(entry.field_path)
 	var field_source: Dictionary = _object(errors, "field_source", field_profile.get("field_source"))
 	_check_keys(errors, "field_source", field_source, ["path", "format", "sha256", "field_id"], ["path", "format", "sha256", "field_id"])
-	if field_source.get("path") != CLUB_FIELD_PATH:
+	if field_source.get("path") != field_path:
 		errors.append("field_source.path: unsupported field source path")
 	if field_source.get("format") != FIELD_DATA_FORMAT:
 		errors.append("field_source.format: expected '%s'" % FIELD_DATA_FORMAT)
-	if field_source.get("field_id") != "default" or field_profile.get("id") != "club-default":
-		errors.append("field profile identity must match the default Club field")
+	if field_source.get("field_id") != entry.field_id:
+		errors.append("field profile identity must match its qualified field")
 	var field_sha: String = _read_sha256(errors, "field_source.sha256", field_source.get("sha256"))
-	var expected_field_sha: String = _sha256_file(errors, "Club field data", CLUB_FIELD_PATH)
+	var expected_field_sha: String = _sha256_file(errors, "field data", field_path)
 	if not field_sha.is_empty() and field_sha != expected_field_sha:
 		errors.append("field_source.sha256: current field data does not match this profile")
 
-	var loaded_field: Dictionary = FieldLoader.load_from(CLUB_FIELD_PATH)
+	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
 	if not loaded_field.get("ok", false):
 		errors.append_array(loaded_field.get("errors", PackedStringArray()))
 	else:
 		var normalized_field: Variant = loaded_field.get("field", {})
 		if typeof(normalized_field) != TYPE_DICTIONARY or field != normalized_field:
-			errors.append("field: supplied normalized geometry differs from the pinned Club field source")
+			errors.append("field: supplied normalized geometry differs from the pinned field source")
 
-	_validate_field_profile(errors, field_profile, field if loaded_field.get("ok", false) else {})
+	_validate_field_profile(errors, field_profile, field if loaded_field.get("ok", false) else {}, entry)
 
 	if not errors.is_empty():
 		return _failure(errors)
@@ -371,11 +417,12 @@ static func _validate_unknown_performance(errors: PackedStringArray, raw: Varian
 			errors.append("performance.%s.status: this profile has no qualified value" % name)
 
 
-static func _validate_field_profile(errors: PackedStringArray, profile: Dictionary, field: Dictionary) -> void:
-	if profile.get("format") != FIELD_FORMAT or profile.get("id") != "club-default":
+static func _validate_field_profile(errors: PackedStringArray, profile: Dictionary, field: Dictionary,
+		entry: Dictionary) -> void:
+	if profile.get("format") != FIELD_FORMAT:
 		return
-	if profile.get("runway_id") != "runway":
-		errors.append("runway_id: expected the default Club field runway reference")
+	if profile.get("runway_id") != entry.runway_id:
+		errors.append("runway_id: expected the qualified field's runway reference")
 	if profile.get("static_route_clearance") != "requires_session_check":
 		errors.append("static_route_clearance: actual session geometry must be checked at admission")
 
@@ -391,14 +438,14 @@ static func _validate_field_profile(errors: PackedStringArray, profile: Dictiona
 	var base_agl: Dictionary = _quantity(errors, "circuit.base_agl", circuit.get("base_agl"), "m")
 	var slot_step: Dictionary = _quantity(errors, "circuit.slot_agl_step", circuit.get("slot_agl_step"), "m")
 	_validate_roster_count(errors, "circuit.roster_count", circuit.get("roster_count"))
-	if not _quantity_matches(center_north, 199.0):
-		errors.append("circuit.center_north: must match the current default-field route geometry")
-	if not _quantity_matches(center_east, 0.0):
-		errors.append("circuit.center_east: must match the current default-field route geometry")
-	if not _quantity_matches(radius, 80.0):
-		errors.append("circuit.radius: must match the current default-field route geometry")
-	if not _quantity_matches(base_agl, 35.0) or not _quantity_matches(slot_step, 20.0):
-		errors.append("circuit altitude bands must match the current qualified Stik controller")
+	if not _quantity_matches(center_north, float(entry.center_north)):
+		errors.append("circuit.center_north: must match the qualified field's route geometry")
+	if not _quantity_matches(center_east, float(entry.center_east)):
+		errors.append("circuit.center_east: must match the qualified field's route geometry")
+	if not _quantity_matches(radius, float(entry.radius)):
+		errors.append("circuit.radius: must match the qualified field's route geometry")
+	if not _quantity_matches(base_agl, float(entry.base_agl)) or not _quantity_matches(slot_step, float(entry.slot_agl_step)):
+		errors.append("circuit altitude bands must match the field's qualified Stik bands")
 	_validate_circuit_matches_field(errors, circuit, field)
 
 	var qualification: Dictionary = _object(errors, "field qualification", profile.get("qualification"))
@@ -409,12 +456,12 @@ static func _validate_field_profile(errors: PackedStringArray, profile: Dictiona
 		errors.append("field qualification.status: expected the recorded passing matrix")
 	_expect_string_array(errors, "field qualification.scenarios", qualification.get("scenarios"), QUALIFIED_SCENARIOS)
 	_expect_integer_array(errors, "field qualification.counts", qualification.get("counts"), [1, 2, 3])
-	if qualification.get("evidence") != EVIDENCE_PATH:
+	if qualification.get("evidence") != entry.evidence:
 		errors.append("field qualification.evidence: unsupported evidence reference")
 	var duration: Dictionary = _quantity(errors, "field qualification.duration_s", qualification.get("duration_s"), "s")
 	if not _quantity_matches(duration, 120.0):
 		errors.append("field qualification.duration_s: the matrix must cover 120 simulated seconds")
-	_validate_observations(errors, qualification.get("observed"))
+	_validate_observations(errors, qualification.get("observed"), float(entry.max_agl))
 
 
 static func _validate_circuit_matches_field(errors: PackedStringArray, circuit: Dictionary, field: Dictionary) -> void:
@@ -456,7 +503,7 @@ static func _validate_circuit_matches_field(errors: PackedStringArray, circuit: 
 		errors.append("circuit.radius: derived radius disagrees with the supplied normalized runway")
 
 
-static func _validate_observations(errors: PackedStringArray, raw: Variant) -> void:
+static func _validate_observations(errors: PackedStringArray, raw: Variant, max_agl_m: float) -> void:
 	const OBSERVATION_UNITS := {
 		"min_agl": "m", "max_agl": "m", "min_tas": "m/s", "max_tas": "m/s",
 		"max_radial_error": "m", "min_player_separation": "m", "min_pair_separation": "m",
@@ -474,7 +521,7 @@ static func _validate_observations(errors: PackedStringArray, raw: Variant) -> v
 		return
 	if float(values.min_agl) < 20.0 or float(values.min_agl) > float(values.max_agl):
 		errors.append("field qualification.observed: clearance values are outside the tested floor")
-	if float(values.max_agl) > 75.1:
+	if float(values.max_agl) > max_agl_m:
 		errors.append("field qualification.observed.max_agl: exceeds the three-slot tested envelope")
 	if float(values.min_tas) < 10.0 or float(values.max_tas) > 25.0 or float(values.min_tas) > float(values.max_tas):
 		errors.append("field qualification.observed: TAS values are outside the tested controller range")

@@ -9,6 +9,7 @@ const Profiles := preload("res://ai/companions/profile_loader.gd")
 const Airspace := preload("res://ai/companions/airspace.gd")
 const FleetRecord := preload("res://ai/companions/fleet_record.gd")
 const WeatherConfig := preload("res://physics/wind_config.gd")
+const FieldAir := preload("res://physics/field_air.gd")
 const SeedAllocator := preload("res://ai/companions/seed_allocator.gd")
 
 signal changed
@@ -48,10 +49,11 @@ static func validate_context(player: Node, field: Dictionary, landscape: String,
 	if not checked.ok or not checked.config.enabled:
 		return checked
 	var reason := ""
-	if landscape != "club_field" or str(field.get("id", "")) != "default":
-		reason = "Flight companions currently require Club field."
-	elif not player.atmosphere_is_reference():
-		reason = "Companion circuits currently require the reference atmosphere."
+	var profile_id: String = Profiles.field_profile_for(str(field.get("id", "")))
+	if profile_id.is_empty() or str(Profiles.FIELD_PROFILES[profile_id].landscape_id) != landscape:
+		reason = "Flight companions currently require Club field or Triglav."
+	elif not _qualified_air(player, field):
+		reason = "Companion circuits currently require the field's standard air."
 	var weather: Dictionary = player.weather_configuration()
 	if weather.get("format") == WeatherConfig.SPATIAL_FORMAT:
 		reason = "Spatial weather needs a qualified companion circuit and shared world-clock policy."
@@ -71,6 +73,20 @@ static func validate_context(player: Node, field: Dictionary, landscape: String,
 		return qualification
 	checked.qualification = qualification
 	return checked
+
+
+## The air each field profile was qualified in: sea-level reference air on flat fields; on surveyed terrain the
+## standard atmosphere at the field's elevation that the default (reference) choice becomes there (physics/field_air.gd).
+static func _qualified_air(player: Node, field: Dictionary) -> bool:
+	var elevation: float = FieldAir.elevation_m(field)
+	if elevation == 0.0:
+		return player.atmosphere_is_reference()
+	var weather: Dictionary = player.weather_configuration()
+	var expected: Dictionary = FieldAir.at_elevation(WeatherConfig.preset("calm"), elevation)
+	for key: String in ["atmosphere_mode", "field_elevation_m", "temperature_c", "qnh_hpa", "relative_humidity_pct"]:
+		if not weather.has(key) or weather[key] != expected[key]:
+			return false
+	return true
 
 
 func configure(player: Node, field: Dictionary, landscape: String, requested: Dictionary,

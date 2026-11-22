@@ -84,7 +84,7 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	check("keyboard switches Home to Green", app.landscape_id == GREEN and app.home_scene.field.id == GREEN and app.home.start_choice == "airborne")
 	check("selection is saved", Preferences.load_from(prefs_path).landscape == GREEN)
-	check("Green explains the unavailable Natural Random activity", app.home.natural_random_button.disabled and app.home.natural_random_button.tooltip_text == "Natural Random requires Club field.")
+	check("Green explains the unavailable Natural Random activity", app.home.natural_random_button.disabled and app.home.natural_random_button.tooltip_text == "Natural Random requires Club field or Triglav.")
 	app.open_natural_random()
 	check("Green cannot enter a default-field scenario", app.screens.is_top("home"))
 	await ui.settle()
@@ -96,7 +96,7 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	check("keyboard switches Home to Triglav", app.landscape_id == TRIGLAV and app.home_scene.field.id == TRIGLAV)
 	check("Triglav offers its strip for the runway start", app.home.runway_available)
-	check("Triglav explains the unavailable Natural Random activity", app.home.natural_random_button.disabled)
+	check("Triglav offers Natural Random from its own catalog", not app.home.natural_random_button.disabled)
 	await _fly_and_return(app, TRIGLAV)
 
 	app.home.landscape_button.grab_focus()

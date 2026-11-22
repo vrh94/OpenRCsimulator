@@ -90,7 +90,7 @@ func _run() -> void:
 	var field_profile_copy: Dictionary = _profile(FIELD_PROFILE_PATH)
 
 	var bad_aircraft: Dictionary = profile_copy.duplicate(true)
-	bad_aircraft.format = "openrc-ai-aircraft v3"
+	bad_aircraft.format = "openrc-ai-aircraft v4"
 	_check("unknown aircraft profile versions fail closed", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
 	bad_aircraft = profile_copy.duplicate(true)
 	bad_aircraft.format = "openrc-ai-aircraft v1"

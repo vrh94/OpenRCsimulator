@@ -19,6 +19,11 @@ const ROUTE_CENTER_RADIUS_FACTOR := 2.0
 const ROUTE_CENTER_WIDTH_FACTOR := 2.0
 const BASE_HEIGHT_AGL_M := 35.0
 const HEIGHT_BAND_M := 20.0
+## Fields with a qualified circuit profile (data/ai/companions/fields). Club field may omit the profile's circuit
+## (its bands are the constants above); every other field flies only the bands its qualified profile records.
+const QUALIFIED_FIELD_IDS := ["default", "triglav_tamar"]
+const MIN_BASE_HEIGHT_AGL_M := 30.0
+const MAX_BASE_HEIGHT_AGL_M := 100.0
 const MIN_CLEARANCE_M := 20.0
 const RECOVERY_CLEARANCE_M := 30.0
 const MAX_BANK_RAD := 0.4363323129985824 # 25 degrees, radians
@@ -38,6 +43,7 @@ var _target_speed_mps: float = 15.0
 var _trim_throttle: float = 0.45
 var _field_ground_up_m: float = 0.0
 var _target_height_agl_m: float = 0.0
+var _base_height_agl_m: float = BASE_HEIGHT_AGL_M
 var _runway_north_m: float = 0.0
 var _runway_east_m: float = 0.0
 var _runway_length_m: float = 0.0
@@ -54,16 +60,21 @@ var _nominal_demand: Dictionary = {}
 
 
 ## `trim` is the accepted FlightSession start/trim result (expects V and throttle when present).
-## `field` is FieldLoader's normalized Club field, including its referenced runway surface.
-func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: Dictionary) -> bool:
+## `field` is FieldLoader's normalized field, including its referenced runway surface. `circuit` is the qualified
+## field profile's circuit record (profile_loader.gd): its centre and radius must equal the runway-derived route, and
+## its altitude bands (above the pilot's ground) replace the Club constants.
+func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: Dictionary,
+		circuit: Dictionary = {}) -> bool:
 	_configured = false
 	configure_error = ""
 	if count < MIN_COUNT or count > MAX_COUNT or slot < 0 or slot >= count:
 		return _refuse("slot/count must identify one of 1..3 companions")
 	if seed_value < 0 or seed_value > 4294967295:
 		return _refuse("seed must be an unsigned 32-bit integer")
-	if field.get("id", "") != "default":
-		return _refuse("the airborne Stik profile is qualified only for the Club field")
+	if not QUALIFIED_FIELD_IDS.has(field.get("id", "")):
+		return _refuse("the airborne Stik profile is qualified only for Club field and Triglav")
+	if circuit.is_empty() and field.get("id", "") != "default":
+		return _refuse("this field needs its qualified circuit profile")
 	if trim.is_empty():
 		return _refuse("a solved FlightSession trim is required")
 	var speed_result: Dictionary = _read_number(trim, ["V", "airspeed_m_s", "speed_m_s", "speed"], NAN)
@@ -103,6 +114,18 @@ func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: 
 			or float(runway_length.value) < 40.0 or float(runway_width.value) <= 0.0:
 		return _refuse("Club runway geometry must be finite and large enough for a circuit")
 
+	var base_height: float = BASE_HEIGHT_AGL_M
+	var band: float = HEIGHT_BAND_M
+	if not circuit.is_empty():
+		var base_result: Dictionary = _circuit_value(circuit, "base_agl")
+		var band_result: Dictionary = _circuit_value(circuit, "slot_agl_step")
+		if not base_result.ok or not band_result.ok or float(base_result.value) < MIN_BASE_HEIGHT_AGL_M \
+				or float(base_result.value) > MAX_BASE_HEIGHT_AGL_M or float(band_result.value) < HEIGHT_BAND_M \
+				or float(band_result.value) > 2.0 * HEIGHT_BAND_M:
+			return _refuse("the field circuit's altitude bands are outside the controller's range")
+		base_height = float(base_result.value)
+		band = float(band_result.value)
+
 	_slot = slot
 	_count = count
 	_seed = seed_value
@@ -118,7 +141,16 @@ func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: 
 	_radius_m = maxf(_runway_length_m * ROUTE_RADIUS_LENGTH_FACTOR, _runway_width_m * ROUTE_RADIUS_WIDTH_FACTOR)
 	_center_north_m = _runway_north_m + ROUTE_CENTER_RADIUS_FACTOR * _radius_m + ROUTE_CENTER_WIDTH_FACTOR * _runway_width_m
 	_center_east_m = _runway_east_m
-	_target_height_agl_m = BASE_HEIGHT_AGL_M + float(slot) * HEIGHT_BAND_M
+	if not circuit.is_empty():
+		var center_north: Dictionary = _circuit_value(circuit, "center_north")
+		var center_east: Dictionary = _circuit_value(circuit, "center_east")
+		var radius: Dictionary = _circuit_value(circuit, "radius")
+		if not center_north.ok or not center_east.ok or not radius.ok \
+				or absf(float(center_north.value) - _center_north_m) > 1e-9 \
+				or absf(float(center_east.value) - _center_east_m) > 1e-9 or absf(float(radius.value) - _radius_m) > 1e-9:
+			return _refuse("the field circuit differs from the runway-derived route")
+	_base_height_agl_m = base_height
+	_target_height_agl_m = base_height + float(slot) * band
 	_target_height_m = _field_ground_up_m + _target_height_agl_m
 	# The seed moves the fleet around its shared orbit; slot offsets preserve separation.
 	var seed_phase: float = TAU * float(seed_value) / UINT32_MODULUS
@@ -233,7 +265,7 @@ func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary
 	# Avoidance descent must not enter the terrain-recovery band. Use local terrain,
 	# with the lowest circuit band as the target floor; higher bands may still descend.
 	if float(avoidance.altitude_delta) < 0.0:
-		target_height = maxf(target_height, height - clearance + BASE_HEIGHT_AGL_M)
+		target_height = maxf(target_height, height - clearance + _base_height_agl_m)
 	var recovery: bool = clearance < RECOVERY_CLEARANCE_M
 	if recovery:
 		target_height = maxf(target_height, height + 10.0)
@@ -399,6 +431,13 @@ func _packet_finite(packet: Dictionary) -> bool:
 func _refuse(message: String) -> bool:
 	configure_error = message
 	return false
+
+
+static func _circuit_value(circuit: Dictionary, key: String) -> Dictionary:
+	var quantity: Variant = circuit.get(key)
+	if typeof(quantity) != TYPE_DICTIONARY:
+		return {"ok": false, "value": NAN}
+	return _read_number(quantity, ["value"], NAN)
 
 
 static func _read_number(source: Dictionary, keys: Array, fallback: float) -> Dictionary:

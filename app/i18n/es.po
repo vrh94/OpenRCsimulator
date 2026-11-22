@@ -4723,8 +4723,8 @@ msgstr "Elige el paisaje para tu próximo vuelo."
 msgid "This landscape supports airborne starts only."
 msgstr "Este paisaje solo permite comenzar en el aire."
 
-msgid "Natural Random requires Club field."
-msgstr "Vuelo aleatorio natural requiere Club field."
+msgid "Natural Random requires Club field or Triglav."
+msgstr "Vuelo aleatorio natural requiere Club field o Triglav."
 
 msgid "JETI radio family"
 msgstr "Familia de radios JETI"
@@ -5868,8 +5868,8 @@ msgstr "Compañeros de vuelo: %s · %d compañeros · semilla %d"
 msgid "Flight companions · next restart: %s · %d · seed %d"
 msgstr "Compañeros de vuelo · próximo reinicio: %s · %d · semilla %d"
 
-msgid "Available for airplanes at Club Field."
-msgstr "Disponible para aviones en el campo del club."
+msgid "Available for airplanes at Club Field and Triglav."
+msgstr "Disponible para aviones en el campo del club y en Triglav."
 
 msgid "Experimental companion flights. Start with one aircraft; additional aircraft increase CPU use."
 msgstr "Vuelos experimentales con compañeros. Empieza con un avión; añadir más aumenta el uso de CPU."
@@ -5895,8 +5895,8 @@ msgstr "Semilla del tráfico"
 msgid "Enter a whole-number seed from 0 to 4,294,967,295 to repeat the same companion choices."
 msgstr "Introduce una semilla entera entre 0 y 4.294.967.295 para repetir la selección de compañeros."
 
-msgid "Experienced Ugly Stik pilots fly circuits at Club field, in calm air or a gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable."
-msgstr "Pilotos experimentados de Ugly Stik vuelan circuitos en el campo del club, con aire en calma o brisa suave. Otros aviones, acrobacias, operaciones de pista, incidentes y contacto entre aviones aún no están disponibles."
+msgid "Experienced Ugly Stik pilots fly circuits at Club field and Triglav, in calm air or a gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable."
+msgstr "Pilotos experimentados de Ugly Stik vuelan circuitos en el campo del club y en Triglav, con aire en calma o brisa suave. Otros aviones, acrobacias, operaciones de pista, incidentes y contacto entre aviones aún no están disponibles."
 
 msgid "Companion engine volume"
 msgstr "Volumen de los motores de los compañeros"

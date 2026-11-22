@@ -436,6 +436,33 @@ about 0.3 ms per airborne tick to the cost of spatial wind. Native weather refus
 channelling are not modelled: a linear updraft has no flow separation. Revisit if a mass-consistent or
 potential-flow solution is affordable, or valley winds are wanted.
 
+### Companions and Natural Random on Triglav use per-field qualification
+
+Owner request 2026-11-22 (option 6).
+
+**Companions.** A companion field profile binds one field file, its runway-derived circuit, its altitude bands and
+its evidence. The aircraft profile (`openrc-ai-aircraft v3`) lists the field profiles it is qualified for, and a
+launch selects the profile of the supplied field.
+- Triglav (`triglav-tamar`) flies the strip-derived 80 m circle at 45/65/85 m above the pilot. The meadow under the
+  circuit rises 7.4 m, so Club field's 35 m would put the lowest slot inside the controller's 30 m recovery band.
+- Companions fly in the field's standard air at 849.7 m; flat fields still require sea-level reference air.
+- The launch clearance check bounds the ground locally under the circuit (`max_height_near`) instead of at the
+  1.8 km summit. Its inventory budget is 20,000 proxies, since Triglav has 16,930 trees and buildings.
+- Club field's matrix re-runs byte for byte. Triglav passed the same 120 s calm and gentle matrix:
+  [AFC-23-R1](research/ai-companions/AFC-23-R1/README.md).
+
+**Natural Random.** Each field gets its own v1 catalog (`scenario_config.gd CATALOGS`); a scenario validates against
+its field's catalog. Club field keeps its synthetic sea-level catalog, and every Club draw is unchanged.
+- Triglav (`data/scenarios/natural_random_triglav_v1.json`) keeps the Club wind recipes, humidity and QNH bands.
+- Its place is the real pilot spot (46.4926 N, 13.7172 E, CEST) on 2026-06-20, at the field's 849.7 m.
+- Its daylight temperatures are the Club bands lowered 5.5 °C by the ISA lapse. This is a stated estimate, not
+  climatology.
+- A seed draws the same aircraft, recipe, daylight band and wind on both fields.
+- A scenario is refused on the other field.
+
+Revisit when another field gains a profile or catalog, when a measured climatology replaces the lapse estimate, or
+when encounters are qualified on Triglav.
+
 ## Maintaining this record
 
 - Add an entry only for a consequential choice with a credible alternative or a non-obvious constraint. State the choice, reason, scope, owning step ID and canonical evidence. Include a concrete revisit condition when it is not already owned by the linked plan.

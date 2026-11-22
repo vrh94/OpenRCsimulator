@@ -12,6 +12,8 @@ const MAX_POINTS := 129
 const MAX_COORDINATE_M := 1000000.0
 const TERRAIN_CLEARANCE_M := 20.0
 const ROUNDING_PADDING_M := 0.000001
+## Per-assessment work bound (128 segments x 10,000 proxies). The launch-only airspace check allows more.
+const MAX_PROXIES := 10000
 
 var _configured := false
 var _geometry: Array[Dictionary] = []
@@ -34,6 +36,8 @@ func configure(field: Dictionary, world: Dictionary, surfaces: PackedFloat64Arra
 	for key: String in ["north", "east", "down"]:
 		if not _number(pilot.get(key)):
 			return _refuse("invalid_pilot_station")
+	if typeof(world.get("proxies")) == TYPE_ARRAY and (world.proxies as Array).size() > MAX_PROXIES:
+		return _refuse("invalid_collision_inventory")
 	var inventory: Dictionary = Airspace._inventory(world)
 	if not inventory.ok:
 		return _refuse("invalid_collision_inventory")

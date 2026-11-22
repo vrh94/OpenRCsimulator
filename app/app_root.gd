@@ -773,7 +773,7 @@ func _install_home(setup: Dictionary) -> void:
 	home.airship_skin_id = selected_airship_skin
 	home.ground_skins = (preferences.get("vehicle_skins", {}) as Dictionary).duplicate()
 	home.runway_available = _runway_available(home_scene.field)
-	home.natural_random_available = home_scene.field.get("id", "") == "default"
+	home.natural_random_available = ScenarioConfig.field_supported(str(home_scene.field.get("id", "")))
 	home.field_elevation_m = FieldAir.elevation_m(home_scene.field)
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
@@ -1488,7 +1488,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = candidate_flight
 	_flight_companions_available = not is_random and not helicopter_route \
-		and launch_landscape == Landscapes.DEFAULT_ID and _has_property(flight, "companion_config") \
+		and CompanionConfig.Profiles.landscape_qualified(launch_landscape) and _has_property(flight, "companion_config") \
 		and CompanionConfig.engine_qualified()
 	flight.field_path = launch_field_path
 	flight.landscape_id = launch_landscape
@@ -4110,7 +4110,7 @@ func set_landscape(id: String) -> bool:
 		field_path = old_path
 		return false
 	home.runway_available = _runway_available(checked.field)
-	home.natural_random_available = checked.field.get("id", "") == "default"
+	home.natural_random_available = ScenarioConfig.field_supported(str(checked.field.get("id", "")))
 	home.field_elevation_m = FieldAir.elevation_m(checked.field)
 	home.rotorcraft_pad_available = not checked.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(id)

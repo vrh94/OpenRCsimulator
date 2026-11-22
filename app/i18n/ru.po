@@ -5199,8 +5199,8 @@ msgstr "Выберите ландшафт для следующего полёт
 msgid "This landscape supports airborne starts only."
 msgstr "На этом ландшафте возможен только старт в воздухе."
 
-msgid "Natural Random requires Club field."
-msgstr "Для режима «Случайный полёт» требуется Club field."
+msgid "Natural Random requires Club field or Triglav."
+msgstr "Для режима «Случайный полёт» требуется Club field или Триглав."
 
 msgid "JETI radio family"
 msgstr "Семейство передатчиков JETI"
@@ -6492,8 +6492,8 @@ msgid "Flight companions · next restart: %s · %d · seed %d"
 msgstr ""
 "Самолёты-компаньоны · после перезапуска: %s · %d · начальное число: %d"
 
-msgid "Available for airplanes at Club Field."
-msgstr "Доступно для самолётов на поле клуба."
+msgid "Available for airplanes at Club Field and Triglav."
+msgstr "Доступно для самолётов на поле клуба и на Триглаве."
 
 msgid ""
 "Experimental companion flights. Start with one aircraft; additional aircraft"
@@ -6527,14 +6527,8 @@ msgstr ""
 "Введите целое начальное число от 0 до 4,294,967,295, чтобы повторить тот же "
 "выбор самолётов-компаньонов."
 
-msgid ""
-"Experienced Ugly Stik pilots fly circuits at Club field, in calm air or a "
-"gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents,"
-" and aircraft-to-aircraft contact are unavailable."
-msgstr ""
-"Опытные пилоты Ugly Stik летают по кругу на поле клуба при штиле или лёгком "
-"ветре. Другие самолёты, пилотаж, работа на ВПП, происшествия и контакт между"
-" самолётами недоступны."
+msgid "Experienced Ugly Stik pilots fly circuits at Club field and Triglav, in calm air or a gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable."
+msgstr "Опытные пилоты Ugly Stik летают по кругу на поле клуба и на Триглаве при штиле или лёгком ветре. Другие самолёты, пилотаж, работа на ВПП, происшествия и контакт между самолётами недоступны."
 
 msgid "Companion engine volume"
 msgstr "Громкость двигателей самолётов-компаньонов"

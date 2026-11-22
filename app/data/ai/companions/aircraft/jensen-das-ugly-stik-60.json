@@ -1,5 +1,5 @@
 {
-  "format": "openrc-ai-aircraft v2",
+  "format": "openrc-ai-aircraft v3",
   "id": "jensen-das-ugly-stik-60",
   "catalog_id": "jensen-das-ugly-stik-60",
   "aircraft_data": {
@@ -9,9 +9,9 @@
   },
   "controller": {
     "path": "res://ai/companions/pilot.gd",
-    "sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+    "sha256": "d1e65f7c77a9eb63149d36e695784e6eca8ae6a38d62cc84cff9d18a8b983d85",
     "dependencies": {
-      "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+      "res://ai/companions/circuit_controller.gd": "2d1e86b4bca46ffd83331167aa349be7fedb392116c8c4a2fc9e4574e8368e5e"
     }
   },
   "solver": {
@@ -19,7 +19,10 @@
     "normalization": "utf8-lf"
   },
   "engine_version": "4.8.beta2.official.cafc17a19",
-  "field_profile_id": "club-default",
+  "field_profile_ids": [
+    "club-default",
+    "triglav-tamar"
+  ],
   "qualification": {
     "status": "qualified_for_narrow_scope",
     "activities": [
@@ -59,6 +62,6 @@
     "path": "res://data/ai/companions/behavior-manifest.json",
     "format": "openrc-ai-behavior-manifest v1",
     "normalization": "utf8-lf",
-    "sha256": "c1d87fff2c4b95afd090f170b1d7a345b1f643b0c6c40a0f32cc3c33ff4aa289"
+    "sha256": "488aa62da790883bfb659c783956f8221ed9b46e494500505e037944bbdc794e"
   }
 }

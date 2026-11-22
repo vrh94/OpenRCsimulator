@@ -3558,7 +3558,7 @@ func _companion_options(raw: Dictionary) -> Dictionary:
 	var args := _user_args()
 	if _scripted or args.has("capture") or args.has("trace") or not workshop_trial.is_empty() \
 			or not flight_scenario.is_empty() or not _experimental_aircraft_path.is_empty() or not _electric_demo.is_empty():
-		return {ok = false, errors = ["Companions require a normal fixed-wing flight at Club field."]}
+		return {ok = false, errors = ["Companions require a normal fixed-wing flight at Club field or Triglav."]}
 	return CompanionManager.validate_context(session, field, landscape_id, checked.config)
 
 

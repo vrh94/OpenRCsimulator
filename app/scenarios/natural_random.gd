@@ -12,25 +12,24 @@ const UINT32_MAX := 4294967295
 const RNG_DOMAIN := "openrc-natural-random-v1"
 const SOLAR_SCAN_STEP_SECONDS := 300
 
-static var _daylight_times_ready := false
-static var _daylight_times: Dictionary = {}
+static var _daylight_times_by_field: Dictionary = {} # field id -> {daylight id -> [local seconds]}
 
 
 ## Build one detached, reproducible v1 scenario without touching scene or simulation state.
 static func generate(seed: int, field_path: String = FieldLoader.DEFAULT_PATH) -> Dictionary:
 	if seed < 0 or seed > UINT32_MAX:
 		return _failure("seed must be an unsigned 32-bit integer")
-	var policy_result: Dictionary = ScenarioConfig.policy_catalog()
-	if policy_result.is_empty():
-		var policy_errors := ScenarioConfig.policy_errors()
-		return {"ok": false, "scenario": {}, "errors": policy_errors}
-
 	var aircraft_ids: Array = ScenarioConfig.EXPECTED_AIRCRAFT_IDS
 	var aircraft_rng := _rng_for(seed, "aircraft")
 	var aircraft_id: String = aircraft_ids[aircraft_rng.randi_range(0, aircraft_ids.size() - 1)]
 	var sources: Dictionary = ScenarioConfig.resolve_source_identities(aircraft_id, field_path)
 	if not bool(sources.get("ok", false)):
 		return {"ok": false, "scenario": {}, "errors": sources.get("errors", PackedStringArray())}
+	# Each field draws from its own catalog (scenario_config.gd CATALOGS); the draw order is unchanged.
+	var field_id := str(sources.source.get("field_id", ""))
+	var policy_result: Dictionary = ScenarioConfig.policy_catalog(field_id)
+	if policy_result.is_empty():
+		return {"ok": false, "scenario": {}, "errors": ScenarioConfig.policy_errors(field_id)}
 
 	var recipe_rng := _rng_for(seed, "recipe")
 	var recipe: Dictionary = _select_weighted(policy_result.get("recipes", []), recipe_rng.randi_range(0, 99))
@@ -40,7 +39,7 @@ static func generate(seed: int, field_path: String = FieldLoader.DEFAULT_PATH) -
 	var daylight: Dictionary = _select_weighted(policy_result.get("daylight", []), daylight_rng.randi_range(0, 99))
 	if daylight.is_empty():
 		return _failure("the v1 daylight policy is incomplete")
-	var local_seconds := _choose_daylight_time(daylight, policy_result, daylight_rng)
+	var local_seconds := _choose_daylight_time(daylight, policy_result, daylight_rng, field_id)
 	if local_seconds < 0:
 		return _failure("no readable astronomical time exists for daylight band '%s'" % daylight.get("id", ""))
 
@@ -142,19 +141,18 @@ static func _make_lighting(local_seconds: int, policy: Dictionary) -> Dictionary
 	}
 
 
-static func _choose_daylight_time(daylight: Dictionary, policy: Dictionary, rng: RandomNumberGenerator) -> int:
-	_prepare_daylight_times(policy)
-	var candidates: Array = _daylight_times.get(str(daylight.get("id", "")), [])
+static func _choose_daylight_time(daylight: Dictionary, policy: Dictionary, rng: RandomNumberGenerator,
+		field_id: String = ScenarioConfig.EXPECTED_FIELD_ID) -> int:
+	if not _daylight_times_by_field.has(field_id):
+		_daylight_times_by_field[field_id] = _daylight_times_for(policy)
+	var candidates: Array = (_daylight_times_by_field[field_id] as Dictionary).get(str(daylight.get("id", "")), [])
 	if candidates.is_empty():
 		return -1
 	return int(candidates[rng.randi_range(0, candidates.size() - 1)])
 
 
-static func _prepare_daylight_times(policy: Dictionary) -> void:
-	if _daylight_times_ready:
-		return
-	_daylight_times_ready = true
-	_daylight_times = {}
+static func _daylight_times_for(policy: Dictionary) -> Dictionary:
+	var times: Dictionary = {}
 	var context: Dictionary = policy.get("field_context", {})
 	for daylight_value: Variant in policy.get("daylight", []):
 		if typeof(daylight_value) != TYPE_DICTIONARY:
@@ -184,7 +182,8 @@ static func _prepare_daylight_times(policy: Dictionary) -> void:
 			if hour_angle_rule == "setting" and hour_angle <= 0.0:
 				continue
 			candidates.append(local_seconds)
-		_daylight_times[id] = candidates
+		times[id] = candidates
+	return times
 
 
 static func _select_weighted(records: Variant, roll: int) -> Dictionary:

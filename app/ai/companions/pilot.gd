@@ -37,8 +37,9 @@ var _planning_wind := PackedFloat64Array([0.0, 0.0, 0.0])
 var _plan_diagnostic_count := 0
 
 
-func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: Dictionary) -> bool:
-	var configured: bool = super.configure(slot, count, seed_value, trim, field)
+func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: Dictionary,
+		circuit: Dictionary = {}) -> bool:
+	var configured: bool = super.configure(slot, count, seed_value, trim, field, circuit)
 	if configured:
 		_reset_reachable_state()
 	return configured
@@ -84,7 +85,7 @@ func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary
 			and is_finite(_planning_clearance_m):
 		var state: PackedFloat64Array = snapshot.state
 		var height: float = -state[AvoidanceRigidBody.POS + 2]
-		var floor_height: float = height - _planning_clearance_m + BASE_HEIGHT_AGL_M
+		var floor_height: float = height - _planning_clearance_m + _base_height_agl_m
 		if float(packet.target_height_m) < floor_height:
 			var velocity: PackedFloat64Array = AvoidanceMath.q_rotate(state.slice(AvoidanceRigidBody.ATT, AvoidanceRigidBody.ATT + 4),
 				state.slice(AvoidanceRigidBody.VEL, AvoidanceRigidBody.VEL + 3))

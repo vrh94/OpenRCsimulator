@@ -1553,7 +1553,7 @@ func set_landscape(id: String) -> void:
 func _update_landscape_activities() -> void:
 	# UI-34d (UI-30 AS-6): Natural Random draws its own airplane, so only the field limits it.
 	natural_random_button.disabled = not natural_random_available
-	natural_random_button.tooltip_text = tr("Natural Random requires Club field.") if not natural_random_available else ""
+	natural_random_button.tooltip_text = tr("Natural Random requires Club field or Triglav.") if not natural_random_available else ""
 
 
 ## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.
@@ -1930,7 +1930,8 @@ func _update_companions_text() -> void:
 	var count := int(companion_config.get("count", 1))
 	var seed := int(companion_config.get("seed", 1))
 	var engine_qualified := CompanionConfig.engine_qualified()
-	var available := engine_qualified and _airplane_selected() and landscape_id == Landscapes.DEFAULT_ID
+	var available := engine_qualified and _airplane_selected() \
+		and CompanionConfig.Profiles.landscape_qualified(landscape_id)
 	companions_button.text = tr("Flight companions: %s · %d") % [
 		tr("On") if enabled else tr("Off"), count,
 	]
@@ -1941,7 +1942,7 @@ func _update_companions_text() -> void:
 		companions_button.text = tr("Flight companions: Unavailable")
 		companions_button.tooltip_text = tr("Flight companions are unavailable in this game build.")
 	elif not available:
-		companions_button.tooltip_text += "\n" + tr("Available for airplanes at Club Field.")
+		companions_button.tooltip_text += "\n" + tr("Available for airplanes at Club Field and Triglav.")
 	companions_button.disabled = not available
 
 
