@@ -1,5 +1,6 @@
 # HELI-16: rotorcraft lifecycle on the common fixed-step Simulation owner.
 extends Node
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 const Sim = preload("res://sim/simulation.gd")
 const VehicleModel = preload("res://sim/vehicle_model.gd")
 const Data = preload("res://physics/rotorcraft_data.gd")
@@ -41,10 +42,10 @@ var raw: Dictionary = Commands.neutral_raw()
 var read_raw: Callable = Keyboard.read_raw
 var read_axis: Callable = Input.get_joy_axis
 var read_button: Callable = Input.is_joy_button_pressed
-var connected_device_ids: Callable = Input.get_connected_joypads
+var connected_device_ids: Callable = func() -> Array[int]: return JoypadDirectory.connected()
 var device_info: Callable = func(id: int) -> Dictionary:
-  var info: Dictionary = Input.get_joy_info(id)
-  info.merge({name=Input.get_joy_name(id),guid=Input.get_joy_guid(id),known=Input.is_joy_known(id)})
+  var info: Dictionary = JoypadDirectory.joy_info(id)
+  info.merge({name=JoypadDirectory.joy_name(id),guid=JoypadDirectory.joy_guid(id),known=JoypadDirectory.is_known(id)})
   return info
 var radio: RefCounted = RcInput.new()
 var calibration: RefCounted
@@ -843,7 +844,7 @@ func _ready() -> void:
  # A session without input (tests, traces) never claims a physical controller, as on the airplane route.
  if external_controller_selection or not input_enabled: return
  Input.joy_connection_changed.connect(_on_joy_connection_changed)
- for id: int in Input.get_connected_joypads():
+ for id: int in JoypadDirectory.connected():
   if not radio.connected: _on_joy_connection_changed(id,true)
 
 func _input(event: InputEvent) -> void:

@@ -1,5 +1,6 @@
 ## Playable ground-vehicle activity. Physics belongs exclusively to Session.
 extends Node3D
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 
 const Session = preload("res://sim/ground_vehicle/session.gd")
 const Driver = preload("res://input/ground_vehicle_input.gd")
@@ -431,10 +432,10 @@ func _refresh_driving_devices() -> void:
 		for record: Dictionary in _source_controller_registry.get_devices():
 			if record.get("connected", false): observations.append(record)
 	else:
-		for id: int in Input.get_connected_joypads():
-			var record := Input.get_joy_info(id)
-			record.merge({"id": id, "name": Input.get_joy_name(id), "guid": Input.get_joy_guid(id),
-				"known": Input.is_joy_known(id), "kind": "gamepad" if Input.is_joy_known(id) else "joystick"}, true)
+		for id: int in JoypadDirectory.connected():
+			var record := JoypadDirectory.joy_info(id)
+			record.merge({"id": id, "name": JoypadDirectory.joy_name(id), "guid": JoypadDirectory.joy_guid(id),
+				"known": JoypadDirectory.is_known(id), "kind": "gamepad" if JoypadDirectory.is_known(id) else "joystick"}, true)
 			observations.append(record)
 	controller_registry.update_devices(observations)
 	_refresh_controller_ui()

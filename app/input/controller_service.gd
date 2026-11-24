@@ -1,4 +1,5 @@
 extends Node
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 ## Interactive-only bridge. Home chooses defaults; active sessions retain explicit ownership.
 const Registry := preload("res://input/controller_registry.gd")
 const Store := preload("res://input/controller_profile_store.gd")
@@ -153,10 +154,10 @@ func _connection_changed(id: int, connected: bool) -> void:
 
 static func observed_devices() -> Array:
 	var devices: Array = []
-	for id: int in Input.get_connected_joypads():
-		var info := Input.get_joy_info(id)
-		info.merge({"id": id, "name": Input.get_joy_name(id), "guid": Input.get_joy_guid(id),
-			"known": Input.is_joy_known(id), "platform": OS.get_name(), "backend": "SDL3"}, true)
+	for id: int in JoypadDirectory.connected():
+		var info := JoypadDirectory.joy_info(id)
+		info.merge({"id": id, "name": JoypadDirectory.joy_name(id), "guid": JoypadDirectory.joy_guid(id),
+			"known": JoypadDirectory.is_known(id), "platform": OS.get_name(), "backend": str(info.get("backend", "SDL3"))}, true)
 		if JetiRadio.matches(info):
 			info["kind"] = "radio"
 		elif JetiRadio.has_jeti_identity_claim(info):
@@ -198,9 +199,9 @@ func _confirmed_gamepad_connection(id: int, expected_id: int, expected_generatio
 	var info: Dictionary = registry.device_for_id(id)
 	if not bool(info.get("connected", false)) or not bool(info.get("known", false)) or info.get("kind", "") != "gamepad":
 		return false
-	return Input.get_connected_joypads().has(id) and Input.is_joy_known(id) \
-		and Input.get_joy_guid(id) == str(info.get("guid", "")) \
-		and Input.get_joy_name(id) == str(info.get("name", ""))
+	return JoypadDirectory.connected().has(id) and JoypadDirectory.is_known(id) \
+		and JoypadDirectory.joy_guid(id) == str(info.get("guid", "")) \
+		and JoypadDirectory.joy_name(id) == str(info.get("name", ""))
 
 
 func _bind_gamepad_confirmation(id: int) -> void:

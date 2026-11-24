@@ -1,5 +1,6 @@
 # F1: standalone diagnostic route. It never creates a flight or applies/saves calibration.
 extends Node
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 
 const ReportData = preload("res://input/input_report_data.gd")
 const BuildInfo = preload("res://app_state/build_info.gd")
@@ -13,11 +14,11 @@ var quit_on_finish: bool = true
 var report: Dictionary = {}
 var data: ReportData = ReportData.new()
 var clock_usec: Callable = func() -> int: return Time.get_ticks_usec()
-var connected_devices: Callable = func() -> Array[int]: return Input.get_connected_joypads()
+var connected_devices: Callable = func() -> Array[int]: return JoypadDirectory.connected()
 var device_info: Callable = func(id: int) -> Dictionary:
-	var info: Dictionary = Input.get_joy_info(id)
-	return {guid = Input.get_joy_guid(id), name = Input.get_joy_name(id), raw_name = info.get("raw_name"),
-		vendor_id = info.get("vendor_id"), product_id = info.get("product_id"), known = Input.is_joy_known(id),
+	var info: Dictionary = JoypadDirectory.joy_info(id)
+	return {guid = JoypadDirectory.joy_guid(id), name = JoypadDirectory.joy_name(id), raw_name = info.get("raw_name"),
+		vendor_id = info.get("vendor_id"), product_id = info.get("product_id"), known = JoypadDirectory.is_known(id),
 		vibration_supported = Input.has_joy_vibration(id), steam_input_index = info.get("steam_input_index"),
 		xinput_index = info.get("xinput_index")}
 var _start_usec: int = 0

@@ -22,6 +22,7 @@ const FieldLoader = preload("res://data/field_loader.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const ControllerService := preload("res://input/controller_service.gd")
+const SerialRadioLink := preload("res://input/serial_radio_link.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerSetup := preload("res://ui/controller_setup.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
@@ -233,6 +234,9 @@ var _out_of_trim_airframes: Dictionary = {}
 ## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
 var has_home := false
 var controllers: Node
+## An EdgeTX radio in USB serial mode (sticks in, telemetry out); started only for the real app, never for tests or
+## headless runs, and off with --no-radio-serial.
+var radio_serial: Node
 var _radio_menu_input: RefCounted
 var _radio_menu_identity: Dictionary = {}
 var _radio_menu_context: Dictionary = {}
@@ -413,6 +417,12 @@ func _ready() -> void:
 		_clear_controller_actions()
 		open_pause.call_deferred())
 	add_child(controllers)
+	radio_serial = SerialRadioLink.new()
+	radio_serial.name = "SerialRadioLink"
+	add_child(radio_serial)
+	if preferences_path == Preferences.DEFAULT_PATH and DisplayServer.get_name() != "headless" \
+			and not OS.get_cmdline_user_args().has("--no-radio-serial") and not OS.get_cmdline_args().has("--no-radio-serial"):
+		radio_serial.start()
 	preferences = Preferences.load_from(preferences_path)
 	landscape_id = preferences.landscape
 	if field_path == FieldLoader.DEFAULT_PATH:

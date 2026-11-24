@@ -3,6 +3,7 @@
 ## tick, computes ONE interpolated pose per frame for the visual and the camera, and owns the OSD, the hold/menu
 ## policy, the motor sound and the opt-in flight log. Graphics settings never change physics.
 extends Node3D
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 
 const Session = preload("res://sim/multirotor/session.gd")
 const MultirotorLog = preload("res://sim/multirotor/flight_log.gd")
@@ -212,7 +213,7 @@ func _ready() -> void:
 	FlightLogFormat.replay_identity()
 	session.faulted.connect(func(reason: String) -> void: _open_menu(tr("Simulation paused: %s") % reason))
 	var none_selected: bool = _has_registry() and int(controller_registry.selected_device_id("flight")) < 0
-	_keyboard_by_choice = none_selected and not Input.get_connected_joypads().is_empty()
+	_keyboard_by_choice = none_selected and not JoypadDirectory.connected().is_empty()
 	_flight_generation = input.source_generation
 	Input.joy_connection_changed.connect(_joy_connection_changed)
 	if _has_registry() and controller_registry.has_signal("selection_changed"):
@@ -414,10 +415,10 @@ func _bind_gamepad_confirmation() -> void:
 func _confirmed_direct_gamepad(id: int) -> bool:
 	if not is_inside_tree() or not get_window().has_focus() or not input.radio.connected:
 		return false
-	if id != int(input.radio.device_id) or not Input.get_connected_joypads().has(id) or not Input.is_joy_known(id):
+	if id != int(input.radio.device_id) or not JoypadDirectory.connected().has(id) or not JoypadDirectory.is_known(id):
 		return false
-	var info: Dictionary = Input.get_joy_info(id)
-	info.merge({name = Input.get_joy_name(id), guid = Input.get_joy_guid(id), known = Input.is_joy_known(id)})
+	var info: Dictionary = JoypadDirectory.joy_info(id)
+	info.merge({name = JoypadDirectory.joy_name(id), guid = JoypadDirectory.joy_guid(id), known = JoypadDirectory.is_known(id)})
 	return RcInput.key_for(id, info) == str(input.radio.device_key)
 
 

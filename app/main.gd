@@ -101,6 +101,7 @@ const VisualEvidence = preload("res://render/visual_evidence.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const LatencyPatch = preload("res://input/latency_patch.gd")
 const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
+const RadioTelemetry := preload("res://sim/radio_telemetry.gd")
 const WATER_CHECKPOINT_FORMAT := "openrc-visual-water-checkpoint v1"
 const WATER_CHECKPOINT_FIELDS: Array[String] = ["format", "visual", "water_render", "payload_sha256"]
 const INSTALLATION_GEOMETRY_HOLD := "accepted propeller geometry could not be displayed"
@@ -1690,7 +1691,9 @@ func _process(delta: float) -> void:
 	_update_hud(diagnostics_visible or _hud.text.is_empty(), performance_visible)
 	if _overlays != null:
 		if _overlays.tick(dt):
-			_overlays.refresh_numbers(_overlay_snapshot())
+			var snap := _overlay_snapshot()
+			_overlays.refresh_numbers(snap)
+			_publish_radio_telemetry(snap)
 		_overlays.refresh_sticks(OverlayManager.sticks(session) if not _scripted and _visual_pose.is_empty() else {})
 
 
@@ -1881,6 +1884,20 @@ func _fc_osd_status() -> Dictionary:
 
 
 ## FC-1: the flight controller's mode now ("manual" without a session).
+## Telemetry for an EdgeTX radio on the USB serial link (sim/radio_telemetry.gd): what the overlays show, plus
+## attitude, arming and throttle. Read-only; nothing is published without a flight to describe.
+func _publish_radio_telemetry(snap: Dictionary) -> void:
+	if snap.is_empty() or session == null:
+		return
+	var t: Dictionary = snap.get("telemetry", {}).duplicate()
+	t.home_up_m = -float(field.pilot.get("down", 0.0))
+	t.flight_mode = _flight_mode()
+	var osd := FpvOsd.Model.values(t, _overlays.battery_reading())
+	var aircraft_name := Catalog.short_name(aircraft_id) if Catalog.has(aircraft_id) else ""
+	RadioTelemetry.publish(RadioTelemetry.reading(osd, t, bool(session.radio.armed), float(t.get("throttle", NAN)),
+		landscape_id, aircraft_name))
+
+
 func _flight_mode() -> String:
 	return str(session.flight_controller.mode) if session != null and session.get("flight_controller") != null else "manual"
 

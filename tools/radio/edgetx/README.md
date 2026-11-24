@@ -52,6 +52,8 @@ It finds the sensors present (MDL → Telemetry → Discover new) and shows only
 
 ## Simulator link (USB serial)
 
+Simulator side, setup and troubleshooting: [Radio telemetry over USB serial](../../../docs/RADIO-SERIAL-LINK.md).
+
 The radio's USB port works either as a joystick or as a serial port, never both. In serial mode, `simlnk.lua` carries the sticks and switches to the simulator and brings telemetry back:
 
 - **Radio to simulator:** every Lua cycle (50 ms, so 20 times a second), a `C` line with CH1–CH16. Once a second, an `H` line with the radio name and EdgeTX version.

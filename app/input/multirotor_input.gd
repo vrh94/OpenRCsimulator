@@ -8,6 +8,7 @@
 ## a fresh ON at low throttle); this adapter only latches toggles or reads the radio switch. Presentation-side input:
 ## it never touches a session.
 extends RefCounted
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 
 const RcInput = preload("res://input/rc_input.gd")
 const RcCalibration = preload("res://input/rc_calibration.gd")
@@ -132,20 +133,20 @@ func bindings() -> Dictionary:
 
 
 func connect_first_device() -> void:
-	for id: int in Input.get_connected_joypads():
+	for id: int in JoypadDirectory.connected():
 		if not radio.connected:
 			on_connection_changed(id, true)
 
 
 func on_connection_changed(id: int, connected: bool) -> void:
 	if connected and not radio.connected:
-		var info: Dictionary = Input.get_joy_info(id)
-		info.merge({name = Input.get_joy_name(id), guid = Input.get_joy_guid(id), known = Input.is_joy_known(id)})
+		var info: Dictionary = JoypadDirectory.joy_info(id)
+		info.merge({name = JoypadDirectory.joy_name(id), guid = JoypadDirectory.joy_guid(id), known = JoypadDirectory.is_known(id)})
 		var device_info := func(other: int) -> Dictionary:
-			var record: Dictionary = Input.get_joy_info(other)
-			record.merge({name = Input.get_joy_name(other), guid = Input.get_joy_guid(other), known = Input.is_joy_known(other)})
+			var record: Dictionary = JoypadDirectory.joy_info(other)
+			record.merge({name = JoypadDirectory.joy_name(other), guid = JoypadDirectory.joy_guid(other), known = JoypadDirectory.is_known(other)})
 			return record
-		var unique: bool = ControllerStore.legacy_identity_is_unique_for_ids(id, info, Input.get_connected_joypads(), device_info)
+		var unique: bool = ControllerStore.legacy_identity_is_unique_for_ids(id, info, JoypadDirectory.connected(), device_info)
 		var saved: Dictionary = RcCalibration.load_profile(profiles_path, RcInput.key_for(id, info)) if unique else {}
 		connect_device(id, info, saved)
 	elif not connected and radio.connected and id == radio.device_id:

@@ -5,6 +5,7 @@
 # (virtual stick: rate-limited, self-centering). Unplugging the radio triggers the failsafe: idle, sticks centred,
 # visible pause; resuming is an explicit action (resume()).
 extends Node
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 
 const FailureConfig := preload("res://failures/config.gd")
 const FailureRuntime := preload("res://failures/runtime.gd")
@@ -1352,11 +1353,11 @@ var radio := RcInput.new()
 ## tests: Input.get_joy_guid on a device that does not exist prints an engine error.
 var read_axis: Callable = func(device: int, axis: int) -> float: return Input.get_joy_axis(device, axis as JoyAxis)
 var read_button: Callable = Input.is_joy_button_pressed
-var connected_device_ids: Callable = Input.get_connected_joypads
+var connected_device_ids: Callable = func() -> Array[int]: return JoypadDirectory.connected()
 var device_info: Callable = func(device: int) -> Dictionary:
-	var info := Input.get_joy_info(device)
-	return { guid = Input.get_joy_guid(device), name = Input.get_joy_name(device),
-		vendor_id = info.get("vendor_id", 0), product_id = info.get("product_id", 0), known = Input.is_joy_known(device) }
+	var info := JoypadDirectory.joy_info(device)
+	return { guid = JoypadDirectory.joy_guid(device), name = JoypadDirectory.joy_name(device),
+		vendor_id = info.get("vendor_id", 0), product_id = info.get("product_id", 0), known = JoypadDirectory.is_known(device) }
 ## Saved radio calibrations, one per device key.
 var profiles_path := "user://rc_calibration.cfg"
 ## Interactive shell owns selection; technical sessions retain their explicit legacy test seams.
@@ -1818,7 +1819,7 @@ func _ready() -> void:
 	if external_controller_selection:
 		return
 	radio.confirmed_gamepad_connection = _confirmed_direct_gamepad
-	var pads := Input.get_connected_joypads()
+	var pads := JoypadDirectory.connected()
 	if not pads.is_empty():
 		_on_joy_connection_changed(pads[0], true)
 
@@ -1827,7 +1828,7 @@ func _ready() -> void:
 func _confirmed_direct_gamepad(id: int) -> bool:
 	if external_driver_enabled or external_controller_selection or not is_inside_tree() or not get_window().has_focus():
 		return false
-	if id != radio.device_id or not Input.get_connected_joypads().has(id) or not Input.is_joy_known(id):
+	if id != radio.device_id or not JoypadDirectory.connected().has(id) or not JoypadDirectory.is_known(id):
 		return false
 	var info: Dictionary = device_info.call(id)
 	return RcInput.key_for(id, info) == radio.device_key

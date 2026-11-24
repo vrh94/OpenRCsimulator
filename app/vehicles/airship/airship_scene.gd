@@ -2,6 +2,7 @@
 ## session (sim/airship/session.gd); this node samples the pilot input once per 240 Hz tick, draws the interpolated
 ## accepted state, and owns camera, HUD, sound and the pause menu. Graphics settings never change physics.
 extends Node3D
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 
 const Session = preload("res://sim/airship/session.gd")
 const PilotInput = preload("res://input/airship_input.gd")
@@ -355,10 +356,10 @@ func _bind_gamepad_confirmation() -> void:
 
 func _confirmed_direct_gamepad(id: int) -> bool:
 	if not is_inside_tree() or not get_window().has_focus() or not input.radio.connected \
-			or id != int(input.radio.device_id) or not Input.get_connected_joypads().has(id) or not Input.is_joy_known(id):
+			or id != int(input.radio.device_id) or not JoypadDirectory.connected().has(id) or not JoypadDirectory.is_known(id):
 		return false
-	var info: Dictionary = Input.get_joy_info(id)
-	info.merge({name = Input.get_joy_name(id), guid = Input.get_joy_guid(id), known = true})
+	var info: Dictionary = JoypadDirectory.joy_info(id)
+	info.merge({name = JoypadDirectory.joy_name(id), guid = JoypadDirectory.joy_guid(id), known = true})
 	return RcInput.key_for(id, info) == str(input.radio.device_key)
 
 

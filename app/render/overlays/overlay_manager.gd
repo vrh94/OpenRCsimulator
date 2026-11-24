@@ -420,6 +420,11 @@ func tick(delta: float) -> bool:
 	return _since_text >= TEXT_PERIOD_S
 
 
+## The latest battery sensors reading (BatterySensors.empty() when the aircraft has no electric battery).
+func battery_reading() -> Dictionary:
+	return _battery_reading
+
+
 ## The 10 Hz part. snap: snapshot() output ({} = no flight to describe).
 func refresh_numbers(snap: Dictionary) -> void:
 	_last_telemetry = snap.get("telemetry", {})

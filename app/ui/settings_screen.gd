@@ -1,6 +1,7 @@
 # UI-24: application settings with reversible display previews. The root applies presentation_changed through
 # its shared scale/theme helpers; language is handed to the existing player-preferences owner immediately.
 extends CanvasLayer
+const JoypadDirectory := preload("res://input/joypad_directory.gd")
 
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
@@ -1029,7 +1030,7 @@ func begin_gimbal_capture(key: String, kind: String) -> bool:
 	var radio: Dictionary = gimbal_radio.call() if gimbal_radio.is_valid() else {}
 	var device := int(radio.get("device", -1))
 	var baseline := {}
-	for id: int in Input.get_connected_joypads():
+	for id: int in JoypadDirectory.connected():
 		if device >= 0 and id != device:
 			continue
 		var axes := PackedFloat32Array()

@@ -12,10 +12,10 @@
     "res://ai/companions/profile_loader.gd": "4ce3ea95deca184bb16a79db783ed87179cd400e9ec4d2ba017dd76827cb580a",
     "res://ai/companions/seed_allocator.gd": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
     "res://ai/companions/static_trajectory.gd": "c7eb9e93926c95747df166050a65c587ae644657177784a7b5f3e5e98ee0ff5d",
-    "res://app_root.gd": "aa810018dbfc39fc1700b5eae803d1b5419f4cd4bf821df00fab1629b49b0e6f",
+    "res://app_root.gd": "cbe7721ae33262a6e456b2d79d35adcdf265b701bec29113954f9e7b74f8d5c3",
     "res://data/field_loader.gd": "e9e1c1a10b21ec809625d5caeb33414b90a125d3ffc530953827702f68cc26f8",
     "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
-    "res://main.gd": "df8c5bcc17d6774718d32f71bd63afd933563cd54cc7fb2145e105dafd934d93",
+    "res://main.gd": "ff714c1025d14dfd2467aeef08549cc746c900f19e8996b159e7ab5ad3d77a10",
     "res://scenery/collision_world.gd": "0ed67337f2620e68785e7bf07dbc181a20feeffa5900498e804f6677f69811a1",
     "res://workshop/strict_json.gd": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
   }

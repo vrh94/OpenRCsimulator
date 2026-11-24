@@ -38,6 +38,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Player skin template and texture-only export | [Skin toolkit](../../tools/skins/README.md); [player tutorial](../AIRCRAFT-SKINS.md). |
 | Radio/controller diagnostics | [Device report, calibration and latency](../TOOLS.md#radio-diagnostics). |
 | EdgeTX scripts for the radio (flight/telemetry screen) | [EdgeTX scripts](../../tools/radio/edgetx/README.md); test: `lua tools/radio/edgetx/test/test_flight.lua`. |
+| EdgeTX radio over USB serial (sticks in, telemetry out) | [Radio serial link](../RADIO-SERIAL-LINK.md); tests `test_serial_radio_link.gd`, `test_radio_telemetry.gd`, `lua tools/radio/edgetx/test/test_simlnk.lua`. |
 | Helicopter or ground vehicle | [Helicopter guide](../HELICOPTER.md), [ground-vehicle tools](../../research/rc-monster-truck/README.md). |
 | Physical measurements | [Mass, inertia, thrust and video reducers](../TOOLS.md#aircraft-measurement-reducers). |
 | Audio | [Audio tool contracts and dependencies](../../tools/audio/README.md). |
