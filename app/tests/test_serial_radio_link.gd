@@ -189,6 +189,13 @@ func _link() -> void:
 func _hello_timeout() -> void:
 	var link := _new_link()
 	link.feed("#PORT /dev/ttyACM0|Jumper T-Pro Serial Port\n")
+	_clock += SerialRadioLink.SILENT_WARN_MS - 100
+	link.tick()
+	_check("link: a quiet port gets no setup hint before the wait", not link._warned_silent)
+	_clock += 200
+	link.tick()
+	_check("link: a port that sends no frames gets the USB-VCP/flight-screen hint once", link._warned_silent
+		and link.status() == "EdgeTX serial port /dev/ttyACM0 open, waiting for simlnk.lua")
 	link.feed(_frame(_channels({})) + "\n")
 	_clock += SerialRadioLink.HELLO_WAIT_MS + 10
 	link.feed(_frame(_channels({})) + "\n")

@@ -25,6 +25,8 @@ const FRAME_TIMEOUT_MS := 500
 ## Without a hello line (radio name and EdgeTX version), the device is announced after this long anyway.
 const HELLO_WAIT_MS := 2500
 const SEND_INTERVAL_MS := 100
+## An open port that has sent no channel frame for this long gets a setup hint in the log.
+const SILENT_WARN_MS := 3000
 const EDGETX_VENDOR := 0x1209
 const EDGETX_JOYSTICK_PRODUCT := 0x4F54
 
@@ -59,12 +61,18 @@ while kill -0 "$PPID" 2>/dev/null; do
   if [ -z "$hit" ]; then sleep 1; continue; fi
   port=${hit%%|*}
   echo "#PORT $hit"
+  # The session ends when either direction stops (radio unplugged or switched to joystick mode: the read ends; the
+  # simulator gone: the parent check), so the port is searched for again instead of waiting on a dead one.
   (
     stty raw -echo clocal <&3 2>/dev/null
     cat <&3 &
     reader=$!
-    cat <&4 >&3
-    kill "$reader" 2>/dev/null
+    cat <&4 >&3 &
+    writer=$!
+    while kill -0 "$reader" 2>/dev/null && kill -0 "$writer" 2>/dev/null && kill -0 "$PPID" 2>/dev/null; do
+      sleep 0.5
+    done
+    kill "$reader" "$writer" 2>/dev/null
   ) 3<>"$port"
   echo "#GONE"
   sleep 1
@@ -96,6 +104,8 @@ var _first_frame_ms := -1
 var _last_frame_ms := -1000000
 var _last_send_ms := -1000000
 var _send_tick := 0
+var _port_open_ms := 0
+var _warned_silent := false
 
 
 ## Starts the helper (macOS and Linux). Returns false where serial radios are not supported.
@@ -153,9 +163,15 @@ func handle_line(text: String) -> void:
 		var parts := text.substr(6).split("|", true, 1)
 		port = parts[0]
 		usb_product = parts[1] if parts.size() > 1 else ""
+		_port_open_ms = now_ms.call()
+		_warned_silent = false
+		frames = 0
+		print("Radio serial link: %s (%s) open, waiting for simlnk.lua" % [port, usb_product])
 		status_changed.emit()
 		return
 	if text == "#GONE":
+		if not port.is_empty():
+			print("Radio serial link: %s closed" % port)
 		_end_device()
 		port = ""
 		status_changed.emit()
@@ -218,8 +234,13 @@ func _on_channels(channels: PackedInt32Array) -> void:
 func tick() -> void:
 	var t: int = now_ms.call()
 	if device_id >= 0 and t - _last_frame_ms > FRAME_TIMEOUT_MS:
+		print("Radio serial link: no channel frames for %d ms, radio removed" % FRAME_TIMEOUT_MS)
 		_end_device()
 		status_changed.emit()
+	if not port.is_empty() and frames == 0 and not _warned_silent and t - _port_open_ms > SILENT_WARN_MS:
+		_warned_silent = true
+		push_warning(("Radio serial link: %s sends no channel frames. On the radio set SYS > Hardware > USB-VCP to LUA "
+			+ "and make the model's telemetry screen the 'flight' script.") % port)
 	if device_id < 0 or t - _last_send_ms < SEND_INTERVAL_MS:
 		return
 	_last_send_ms = t
