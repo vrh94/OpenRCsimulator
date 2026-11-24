@@ -29,7 +29,7 @@ In serial mode the simulator presents the radio exactly as it appears in joystic
 **On the radio (once):**
 1. Copy `SCRIPTS/TELEMETRY/flight.lua` and `simlnk.lua` from [`tools/radio/edgetx`](../tools/radio/edgetx/README.md) to the SD card.
 2. **SYS → Hardware → USB-VCP: LUA.** The default, CLI, gives the port to EdgeTX's command line and the script receives nothing.
-3. On the model you fly the simulator with, set **MDL → Display → Screen 1 → Script → `flight`**.
+3. On the model you fly the simulator with, set **MDL → Display → Screen 1 → Script → `flight`**. Don't make `simlnk` a screen: `flight` loads it, and a second copy competes for the serial port.
 
 **Each time:**
 1. Plug in the USB cable and choose **USB Serial (VCP)**.
@@ -63,6 +63,7 @@ Positions come from the landscape's D96/TM reference (EPSG:3794) and are convert
 | Nothing moves; the radio's flight screen isn't open, or the radio shows no **SIM** | USB-VCP is not LUA (a serial terminal shows EdgeTX's `>` prompt), or the model has no `flight` screen. |
 | The radio connects, but sticks are reversed or off-centre | The joystick-mode calibration doesn't match this model's mixes. Recalibrate in the setup assistant; the result is saved for both modes. |
 | Telemetry shows `--` for the battery | The aircraft is not electric. |
+| "bad argument #1 to 'getValue' (string expected, got nil)" | Another telemetry screen on the model reads a sensor that didn't exist when it started, such as EdgeTX's `gplusl` GPS sample, whose GPS sensor appears only once the simulator sends telemetry. Remove that screen from MDL → Display. |
 | The radio shows **SIM** but no flight values | You are in a menu, or flying a helicopter, multirotor, airship or ground vehicle: so far only fixed-wing aircraft send flight data (with or without overlays). |
 
 Code:
