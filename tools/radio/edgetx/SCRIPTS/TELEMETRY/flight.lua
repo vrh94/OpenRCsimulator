@@ -153,6 +153,7 @@ local function update()
   local t = now()
   if t - st.scan > 100 then scan() end
   local s = sim and sim.poll() or nil
+  st.sim = s
   local simUp = s and s.alive
   local v
   T = {}
@@ -220,7 +221,7 @@ local function update()
   end
   -- Simulator link (values it does not send stay nil)
   if simUp then
-    for k, x in pairs(s.values) do T[k] = x end
+    for k, x in pairs(s.values) do if k ~= "thr" and k ~= "time" then T[k] = x end end
     if s.armed ~= nil then armedKnown = s.armed end
   end
   -- Arming: telemetry, simulator, switch, throttle
@@ -406,7 +407,7 @@ local function linkPage()
     row(39, "Rate index / power", fmt(val("RFMD"), "%d") .. " / " .. fmt(val("TPWR"), "%dmW"))
     row(46, "RX battery", fmt(val("RxBt"), "%.2fV"))
   elseif st.proto == "SIM" then
-    local s = sim.poll()
+    local s = st.sim
     row(18, "Simulator", s.name or "OpenRC")
     row(25, "Sticks sent", string.format("%d/s", rnd(s.txRate or 0)))
     row(32, "Telemetry recv", string.format("%d/s", rnd(s.rxRate or 0)))

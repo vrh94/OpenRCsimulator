@@ -5,10 +5,11 @@ Lua scripts for EdgeTX 2.12 radios with a 128 × 64 screen. They were written fo
 | File | What it is |
 | --- | --- |
 | `SCRIPTS/TELEMETRY/flight.lua` | Flight screen. HUD page: flight mode, armed timer, TX battery, artificial horizon with pitch ladder, heading and home arrow, battery V, cell, A, mAh and gauge, altitude, vertical speed, ground speed and airspeed, home distance, messages. Also Link, Stats and Settings pages, voice alerts and statistics. |
+| `SCRIPTS/TELEMETRY/simlnk.lua` | OpenRC simulator link, loaded by `flight.lua`. Over USB serial it sends the channels to the simulator and receives the simulator's flight data, which it shows on the flight screen and publishes as telemetry sensors. |
 
 ## Install
 
-1. Connect the radio over USB and choose **USB Storage (SD)**. Copy `SCRIPTS/TELEMETRY/flight.lua` to the same folder on the SD card. On macOS use `COPYFILE_DISABLE=1 cp …` so no `._` files are left on the card.
+1. Connect the radio over USB and choose **USB Storage (SD)**. Copy `SCRIPTS/TELEMETRY/flight.lua` and `simlnk.lua` to the same folder on the SD card. On macOS use `COPYFILE_DISABLE=1 cp …` so no `._` files are left on the card.
 2. Eject the card, then on the radio go to **MDL → Display → Screen 1 → Script → `flight`**.
 3. From the main screen, press **PAGE** (or long-press it) to open the screen.
 
@@ -44,11 +45,31 @@ It finds the sensors present (MDL → Telemetry → Discover new) and shows only
 - **Voice alerts** (EdgeTX's standard English files): armed and disarmed, mode changes (acro, manual, RTH, cruise, waypoint, landing, position hold, loiter, horizon, turtle, failsafe), low and critical battery (critical also vibrates), and low LQ or RSSI.
 - **Units:** metric.
 
+## Simulator link (USB serial)
+
+The radio's USB port works either as a joystick or as a serial port, never both. In serial mode, `simlnk.lua` carries the sticks and switches to the simulator and brings telemetry back:
+
+- **Radio to simulator:** every Lua cycle (50 ms, so 20 times a second), a `C` line with CH1–CH16. Once a second, an `H` line with the radio name and EdgeTX version.
+- **Simulator to radio:**
+  - `B`: battery V, A, mAh, %;
+  - `A`: altitude, vertical speed, ground and air speed, heading, pitch, roll;
+  - `N`: home distance and direction, latitude and longitude;
+  - `M`: mode, armed, flight time, throttle;
+  - `I`: simulator and aircraft name.
+- **Line format:** ASCII lines that end in `*` plus two hex digits (the sum of the payload bytes, modulo 256). An empty field means the simulator has no such value. The protocol is described at the top of the script.
+- **Sensors on the radio:** created in a private id range (`0x5A00`+), so EdgeTX voice, logging and other scripts can use them: `RxBt`, `Curr`, `Capa`, `Bat%`, `Alt`, `VSpd`, `GSpd`, `ASpd`, `Hdg`, `Ptch`, `Roll`, `Dist` and `GPS`. The simulator has no radio link, so no RSSI or link-quality sensor is ever created.
+- **Delay:** sticks reach the simulator at 20 Hz, 25–75 ms later than in joystick mode. For fast flying, use joystick mode.
+
+Radio setup, done once:
+1. **SYS → Hardware → USB-VCP: LUA**.
+2. Select **Screen 1 → `flight`** on the model.
+3. Plug in USB and choose **USB Serial (VCP)**.
+
 ## Tests
 
-`lua tools/radio/edgetx/test/test_flight.lua [path/to/SOUNDS/en]` runs the script under a desktop Lua (5.2 or newer) against a mock of the EdgeTX 2.12 Lua API (`test/harness.lua`).
+`lua tools/radio/edgetx/test/test_flight.lua [path/to/SOUNDS/en]` and `lua tools/radio/edgetx/test/test_simlnk.lua` run the scripts under a desktop Lua (5.2 or newer) against a mock of the EdgeTX 2.12 Lua API (`test/harness.lua`).
 
-Scenarios: ELRS with iNav and with Betaflight, D16 with iNav (new and legacy sensor ids), D8, no telemetry, low battery, link loss, settings and statistics.
+Scenarios: ELRS with iNav and with Betaflight, D16 with iNav (new and legacy sensor ids), D8, no telemetry, low battery, link loss, settings and statistics; for the link, the channel frames, parsing with split lines, bad checksums and empty fields, the sensors created, the timeout, and the flight screen fed by the simulator.
 
 It checks:
 - no Lua errors;
