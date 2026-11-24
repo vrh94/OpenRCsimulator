@@ -300,6 +300,7 @@ func _begin_device() -> void:
 	var identity := joystick_identity(usb_product, radio, edgetx_version)
 	device_id = id
 	_last_send_ms = -1000000
+	RadioTelemetry.listening = true
 	JoypadDirectory.register(id, identity.name, identity.guid, {
 		raw_name = identity.name, vendor_id = identity.vendor_id, product_id = identity.product_id,
 		backend = "serial", transport = "usb-cdc", serial_port = port, radio = radio, edgetx_version = edgetx_version,
@@ -310,6 +311,7 @@ func _begin_device() -> void:
 func _end_device() -> void:
 	if device_id >= 0:
 		JoypadDirectory.unregister(device_id, AXES, BUTTONS)
+		RadioTelemetry.listening = false
 	device_id = -1
 	_channels = PackedInt32Array()
 	_first_frame_ms = -1

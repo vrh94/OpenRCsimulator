@@ -523,6 +523,9 @@ var _aircraft_lights_hud_dirty := true
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
 var _overlays: CanvasLayer = null # OverlayManager when overlays_enabled
+## Radio telemetry without overlays (the classic HUD): its own 10 Hz clock and battery sensors.
+var _radio_telemetry_since := INF
+var _radio_battery: RefCounted = OverlayManager.BatterySensors.new()
 var _auto_zoom := true
 var _show_perf := true
 var _frame_times := PackedFloat64Array()
@@ -1693,8 +1696,14 @@ func _process(delta: float) -> void:
 		if _overlays.tick(dt):
 			var snap := _overlay_snapshot()
 			_overlays.refresh_numbers(snap)
-			_publish_radio_telemetry(snap)
+			_publish_radio_telemetry(snap, _overlays.battery_reading())
 		_overlays.refresh_sticks(OverlayManager.sticks(session) if not _scripted and _visual_pose.is_empty() else {})
+	elif RadioTelemetry.listening:
+		_radio_telemetry_since += dt
+		if _radio_telemetry_since >= OverlayManager.TEXT_PERIOD_S:
+			_radio_telemetry_since = 0.0
+			var snap := _overlay_snapshot()
+			_publish_radio_telemetry(snap, _radio_battery_reading(snap))
 
 
 ## Read only the accepted installation after startup or F5. Absolute scaling also
@@ -1886,16 +1895,26 @@ func _fc_osd_status() -> Dictionary:
 ## FC-1: the flight controller's mode now ("manual" without a session).
 ## Telemetry for an EdgeTX radio on the USB serial link (sim/radio_telemetry.gd): what the overlays show, plus
 ## attitude, arming and throttle. Read-only; nothing is published without a flight to describe.
-func _publish_radio_telemetry(snap: Dictionary) -> void:
+## battery: the BatterySensors reading for this moment (the overlay's, or _radio_battery_reading without overlays).
+func _publish_radio_telemetry(snap: Dictionary, battery: Dictionary) -> void:
 	if snap.is_empty() or session == null:
 		return
 	var t: Dictionary = snap.get("telemetry", {}).duplicate()
 	t.home_up_m = -float(field.pilot.get("down", 0.0))
 	t.flight_mode = _flight_mode()
-	var osd := FpvOsd.Model.values(t, _overlays.battery_reading())
+	var osd := FpvOsd.Model.values(t, battery)
 	var aircraft_name := Catalog.short_name(aircraft_id) if Catalog.has(aircraft_id) else ""
 	RadioTelemetry.publish(RadioTelemetry.reading(osd, t, bool(session.radio.armed), float(t.get("throttle", NAN)),
 		landscape_id, aircraft_name))
+
+
+## The pack's sensors as the overlay samples them (BatterySensors.empty() without an electric battery).
+func _radio_battery_reading(snap: Dictionary) -> Dictionary:
+	var battery: Dictionary = snap.get("battery", {})
+	if not battery.get("ok", false):
+		return OverlayManager.BatterySensors.empty()
+	var t: Dictionary = snap.get("telemetry", {})
+	return _radio_battery.update(float(battery.get("time_s", t.get("time_s", 0.0))), battery, false)
 
 
 func _flight_mode() -> String:
@@ -3522,6 +3541,8 @@ func _on_resetting() -> void:
 		_lens.reset()
 	if _overlays != null:
 		_overlays.reset_flight()
+	_radio_battery.reset()
+	_radio_telemetry_since = INF
 	if _fpv_osd != null:
 		_fpv_osd.reset()
 		_fpv_osd_since = INF

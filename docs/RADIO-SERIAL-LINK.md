@@ -63,6 +63,7 @@ Positions come from the landscape's D96/TM reference (EPSG:3794) and are convert
 | Nothing moves; the radio's flight screen isn't open, or the radio shows no **SIM** | USB-VCP is not LUA (a serial terminal shows EdgeTX's `>` prompt), or the model has no `flight` screen. |
 | The radio connects, but sticks are reversed or off-centre | The joystick-mode calibration doesn't match this model's mixes. Recalibrate in the setup assistant; the result is saved for both modes. |
 | Telemetry shows `--` for the battery | The aircraft is not electric. |
+| The radio shows **SIM** but no flight values | You are in a menu, or flying a helicopter, multirotor, airship or ground vehicle: so far only fixed-wing aircraft send flight data (with or without overlays). |
 
 Code:
 - `app/input/serial_radio_link.gd`: port helper, frames to joystick events, identity.

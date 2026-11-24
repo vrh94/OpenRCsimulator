@@ -21,6 +21,9 @@ const PILOT_D96 := {
 const STALE_MS := 1000
 
 ## The flight's latest reading ({} = none) and when it was published (Time.get_ticks_msec()).
+## True while a radio is connected over USB serial (set by input/serial_radio_link.gd), so flights only build
+## telemetry when someone receives it.
+static var listening := false
 static var _latest: Dictionary = {}
 static var _latest_ms := -1000000
 
