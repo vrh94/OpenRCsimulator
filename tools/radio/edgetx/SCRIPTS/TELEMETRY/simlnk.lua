@@ -13,7 +13,8 @@
 --                       M,<mode text>,<armed 0/1>,<flight time s>,<throttle %>*cs
 --                       I,<simulator>,<aircraft>*cs
 -- An empty field means the simulator has no such value (nothing is invented: there is no RSSI or link quality).
--- Lua 5.2 subset (EdgeTX). Original code for OpenRCsimulator; see tools/radio/edgetx/README.md.
+-- EdgeTX's Lua: 5.3 with 32-bit integers and single-precision floats (about 7 digits), and on black-and-white
+-- radios no table library. Original code for OpenRCsimulator; see tools/radio/edgetx/README.md.
 
 local SENSOR_BASE = 0x5A00
 local GROUPS = {
@@ -33,7 +34,8 @@ local TEXT_KEYS = { mode = true, name = true, aircraft = true }
 
 local st = { buf = "", lastRx = -100000, lastHello = -100000, lastSensors = -100000, lastGps = -100000,
   rateAt = 0, rx = 0, tx = 0 }
-local state = { alive = false, values = {}, armed = nil, name = nil, aircraft = nil, txRate = 0, rxRate = 0, bad = 0 }
+-- gps: latitude and longitude in whole 1e-6 degrees, parsed from the text (a float would lose ~0.5 m).
+local state = { alive = false, values = {}, gps = {}, armed = nil, name = nil, aircraft = nil, txRate = 0, rxRate = 0, bad = 0 }
 
 local function checksum(s)
   local sum = 0
@@ -43,6 +45,15 @@ end
 
 local function send(payload)
   serialWrite(payload .. string.format("*%02X\n", checksum(payload)))
+end
+
+-- "46.1966067" -> 46196607: degrees text to whole 1e-6 degrees using integers only.
+local function microdeg(text)
+  local sign, whole, frac = string.match(text, "^(-?)(%d+)%.?(%d*)$")
+  if not whole then return nil end
+  local v = tonumber(whole) * 1000000 + (tonumber(string.sub(frac .. "0000000", 1, 7)) + 5) // 10
+  if sign == "-" then return -v end
+  return v
 end
 
 local function fields(payload)
@@ -70,7 +81,7 @@ local function handle(line, t)
     if raw == nil or raw == "" then
       if key == "armed" then state.armed = nil
       elseif key == "name" or key == "aircraft" then state[key] = nil
-      else state.values[key] = nil end
+      else state.values[key] = nil; state.gps[key] = nil end
     elseif key == "armed" then
       state.armed = raw == "1"
     elseif key == "name" or key == "aircraft" then
@@ -79,6 +90,7 @@ local function handle(line, t)
       state.values[key] = raw
     else
       state.values[key] = tonumber(raw)
+      if key == "lat" or key == "lon" then state.gps[key] = microdeg(raw) end
     end
   end
   st.lastRx = t
@@ -95,12 +107,12 @@ local function publish(t)
       if v then setTelemetryValue(SENSOR_BASE + s[2], 0, 0, math.floor(v * 10 ^ s[5] + 0.5), s[4], s[5], s[3]) end
     end
   end
-  local lat, lon = state.values.lat, state.values.lon
+  local lat, lon = state.gps.lat, state.gps.lon
   if lat and lon and t - st.lastGps >= 50 and UNIT_GPS then
     st.lastGps = t
     -- EdgeTX stores a Lua GPS sensor from its latitude and longitude parts (1e-6 degrees), then the GPS unit.
-    setTelemetryValue(SENSOR_BASE + 20, 0, 0, math.floor(lat * 1000000 + 0.5), UNIT_GPS + 4, 0, "GPS")
-    setTelemetryValue(SENSOR_BASE + 20, 0, 0, math.floor(lon * 1000000 + 0.5), UNIT_GPS + 3, 0, "GPS")
+    setTelemetryValue(SENSOR_BASE + 20, 0, 0, lat, UNIT_GPS + 4, 0, "GPS")
+    setTelemetryValue(SENSOR_BASE + 20, 0, 0, lon, UNIT_GPS + 3, 0, "GPS")
     setTelemetryValue(SENSOR_BASE + 20, 0, 0, 0, UNIT_GPS, 0, "GPS")
   end
 end
@@ -109,12 +121,12 @@ local function poll()
   if not serialWrite or not serialRead then return state end
   local t = getTime()
   -- Channels out, every Lua cycle.
-  local parts = { "C" }
+  local frame = "C"
   for ch = 0, 15 do
     local v = math.floor((getOutputValue(ch) or 0) + 1024.5)
-    parts[#parts + 1] = string.format("%03X", math.max(0, math.min(2047, v)))
+    frame = frame .. string.format("%03X", math.max(0, math.min(2047, v)))
   end
-  send(table.concat(parts))
+  send(frame)
   st.tx = st.tx + 1
   if t - st.lastHello >= 100 then
     st.lastHello = t

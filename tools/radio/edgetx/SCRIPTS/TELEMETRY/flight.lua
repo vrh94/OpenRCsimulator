@@ -5,7 +5,8 @@
 -- sensors exist, and the OpenRC simulator's link (simlnk.lua) when the radio is connected to the simulator in USB
 -- serial mode. Nothing is invented: a value whose sensor is absent is not drawn. Units are metric.
 -- Wheel: change page. ENTER: settings menu (wheel selects, ENTER edits, EXIT saves). Long ENTER on Stats: reset.
--- Lua 5.2 subset (EdgeTX). Original code for OpenRCsimulator; see tools/radio/edgetx/README.md.
+-- EdgeTX's Lua: 5.3 with 32-bit integers and single-precision floats (about 7 digits), and on black-and-white
+-- radios no table library. Original code for OpenRCsimulator; see tools/radio/edgetx/README.md.
 
 local CFG_PATH = "/SCRIPTS/TELEMETRY/flight.cfg"
 local SIM_PATH = "/SCRIPTS/TELEMETRY/simlnk.lua"
@@ -71,12 +72,14 @@ local function saveCfg()
   for line in string.gmatch(text, "[^\n]+") do
     if string.match(line, "^(.-)|") ~= st.model and #lines < 30 then lines[#lines + 1] = line end
   end
-  local values = {}
-  for i = 1, #KEYS do values[i] = tostring(cfg[KEYS[i]]) end
-  lines[#lines + 1] = st.model .. "|" .. table.concat(values, ",")
+  local mine = st.model .. "|"
+  for i = 1, #KEYS do mine = mine .. (i > 1 and "," or "") .. tostring(cfg[KEYS[i]]) end
+  lines[#lines + 1] = mine
+  local out = ""
+  for i = 1, #lines do out = out .. lines[i] .. "\n" end
   f = io.open(CFG_PATH, "w")
   if f then
-    io.write(f, table.concat(lines, "\n") .. "\n")
+    io.write(f, out)
     io.close(f)
   end
 end

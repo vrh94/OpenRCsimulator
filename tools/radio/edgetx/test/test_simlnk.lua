@@ -34,7 +34,7 @@ H.check("no second hello within the second", #H.serialOut == 3)
 H.check("not alive before the simulator speaks", state.alive == false)
 
 -- 2. Lines in: split across reads, bad checksum, empty fields.
-H.serialIn = cs("B,16.40,12.5,734,62") .. cs("A,124.5,1.4,54.0,61.2,52,7.0,-20.0") .. "A,1,2,3*00\n" .. cs("N,612,190.5,46.197000,14.581000")
+H.serialIn = cs("B,16.40,12.5,734,62") .. cs("A,124.5,1.4,54.0,61.2,52,7.0,-20.0") .. "A,1,2,3*00\n" .. cs("N,612,190.5,46.1966067,-14.5833153")
   .. cs("M,ANGL,1,93,48") .. cs("I,OpenRC,Jensen Ugly Stik") .. string.sub(cs("B,15.10,,,"), 1, 6)
 H.t = 1100
 state = link.poll()
@@ -42,7 +42,7 @@ local v = state.values
 H.check("B: volts, amps, mAh, %", v.volt == 16.4 and v.curr == 12.5 and v.mah == 734 and v.pct == 62)
 H.check("A: altitude, speeds, heading, attitude", v.alt == 124.5 and v.vs == 1.4 and v.gs == 54 and v.as == 61.2
   and v.hdg == 52 and v.pitch == 7 and v.roll == -20)
-H.check("N: home and position", v.dist == 612 and v.homeDir == 190.5 and v.lat == 46.197 and v.lon == 14.581)
+H.check("N: home and position", v.dist == 612 and v.homeDir == 190.5 and v.lat == 46.1966067 and v.lon == -14.5833153)
 H.check("M: mode and armed", v.mode == "ANGL" and state.armed == true)
 H.check("I: simulator and aircraft", state.name == "OpenRC" and state.aircraft == "Jensen Ugly Stik")
 H.check("a line with a bad checksum is counted and ignored", state.bad == 1 and v.alt == 124.5, state.bad)
@@ -60,6 +60,9 @@ H.check("sensors: RxBt 16.40 V (prec 2), Alt 124.5 m, Hdg 52 (published at most 
 H.check("sensors: no Curr or Capa when the simulator has none", tm.Curr == nil or tm.Curr.raw == 125)
 H.check("sensors: no link quality or RSSI is ever created", tm.RQly == nil and tm.RSSI == nil and tm["1RSS"] == nil)
 H.check("GPS sensor ends with the GPS unit (lat/lon parts first)", tm.GPS and tm.GPS.unit == UNIT_GPS)
+-- The radio's floats keep ~7 digits, so the position is parsed from the text as whole 1e-6 degrees, rounded.
+H.check("GPS: exact 1e-6 degrees from the text, rounded, sign kept", tm.GPS and tm.GPS.lat == 46196607 and tm.GPS.lon == -14583315
+  and math.type(tm.GPS.lat) == "integer", tostring(tm.GPS and tm.GPS.lat) .. " " .. tostring(tm.GPS and tm.GPS.lon))
 
 -- 4. Timeout.
 H.t = 1300

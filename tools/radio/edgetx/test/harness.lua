@@ -279,6 +279,8 @@ function setTelemetryValue(id, sub, inst, value, unit, prec, name)
   local s = H.telemetry[key] or { id = 1000 + id }
   s.value = prec and prec > 0 and value / 10 ^ prec or value
   s.raw, s.unit, s.prec = value, unit, prec
+  -- EdgeTX builds a GPS sensor from a latitude part (UNIT_GPS + 4) and a longitude part (+ 3), both 1e-6 degrees.
+  if UNIT_GPS and unit == UNIT_GPS + 4 then s.lat = value elseif UNIT_GPS and unit == UNIT_GPS + 3 then s.lon = value end
   H.telemetry[key] = s
   return true
 end
@@ -313,16 +315,27 @@ function sd.close(f) f:close() end
 io = sd
 H.realIo = realIo
 
+-- Scripts run with only the globals a black-and-white EdgeTX 2.12 radio has (radio/src/thirdparty/Lua/src/linit.c:
+-- the table library exists on colour radios only; os, utf8, coroutine, debug and require are never built). Using
+-- one fails here as it does on the radio ("attempt to index a nil value (field 'table')").
+local MISSING = { table = true, os = true, utf8 = true, coroutine = true, debug = true, require = true, package = true }
+H.env = setmetatable({}, {
+  __index = function(_, k)
+    if MISSING[k] then error("'" .. k .. "' does not exist on a black-and-white EdgeTX radio", 2) end
+    return _G[k]
+  end,
+})
+
 function loadScript(path)
   local local_path = H.scripts .. path
   local f = realIo.open(local_path, "rb")
   if not f then return nil end
   f:close()
-  return assert(loadfile(local_path))
+  return assert(loadfile(local_path, "t", H.env))
 end
 
 function H.load(rel)
-  local chunk = assert(loadfile(H.scripts .. rel))
+  local chunk = assert(loadfile(H.scripts .. rel, "t", H.env))
   return chunk()
 end
 
