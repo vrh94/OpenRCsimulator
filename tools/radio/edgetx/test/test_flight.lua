@@ -16,7 +16,8 @@ local function run(name, scenario, steps)
   script.init()
   local ok, err = pcall(steps, script)
   H.check(name .. ": runs without errors", ok, err)
-  H.check(name .. ": every draw stays on the 128x64 screen", #H.oob == 0, table.concat(H.oob, "; "))
+  H.check(name .. ": every draw stays on the 128x64 screen, with integer coordinates", #H.oob == 0, table.concat(H.oob, "; "))
+  H.check(name .. ": no graphic relies on XOR (1-bit screen)", #H.xor == 0, table.concat(H.xor, "; "))
   for _, f in ipairs(H.played) do played_all[f] = true end
   return script
 end
@@ -27,11 +28,29 @@ local function count(list, value)
   return n
 end
 
+-- The horizon frame (33,9 62x46) is intact and the aircraft symbol has its white outline.
+local function hudShape(name)
+  local broken = {}
+  for x = 33, 94 do
+    if not H.pixel(x, 9) or not H.pixel(x, 54) then broken[#broken + 1] = x end
+  end
+  for y = 9, 54 do
+    if not H.pixel(33, y) or not H.pixel(94, y) then broken[#broken + 1] = "y" .. y end
+  end
+  H.check(name .. ": horizon frame intact", #broken == 0, table.concat(broken, ",") .. "\n" .. H.art())
+  local cx, cy = 64, 32
+  local wing, halo = true, true
+  for x = cx - 10, cx - 4 do wing = wing and H.pixel(x, cy) and H.pixel(x + 14, cy) end
+  for x = cx - 11, cx - 3 do halo = halo and not H.pixel(x, cy - 1) and not H.pixel(x + 14, cy - 1) end
+  H.check(name .. ": aircraft symbol drawn with a white outline", wing and halo, "\n" .. H.art())
+end
+
 local function pages(script)
   local texts = {}
   for p = 1, 3 do
     H.tick(script, 1, nil, true)
     texts[p] = H.texts()
+    if p == 1 then hudShape("  HUD") end
     local hits = H.overlaps()
     H.check("  page " .. p .. " text does not overlap", #hits == 0, table.concat(hits, ", "))
     H.tick(script, 1, EVT_VIRTUAL_NEXT, true)
@@ -69,8 +88,18 @@ run("ELRS + iNav", elrs, function(s)
     and texts:find("16.4", 1, true) and texts:find("H%d"), texts)
   H.tick(s, 100, nil, false) -- t = 1020
   H.check("ELRS: disarm on OK", count(H.played, "disarm.wav") == 1, table.concat(H.played, ","))
+  H.tick(s, 1, nil, true)
+  local cols = 0
+  for x = 34, 93 do
+    for y = 10, 53 do
+      -- a horizon pixel: set, with a set neighbour along the line, outside the symbol and the heading box
+      if H.pixel(x, y) and (H.pixel(x - 1, y) or H.pixel(x - 1, y - 1) or H.pixel(x - 1, y + 1))
+        and not (y >= 10 and y <= 18) and not (x >= 52 and x <= 76 and y >= 29 and y <= 36) then cols = cols + 1; break end
+    end
+  end
+  H.check("ELRS: horizon line is continuous on the 1-bit screen (>= 40 of 60 columns)", cols >= 40, cols .. "\n" .. H.art())
   local t = pages(s)
-  H.check("ELRS link page shows both antennas", t[2]:find("-61 / -64 dBm", 1, true), t[2])
+  H.check("ELRS link page shows both antennas", t[2]:find("-61/-64dBm", 1, true), t[2])
 end)
 
 -- 2. ELRS with Betaflight: "*" suffix means disarmed.

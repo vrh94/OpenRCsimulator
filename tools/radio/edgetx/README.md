@@ -1,6 +1,11 @@
 # EdgeTX scripts for the radio
 
-Lua scripts for EdgeTX 2.12 radios with a 128 × 64 screen. They were written for the RadioMaster Zorro and also suit the Boxer, Pocket, TX12, MT12, Taranis X7/X9 Lite and similar radios. Copy the `SCRIPTS` folder onto the radio's SD card. The scripts are this project's own code; they follow the arrangement of popular telemetry screens without copying any of them.
+Lua scripts for EdgeTX 2.12 radios with a 128 × 64 screen. They were written for the RadioMaster Zorro and also suit the Boxer, Pocket, TX12, MT12, Taranis X7/X9 Lite and similar radios. Copy the `SCRIPTS` folder onto the radio's SD card.
+
+These radios have 1-bit black-and-white screens. The scripts use no colour or grey. Every line, point, rectangle and gauge is drawn with an explicit `FORCE` (black) or `ERASE` (white), because EdgeTX's default on these screens is XOR, which makes overlapping graphics cancel out. Readability on a 1-bit screen:
+- The ground in the artificial horizon is a light dot texture.
+- The aircraft symbol, pitch ladder and home arrow have white outlines.
+- Text is opaque. The scripts are this project's own code; they follow the arrangement of popular telemetry screens without copying any of them.
 
 | File | What it is |
 | --- | --- |
@@ -69,11 +74,20 @@ Radio setup, done once:
 
 `lua tools/radio/edgetx/test/test_flight.lua [path/to/SOUNDS/en]` and `lua tools/radio/edgetx/test/test_simlnk.lua` run the scripts under a desktop Lua (5.2 or newer) against a mock of the EdgeTX 2.12 Lua API (`test/harness.lua`).
 
+The mock draws into a 128 × 64 1-bit framebuffer the way EdgeTX does on these radios:
+- the real flag values (`INVERS` equals `FORCE`, `RIGHT` equals `ERASE`);
+- XOR as the default, line patterns and opaque text;
+- EdgeTX's proportional fonts.
+
+The fonts are EdgeTX's (GPLv2), so they are not stored in this repository. `python3 tools/radio/edgetx/test/edgetx_fonts.py` downloads them from EdgeTX v2.12.5, or reads them from a checkout with `--edgetx-src`, into `$TMPDIR/openrc_edgetx_fonts.lua`. Without that file the tests use fixed-width stand-ins and the text-width checks are only approximate. `H.art()` returns the frame as text art for inspection.
+
 Scenarios: ELRS with iNav and with Betaflight, D16 with iNav (new and legacy sensor ids), D8, no telemetry, low battery, link loss, settings and statistics; for the link, the channel frames, parsing with split lines, bad checksums and empty fields, the sensors created, the timeout, and the flight screen fed by the simulator.
 
 It checks:
 - no Lua errors;
-- every drawn item stays on the 128 × 64 screen, and no text overlaps;
+- every drawn item stays on the 128 × 64 screen, with integer coordinates, and no text overlaps;
+- no graphic relies on XOR;
+- the horizon frame is intact, the horizon line is continuous, and the aircraft symbol has its white outline;
 - arming and mode callouts;
 - unit conversions;
 - that the settings survive a reload;

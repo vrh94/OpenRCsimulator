@@ -89,7 +89,7 @@ H.check("flight + SIM: no 'lost' or 'no telemetry' while the link is up", not te
 H.check("flight + SIM: every draw on screen", #H.oob == 0, table.concat(H.oob, "; "))
 H.tick(flight, 1, EVT_VIRTUAL_NEXT, true)
 H.check("flight + SIM: link page names the simulator and its rates", H.texts():find("Simulator", 1, true)
-  and H.texts():find("no RF link", 1, true), H.texts())
+  and H.texts():find("No RF link", 1, true), H.texts())
 local sent = 0
 for _, s in ipairs(H.serialOut) do if s:sub(1, 1) == "C" then sent = sent + 1 end end
 H.check("flight + SIM: one channel frame per Lua cycle", sent == cycles + 1, sent)

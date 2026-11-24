@@ -287,67 +287,108 @@ end
 
 local function inBox(x, y) return x > BX and x < BX + BW - 1 and y > BY and y < BY + BH - 1 end
 
+-- The Zorro's screen is 1-bit black and white, and EdgeTX draws lines, points, rectangles and gauges in XOR mode
+-- unless FORCE (black) or ERASE (white) is given. Every graphic below names one of the two, so overlapping
+-- graphics never cancel out. Text is always opaque: it clears its own background.
+local B, W = FORCE, ERASE
+
+local function seg(x1, y1, x2, y2, flags)
+  lcd.drawLine(rnd(x1), rnd(y1), rnd(x2), rnd(y2), SOLID, flags or B)
+end
+
+-- A black segment with a white outline on both sides (offset ox, oy), so it stays readable over the ground texture.
+local function outlined(x1, y1, x2, y2, ox, oy)
+  seg(x1 + ox, y1 + oy, x2 + ox, y2 + oy, W)
+  seg(x1 - ox, y1 - oy, x2 - ox, y2 - oy, W)
+  seg(x1, y1, x2, y2, B)
+end
+
 local function horizon()
-  lcd.drawRectangle(BX, BY, BW, BH)
   local r = math.rad(T.roll or 0)
   local p = T.pitch or 0
   local c, s = math.cos(r), math.sin(r)
   if math.abs(c) < 0.05 then c = c < 0 and -0.05 or 0.05 end
   local hx, hy = CX + s * p * K, CY + c * p * K
+  local x0, x1, y0, y1 = BX + 1, BX + BW - 2, BY + 1, BY + BH - 2
   if T.pitch ~= nil and T.roll ~= nil then
-    for x = BX + 1, BX + BW - 2 do
-      local y = math.floor(hy - s * (x - hx) / c + 0.5)
+    -- ground: a light dot texture (dotted vertical lines on every other column), so lines drawn on it stay legible
+    for x = x0 + 1, x1, 2 do
+      local y = rnd(hy - s * (x - hx) / c)
       if c > 0 then
-        local top = math.max(y, BY + 1)
-        if top <= BY + BH - 2 then lcd.drawLine(x, top, x, BY + BH - 2, DOTTED, 0) end
+        local top = math.max(y + 1, y0)
+        if top <= y1 then lcd.drawLine(x, top, x, y1, DOTTED, B) end
       else
-        local bottom = math.min(y, BY + BH - 2)
-        if bottom >= BY + 1 then lcd.drawLine(x, BY + 1, x, bottom, DOTTED, 0) end
+        local bottom = math.min(y - 1, y1)
+        if bottom >= y0 then lcd.drawLine(x, y0, x, bottom, DOTTED, B) end
       end
-      if y > BY and y < BY + BH - 1 then lcd.drawPoint(x, y) end
     end
+    -- horizon line, solid, column by column (or row by row when banked steeper than 45 degrees)
+    if math.abs(s) <= math.abs(c) then
+      for x = x0, x1 do
+        local y = rnd(hy - s * (x - hx) / c)
+        if y >= y0 and y <= y1 then lcd.drawPoint(x, y, B) end
+      end
+    else
+      for y = y0, y1 do
+        local x = rnd(hx - (y - hy) * c / s)
+        if x >= x0 and x <= x1 then lcd.drawPoint(x, y, B) end
+      end
+    end
+    -- pitch ladder: solid above the horizon, dashed below (two short ends), every 10 degrees
     for step = -20, 20, 10 do
       if step ~= 0 then
         local lx, ly = hx - s * step * K, hy - c * step * K
-        local x1, y1, x2, y2 = lx - c * 5, ly + s * 5, lx + c * 5, ly - s * 5
-        if inBox(x1, y1) and inBox(x2, y2) then
-          lcd.drawLine(math.floor(x1), math.floor(y1), math.floor(x2), math.floor(y2), step > 0 and SOLID or DOTTED, 0)
+        local ax, ay, bx, by = lx - c * 5, ly + s * 5, lx + c * 5, ly - s * 5
+        local ox, oy = rnd(s), rnd(c) -- one pixel across the line
+        if inBox(ax - 1, ay - 1) and inBox(bx - 1, by - 1) and inBox(ax + 1, ay + 1) and inBox(bx + 1, by + 1) then
+          if step > 0 then
+            outlined(ax, ay, bx, by, ox, oy)
+          else
+            outlined(ax, ay, ax + (bx - ax) * 0.35, ay + (by - ay) * 0.35, ox, oy)
+            outlined(bx, by, bx + (ax - bx) * 0.35, by + (ay - by) * 0.35, ox, oy)
+          end
         end
       end
     end
   else
-    lcd.drawText(CX - 10, CY + 8, "no att", SMLSIZE)
+    lcd.drawText(CX - 11, CY + 8, "no att", SMLSIZE)
   end
-  -- aircraft symbol
-  lcd.drawLine(CX - 9, CY, CX - 4, CY, SOLID, FORCE)
-  lcd.drawLine(CX + 4, CY, CX + 9, CY, SOLID, FORCE)
-  lcd.drawLine(CX - 4, CY, CX - 2, CY + 2, SOLID, FORCE)
-  lcd.drawLine(CX + 4, CY, CX + 2, CY + 2, SOLID, FORCE)
-  -- heading tape
+  -- aircraft symbol, fixed in the centre, with a white outline so it reads over sky, ground and ladder alike
+  lcd.drawFilledRectangle(CX - 11, CY - 1, 9, 5, W)
+  lcd.drawFilledRectangle(CX + 3, CY - 1, 9, 5, W)
+  lcd.drawFilledRectangle(CX - 2, CY - 2, 4, 4, W)
+  seg(CX - 10, CY, CX - 4, CY)
+  seg(CX - 4, CY + 1, CX - 4, CY + 2)
+  seg(CX + 4, CY, CX + 10, CY)
+  seg(CX + 4, CY + 1, CX + 4, CY + 2)
+  lcd.drawFilledRectangle(CX - 1, CY - 1, 2, 2, B)
+  -- heading: cardinal letters along the top edge and the heading in a black box (text is opaque)
   if T.hdg then
     local h = T.hdg
     for i, card in ipairs({ "N", "E", "S", "W" }) do
       local d = ((i - 1) * 90 - h + 540) % 360 - 180
-      if math.abs(d) <= 40 and math.abs(d) >= 16 then lcd.drawText(CX + math.floor(d * 0.7) - 1, BY + 2, card, SMLSIZE) end
+      if math.abs(d) <= 40 and math.abs(d) >= 16 then lcd.drawText(CX + rnd(d * 0.7) - 1, BY + 2, card, SMLSIZE) end
     end
-    lcd.drawText(CX - 5, BY + 1, string.format("%03d", rnd(h) % 360), SMLSIZE + INVERS)
+    lcd.drawText(CX - 6, BY + 2, string.format("%03d", rnd(h) % 360), SMLSIZE + INVERS)
   end
-  -- home arrow
+  -- home arrow, bottom centre, on a cleared square
   if T.dist and T.dist > 5 and T.homeDir and T.hdg then
     local a = math.rad(T.homeDir - T.hdg)
     local ax, ay = CX, BY + BH - 8
-    local tx, ty = ax + math.sin(a) * 5, ay - math.cos(a) * 5
-    local lx, ly = ax + math.sin(a + 2.5) * 4, ay - math.cos(a + 2.5) * 4
-    local rx, ry = ax + math.sin(a - 2.5) * 4, ay - math.cos(a - 2.5) * 4
-    lcd.drawLine(math.floor(tx), math.floor(ty), math.floor(lx), math.floor(ly), SOLID, FORCE)
-    lcd.drawLine(math.floor(tx), math.floor(ty), math.floor(rx), math.floor(ry), SOLID, FORCE)
-    lcd.drawLine(math.floor(lx), math.floor(ly), math.floor(rx), math.floor(ry), SOLID, FORCE)
+    lcd.drawFilledRectangle(ax - 6, ay - 6, 13, 13, W)
+    local dx, dy = math.sin(a), -math.cos(a)
+    local tx, ty = ax + dx * 5, ay + dy * 5
+    seg(ax - dx * 5, ay - dy * 5, tx, ty)
+    seg(tx, ty, tx - math.sin(a + 0.6) * 4, ty + math.cos(a + 0.6) * 4)
+    seg(tx, ty, tx - math.sin(a - 0.6) * 4, ty + math.cos(a - 0.6) * 4)
   end
+  -- frame last, so nothing inside can nibble it
+  lcd.drawRectangle(BX, BY, BW, BH, B)
 end
 
 local function topBar()
   local mode = T.mode or (st.armed and "ARMED" or "SAFE")
-  lcd.drawText(0, 0, mode, st.armed and INVERS or 0)
+  lcd.drawText(0, 0, string.sub(mode, 1, 7), st.armed and INVERS or 0)
   lcd.drawTimer(48, 0, math.floor(st.armedTime / 100), 0)
   lcd.drawText(127, 1, fmt(T.tx, "%.1fV"), SMLSIZE + RIGHT)
 end
@@ -369,18 +410,15 @@ local function bottomBar()
 end
 
 local function hud()
-  topBar()
   horizon()
+  topBar()
   -- battery (left)
   lcd.drawText(0, 10, fmt(T.volt, "%.1f"), MIDSIZE)
   lcd.drawText(0, 23, fmt(T.cell, "%.2fv"), SMLSIZE)
   lcd.drawText(0, 30, fmt(T.curr, "%.1fA"), SMLSIZE)
   lcd.drawText(0, 37, fmt(T.mah, "%dmAh"), SMLSIZE)
-  if T.pct then
-    lcd.drawGauge(0, 45, 31, 7, math.max(0, math.min(100, T.pct)), 100)
-  elseif T.cell then
-    lcd.drawGauge(0, 45, 31, 7, math.max(0, math.min(100, (T.cell - 3.3) / 0.9 * 100)), 100)
-  end
+  local pct = T.pct or (T.cell and (T.cell - 3.3) / 0.9 * 100)
+  if pct then lcd.drawGauge(0, 45, 31, 7, rnd(math.max(0, math.min(100, pct))), 100, B) end
   -- flight data (right)
   lcd.drawText(127, 10, fmt(T.alt, "%d"), MIDSIZE + RIGHT)
   lcd.drawText(127, 23, T.vs and string.format("VS%+.1f", T.vs) or "VS --", SMLSIZE + RIGHT)
@@ -397,46 +435,54 @@ local function row(y, label, value)
   lcd.drawText(127, y, value, SMLSIZE + RIGHT)
 end
 
+local ROWS = { 17, 24, 31, 38, 45 }
+
+local function header(text)
+  lcd.drawText(0, 9, text, SMLSIZE + INVERS)
+end
+
 local function linkPage()
   topBar()
-  lcd.drawText(0, 10, "LINK " .. (st.proto ~= "" and st.proto or "none"), SMLSIZE + INVERS)
+  header("LINK " .. (st.proto ~= "" and st.proto or "none"))
   if st.proto == "ELRS" then
-    row(18, "Link quality", fmt(T.lq, "%d%%"))
-    row(25, "RSSI ant 1 / 2", fmt(val("1RSS"), "%d") .. " / " .. fmt(val("2RSS"), "%d") .. " dBm")
-    row(32, "SNR", fmt(val("RSNR"), "%d dB"))
-    row(39, "Rate index / power", fmt(val("RFMD"), "%d") .. " / " .. fmt(val("TPWR"), "%dmW"))
-    row(46, "RX battery", fmt(val("RxBt"), "%.2fV"))
+    row(ROWS[1], "Link quality", fmt(T.lq, "%d%%"))
+    row(ROWS[2], "RSSI 1/2", fmt(val("1RSS"), "%d") .. "/" .. fmt(val("2RSS"), "%d") .. "dBm")
+    row(ROWS[3], "SNR", fmt(val("RSNR"), "%ddB"))
+    row(ROWS[4], "Rate/power", fmt(val("RFMD"), "%d") .. "/" .. fmt(val("TPWR"), "%dmW"))
+    row(ROWS[5], "RX battery", fmt(val("RxBt"), "%.2fV"))
   elseif st.proto == "SIM" then
     local s = st.sim
-    row(18, "Simulator", s.name or "OpenRC")
-    row(25, "Sticks sent", string.format("%d/s", rnd(s.txRate or 0)))
-    row(32, "Telemetry recv", string.format("%d/s", rnd(s.rxRate or 0)))
-    row(39, "Bad lines", tostring(s.bad or 0))
-    row(46, "Note", "no RF link: no RSSI")
+    row(ROWS[1], "Simulator", string.sub(s.name or "OpenRC", 1, 14))
+    row(ROWS[2], "Sticks sent", string.format("%d/s", rnd(s.txRate or 0)))
+    row(ROWS[3], "Telemetry in", string.format("%d/s", rnd(s.rxRate or 0)))
+    row(ROWS[4], "Bad lines", tostring(s.bad or 0))
+    row(ROWS[5], "No RF link", "no RSSI")
   elseif st.proto ~= "" then
-    row(18, "RSSI", fmt(T.rssi, "%d dB"))
-    row(25, "RX battery", fmt(val("RxBt"), "%.2fV"))
-    row(32, "A1 / A2", fmt(val("A1"), "%.2f") .. " / " .. fmt(val("A2"), "%.2fV"))
-    row(39, "Sats", fmt(T.sats, "%d") .. (T.fix and " fix" or ""))
+    row(ROWS[1], "RSSI", fmt(T.rssi, "%ddB"))
+    row(ROWS[2], "RX battery", fmt(val("RxBt"), "%.2fV"))
+    row(ROWS[3], "A1/A2", fmt(val("A1"), "%.2f") .. "/" .. fmt(val("A2"), "%.2fV"))
+    row(ROWS[4], "Sats", fmt(T.sats, "%d") .. (T.fix and " fix" or ""))
   else
-    lcd.drawText(0, 24, "No telemetry sensors.", SMLSIZE)
-    lcd.drawText(0, 32, "MDL > Telemetry > Discover", SMLSIZE)
+    lcd.drawText(0, ROWS[2], "No telemetry sensors.", SMLSIZE)
+    lcd.drawText(0, ROWS[3], "MDL > Telemetry >", SMLSIZE)
+    lcd.drawText(0, ROWS[4], "Discover new", SMLSIZE)
   end
   bottomBar()
 end
 
 local function statsPage()
   topBar()
-  lcd.drawText(0, 8, "STATS  long ENTER = reset", SMLSIZE + INVERS)
-  row(15, "Max alt / dist", fmt(S.alt, "%dm") .. " / " .. fmt(S.dist, "%dm"))
-  row(22, "Max speed / curr", fmt(S.gs, "%dkm/h") .. " / " .. fmt(S.curr, "%.1fA"))
-  row(29, "Min cell", fmt(S.cell, "%.2fV"))
-  row(36, "Min LQ / RSSI", fmt(S.lq, "%d%%") .. " / " .. fmt(S.rssi, "%d"))
-  row(43, "Used", fmt(S.mah, "%dmAh"))
+  header("STATS  long ENTER: reset")
+  row(ROWS[1], "Max alt/dist", fmt(S.alt, "%dm") .. "/" .. fmt(S.dist, "%dm"))
+  row(ROWS[2], "Max spd/amps", fmt(S.gs, "%dkm/h") .. "/" .. fmt(S.curr, "%.1fA"))
+  row(ROWS[3], "Min cell", fmt(S.cell, "%.2fV"))
+  row(ROWS[4], "Min LQ/RSSI", fmt(S.lq, "%d%%") .. "/" .. fmt(S.rssi, "%d"))
   local timer = model.getTimer(0)
   if timer and timer.mode ~= 0 then
-    lcd.drawText(0, 50, "Timer1", SMLSIZE)
-    lcd.drawTimer(127, 50, timer.value, SMLSIZE + RIGHT)
+    local v = math.max(0, rnd(timer.value))
+    row(ROWS[5], "Used/Timer1", fmt(S.mah, "%dmAh") .. "/" .. string.format("%02d:%02d", math.floor(v / 60), v % 60))
+  else
+    row(ROWS[5], "Used", fmt(S.mah, "%dmAh"))
   end
   bottomBar()
 end
